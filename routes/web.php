@@ -7,8 +7,10 @@ use App\Http\Controllers\Admin\ChapterController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Client\BookmarkController;
+use App\Http\Controllers\Client\BuyPackageVipController;
 use App\Http\Controllers\Client\CommentController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\UserController as UserAuthController;
@@ -44,6 +46,8 @@ Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
     Route::get('/banned',
         [UserAuthController::class, 'handleBanned'])
         ->name('users.handle_banned');
+    Route::post('/vip/buy', 
+        [BuyPackageVipController::class, 'buyVip'])->name('vip.buy');
     // articles
     //      articles - comments
     Route::post('/articles/{article}/comments',
@@ -84,6 +88,9 @@ Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
                     Route::resource('genres', GenreController::class);
                     // menus
                     Route::resource('menus', MenuController::class);
+                    // settings
+                    Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+                    Route::post('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
                     // users
                     Route::get('/users/admin',
                         [UserController::class, 'showAdmins'])
@@ -176,6 +183,7 @@ Route::get('/articles/{article}',
 Route::get('/articles/{article}/chapters/{number}',
     [\App\Http\Controllers\Client\ChapterController::class, 'show'])
     ->name('articles.chapters.show');
+Route::post('articles/{article}/chapters/{number}/mark-ad-clicked', [\App\Http\Controllers\Client\ChapterController::class, 'markAdClicked'])->name('articles.chapters.markAdClicked');
 // authors
 Route::get('/authors/{author}',
     [\App\Http\Controllers\Client\AuthorController::class, 'show'])
@@ -187,9 +195,8 @@ Route::get('/users/{user}/posted-articles',
 Route::get('/users/{user}/bookmarks',
     [UserAuthController::class, 'showBookmarks'])
     ->name('users.show_bookmarks');
-Route::get('/users/{user?}',
-    [UserAuthController::class, 'show'])
-    ->name('users.show');
+Route::get('/users/{user?}', [UserAuthController::class, 'show'])
+    ->name('users.show.profile');
 Route::get('/users/{user}/comments',
     [UserAuthController::class, 'showComments'])
     ->name('users.show_comments');

@@ -26,7 +26,7 @@ class User extends Model implements AuthenticatableContract,
         = [
             'username', 'name', 'email', 'password', 'avatar', 'description',
             'address',
-            'role', 'date_of_birth', 'gender', 'remember_token'
+            'role', 'date_of_birth', 'gender', 'remember_token', 'points'
         ];
 
     public function getIsAdminAttribute(): bool

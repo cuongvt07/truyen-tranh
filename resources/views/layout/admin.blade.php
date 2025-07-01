@@ -39,9 +39,9 @@
 <div class="wrapper">
 
     <!-- Preloader -->
-    <div class="preloader flex-column justify-content-center align-items-center">
-        <img class="animation__shake" src="/dist/img/loading.png" alt="AdminLTELogo" height="60" width="60">
-    </div>
+    <!-- <div id="preloader" class="preloader">
+        <div class="spinner"></div>
+    </div> -->
 
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -220,6 +220,15 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.settings.index') }}"
+                               class="nav-link {{ set_active('admin.settings.*') }}">
+                                <i class="fa-solid fa-wrench"></i>
+                                <p>
+                                    Settings
+                                </p>
+                            </a>
+                        </li>
                     @endif
                 </ul>
             </nav>
@@ -265,13 +274,13 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <footer class="main-footer">
+    <!-- <footer class="main-footer">
         <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
         All rights reserved.
         <div class="float-right d-none d-sm-inline-block">
             <b>Version</b> 3.2.0
         </div>
-    </footer>
+    </footer> -->
 
     <!-- Modal -->
     <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog"
