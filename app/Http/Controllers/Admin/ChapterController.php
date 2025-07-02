@@ -53,6 +53,7 @@ class ChapterController extends Controller
     public function store(StoreChapterRequest $request, Article $article)
     {
         $request->validated();
+        // dd($request->all());
         $validateData = $request->all();
         $validateData['article_id'] = $article->id;
         $chapter = Chapter::create($validateData);
