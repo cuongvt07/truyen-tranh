@@ -21,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Illuminate\Support\Facades\Event::listen(
+            \SePay\SePay\Events\SePayWebhookEvent::class,
+            \App\Listeners\SePayWebhookListener::class,
+        );
     }
 }

@@ -372,14 +372,31 @@ $(document).keydown(function (event) {
 });
 
 // Mua VIP
-document.getElementById('buyVipBtn').addEventListener('click', function(){
+document.getElementById('buyVipBtn').addEventListener('click', function () {
     const selected = document.querySelector('input[name="vip_package"]:checked');
-    if(!selected){
+    if (!selected) {
         alert('Vui lòng chọn gói VIP muốn mua!');
         return;
     }
     const packageId = selected.value;
+    const coinsText = selected.closest('.package-option').querySelector('div > div').innerText;
+    const coins = parseInt(coinsText.match(/([\d,]+)/)[1].replace(/,/g, ''));
+    const userPoints = {{ isset($userPoints) ? $userPoints : 0 }};
 
+    if (userPoints >= coins) {
+        // Nếu đủ xu, tiến hành mua VIP
+        purchaseVip(packageId);
+    } else {
+        // Nếu không đủ xu, hiển thị thông báo nạp tiền
+        const confirmation = confirm('Bạn không đủ điểm để đăng ký VIP. Bạn có muốn nạp thêm không?');
+        if (confirmation) {
+            // Chuyển hướng đến trang nạp tiền
+            window.location.href = '{{ route('client.paypoints') }}';
+        }
+    }
+});
+
+function purchaseVip(packageId) {
     fetch('{{ route('vip.buy') }}', {
         method: 'POST',
         headers: {
@@ -390,7 +407,7 @@ document.getElementById('buyVipBtn').addEventListener('click', function(){
     })
     .then(response => response.json())
     .then(data => {
-        if(data.success){
+        if (data.success) {
             alert(data.message + ' Hạn VIP: ' + data.vip_end);
             document.getElementById('adPopup').style.display = 'none';
             // Reload sau 0.5s
@@ -402,7 +419,8 @@ document.getElementById('buyVipBtn').addEventListener('click', function(){
     .catch(err => {
         alert('Có lỗi xảy ra: ' + err);
     });
-});
+}
+
 
 // Nút Nạp thêm
 document.getElementById('depositBtn').addEventListener('click', function(){
