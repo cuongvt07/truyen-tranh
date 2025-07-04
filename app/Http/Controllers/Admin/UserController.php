@@ -49,7 +49,11 @@ class UserController extends Controller
     private function renderUserView($users, $title)
     {
         return view('admin.users.index',
-            ['users' => $users, 'title' => $title]);
+            [
+                'users' => $users,
+                'title' => $title,
+                'createUserRoute' => route('admin.users.create')
+            ]);
     }
 
 
@@ -70,7 +74,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.users.create');
     }
 
     /**
@@ -78,7 +82,37 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        //
+        $data = $request->validated();
+        $user = new User();
+        $user->username = $data['username'];
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->password = bcrypt($data['password']);
+        $user->role = $data['role'];
+        $user->avatar = '/images/users/default.jpg';
+        $user->description = 'Chưa có mô tả';
+
+
+        if (isset($data['address'])) {
+            $user->address = $data['address'];
+        }
+
+        if (isset($data['date_of_birth'])) {
+            $user->date_of_birth = $data['date_of_birth'];
+        }
+
+        if (isset($data['gender'])) {
+            $user->gender = $data['gender'];
+        }
+
+        if (isset($data['points'])) {
+            $user->points = $data['points'];
+        }
+
+        $user->save();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Tạo người dùng thành công!');
     }
 
     /**
@@ -86,7 +120,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return view('admin.users.show', ['user' => $user]);
     }
 
     /**
@@ -94,7 +128,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        return view('admin.users.edit', ['user' => $user]);
     }
 
 
@@ -103,7 +137,25 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $data = $request->validate([
+            'username' => 'required|string|max:255|unique:users,username,'.$user->id,
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.$user->id,
+            'password' => 'nullable|string|min:6',
+            'role' => 'required|in:0,1,2',
+        ]);
+
+        $user->username = $data['username'];
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        if (!empty($data['password'])) {
+            $user->password = bcrypt($data['password']);
+        }
+        $user->role = $data['role'];
+        $user->save();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Cập nhật người dùng thành công!');
     }
 
     /**

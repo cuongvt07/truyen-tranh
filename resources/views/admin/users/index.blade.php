@@ -8,12 +8,17 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <div class="search">
                         <form id="searchForm" action="{{ route('admin.users.index') }}" method="GET">
                             <input type="search" id="searchInput" class="form-control form-control-sm"
-                                   placeholder="Tìm kiếm theo tên người dùng" name="search">
+                                placeholder="Tìm kiếm theo tên người dùng" name="search">
                         </form>
+                    </div>
+                    <div>
+                        <a href="{{ $createUserRoute }}" class="btn btn-primary">
+                            <i class="fa fa-plus"></i> Thêm người dùng
+                        </a>
                     </div>
                 </div>
                 <div class="card-body">

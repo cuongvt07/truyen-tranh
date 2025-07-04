@@ -54,6 +54,10 @@ class ChapterController extends Controller
             }
         }
 
+        if (empty($article->affi_link) || empty($article->affi_image)) {
+            $showPopup = false;
+        }
+
         $chapter->increaseViewCount();
         $article->increaseViewCount();
 
@@ -67,6 +71,9 @@ class ChapterController extends Controller
             'comments' => $comments,
             'showPopup' => $showPopup,
             'adClickedKey' => $adClickedKey,
+            'affiLink' => $article->affi_link,
+            'affiImage' => $article->affi_image,
+            'isUserLoggedIn' => Auth::check(),
         ]);
     }
 

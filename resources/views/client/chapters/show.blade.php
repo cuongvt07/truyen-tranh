@@ -38,7 +38,7 @@
                 </div>
 
                 <hr class="chapter-end"/>
-                <div id="chapter-c" class="chapter-c">
+                <div id="chapter-c" class="chapter-c" style="display: contents;">
                     {!! nl2br($chapter->content) !!}
                 </div>
 
@@ -75,12 +75,12 @@
             <div class="ad-popup-content">
                 <div class="ad-popup-header">
                     <h4>🎯 Hỗ trợ website</h4>
-                    <p>Vui lòng click quảng cáo hoặc nâng cấp Premium để tiếp tục đọc truyện miễn phí</p>
+                    <p>Vui lòng click quảng cáo để mở đọc truyện hoặc nâng cấp Premium để tiếp tục đọc truyện miễn phí. Xin lỗi về sự bất tiện này!</p>
                 </div>
                 <div class="ad-popup-body mb-3">
-                    <a href="https://example.com/your-aff-link" target="_blank" id="adLink" class="ad-link">
+                    <a href="{{$affiLink ?? ''}}" target="_blank" id="adLink" class="ad-link">
                         <div class="ad-banner">
-                            <img src="https://via.placeholder.com/300x200/4CAF50/white?text=Click+để+hỗ+trợ" alt="Quảng cáo">
+                            <img src="{{$affiImage ?? ''}}" alt="Quảng cáo">
                             <div class="ad-text">
                                 <strong>🎁 Ưu đãi đặc biệt!</strong>
                                 <p>Click để xem chi tiết</p>
@@ -378,20 +378,48 @@ document.getElementById('buyVipBtn').addEventListener('click', function () {
         alert('Vui lòng chọn gói VIP muốn mua!');
         return;
     }
+
+    const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+    if (!isLoggedIn) {
+        // Đặt cờ login từ chương truyện
+        fetch('{{ route('setLoginReason') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ reason: 'from_chapter_buy_vip' })
+        }).then(() => {
+            window.location.href = '{{ route('login') }}';
+        });
+        return;
+    }
+
     const packageId = selected.value;
     const coinsText = selected.closest('.package-option').querySelector('div > div').innerText;
     const coins = parseInt(coinsText.match(/([\d,]+)/)[1].replace(/,/g, ''));
     const userPoints = {{ isset($userPoints) ? $userPoints : 0 }};
 
     if (userPoints >= coins) {
-        // Nếu đủ xu, tiến hành mua VIP
         purchaseVip(packageId);
     } else {
-        // Nếu không đủ xu, hiển thị thông báo nạp tiền
         const confirmation = confirm('Bạn không đủ điểm để đăng ký VIP. Bạn có muốn nạp thêm không?');
         if (confirmation) {
-            // Chuyển hướng đến trang nạp tiền
-            window.location.href = '{{ route('client.paypoints') }}';
+            // Nếu chưa login khi nạp
+            if (!isLoggedIn) {
+                fetch('{{ route('setLoginReason') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ reason: 'from_chapter_buy_vip' })
+                }).then(() => {
+                    window.location.href = '{{ route('login') }}';
+                });
+            } else {
+                window.location.href = '{{ route('client.paypoints') }}';
+            }
         }
     }
 });
@@ -424,6 +452,20 @@ function purchaseVip(packageId) {
 
 // Nút Nạp thêm
 document.getElementById('depositBtn').addEventListener('click', function(){
+    const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+    if (!isLoggedIn) {
+        fetch('{{ route('setLoginReason') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ reason: 'from_chapter_buy_vip' })
+        }).then(() => {
+            window.location.href = '{{ route('login') }}';
+        });
+        return;
+    }
     document.getElementById('paymentInfo').style.display = 'block';
 });
 

@@ -93,6 +93,7 @@ Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
                     Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
                     Route::post('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
                     // users
+                    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
                     Route::get('/users/admin',
                         [UserController::class, 'showAdmins'])
                         ->name('users.admin');
@@ -203,5 +204,13 @@ Route::get('/users/{user}/comments',
     ->name('users.show_comments');
 
 Route::post('/generate-qr', [PaymentController::class, 'createDeposit'])->name('generate.qr');
-Route::get('/paypoints', [PaymentController::class, 'showPaypoints'])->name('client.paypoints');
+Route::get('/paypoints', [PaymentController::class, 'showPaypoints'])
+    ->name('client.paypoints')
+    ->middleware('auth');
 Route::post('/transactions/check', [PaymentController::class, 'checkTransactionStatus'])->name('sepay.transactions.check');
+
+
+Route::post('/set-login-reason', function (\Illuminate\Http\Request $request) {
+    session()->put('login_reason', $request->reason);
+    return response()->json(['success' => true]);
+})->name('setLoginReason');

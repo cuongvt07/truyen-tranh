@@ -43,6 +43,7 @@
 
                     <li><a href="{{ route('login') }}" title="Đăng nhập">Đăng nhập</a></li>
                     <li><a href="{{ route('register') }}" title="Đăng ký">Đăng ký</a></li>
+                    <li><a href="{{ route('client.paypoints') }}" title="Nạp tiền">Nạp tiền</a></li>
                 </ul>
             @else
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
