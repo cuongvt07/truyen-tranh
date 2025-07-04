@@ -83,6 +83,56 @@
                 <div class="invalid-feedback">{{ $errors->first('cover_image') }}</div>
             @endif
         </div>
+        <div class="form-group">
+            <label for="affi_link">Link Affiliate</label>
+            <input type="url" name="affi_link" id="affi_link"
+                class="form-control{{ $errors->has('affi_link') ? ' is-invalid' : '' }}"
+                value="{{ old('affi_link', $article->affi_link) }}">
+            @if ($errors->has('affi_link'))
+                <div class="invalid-feedback">{{ $errors->first('affi_link') }}</div>
+            @endif
+        </div>
+
+        <div class="form-group">
+            <label for="affi_image">Ảnh Affiliate</label>
+            <div class="m-3">
+                <img id="preview_affi_image"
+                    src="{{ old('affi_image_url', $article->affi_image) }}"
+                    alt="Affiliate Image"
+                    width="200px">
+            </div>
+            <ul class="nav nav-tabs" id="affiTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="affiTab1-tab" data-toggle="tab" href="#affiTab1" role="tab"
+                    aria-controls="affiTab1" aria-selected="true">Nhập URL ảnh</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="affiTab2-tab" data-toggle="tab" href="#affiTab2" role="tab"
+                    aria-controls="affiTab2" aria-selected="false">Tải lên tệp</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="affiTabsContent">
+                <div class="tab-pane fade show active" id="affiTab1" role="tabpanel" aria-labelledby="affiTab1-tab">
+                    <div class="form-group mt-3">
+                        <input type="text" class="form-control"
+                            placeholder="https://example.com/affiliate.jpg"
+                            id="affi_image_url_preview"
+                            name="affi_image_url_preview"
+                            value="{{ old('affi_image_url_preview', $article->affi_image) }}">
+                        <input type="hidden" name="affi_image_url"
+                            value="{{ old('affi_image_url', $article->affi_image) }}">
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="affiTab2" role="tabpanel" aria-labelledby="affiTab2-tab">
+                    <div class="form-group mt-3">
+                        <input type="file" class="form-control-file" name="affi_image" accept="image/*">
+                    </div>
+                </div>
+            </div>
+            @if ($errors->has('affi_image'))
+                <div class="invalid-feedback">{{ $errors->first('affi_image') }}</div>
+            @endif
+        </div>
     </div>
     <div class="box-footer mt20">
         <button type="submit" class="btn btn-primary">{{ __('Xác nhận') }}</button>
@@ -134,4 +184,47 @@
             }, 250));
         }
     </script>
+    <script>
+        function previewAffiImage() {
+            let imgPreview = document.querySelector('#preview_affi_image');
+            let affiImageUrl = document.querySelector('input[name="affi_image_url"]');
+
+            $('input[name="affi_image"]').on('change', function (event) {
+                if (event.target.files && event.target.files[0]) {
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        if (imgPreview) {
+                            imgPreview.src = e.target.result;
+                        }
+                    };
+                    reader.readAsDataURL(event.target.files[0]);
+                }
+            });
+
+            $('#affi_image_url_preview').on('input', debounce(function () {
+                if (imgPreview) {
+                    let url = $(this).val();
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        success: function () {
+                            imgPreview.src = affiImageUrl.value = url;
+                        },
+                        error: function (jqXHR) {
+                            if (jqXHR.status === 404) {
+                                let defaultImage = '/images/articles/default.jpg';
+                                imgPreview.src = affiImageUrl.value = defaultImage;
+                            }
+                        }
+                    });
+                }
+            }, 250));
+        }
+
+        $(document).ready(function () {
+            previewImage();
+            previewAffiImage();
+        });
+        </script>
+
 @endsection

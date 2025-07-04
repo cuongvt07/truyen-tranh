@@ -105,27 +105,16 @@ class ArticleController extends Controller
     public function update(UpdateArticleRequest $request, Article $article)
     {
         $request->validated();
-        $validateData = $request->all();
-        // Xử lý lưu tệp tải lên
-        $validateData = $this->uploadCoverImage($request, $validateData);
-        // Ngăn không cho cập nhật giá trị của trường updated_at = now
+        $data = $request->all();
+
+        $data = $this->uploadCoverImage($request, $data);
+        $data = $this->uploadAffiImage($request, $data);
+
         $article->timestamps = false;
-        $article->update($validateData);
+        $article->update($data);
 
-        if (!empty($validateData['genres'])) {
-            $article->genres()->sync($validateData['genres']);
-        } else {
-            $article->genres()->detach();
-        }
-
-        if (!empty($validateData['authors'])) {
-            $article->authors()->sync($validateData['authors']);
-        } else {
-            $article->authors()->detach();
-        }
-
-        // Bật lại chức năng tự động cập nhật trường updated_at để không ảnh hưởng tới các chức năng khác
-        $article->timestamps = false;
+        $article->genres()->sync($data['genres'] ?? []);
+        $article->authors()->sync($data['authors'] ?? []);
 
         return redirect()->route('admin.articles.index')
             ->with('success', 'Sửa thông tin truyện thành công!');
@@ -199,4 +188,29 @@ class ArticleController extends Controller
         }
         return $validateData;
     }
+
+    /**
+     * Upload affiliate image if exists, otherwise use default or provided URL.
+     *
+     * @param  UpdateArticleRequest  $request
+     * @param  array  $data
+     *
+     * @return array
+     */
+    private function uploadAffiImage(UpdateArticleRequest $request, array $data): array
+    {
+        if ($request->hasFile('affi_image')) {
+            $image = $request->file('affi_image');
+            $imageName = time() . '-' . $image->getClientOriginalName();
+            $image->move(public_path('images/articles/affiliates'), $imageName);
+            $data['affi_image'] = '/images/articles/affiliates/' . $imageName;
+        } elseif (!empty($data['affi_image_url'])) {
+            $data['affi_image'] = $data['affi_image_url'];
+        } else {
+            $data['affi_image'] = '/images/articles/default.jpg';
+        }
+
+        return $data;
+    }
+
 }

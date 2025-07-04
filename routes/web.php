@@ -93,6 +93,7 @@ Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
                     Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
                     Route::post('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
                     // users
+                    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
                     Route::get('/users/admin',
                         [UserController::class, 'showAdmins'])
                         ->name('users.admin');
