@@ -101,6 +101,14 @@
                 </ul>
             @endif
         </li>
+        @if ($isUserLoggedIn)
+            <li>
+            <a href="javascript:void(0)">
+                <i class="fa fa-database"></i>
+                Số xu: <strong>{{ number_format($currentUser->points) }}</strong>
+            </a>
+            </li>
+        @endif
     </ul>
 
     <form class="navbar-form navbar-right" role="search" action="{{ route('home.search') }}">
@@ -109,9 +117,11 @@
         @endif
         <div class="input-group search-holder">
             <input aria-label="Keyword search" class="form-control" type="search" name="keyword"
-                   placeholder="Tìm kiếm theo tên truyện" value="" itemprop="query-input" required/>
+                   placeholder="Tìm kiếm theo tên truyện" value="" itemprop="query-input" required
+                   style="border-radius: 5px 0 0 5px; height: 40px;"/>
             <div class="input-group-btn">
-                <button class="btn btn-default" type="submit" aria-label="Search">
+                <button class="btn btn-default" type="submit" aria-label="Search"
+                        style="border-radius: 0 5px 5px 0; height: 40px; background: #e7e7e7;">
                     <span class="glyphicon glyphicon-search"></span>
                 </button>
             </div>

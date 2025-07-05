@@ -5,41 +5,55 @@
 @endsection
 
 @section('content')
-    <div class="container" id="intro-index">
+    <div class="container hidden-xs" id="intro-index">
         <div class="title-list">
-            <h2><a href="{{ route('home.show_hot_articles') }}" title="Đọc nhiều nhất">Được đọc nhiều nhất</a>
-            </h2>
-            <a href="{{ route('home.show_hot_articles') }}" title="Đọc nhiều nhất"><span
-                        class="glyphicon glyphicon-fire"></span></a>
+            <h2><a href="{{ route('home.show_hot_articles') }}">Được đọc nhiều nhất</a></h2>
+            <a href="{{ route('home.show_hot_articles') }}"><span class="glyphicon glyphicon-fire"></span></a>
         </div>
-        @php
-            $i = 1;
-        @endphp
+        @php $i = 1; @endphp
         @foreach($hotArticles as $article)
             <div class="index-intro">
                 <div class="item top-{{ $i }}" itemscope itemtype="https://schema.org/Book">
                     <a href="{{ route('articles.show', $article->id) }}" itemprop="url">
-                        <!-- nếu đã hoàn thành thì hiện full-label -->
                         @if ($article->is_completed)
                             <span class="full-label"></span>
                         @endif
                         <img src="{{ $article->cover_image }}" width="129" height="192" alt="#"
-                             class="img-responsive item-img"
-                             itemprop="image"/>
+                            class="img-responsive item-img" itemprop="image"/>
                         <div class="title">
-                            <h3 itemprop="name">
-                                {{ $article->title }}
-                            </h3>
+                            <h3 itemprop="name">{{ $article->title }}</h3>
                         </div>
                     </a>
                 </div>
             </div>
-            @php
-                $i++;
-            @endphp
+            @php $i++; @endphp
         @endforeach
     </div>
 
+    <div class="container visible-xs" id="intro-index-mobile">
+        <div class="title-list">
+            <h2><a href="{{ route('home.show_hot_articles') }}">Được đọc nhiều nhất</a></h2>
+            <a href="{{ route('home.show_hot_articles') }}"><span class="glyphicon glyphicon-fire"></span></a>
+        </div>
+
+        <div class="section-stories-hot__list">
+            @foreach($hotArticles->take(15) as $article)
+                <div class="text-center index-intro-mobile position-relative">
+                    <a href="{{ route('articles.show', $article->id) }}" class="d-block text-decoration-none position-relative">
+                        @if ($article->is_completed)
+                            <span class="full-label"></span>
+                        @endif
+                        <div class="image-wrapper position-relative">
+                            <img src="{{ $article->cover_image }}" class="img-responsive" alt="{{ $article->title }}" />
+                            <div class="overlay-title">
+                                {{ $article->title }}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @endforeach
+        </div>
+    </div>
 
     <div class="container" id="list-index">
         <div id="novel-history-main" class="list list-truyen list-history col-xs-12 col-sm-12 col-md-8 col-truyen-main">
@@ -134,4 +148,43 @@
             </div>
         </div>
     </div>
+
+    <div id="left_ads_float">
+        <a href="Link web 1" target="_blank"><img border="0" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgwLaqpECCEaxkAmDO8t1LcP6cvpxNtE7C3bILOmkul1SYxC9mlk1ZDO1YKlbUTPgMZsOqGW2Cp3ipK7I5PJmtChhw4PlLuMSQKGFPZYrssNu1Z0deUq5wn0DXeZGi8-ausiKZN4W8q8sFH/s1600/banner-dung---doc+-+XANH+DUONG+-+banner+quang+cao.jpg" width="120" /></a>
+    </div>
+    <div id="right_ads_float">
+        <a href="Link web 2" target="_blank"><img border="0" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgwLaqpECCEaxkAmDO8t1LcP6cvpxNtE7C3bILOmkul1SYxC9mlk1ZDO1YKlbUTPgMZsOqGW2Cp3ipK7I5PJmtChhw4PlLuMSQKGFPZYrssNu1Z0deUq5wn0DXeZGi8-ausiKZN4W8q8sFH/s1600/banner-dung---doc+-+XANH+DUONG+-+banner+quang+cao.jpg" width="120" /></a>
+    </div>
 @endsection
+<script>
+var vtlai_remove_fads=false;
+function vtlai_check_adswidth()
+{
+if(vtlai_remove_fads)
+{
+document.getElementById('left_ads_float').style.display='none';
+document.getElementById('right_ads_float').style.display='none';
+return;
+}else if(document.cookie.indexOf('vtlai_remove_float_ads')!=-1)
+{
+vtlai_remove_fads=true;
+vtlai_check_adswidth();
+return;
+}
+else
+{
+var lwidth=parseInt(document.body.clientWidth);
+if(lwidth<1110)
+{
+document.getElementById('left_ads_float').style.display='none';
+document.getElementById('right_ads_float').style.display='none';
+}
+else
+{
+document.getElementById('left_ads_float').style.display='block';
+document.getElementById('right_ads_float').style.display='block';
+}
+setTimeout('vtlai_check_adswidth()',10);
+}
+}
+</script>

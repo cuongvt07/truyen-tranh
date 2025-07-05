@@ -1,7 +1,12 @@
 @extends('layout.client')
 
 @section('content')
-    <div class="d-flex justify-content-center mb-4">
+<div class="container">
+    <div class="d-flex justify-content-center mb-4" style="
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+">
         <h1 style="font-size: 24px;">Nạp Tiền vào Tài Khoản</h1>
     </div>
 
@@ -64,6 +69,7 @@
             </div>
         </div>
     </div>
+</div>
 @endsection
 
 <script>
