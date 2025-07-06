@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     working_dir: /var/www/truyen-tranh
     volumes:
-     - ./truyen-tranh:/var/www/truyen-tranh
+      - /var/www/truyen-tranh:/var/www/truyen-tranh
       - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
     ports:
       - "9000:9000"  # 👈 Expose PHP-FPM port cho Nginx host kết nối
