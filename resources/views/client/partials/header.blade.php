@@ -8,7 +8,7 @@
             <h1>
                 <a class="header-logo" href="/" title="{{ config('app.name', 'Laravel') }}">
                     @if(setting('logo_file'))
-                        <img src="{{ asset(setting('logo_file')) }}" alt="{{ config('app.name', 'Laravel') }}" style="max-height:50px;">
+                        <img src="{{ asset('storage/' . setting('logo_file')) }}" alt="{{ config('app.name', 'Laravel') }}" style="max-height:50px;">
                     @else
                         {{ config('app.name', 'Laravel') }}
                     @endif

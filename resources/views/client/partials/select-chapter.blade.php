@@ -5,12 +5,12 @@
     @if ($previousChapter)
         <a class="btn btn-success btn-chapter-nav" id="prev_chap"
            href="{{ route('articles.chapters.show', [$article->id, $previousChapter->number]) }}">
-            <span class="glyphicon glyphicon-chevron-left"></span> Prev
+            <span class="glyphicon glyphicon-chevron-left"></span> Trước
         </a>
     @else
         <a class="btn btn-success btn-chapter-nav disabled" href="javascript:void(0)"
            title="There is no chapter">
-            <span class="glyphicon glyphicon-chevron-left"></span> Prev
+            <span class="glyphicon glyphicon-chevron-left"></span> Trước
         </a>
     @endif
     <button type="button" class="btn btn-success btn-chapter-nav chapter_jump">
@@ -30,12 +30,12 @@
     @if ($nextChapter)
         <a class="btn btn-success btn-chapter-nav" id="next_chap"
            href="{{ route('articles.chapters.show', [$article->id, $nextChapter->number]) }}">
-            Next <span class="glyphicon glyphicon-chevron-right"></span>
+            Tiếp <span class="glyphicon glyphicon-chevron-right"></span>
         </a>
     @else
         <a class="btn btn-success btn-chapter-nav disabled" href="javascript:void(0)"
            title="There is no chapter">
-            Next <span class="glyphicon glyphicon-chevron-right"></span>
+            Tiếp <span class="glyphicon glyphicon-chevron-right"></span>
         </a>
     @endif
 </div>

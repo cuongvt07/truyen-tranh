@@ -5,7 +5,7 @@
 @section('content')
     <div id="chapter-big-container" class="container chapter">
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-xs-12" style="height: auto !important; min-height: 0px !important;">
                 <a class="truyen-title" href="{{ route('articles.show', $article->id) }}"
                    title="{{ $article->title }}">
                     {{ $article->title }}
@@ -31,18 +31,15 @@
                         </a>
                     @endif
                 </h2>
-
-                <hr class="chapter-start"/>
+                <hr class="chapter-hr"/>
                 <div class="chapter-nav" id="chapter-nav-top">
                     @include('client.partials.select-chapter')
                 </div>
 
-                <hr class="chapter-end"/>
-                <div id="chapter-c" class="chapter-c" style="display: contents;">
+                <div id="chapter-c" class="chapter-c" style="height: auto !important;">
                     {!! nl2br($chapter->content) !!}
                 </div>
-
-                <hr class="chapter-end" id="chapter-end-bot"/>
+                <hr class="chapter-hr"/>
                 <div class="chapter-nav" id="chapter-nav-bot">
                     @include('client.partials.select-chapter')
                     <div class="text-center">
@@ -79,7 +76,11 @@
                 </div>
                 <div class="ad-popup-body mb-3">
                     <a href="{{$affiLink ?? ''}}" target="_blank" id="adLink" class="ad-link">
-                        <div class="ad-banner">
+                        <div class="ad-banner" style="
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                ">
                             <img src="{{$affiImage ?? ''}}" alt="Quảng cáo">
                             <div class="ad-text">
                                 <strong>🎁 Ưu đãi đặc biệt!</strong>
@@ -105,7 +106,7 @@
                         gap: 10px;
                         margin-bottom: 10px;">
                             @foreach(getPremiumPackages() as $i => $package)
-                            <div class="package-option d-flex flex-column align-items-center text-center p-3" style="border: 1px solid #ddd; border-radius: 6px; width: 200px;" onclick="$(this).find('input[type=radio]').prop('checked', true).trigger('change');">
+                            <div class="package-option d-flex flex-column align-items-center text-center p-3" style="border: 1px solid #ddd; border-radius: 6px; width: 250px;" onclick="$(this).find('input[type=radio]').prop('checked', true).trigger('change');">
                                 <input type="radio" name="vip_package" value="{{ $i }}" class="form-check-input mb-2">
                                 <div>
                                     <div><strong>{{ $package['name'] }}</strong> - {{ number_format($package['coins']) }} xu</div>
@@ -245,25 +246,61 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.8); /* Nền trắng mờ */
-            backdrop-filter: blur(6px); /* Làm mờ nội dung phía sau */
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: auto;
         }
 
         .ad-popup-content {
             background: #fff;
             border-radius: 8px;
             padding: 20px;
-            max-width: 800px;
-            width: 90%;
+            width: 90vw;
+            max-width: 100%;
+            height: 90vh;
+            max-height: 90vh;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 20px;
         }
 
+        @media screen and (max-width: 768px) {
+            .ad-popup-content {
+                width: 100vw;
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+                padding: 15px;
+                overflow-y: auto;
+            }
+
+            .ad-banner {
+                flex-direction: column;
+            }
+
+            .ad-banner img {
+                width: 100% !important;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .package-container {
+                flex-direction: column !important;
+                align-items: stretch;
+            }
+
+            .package-option {
+                width: 40% !important;
+            }
+        }
         .ad-popup-header h4 {
             margin: 0;
             font-size: 20px;
@@ -291,7 +328,7 @@
         }
 
         .ad-banner img {
-            width: 100%;
+            width: 30%;
             display: block;
         }
 
