@@ -11,26 +11,13 @@ services:
     volumes:
       - ./:/var/www
       - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    ports:
+      - "9000:9000"  # 👈 Expose PHP-FPM port cho Nginx host kết nối
     depends_on:
       - db
       - redis
     networks:
       - laravel_network
-
-  # nginx:
-  #   image: nginx:alpine
-  #   container_name: laravel_nginx
-  #   restart: unless-stopped
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - ./:/var/www
-  #     - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
-  #   depends_on:
-  #     - app
-  #   networks:
-  #     - laravel_network
 
   db:
     image: mysql:8.0
