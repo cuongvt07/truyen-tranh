@@ -12,7 +12,7 @@ use App\Models\Author;
 use App\Models\Genre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Foundation\Http\FormRequest;
 class ArticleController extends Controller
 {
     /**
@@ -165,13 +165,13 @@ class ArticleController extends Controller
     }
 
     /**
-     * @param  UpdateArticleRequest  $request
+     * @param  FormRequest $request
      * @param  array  $validateData
      *
      * @return array
      */
     private function uploadCoverImage(
-        UpdateArticleRequest $request,
+        FormRequest $request,
         array $validateData
     ): array {
         if ($request->hasFile('cover_image')) {
