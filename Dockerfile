@@ -30,6 +30,8 @@ COPY . /var/www
 # Copy existing application directory permissions
 COPY --chown=www-data:www-data . /var/www
 
+RUN git config --global --add safe.directory /var/www
+
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
