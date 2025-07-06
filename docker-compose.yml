@@ -9,27 +9,13 @@ services:
     restart: unless-stopped
     working_dir: /var/www/truyen-tranh
     volumes:
-      - ./:/var/www
+      - /var/www/truyen-tranh:/var/www
       - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
-    expose:
-      - "9000" # Không cần publish ra ngoài, chỉ để nginx truy cập nội bộ
+    ports:
+      - "9000:9000"
     depends_on:
       - db
       - redis
-    networks:
-      - laravel_network
-
-  nginx:
-    image: nginx:latest
-    container_name: laravel_nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    volumes:
-      - ./:/var/www
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d
-    depends_on:
-      - app
     networks:
       - laravel_network
 
@@ -56,4 +42,11 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - laravel_net_
+      - laravel_network
+
+volumes:
+  db_data:
+
+networks:
+  laravel_network:
+    driver: bridge
