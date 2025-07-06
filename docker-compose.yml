@@ -19,6 +19,20 @@ services:
     networks:
       - laravel_network
 
+  nginx:
+    image: nginx:alpine
+    container_name: laravel_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - /var/www/truyen-tranh:/var/www
+    depends_on:
+      - app
+    networks:
+      - laravel_network
+
   db:
     image: mysql:8.0
     container_name: laravel_db
