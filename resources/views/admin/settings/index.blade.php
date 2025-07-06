@@ -38,13 +38,20 @@
                     <label>Tên website</label>
                     <input type="text" name="site_name" class="form-control" value="{{ $settings['site_name'] ?? '' }}">
                 </div>
-                <div class="form-group mb-2">
+                <div class="form-group  ">
                     <label>Email quản trị</label>
                     <input type="email" name="admin_email" class="form-control" value="{{ $settings['admin_email'] ?? '' }}">
                 </div>
                 <div class="form-group mb-2">
-                    <label>Logo URL</label>
-                    <input type="text" name="logo_url" class="form-control" value="{{ $settings['logo_url'] ?? '' }}">
+                    <label for="logo_file">Tải ảnh logo</label>
+                    <input type="file" name="logo_file" class="form-control-file" id="logo_file_input" accept="image/*">
+
+                    <div class="mt-3">
+                        <img id="logo_file_preview"
+                            src="{{ asset('storage/' . ($settings['logo_file'] ?? $settings['logo_url'] ?? 'images/default_logo.jpg')) }}"
+                            alt="Logo"
+                            style="max-height: 100px; border: 1px solid #ccc;">
+                    </div>
                 </div>
             </div>
         </div>
@@ -214,3 +221,19 @@
         });
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const input = document.getElementById('logo_file_input');
+        const preview = document.getElementById('logo_file_preview');
+
+        if (input) {
+            input.addEventListener('change', function (event) {
+                const [file] = event.target.files;
+                if (file) {
+                    preview.src = URL.createObjectURL(file);
+                }
+            });
+        }
+    });
+</script>
+
