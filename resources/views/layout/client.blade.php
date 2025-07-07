@@ -76,8 +76,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         setInterval(function () {
             idleTime++;
-            if (idleTime >= MAX_IDLE_SECONDS) {
-                // Gọi API để lấy dữ liệu affiliate
+            if (idleTime >= MAX_IDLE_SECONDS * 60) {
                 fetch('{{ route('get.affiliate.popup') }}')
                     .then(response => response.json())
                     .then(data => {
