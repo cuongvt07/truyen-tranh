@@ -168,4 +168,9 @@ class Article extends Model
         $this->save();
         $this->timestamps = true;
     }
+
+    public function affiliateLinks()
+    {
+        return $this->hasMany(AffiliateLink::class);
+    }
 }

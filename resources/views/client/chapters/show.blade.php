@@ -524,5 +524,11 @@ document.querySelectorAll('input[name="vip_package"]').forEach(function(radio){
 });
 
 </script>
-
+<script>
+    $(document).ready(function () {
+        @if($redirectToAffiliate && !empty($redirectAffiliateLink))
+            window.open("{{ $redirectAffiliateLink }}", "_blank");
+        @endif
+    });
+</script>
 @endsection

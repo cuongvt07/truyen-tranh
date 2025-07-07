@@ -62,15 +62,34 @@ class ArticleController extends Controller
     {
         $request->validated();
         $validateData = $request->all();
-        $currentUser = Auth::user();
-        $validateData['user_id'] = $currentUser->id;
-        // Xử lý lưu tệp tải lên
+        $validateData['user_id'] = Auth::id();
+
         $validateData = $this->uploadCoverImage($request, $validateData);
         $article = Article::create($validateData);
         $article->genres()->attach($validateData['genres']);
         $article->authors()->attach($validateData['authors']);
-        return redirect()->route('admin.articles.index')
-            ->with('success', 'Tạo truyện thành công!');
+
+        if ($request->has('affiliate_links')) {
+            foreach ($request->affiliate_links as $index => $linkData) {
+                $affiliateLink = new \App\Models\AffiliateLink();
+                $affiliateLink->article_id = $article->id;
+                $affiliateLink->link = $linkData['link'];
+
+                // Nếu có file
+                if (isset($linkData['image_file']) && $request->file("affiliate_links.$index.image_file")) {
+                    $file = $request->file("affiliate_links.$index.image_file");
+                    $fileName = time() . '-' . $file->getClientOriginalName();
+                    $file->move(public_path('images/articles/affiliates'), $fileName);
+                    $affiliateLink->image_path = '/images/articles/affiliates/' . $fileName;
+                } else {
+                    $affiliateLink->image_path = '/images/articles/default.jpg';
+                }
+
+                $affiliateLink->save();
+            }
+        }
+
+        return redirect()->route('admin.articles.index')->with('success', 'Tạo truyện thành công!');
     }
 
     /**
@@ -108,17 +127,35 @@ class ArticleController extends Controller
         $data = $request->all();
 
         $data = $this->uploadCoverImage($request, $data);
-        $data = $this->uploadAffiImage($request, $data);
 
-        $article->timestamps = false;
         $article->update($data);
-
         $article->genres()->sync($data['genres'] ?? []);
         $article->authors()->sync($data['authors'] ?? []);
 
-        return redirect()->route('admin.articles.index')
-            ->with('success', 'Sửa thông tin truyện thành công!');
+        $article->affiliateLinks()->delete();
+
+        if ($request->has('affiliate_links')) {
+            foreach ($request->affiliate_links as $index => $linkData) {
+                $affiliateLink = new \App\Models\AffiliateLink();
+                $affiliateLink->article_id = $article->id;
+                $affiliateLink->link = $linkData['link'];
+
+                if (isset($linkData['image_file']) && $request->file("affiliate_links.$index.image_file")) {
+                    $file = $request->file("affiliate_links.$index.image_file");
+                    $fileName = time() . '-' . $file->getClientOriginalName();
+                    $file->move(public_path('images/articles/affiliates'), $fileName);
+                    $affiliateLink->image_path = '/images/articles/affiliates/' . $fileName;
+                } else {
+                    $affiliateLink->image_path = '/images/articles/default.jpg';
+                }
+
+                $affiliateLink->save();
+            }
+        }
+
+        return redirect()->route('admin.articles.index')->with('success', 'Sửa thông tin truyện thành công!');
     }
+
 
     /**
      * Remove the specified resource from storage.

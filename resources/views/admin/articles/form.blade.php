@@ -83,56 +83,76 @@
                 <div class="invalid-feedback">{{ $errors->first('cover_image') }}</div>
             @endif
         </div>
-        <div class="form-group">
-            <label for="affi_link">Link Affiliate</label>
-            <input type="url" name="affi_link" id="affi_link"
-                class="form-control{{ $errors->has('affi_link') ? ' is-invalid' : '' }}"
-                value="{{ old('affi_link', $article->affi_link) }}">
-            @if ($errors->has('affi_link'))
-                <div class="invalid-feedback">{{ $errors->first('affi_link') }}</div>
-            @endif
-        </div>
+        <div id="affiliate-links-wrapper">
+            @if(old('affiliate_links'))
+                @foreach(old('affiliate_links') as $index => $affi)
+                    @include('articles._affiliate_link_form', ['index' => $index, 'affi' => $affi])
+                @endforeach
+            @elseif($article->affiliateLinks ?? false)
+                @foreach($article->affiliateLinks as $index => $affi)
+                    <div class="affiliate-link-block border rounded p-3 mb-3 position-relative">
+                        <button type="button" class="btn btn-danger btn-sm position-absolute" style="top: 5px; right: 5px"
+                                onclick="this.closest('.affiliate-link-block').remove()">✖</button>
 
-        <div class="form-group">
-            <label for="affi_image">Ảnh Affiliate</label>
-            <div class="m-3">
-                <img id="preview_affi_image"
-                    src="{{ old('affi_image_url', $article->affi_image) }}"
-                    alt="Affiliate Image"
-                    width="200px">
-            </div>
-            <ul class="nav nav-tabs" id="affiTabs" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="affiTab1-tab" data-toggle="tab" href="#affiTab1" role="tab"
-                    aria-controls="affiTab1" aria-selected="true">Nhập URL ảnh</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="affiTab2-tab" data-toggle="tab" href="#affiTab2" role="tab"
-                    aria-controls="affiTab2" aria-selected="false">Tải lên tệp</a>
-                </li>
-            </ul>
-            <div class="tab-content" id="affiTabsContent">
-                <div class="tab-pane fade show active" id="affiTab1" role="tabpanel" aria-labelledby="affiTab1-tab">
-                    <div class="form-group mt-3">
-                        <input type="text" class="form-control"
-                            placeholder="https://example.com/affiliate.jpg"
-                            id="affi_image_url_preview"
-                            name="affi_image_url_preview"
-                            value="{{ old('affi_image_url_preview', $article->affi_image) }}">
-                        <input type="hidden" name="affi_image_url"
-                            value="{{ old('affi_image_url', $article->affi_image) }}">
+                        <input type="hidden" name="affiliate_links[{{ $index }}][id]" value="{{ $affi['id'] ?? $affi->id ?? '' }}">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Link Affiliate</label>
+                                <input type="url"
+                                    name="affiliate_links[{{ $index }}][link]"
+                                    class="form-control"
+                                    placeholder="https://affiliate.example.com/..."
+                                    value="{{ old("affiliate_links.$index.link", $affi['link'] ?? $affi->link ?? '') }}">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>Ảnh Affiliate</label>
+                                <input type="file"
+                                    name="affiliate_links[{{ $index }}][image_file]"
+                                    class="form-control-file"
+                                    accept="image/*"
+                                    onchange="previewImage(this, {{ $index }})">
+                                <div class="mt-2">
+                                    <img id="affi-img-preview-{{ $index }}"
+                                        src="{{ asset(old("affiliate_links.$index.image", $affi['image_path'] ?? $affi->image_path ?? 'images/articles/default.jpg')) }}"
+                                        alt="Preview"
+                                        class="img-thumbnail"
+                                        width="120">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="tab-pane fade" id="affiTab2" role="tabpanel" aria-labelledby="affiTab2-tab">
-                    <div class="form-group mt-3">
-                        <input type="file" class="form-control-file" name="affi_image" accept="image/*">
-                    </div>
-                </div>
-            </div>
-            @if ($errors->has('affi_image'))
-                <div class="invalid-feedback">{{ $errors->first('affi_image') }}</div>
+
+                @endforeach
+            @else
+                @include('articles._affiliate_link_form', ['index' => 0])
             @endif
         </div>
+        <button type="button" class="btn btn-secondary my-3" onclick="addAffiliateLink()">➕ Thêm Link Affiliate</button>
+        <template id="affiliate-link-template">
+    <div class="affiliate-link-block border rounded p-3 mb-3 position-relative">
+        <button type="button" class="btn btn-danger btn-sm position-absolute" style="top: 5px; right: 5px"
+                onclick="this.closest('.affiliate-link-block').remove()">✖</button>
+
+        <div class="row">
+            <div class="col-md-6">
+                <label>Link Affiliate</label>
+                <input type="url" name="__LINK_NAME__" class="form-control" placeholder="https://affiliate.example.com/..." />
+            </div>
+
+            <div class="col-md-6">
+                <label>Ảnh Affiliate</label>
+                <input type="file" name="__IMAGE_NAME__" class="form-control-file"
+                       accept="image/*" onchange="previewAffiliateImage(this, '__INDEX__')" />
+                <div class="mt-2">
+                    <img id="affi-img-preview-__INDEX__" src="/images/articles/default.jpg"
+                         alt="Preview" class="img-thumbnail" width="120">
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
     </div>
     <div class="box-footer mt20">
         <button type="submit" class="btn btn-primary">{{ __('Xác nhận') }}</button>
@@ -228,3 +248,29 @@
         </script>
 
 @endsection
+<script>
+let affiIndex = {{ isset($article) && $article->affiliateLinks ? $article->affiliateLinks->count() : 1 }};
+
+function addAffiliateLink() {
+    const template = document.getElementById('affiliate-link-template').innerHTML;
+
+    const html = template
+        .replace(/__INDEX__/g, affiIndex)
+        .replace('__LINK_NAME__', `affiliate_links[${affiIndex}][link]`)
+        .replace('__IMAGE_NAME__', `affiliate_links[${affiIndex}][image_file]`);
+
+    $('#affiliate-links-wrapper').append(html);
+    affiIndex++;
+}
+
+function previewAffiliateImage(input, index) {
+    const preview = document.getElementById('affi-img-preview-' + index);
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>

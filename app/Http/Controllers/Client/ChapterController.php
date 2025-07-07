@@ -27,6 +27,8 @@ class ChapterController extends Controller
         Session::put("{$sessionBase}_view_count", $chapterViewCount);
 
         $showPopup = false;
+        $redirectToAffiliate = false;
+        $redirectAffiliateLink = null;
 
         $hasActiveVip = false;
         if (Auth::check()) {
@@ -47,21 +49,29 @@ class ChapterController extends Controller
                 Session::put($lastPopupChapterKey, $number);
                 $showPopup = true;
             } elseif ($adClicked && $number % 2 == 0 && $number > $lastPopupChapter) {
-                Session::put($popupActiveKey, true);
-                Session::put($lastPopupChapterKey, $number);
+                Session::forget($popupActiveKey);
                 Session::forget($adClickedKey);
-                $showPopup = true;
+                Session::put($lastPopupChapterKey, $number);
+
+                $affiliate = $article->affiliateLinks()->inRandomOrder()->first();
+                if ($affiliate) {
+                    $redirectToAffiliate = true;
+                    $redirectAffiliateLink = $affiliate->link;
+                }
             }
         }
 
-        if (empty($article->affi_link) || empty($article->affi_image)) {
+        if ((empty($article->affiliateLinks) || $article->affiliateLinks->isEmpty()) && !$hasActiveVip) {
             $showPopup = false;
         }
 
+        // Đếm view
         $chapter->increaseViewCount();
         $article->increaseViewCount();
 
         $comments = $article->getNewestCommentsPaginate();
+
+        $affiliate = $article->affiliateLinks()->inRandomOrder()->first();
 
         return view('client.chapters.show', [
             'article' => $article,
@@ -71,9 +81,11 @@ class ChapterController extends Controller
             'comments' => $comments,
             'showPopup' => $showPopup,
             'adClickedKey' => $adClickedKey,
-            'affiLink' => $article->affi_link,
-            'affiImage' => $article->affi_image,
+            'affiLink' => $affiliate?->link ?? '',
+            'affiImage' => $affiliate?->image_path ?? '',
             'isUserLoggedIn' => Auth::check(),
+            'redirectToAffiliate' => $redirectToAffiliate,
+            'redirectAffiliateLink' => $redirectAffiliateLink,
         ]);
     }
 
