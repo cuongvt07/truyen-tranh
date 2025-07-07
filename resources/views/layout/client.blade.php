@@ -68,6 +68,8 @@
         const popup = document.getElementById('affiliate-popup');
         document.getElementById('affiliate-link').href = data.link;
         document.getElementById('affiliate-image').src = data.image;
+        document.getElementById('affiliate-link-text').href = data.link;
+        document.getElementById('affiliate-link-text').textContent = data.link;
         popup.style.display = 'block';
     }
 
@@ -106,7 +108,7 @@
         box-shadow: 0 0 10px rgba(0,0,0,0.5);
         z-index: 9999;
         text-align: center;
-        width: 400px;
+        width: 700px;
         max-width: 90vw;
         border-radius: 10px;
     }
@@ -161,6 +163,9 @@
     <a href="#" id="affiliate-link" target="_blank">
         <img id="affiliate-image" src="" alt="Affiliate">
     </a>
+    <div>
+        <a href="#" id="affiliate-link-text" target="_blank" style="word-break: break-all; font-size: 22px; color:rgb(240, 105, 16);"></a>
+    </div>
 </div>
 
 
