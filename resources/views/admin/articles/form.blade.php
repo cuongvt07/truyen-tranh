@@ -83,6 +83,14 @@
                 <div class="invalid-feedback">{{ $errors->first('cover_image') }}</div>
             @endif
         </div>
+        <div class="form-group">
+            <label for="status">Link Audio Youtube</label>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control{{ $errors->has('affi_link') ? ' is-invalid' : '' }}"
+                       name="affi_link" id="affi_link"
+                       value="{{ old('affi_link', $article->affi_link) }}"
+                       placeholder="https://www.youtube.com/watch?v=...">
+        </div>
         <div id="affiliate-links-wrapper">
             @if(old('affiliate_links'))
                 @foreach(old('affiliate_links') as $index => $affi)

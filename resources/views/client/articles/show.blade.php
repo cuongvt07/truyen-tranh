@@ -75,6 +75,12 @@
                                 <span class="glyphicon glyphicon-eye-open"></span>&nbsp;&nbsp;Đọc từ đầu
                             </a>
                         @endif
+                        <a href="{{ $article->affi_link ?? '' }}"
+                           class="btn btn-default btn-border" style="color: #ff0000;"
+                           title="Nghe Audio" target="_blank" rel="noopener">
+                            <span class="glyphicon glyphicon-play"></span>
+                            <i class="fa fa-youtube-play" style="color: #ff0000;"></i>&nbsp;&nbsp;Audio Youtube
+                        </a>
                         @if($isUserLoggedIn)
                             @php
                                 $bookmarkForCurrentUser = $article->getBookmarkForCurrentUser();

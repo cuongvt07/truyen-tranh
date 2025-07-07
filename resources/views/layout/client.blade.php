@@ -52,12 +52,118 @@
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v19.0"
         nonce="ggm0ulbL"></script>
-<script !src="">
-    // Ngăn sự kiện keydown ở thanh tìm kiếm bị "nổi lên"
+<script>
     $('.search-holder input[type="search"]').keydown(function (event) {
         event.stopPropagation();
     });
+
+    let idleTime = 0;
+    const MAX_IDLE_SECONDS = 10;
+
+    function resetIdleTimer() {
+        idleTime = 0;
+    }
+
+    function showAffiliatePopup(data) {
+        const popup = document.getElementById('affiliate-popup');
+        document.getElementById('affiliate-link').href = data.link;
+        document.getElementById('affiliate-image').src = data.image;
+        popup.style.display = 'block';
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        setInterval(function () {
+            idleTime++;
+            if (idleTime >= MAX_IDLE_SECONDS) {
+                // Gọi API để lấy dữ liệu affiliate
+                fetch('{{ route('get.affiliate.popup') }}')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'ok') {
+                            showAffiliatePopup(data);
+                        }
+                    });
+                idleTime = 0;
+            }
+        }, 1000);
+
+        const events = ['mousemove', 'mousedown', 'touchstart', 'click', 'keypress', 'scroll'];
+        events.forEach(function (evt) {
+            window.addEventListener(evt, resetIdleTimer, false);
+        });
+    });
 </script>
+
+<style>
+    #affiliate-popup {
+        display: none;
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        z-index: 9999;
+        text-align: center;
+        width: 400px;
+        max-width: 90vw;
+        border-radius: 10px;
+    }
+
+    #affiliate-popup img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+    }
+
+    #affiliate-popup .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        cursor: pointer;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    @media (max-width: 768px) {
+        #affiliate-popup {
+            top: 10%;
+            width: 95vw;
+            padding: 15px;
+        }
+
+        #affiliate-popup p {
+            font-size: 18px;
+        }
+
+        #affiliate-popup .close-btn {
+            font-size: 28px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #affiliate-popup {
+            top: 20%;
+            padding: 10px;
+        }
+
+        #affiliate-popup p {
+            font-size: 16px;
+        }
+    }
+</style>
+
+<div id="affiliate-popup">
+    <span class="close-btn" onclick="document.getElementById('affiliate-popup').style.display='none'">&times;</span>
+    <p>💡 Bạn quan tâm có thể xem liên kết sau:</p>
+    <a href="#" id="affiliate-link" target="_blank">
+        <img id="affiliate-image" src="" alt="Affiliate">
+    </a>
+</div>
+
+
 @yield('comment-article-scripts')
 @yield('article-scripts')
 </body>

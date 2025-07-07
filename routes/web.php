@@ -16,6 +16,7 @@ use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController as UserAuthController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -214,3 +215,17 @@ Route::post('/set-login-reason', function (\Illuminate\Http\Request $request) {
     session()->put('login_reason', $request->reason);
     return response()->json(['success' => true]);
 })->name('setLoginReason');
+
+Route::get('/api/affiliate-popup', function () {
+    $link = DB::table('affiliate_links')->inRandomOrder()->first();
+
+    if (!$link) {
+        return response()->json(['status' => 'error', 'message' => 'No affiliate links found'], 404);
+    }
+
+    return response()->json([
+        'status' => 'ok',
+        'link' => $link->link,
+        'image' => $link->image_path,
+    ]);
+})->name('get.affiliate.popup');
