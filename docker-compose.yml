@@ -25,6 +25,7 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
     - ./docker/nginx/conf.d:/etc/nginx/conf.d
       - /var/www/truyen-tranh:/var/www
