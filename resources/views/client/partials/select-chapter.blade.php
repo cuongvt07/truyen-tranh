@@ -39,3 +39,24 @@
         </a>
     @endif
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const nextBtn = document.getElementById('next_chap');
+
+        if (nextBtn && !nextBtn.classList.contains('disabled')) {
+            nextBtn.addEventListener('click', function (e) {
+                const affiliateLink = nextBtn.getAttribute('data-affiliate-link');
+                const nextHref = nextBtn.getAttribute('href');
+
+                if (affiliateLink) {
+                    e.preventDefault();
+                    window.open(affiliateLink, '_blank');
+                    
+                    setTimeout(function () {
+                        window.location.href = nextHref;
+                    }, 300);
+                }
+            });
+        }
+    });
+</script>

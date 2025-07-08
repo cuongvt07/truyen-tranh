@@ -524,25 +524,4 @@ document.querySelectorAll('input[name="vip_package"]').forEach(function(radio){
 });
 
 </script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const nextBtn = document.getElementById('next_chap');
-
-        if (nextBtn && !nextBtn.classList.contains('disabled')) {
-            nextBtn.addEventListener('click', function (e) {
-                const affiliateLink = nextBtn.getAttribute('data-affiliate-link');
-                const nextHref = nextBtn.getAttribute('href');
-
-                if (affiliateLink) {
-                    window.open(affiliateLink, '_blank');
-                }
-
-                window.location.href = nextHref;
-
-                e.preventDefault();
-            });
-        }
-    });
-</script>
-
 @endsection
