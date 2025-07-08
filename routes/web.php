@@ -230,5 +230,3 @@ Route::get('/api/affiliate-popup', function () {
         'image' => $link->image_path,
     ]);
 })->name('get.affiliate.popup');
-
-Route::post('/api/sepay/webhook', [SePayOverrideController::class, 'webhook']);
