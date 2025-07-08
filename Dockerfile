@@ -14,14 +14,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Thiết lập thư mục làm việc
 WORKDIR /var/www
 
+# Copy toàn bộ mã nguồn (sau khi composer xong để tránh rebuild khi code thay đổi)
+COPY . .
+
 # Copy composer files trước để tận dụng cache khi không thay đổi code
 COPY composer.json composer.lock ./
 
 # Cài dependencies Laravel (chỉ install, không update)
 RUN composer install --no-dev --optimize-autoloader
-
-# Copy toàn bộ mã nguồn (sau khi composer xong để tránh rebuild khi code thay đổi)
-COPY . .
 
 # Chỉnh quyền thư mục
 RUN chown -R www-data:www-data /var/www \
