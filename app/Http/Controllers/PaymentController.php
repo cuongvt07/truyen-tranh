@@ -9,20 +9,17 @@ class PaymentController extends Controller
 {
     public function createDeposit(Request $request)
     {
-        // Lấy số tiền và thông tin người dùng
         $amount = $request->input('amount');
-        $userId = auth()->id();  // Lấy id người dùng đang đăng nhập
+        $userId = auth()->id();
 
-        // Tạo mã giao dịch unique
-        $chargeId = 'WEB' . str_pad(rand(1, 999999), 5, '0', STR_PAD_LEFT);
+        $chargeId = 'WEB' . str_pad(rand(1, 99999), 5, '0', STR_PAD_LEFT);
 
-        // Lưu giao dịch vào bảng deposits
         $depositId = DB::table('deposits')->insertGetId([
-            'user_id' => 309,
+            'user_id' => $userId,
             'amount' => $amount,
             'payment_method' => 'sepay',
             'transaction_id' => $chargeId,
-            'status' => 'pending',  // Trạng thái mặc định là pending
+            'status' => 'pending', 
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -52,7 +49,7 @@ class PaymentController extends Controller
         return 'https://qr.sepay.vn/img?' . http_build_query([
             'acc' => setting('bank1_account_number'),  // Lấy số tài khoản
             'bank' => 'MBBank',  // Lấy tên ngân hàng
-            'amount' => 2000,  // Số tiền giao dịch
+            'amount' => $amount,  // Số tiền giao dịch
             'des' => $chargeId,  // Mã giao dịch
             'template' => 'compact',  // Tùy chỉnh kiểu QR
         ]);

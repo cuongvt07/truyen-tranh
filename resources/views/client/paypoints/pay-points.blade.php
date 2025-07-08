@@ -11,9 +11,9 @@
     </div>
 
     <div class="container">
-        <div class="row">
+        <div class="row box">
             <!-- Cột trái: các nút nạp -->
-            <div class="col-md-6 mb-4">
+            <div class="col-md-4 mb-4">
                 <div class="d-grid gap-3" style="display: flex; flex-direction: column; gap: 14px;">
                     <button class="btn btn-primary py-3" id="deposit20k">💸 Nạp 20.000đ</button>
                     <button class="btn btn-primary py-3" id="deposit50k">💸 Nạp 50.000đ</button>
@@ -25,9 +25,9 @@
             <div class="col-md-6">
                 <div id="paymentInfo" style="display:none;">
                     <div class="card shadow p-3">
-                        <h5 class="mb-3 text-primary fw-bold">💳 Thông tin chuyển khoản</h5>
+                        <h5 class="mb-3 text-primary fw-bold" style="font-size: 24px; text-align: center;">💳 Thông tin chuyển khoản</h5>
 
-                        <div class="row align-items-center">
+                        <div class="row align-items-center box2">
                             <!-- Cột trái: thông tin -->
                             <div class="col-md-7">
                                 <ul class="list-group list-group-flush small">
@@ -45,8 +45,8 @@
                             </div>
 
                             <!-- Cột phải: QR + trạng thái -->
-                            <div class="col-md-5 text-center">
-                                <div id="qrCodeContainer" style="display:none;">
+                            <div class="text-center"> 
+                                <div id="qrCodeContainer" style="display:none; display: block;width: 350px;">
                                     <img src="" id="qrCodeImage" alt="QR Code"
                                         style="max-width: 100%; border: 1px solid #ddd; padding: 5px; border-radius: 10px;">
 
@@ -71,6 +71,31 @@
     </div>
 </div>
 @endsection
+<style>
+    .box2 {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        padding: 10px;
+    }
+
+    .box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 480px) {
+        .box {
+            flex-direction: column;
+        }
+
+        .box2 {
+            flex-direction: column-reverse;
+        }
+    }
+</style>
 
 <script>
     let countdownTimer;
@@ -91,7 +116,7 @@
             },
             body: JSON.stringify({
                 amount: amount,
-                chargeId: 'WEB' + Math.floor(Math.random() * 1000000)
+                chargeId: 'WEB' + String(Math.floor(Math.random() * 1000000)).padStart(5, '0')
             })
         })
             .then(res => res.json())

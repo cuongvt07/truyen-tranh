@@ -130,7 +130,10 @@
 
                 <!-- Thông tin chuyển khoản -->
                 <div id="paymentInfo" style="display:none; margin-top:15px; text-align:left;">
-                    <h5>💳 Thông tin chuyển khoản</h5>
+                    <h5 class="mb-3 text-primary fw-bold" style="
+                            text-align: center;
+                            font-size: 24px;
+                        ">💳 Thông tin chuyển khoản</h5>
                     <p>Vui lòng nạp thêm vào tài khoản <strong>một trong các tài khoản dưới đây</strong>:</p>
 
                     @php
@@ -156,7 +159,12 @@
                     @endphp
 
                     @if(count($bankAccounts))
-                    <div class="row">
+                    <div class="row" style="
+                            display: flex;
+                            align-items: center;
+                            border: 1px solid #000;
+                            box-shadow: 0 0 0 2px #000;
+                        ">
                         @foreach($bankAccounts as $bank)
                         <div class="col-md-6 mb-3">
                             <div style="border:1px solid #ddd; border-radius:6px; padding:10px;">

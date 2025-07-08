@@ -48,7 +48,7 @@ class ChapterController extends Controller
                 Session::put($popupActiveKey, true);
                 Session::put($lastPopupChapterKey, $number);
                 $showPopup = true;
-            } elseif ($adClicked && $number % 2 == 0 && ($number - 1) == $lastPopupChapter) {
+            } elseif ($adClicked && $number % 2 == 0 && ($number - 2) == $lastPopupChapter) {
                 Session::forget($popupActiveKey);
                 Session::forget($adClickedKey);
                 Session::put($lastPopupChapterKey, $number);
