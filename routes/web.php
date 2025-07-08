@@ -14,6 +14,7 @@ use App\Http\Controllers\Client\BuyPackageVipController;
 use App\Http\Controllers\Client\CommentController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SePayOverrideController;
 use App\Http\Controllers\UserController as UserAuthController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
@@ -229,3 +230,5 @@ Route::get('/api/affiliate-popup', function () {
         'image' => $link->image_path,
     ]);
 })->name('get.affiliate.popup');
+
+Route::post('/api/sepay/webhook', [SePayOverrideController::class, 'webhook']);
