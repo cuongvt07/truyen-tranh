@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use SePay\SePay\Http\Controllers\SePayController as BaseController;
 
 class SePayOverrideController extends BaseController
