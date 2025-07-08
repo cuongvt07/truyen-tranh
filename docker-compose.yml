@@ -27,8 +27,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-    - ./docker/nginx/conf.d:/etc/nginx/conf.d
-      - /var/www/truyen-tranh:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - .:/var/www
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - app
     networks:
