@@ -43,7 +43,6 @@
                                         <th>Tác giả</th>
                                         <th>Thể loại</th>
                                         <th>Số chương đã đăng</th>
-                                        <th>Mô tả</th>
                                         <th>Lượt xem</th>
                                         <th>Trạng thái hoàn thành</th>
                                         <th>Trạng thái duyệt</th>
@@ -83,7 +82,6 @@
                                                     {{ $article->chapters_text }}
                                                 </a>
                                             </td>
-                                            <td> {{ $article->description }}</td>
                                             <td> {{ $article->view_text }}</td>
                                             <td> {{ $article->completed_text }}</td>
                                             <td> {{ $article->status_text }}</td>

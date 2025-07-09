@@ -52,6 +52,11 @@
                                 <option value="2" @if($user->role==2) selected @endif>Quản trị viên</option>
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="is_active" class="form-label">Điểm</label>
+                            <input type="number" name="points" id="points" class="form-control"
+                                   value="{{ old('points', $user->points) }}" required>
+                        </div>
                         <button type="submit" class="btn btn-primary">Cập nhật người dùng</button>
                         <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Hủy</a>
                     </form>

@@ -143,6 +143,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,'.$user->id,
             'password' => 'nullable|string|min:6',
             'role' => 'required|in:0,1,2',
+            'points' => 'nullable|integer|min:0',
         ]);
 
         $user->username = $data['username'];
@@ -152,6 +153,9 @@ class UserController extends Controller
             $user->password = bcrypt($data['password']);
         }
         $user->role = $data['role'];
+        if (isset($data['points'])) {
+            $user->points = $data['points'];
+        }
         $user->save();
 
         return redirect()->route('admin.users.index')

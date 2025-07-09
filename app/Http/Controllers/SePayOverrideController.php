@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use SePay\SePay\Http\Controllers\SePayController as BaseController;
@@ -20,6 +21,15 @@ class SePayOverrideController extends BaseController
                     ->where('amount', '=', $amount)
                     ->where('status', '!=', 'completed')
                     ->update(['status' => 'completed']);
+
+                $userId = DB::table('deposits')
+                    ->where('transaction_id', $code)
+                    ->where('amount', '=', $amount)
+                    ->value('user_id');
+
+                if ($userId) {
+                    User::where('id', $userId)->increment('points', $amount);
+                }
 
                 \Log::info('Deposit updated in override controller', [
                     'transaction_id' => $code,

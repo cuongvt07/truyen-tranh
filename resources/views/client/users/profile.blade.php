@@ -26,6 +26,10 @@
                                         <a href="{{ route('users.show', $user->id) }}"><i class="fa fa-tachometer"></i>
                                             Thông tin chung</a>
                                     </li>
+                                    <li class="hvr-sweep-to-right {{ set_active('users.show') }}">
+                                        <a href="{{ route('client.paypoints') }}"><i class="fa fa-credit-card"></i>
+                                            Nạp tiền & Mua Vip</a>
+                                    </li>
                                     @if (isMyAccount($currentUser, $user))
                                         <li class="hvr-sweep-to-right {{ set_active('users.change_info') }}">
                                             <a href="{{ route('users.change_info') }}"><i class="fa fas fa-edit"></i>

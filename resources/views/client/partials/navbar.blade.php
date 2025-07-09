@@ -87,6 +87,9 @@
                     <li><a href="{{ route('users.show', $currentUser->id) }}" title="Thông tin tài khoản"><i
                                 class="fa fa-solid fa-circle-info"></i>
                             Thông tin tài khoản</a></li>
+                    <li><a href="{{ route('client.paypoints') }}" title="Nạp tiền & Mua Vip"><i
+                                class="fa fa-solid fa-credit-card"></i>
+                            Nạp tiền & Mua Vip</a></li>
                     <li><a href="{{ route('users.show_bookmarks', $currentUser->id) }}" title="Bookmark"><i
                                 class="fa fa-solid fa-bookmark"></i> Bookmark</a></li>
                     <li><a href="{{ route('users.show_posted_articles', $currentUser->id) }}"
@@ -103,11 +106,39 @@
         </li>
         @if ($isUserLoggedIn)
             <li>
-            <a href="javascript:void(0)">
+            <a href="{{ route('client.paypoints') }}">
                 <i class="fa fa-database"></i>
                 Số xu: <strong>{{ number_format($currentUser->points) }}</strong>
             </a>
             </li>
+        @endif
+        @if ($isUserLoggedIn && $currentUser && $activeVipDays > 0)
+            <li>
+                <a href="javascript:void(0)">
+                    <i class="fa fa-clock"></i>
+                    Gói VIP còn lại: 
+                    <strong id="package-countdown"></strong>
+                </a>
+            </li>
+            <script>
+                const countdownElement = document.getElementById('package-countdown');
+                let remainingTime = {{ $activeVipDays * 24 * 3600 }};
+
+                function updateCountdown() {
+                    if (remainingTime > 0) {
+                        const hours = Math.floor(remainingTime / 3600);
+                        const minutes = Math.floor((remainingTime % 3600) / 60);
+                        const seconds = remainingTime % 60;
+                        countdownElement.textContent = `${hours}h ${minutes}m ${seconds}s`;
+                        remainingTime--;
+                    } else {
+                        countdownElement.textContent = 'Hết hạn';
+                    }
+                }
+
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+            </script>
         @endif
     </ul>
 
