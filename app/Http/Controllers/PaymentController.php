@@ -35,7 +35,7 @@ class PaymentController extends Controller
             'charge_id' => $chargeId,  // Mã giao dịch
             'amount' => $amount,  // Số tiền
             'status' => $deposit->status,  // Trạng thái giao dịch
-            'bank_name' => 'MBBank',  // Tên ngân hàng
+            'bank_name' => setting('bank1_name'),  // Tên ngân hàng
             'account_number' => setting('bank1_account_number'),  // Số tài khoản
             'account_holder' => setting('bank1_account_name'),  // Tên tài khoản
         ]);
@@ -48,7 +48,7 @@ class PaymentController extends Controller
     {
         return 'https://qr.sepay.vn/img?' . http_build_query([
             'acc' => setting('bank1_account_number'),  // Lấy số tài khoản
-            'bank' => 'MBBank',  // Lấy tên ngân hàng
+            'bank' => setting('bank1_name'),  // Lấy tên ngân hàng
             'amount' => $amount,  // Số tiền giao dịch
             'des' => $chargeId,  // Mã giao dịch
             'template' => 'compact',  // Tùy chỉnh kiểu QR
