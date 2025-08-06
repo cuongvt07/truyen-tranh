@@ -255,30 +255,30 @@
         });
         </script>
 
+        <script>
+            let affiIndex = {{ isset($article) && $article->affiliateLinks ? $article->affiliateLinks->count() : 1 }};
+
+            function addAffiliateLink() {
+                const template = document.getElementById('affiliate-link-template').innerHTML;
+
+                const html = template
+                    .replace(/__INDEX__/g, affiIndex)
+                    .replace('__LINK_NAME__', `affiliate_links[${affiIndex}][link]`)
+                    .replace('__IMAGE_NAME__', `affiliate_links[${affiIndex}][image_file]`);
+
+                $('#affiliate-links-wrapper').append(html);
+                affiIndex++;
+            }
+
+            function previewAffiliateImage(input, index) {
+                const preview = document.getElementById('affi-img-preview-' + index);
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+        </script>
 @endsection
-<script>
-let affiIndex = {{ isset($article) && $article->affiliateLinks ? $article->affiliateLinks->count() : 1 }};
-
-function addAffiliateLink() {
-    const template = document.getElementById('affiliate-link-template').innerHTML;
-
-    const html = template
-        .replace(/__INDEX__/g, affiIndex)
-        .replace('__LINK_NAME__', `affiliate_links[${affiIndex}][link]`)
-        .replace('__IMAGE_NAME__', `affiliate_links[${affiIndex}][image_file]`);
-
-    $('#affiliate-links-wrapper').append(html);
-    affiIndex++;
-}
-
-function previewAffiliateImage(input, index) {
-    const preview = document.getElementById('affi-img-preview-' + index);
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            preview.src = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-</script>
