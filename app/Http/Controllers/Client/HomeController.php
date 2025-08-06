@@ -6,6 +6,7 @@ use App\Enums\ArticleCompleteStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -14,10 +15,16 @@ class HomeController extends Controller
         $hotArticles = Article::getHotArticles()->take(16)->get();
         $newUpdateArticles = Article::getNewUpdateArticles()->take(30)->get();
         $completedArticles = Article::getCompletedArticles()->take(12)->get();
+        $banners = DB::table('settings')
+                ->whereIn('meta_key', ['banner_top', 'banner_bottom', 'banner_left', 'banner_right', 
+                                      'banner_top_url', 'banner_bottom_url', 'banner_left_url', 'banner_right_url'])
+                ->pluck('meta_value', 'meta_key')
+                ->toArray();
         return view('client.home.index', [
             'hotArticles' => $hotArticles,
             'newUpdateArticles' => $newUpdateArticles,
             'completedArticles' => $completedArticles,
+            'banners' => $banners,
         ]);
     }
 

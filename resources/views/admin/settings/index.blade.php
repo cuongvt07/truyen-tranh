@@ -56,6 +56,44 @@
             </div>
         </div>
 
+        <!-- KHỐI CẤU HÌNH BANNER HIỂN THỊ -->
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">
+                🎯 CẤU HÌNH ẢNH BANNER HIỂN THỊ (Top, Bottom, Left, Right)
+            </div>
+            <div class="card-body row">
+                @php
+                    $banners = [
+                        'top' => ['label' => 'Banner Trên', 'hint' => 'Kích thước gợi ý: 800x150px'],
+                        'bottom' => ['label' => 'Banner Dưới', 'hint' => 'Kích thước gợi ý: 800x200px'],
+                        'left' => ['label' => 'Banner Trái', 'hint' => 'Kích thước gợi ý: 150x500px'],
+                        'right' => ['label' => 'Banner Phải', 'hint' => 'Kích thước gợi ý: 150x500px'],
+                    ];
+                @endphp
+
+                @foreach($banners as $key => $info)
+                <div class="col-md-6 mb-4">
+                    <div class="form-group">
+                        <label>{{ $info['label'] }} <small class="text-muted d-block">{{ $info['hint'] }}</small></label>
+                        <input type="file" name="banner_{{ $key }}" class="form-control-file" id="banner_{{ $key }}_input" accept="image/*">
+                        <input type="url" name="banner_{{ $key }}_url" class="form-control mt-2" placeholder="URL của banner" value="{{ $settings['banner_' . $key . '_url'] ?? '' }}">
+                        <div class="mt-2">
+                            @php
+                                $image = $settings["banner_$key"] ?? '';
+                            @endphp
+                            <a href="{{ $settings['banner_' . $key . '_url'] ?? '#' }}" target="_blank">
+                                <img id="banner_{{ $key }}_preview"
+                                    src="{{ $image ? asset('storage/' . $image) : 'https://via.placeholder.com/150x100?text=No+Image' }}"
+                                    alt="Preview {{ $info['label'] }}"
+                                    style="max-width: 100%; max-height: 150px; border: 1px solid #ccc;">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+
         <!-- 2 KHỐI NGÂN HÀNG NẰM NGANG -->
         <div class="row">
             <!-- Ngân hàng 1 -->
@@ -234,6 +272,26 @@
                 }
             });
         }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const banners = ['top', 'bottom', 'left', 'right'];
+
+        banners.forEach(function (pos) {
+            const input = document.getElementById(`banner_${pos}_input`);
+            const preview = document.getElementById(`banner_${pos}_preview`);
+
+            if (input && preview) {
+                input.addEventListener('change', function (event) {
+                    const [file] = event.target.files;
+                    if (file) {
+                        preview.src = URL.createObjectURL(file);
+                    }
+                });
+            }
+        });
     });
 </script>
 

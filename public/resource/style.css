@@ -6880,6 +6880,10 @@ button.close {
 }
 
 @media (max-width: 767px) {
+    #top_banner_above_hot_articles {
+        max-height: 100% !important;
+    }
+    
     .hidden-xs {
         display: none !important;
     }
@@ -10685,22 +10689,73 @@ h4,
     color:red;
 }
 
-#left_ads_float {
-    top: 50%;
-    left: 10px;
-    position: fixed;
-    transform: translateY(-50%);
-}
+#left_ads_float,
 #right_ads_float {
-    top: 50%;
-    right: 10px;
     position: fixed;
+    top: 50%;
     transform: translateY(-50%);
+    width: 150px;
+    height: 500px;
+    z-index: 9999;
 }
+
+#left_ads_float {
+    left: 10px;
+}
+
+#right_ads_float {
+    right: 10px;
+}
+
+#left_ads_float img,
+#right_ads_float img {
+    width: 150px;
+    height: 500px;
+    object-fit: cover; /* Hoặc 'contain' nếu muốn không cắt */
+    display: block;
+}
+
+#bottom_ads_float {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 200px;
+    text-align: center;
+    z-index: 9999;
+}
+
+#bottom_ads_float img {
+    width: 800px;
+    height: 200px;
+    object-fit: cover; /* hoặc 'contain' nếu muốn không cắt ảnh */
+    display: block;
+}
+
+#top_banner_above_hot_articles {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 800px;
+    max-height: 150px;
+    overflow: hidden;
+    margin: 20px auto; /* căn giữa + khoảng cách */
+}
+
+#top_banner_above_hot_articles img {
+    width: 800px;
+    max-height: 150px;
+    object-fit: contain; /* đảm bảo không méo ảnh */
+    display: block;
+}
+
+
 
 @media (max-width: 991px) {
     #left_ads_float,
-    #right_ads_float {
+    #right_ads_float,
+    #bottom_ads_float {
         display: none !important;
     }
 }

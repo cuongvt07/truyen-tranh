@@ -116,7 +116,7 @@
             <li>
                 <a href="javascript:void(0)">
                     <i class="fa fa-clock"></i>
-                    Gói VIP còn lại: 
+                    Gói VIP: 
                     <strong id="package-countdown"></strong>
                 </a>
             </li>
