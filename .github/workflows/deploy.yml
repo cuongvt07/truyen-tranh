@@ -23,5 +23,18 @@ jobs:
             set -eux
             cd /var/www/truyen-tranh
             git pull origin main
-            docker-compose up -d --build
+
+            docker compose up -d --build
+            if [ $? -eq 0 ]; then
+              echo "Docker-compose build and up SUCCESS"
+            else
+              echo "Docker-compose build and up FAILED"
+              exit 1
+            fi
+
+            docker ps
+            docker-compose logs --tail=20
+
+            # Optional: kiểm tra app chạy bằng curl (cập nhật port phù hợp)
+            # curl -I http://localhost:8000
           EOF
