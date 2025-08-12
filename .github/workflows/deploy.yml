@@ -8,33 +8,56 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Setup SSH key
         uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
+      - name: Notify Deploy Start
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: echo "🚀 Starting deployment on main branch..."
+
       - name: Deploy on VPS
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           SERVER_USER: root
+        timeout-minutes: 30
         run: |
-          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << EOF 2>&1 | tee ssh-deploy.log
+          echo -e "\033[1;34mStarting SSH connection to $SERVER_USER@$SERVER_IP\033[0m"
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'EOF' 2>&1 | tee ssh-deploy.log
             set -eux
+
+            BLUE='\033[1;34m'
+            GREEN='\033[1;32m'
+            RED='\033[1;31m'
+            NC='\033[0m' # No Color
+
+            echo -e "${BLUE}Connected via SSH${NC}"
+
             cd /var/www/truyen-tranh
+            echo -e "${BLUE}Changed directory to /var/www/truyen-tranh${NC}"
+
+            echo -e "${BLUE}Pulling latest code from git${NC}"
             git pull origin main
 
-            docker compose up -d --build
-            if [ $? -eq 0 ]; then
-              echo "Docker-compose build and up SUCCESS"
+            echo -e "${BLUE}Starting docker compose build and up...${NC}"
+            if docker compose up -d --build; then
+              echo -e "${GREEN}Docker compose build and up SUCCESS${NC}"
             else
-              echo "Docker-compose build and up FAILED"
+              echo -e "${RED}Docker compose build and up FAILED${NC}"
               exit 1
             fi
 
+            echo -e "${BLUE}Listing running containers${NC}"
             docker ps
-            docker-compose logs --tail=20
 
-            # Optional: kiểm tra app chạy bằng curl (cập nhật port phù hợp)
-            # curl -I http://localhost:8000
+            echo -e "${BLUE}Showing last 20 lines of docker compose logs${NC}"
+            docker compose logs --tail=20
           EOF
+          echo -e "\033[1;32mSSH session ended successfully\033[0m"
+
+      - name: Notify Deploy End
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: echo "✅ Deployment finished successfully on main branch."
