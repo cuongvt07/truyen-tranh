@@ -9,18 +9,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Setup SSH key
-      uses: webfactory/ssh-agent@v0.9.1
-      with:
-        ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
-    - name: Deploy on VPS
-      env:
-        SERVER_IP: ${{ secrets.SERVER_IP }}
-        SERVER_USER: root
-      run: |
-        ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << EOF
-          cd /var/www/truyen-tranh
-          git pull origin main
-          docker-compose up -d --build
-        EOF
+      - name: Deploy on VPS
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USER: root
+        run: |
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << EOF 2>&1 | tee ssh-deploy.log
+            set -eux
+            cd /var/www/truyen-tranh
+            git pull origin main
+            docker-compose up -d --build
+          EOF
