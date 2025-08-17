@@ -16,19 +16,22 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email'],
+            'login' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
 
     public function authenticate(): void
     {
-        if (! Auth::attempt(
-            $this->only('email', 'password'),
-            $this->boolean('remember')
-        )) {
+        $credentials = ['password' => $this->input('password')];
+
+        $login = $this->input('login');
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $credentials[$field] = $login;
+
+        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
             throw ValidationException::withMessages([
-                'email' => 'Email hoặc mật khẩu không chính xác.',
+                'login' => 'Email hoặc tên đăng nhập / mật khẩu không chính xác.',
             ]);
         }
     }

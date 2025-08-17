@@ -13,11 +13,11 @@
                             <div class="col-sm-offset-3 col-sm-6">
                                 <div class="user-page clearfix">
                                     <div class="form-group">
-                                        <label for="Email">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email"
-                                               value="{{ old('email') }}" placeholder="example@email.com" required>
-                                        @if ($errors->has('email'))
-                                            <span class="text-danger">{{ $errors->first('email') }}</span>
+                                        <label for="Email">Email hoặc tên đăng nhập</label>
+                                        <input type="text" class="form-control" id="login" name="login"
+                                            value="{{ old('login') }}" placeholder="Email hoặc Tên đăng nhập" required>
+                                        @if ($errors->has('login'))
+                                            <span class="text-danger">{{ $errors->first('login') }}</span>
                                         @endif
                                     </div>
                                     <div class="form-group">
