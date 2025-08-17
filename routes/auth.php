@@ -11,29 +11,31 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
+// guest routes
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
-                ->name('register');
-
+        ->name('register');
     Route::post('register', [RegisteredUserController::class, 'store']);
 
+    // GET login hiển thị form
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
-                ->name('login');
+        ->name('login.form');
 
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+    // POST login xử lý form
+    Route::post('login', [AuthenticatedSessionController::class, 'store'])
+        ->name('login');
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
-                ->name('password.request');
-
+        ->name('password.request');
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
-                ->name('password.email');
+        ->name('password.email');
 
     Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-                ->name('password.reset');
-
+        ->name('password.reset');
     Route::post('reset-password', [NewPasswordController::class, 'store'])
-                ->name('password.store');
+        ->name('password.store');
 });
+
 
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
