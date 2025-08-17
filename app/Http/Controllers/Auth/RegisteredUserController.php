@@ -42,9 +42,10 @@ class RegisteredUserController extends Controller
             'gender' => Gender::MALE,
             'description' => '',
             'role' => UserRole::USER,
+            'email_verified_at' => now(),
         ]);
 
-        event(new Registered($user));
+        // event(new Registered($user));
 
         Auth::login($user);
 
