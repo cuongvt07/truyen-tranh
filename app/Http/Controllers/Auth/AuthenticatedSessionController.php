@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -29,13 +30,14 @@ class AuthenticatedSessionController extends Controller
     {
         try {
             $request->authenticate();
-
             $request->session()->regenerate();
 
             return redirect()->intended(RouteServiceProvider::HOME);
-        } catch (Exception $e) {
-            Log::error('Authentication failed: ' . $e->getMessage());
-            return redirect()->route('login')->withErrors(['error' => 'Authentication failed.']);
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            \Log::error('Login error: '.$e->getMessage());
+            return back()->withErrors(['error' => 'Có lỗi xảy ra, vui lòng thử lại sau.']);
         }
     }
 
