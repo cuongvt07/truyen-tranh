@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $hotArticles = Article::getHotArticles()->take(16)->get();
+        $hotArticles = Article::getHotArticles()->with('genres')->take(16)->get();
         $newUpdateArticles = Article::getNewUpdateArticles()->take(30)->get();
         $completedArticles = Article::getCompletedArticles()->take(12)->get();
         $banners = DB::table('settings')

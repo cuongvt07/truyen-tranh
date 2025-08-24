@@ -185,7 +185,9 @@
 </div>
 
 
+@stack('styles')
 @yield('comment-article-scripts')
 @yield('article-scripts')
+@stack('scripts')
 </body>
 </html>
