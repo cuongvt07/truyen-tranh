@@ -30,24 +30,18 @@ class AuthenticatedSessionController extends Controller
     {
         $login    = $request->input('login');
         $password = $request->input('password');
-        $field    = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        $credentials = [
-            $field     => $login,
-            'password' => $password,
-        ];
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        \Log::info('🔑 Basic login attempt', [
-            'field' => $field,
-            'login' => $login,
-        ]);
+        $user = User::where($field, $login)->first();
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        if ($user && Hash::check($password, $user->password)) {
             \Log::info('✅ Basic login success', [
-                'user_id' => Auth::id(),
-                'user'    => Auth::user()?->email,
+                'user_id' => $user->id,
+                'user'    => $user->email,
             ]);
-            return redirect('/users');
+
+            return redirect()->intended(RouteServiceProvider::HOME);
         }
 
         \Log::warning('❌ Basic login failed', ['login' => $login]);
