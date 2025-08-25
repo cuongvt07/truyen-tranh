@@ -47,7 +47,7 @@ class AuthenticatedSessionController extends Controller
                 'user_id' => Auth::id(),
                 'user'    => Auth::user()?->email,
             ]);
-            return redirect()->intended(RouteServiceProvider::HOME);
+            return redirect('/users');
         }
 
         \Log::warning('❌ Basic login failed', ['login' => $login]);
