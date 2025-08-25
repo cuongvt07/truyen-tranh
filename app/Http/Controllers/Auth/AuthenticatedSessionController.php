@@ -28,18 +28,34 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        try {
-            $request->authenticate();
-            $request->session()->regenerate();
+        $login    = $request->input('login');
+        $password = $request->input('password');
+        $field    = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
+        $credentials = [
+            $field     => $login,
+            'password' => $password,
+        ];
+
+        \Log::info('🔑 Basic login attempt', [
+            'field' => $field,
+            'login' => $login,
+        ]);
+
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            \Log::info('✅ Basic login success', [
+                'user_id' => Auth::id(),
+                'user'    => Auth::user()?->email,
+            ]);
             return redirect()->intended(RouteServiceProvider::HOME);
-        } catch (ValidationException $e) {
-            throw $e; // để Laravel handle lỗi validate, vẫn trả về view login với error
-        } catch (\Throwable $e) {
-            \Log::error('Login error: '.$e->getMessage());
-            return back()->withErrors(['error' => 'Có lỗi xảy ra, vui lòng thử lại sau.']);
         }
+
+        \Log::warning('❌ Basic login failed', ['login' => $login]);
+        throw ValidationException::withMessages([
+            'login' => 'Email hoặc tên đăng nhập / mật khẩu không chính xác.',
+        ]);
     }
+
 
     /**
      * Destroy an authenticated session.

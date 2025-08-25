@@ -23,18 +23,28 @@ class LoginRequest extends FormRequest
 
     public function authenticate(): void
     {
-        $credentials = ['password' => $this->input('password')];
-
         $login = $this->input('login');
+        $password = $this->input('password');
+
         $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        $credentials[$field] = $login;
 
-        \Log::info('Login attempt', $credentials);
+        $credentials = [
+            $field     => $login,
+            'password' => $password,
+        ];
 
-        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
+        \Log::info('🔑 Basic Login attempt', [
+            'field' => $field,
+            'login' => $login,
+        ]);
+
+        if (! Auth::attempt($credentials)) {
+            \Log::warning('❌ Login failed', ['login' => $login]);
             throw ValidationException::withMessages([
                 'login' => 'Email hoặc tên đăng nhập / mật khẩu không chính xác.',
             ]);
         }
+
+        \Log::info('✅ Login success', ['user_id' => Auth::id()]);
     }
 }
