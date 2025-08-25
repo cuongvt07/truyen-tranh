@@ -21,10 +21,6 @@ class LoginRequest extends FormRequest
         ];
     }
 
-
-    
-
-
     public function authenticate(): void
     {
         $credentials = ['password' => $this->input('password')];
@@ -32,6 +28,8 @@ class LoginRequest extends FormRequest
         $login = $this->input('login');
         $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         $credentials[$field] = $login;
+
+        \Log::info('Login attempt', $credentials);
 
         if (! Auth::attempt($credentials, $this->boolean('remember'))) {
             throw ValidationException::withMessages([

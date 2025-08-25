@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
 
             return redirect()->intended(RouteServiceProvider::HOME);
         } catch (ValidationException $e) {
-            throw $e;
+            throw $e; // để Laravel handle lỗi validate, vẫn trả về view login với error
         } catch (\Throwable $e) {
             \Log::error('Login error: '.$e->getMessage());
             return back()->withErrors(['error' => 'Có lỗi xảy ra, vui lòng thử lại sau.']);
