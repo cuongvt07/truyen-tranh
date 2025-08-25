@@ -43,6 +43,12 @@ class AuthenticatedSessionController extends Controller
                 'user'    => $user->email,
             ]);
 
+            Auth::login($user, $request->boolean('remember'));
+
+            $request->session()->regenerate();
+
+            return redirect()->intended(RouteServiceProvider::HOME);
+
             return redirect()->intended(RouteServiceProvider::HOME);
         }
 
