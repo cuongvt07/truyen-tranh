@@ -45,6 +45,8 @@ class AuthenticatedSessionController extends Controller
 
             Auth::login($user, $request->boolean('remember'));
 
+            \Log::info('🔑 User logged in', ['user_id' => $user->id]);
+
             $request->session()->regenerate();
 
             return redirect()->intended(RouteServiceProvider::HOME);
