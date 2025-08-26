@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\DB;
 
 
 // Route auth
-Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // users
     Route::get('/users/change-password',
         [UserAuthController::class, 'changePassword'])
