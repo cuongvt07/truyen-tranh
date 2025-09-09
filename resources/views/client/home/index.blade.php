@@ -191,8 +191,8 @@
 
 <!-- BANNER TRÁI -->
 <div id="left_ads_float">
-    <a href="{{ $settings['banner_left_url'] ?? '#' }}" target="_blank">
-        <img src="{{ asset('storage/' . ($settings['banner_left'] ?? 'images/default_banner_left.jpg')) }}"
+    <a href="{{ $banners['banner_left_url'] ?? '#' }}" target="_blank">
+        <img src="{{ asset('storage/' . ($banners['banner_left'] ?? 'images/default_banner_left.jpg')) }}"
              width="120"
              onerror="this.onerror=null; this.src='fallback.png';" />
     </a>
@@ -200,8 +200,8 @@
 
 <!-- BANNER PHẢI -->
 <div id="right_ads_float">
-    <a href="{{ $settings['banner_right_url'] ?? '#' }}" target="_blank">
-        <img src="{{ asset('storage/' . ($settings['banner_right'] ?? 'images/default_banner_right.jpg')) }}"
+    <a href="{{ $banners['banner_right_url'] ?? '#' }}" target="_blank">
+        <img src="{{ asset('storage/' . ($banners['banner_right'] ?? 'images/default_banner_right.jpg')) }}"
              width="120"
              onerror="this.onerror=null; this.src='fallback.png';" />
     </a>
@@ -209,8 +209,8 @@
 
 <!-- BANNER DƯỚI -->
 <div id="bottom_ads_float">
-    <a href="{{ $settings['banner_bottom_url'] ?? '#' }}" target="_blank">
-        <img src="{{ asset('storage/' . ($settings['banner_bottom'] ?? 'images/default_banner_bottom.jpg')) }}"
+    <a href="{{ $banners['banner_bottom_url'] ?? '#' }}" target="_blank">
+        <img src="{{ asset('storage/' . ($banners['banner_bottom'] ?? 'images/default_banner_bottom.jpg')) }}"
              height="90"
              onerror="this.onerror=null; this.src='fallback.png';" />
     </a>

@@ -15,11 +15,22 @@ class HomeController extends Controller
         $hotArticles = Article::getHotArticles()->with('genres')->take(16)->get();
         $newUpdateArticles = Article::getNewUpdateArticles()->take(30)->get();
         $completedArticles = Article::getCompletedArticles()->take(12)->get();
+        $bannerKeys = [
+            'banner_top', 'banner_bottom', 'banner_left', 'banner_right',
+            'banner_top_url', 'banner_bottom_url', 'banner_left_url', 'banner_right_url'
+        ];
+        
         $banners = DB::table('settings')
-                ->whereIn('meta_key', ['banner_top', 'banner_bottom', 'banner_left', 'banner_right', 
-                                      'banner_top_url', 'banner_bottom_url', 'banner_left_url', 'banner_right_url'])
+                ->whereIn('meta_key', $bannerKeys)
                 ->pluck('meta_value', 'meta_key')
                 ->toArray();
+                
+        foreach ($bannerKeys as $key) {
+            if (!array_key_exists($key, $banners)) {
+                $banners[$key] = '';
+            }
+        }
+
         return view('client.home.index', [
             'hotArticles' => $hotArticles,
             'newUpdateArticles' => $newUpdateArticles,
