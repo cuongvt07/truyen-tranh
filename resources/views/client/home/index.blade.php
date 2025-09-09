@@ -55,9 +55,13 @@
     <div class="index-intro">
         <div class="item top-{{ $i }}" itemscope itemtype="https://schema.org/Book">
             <a href="{{ route('articles.show', $article->id) }}" itemprop="url">
+                <span class="update-label">Mới</span>
                 @if ($article->is_completed)
                 <span class="full-label"></span>
                 @endif
+                <!-- @if ($article->updated_at && $article->updated_at->isAfter(now()->subDays(3))) -->
+                
+                <!-- @endif -->
                 <img src="{{ $article->cover_image }}" width="129" height="192" alt="#"
                     class="img-responsive item-img" itemprop="image" />
                 <div class="title">
@@ -83,6 +87,7 @@
                 @if ($article->is_completed)
                 <span class="full-label"></span>
                 @endif
+                <span class="update-label"></span>
                 <div class="image-wrapper position-relative">
                     <img src="{{ $article->cover_image }}" class="img-responsive" alt="{{ $article->title }}" />
                     <div class="overlay-title">
