@@ -196,7 +196,8 @@
 </div>
 
 <!-- BANNER TRÁI -->
-<div id="left_ads_float">
+<div id="left_ads_float" class="ads-float">
+    <div class="ads-close" onclick="closeBanner('left_ads_float')">×</div>
     <a href="{{ $banners['banner_left_url'] ?? '#' }}" target="_blank">
         <img src="{{ asset('storage/' . ($banners['banner_left'] ?? 'images/default_banner_left.jpg')) }}"
              width="120"
@@ -205,7 +206,8 @@
 </div>
 
 <!-- BANNER PHẢI -->
-<div id="right_ads_float">
+<div id="right_ads_float" class="ads-float">
+    <div class="ads-close" onclick="closeBanner('right_ads_float')">×</div>
     <a href="{{ $banners['banner_right_url'] ?? '#' }}" target="_blank">
         <img src="{{ asset('storage/' . ($banners['banner_right'] ?? 'images/default_banner_right.jpg')) }}"
              width="120"
@@ -214,7 +216,8 @@
 </div>
 
 <!-- BANNER DƯỚI -->
-<div id="bottom_ads_float">
+<div id="bottom_ads_float" class="ads-float">
+    <div class="ads-close" onclick="closeBanner('bottom_ads_float')">×</div>
     <a href="{{ $banners['banner_bottom_url'] ?? '#' }}" target="_blank">
         <img src="{{ asset('storage/' . ($banners['banner_bottom'] ?? 'images/default_banner_bottom.jpg')) }}"
              height="90"
@@ -228,6 +231,27 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
 <style>
+.ads-close {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    background: #333;
+    color: #fff;
+    text-align: center;
+    line-height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+.ads-close:hover {
+    background: #ff0000;
+    transform: scale(1.1);
+}
 /* ===== Owl Slider - Full CSS (content overlay centered at bottom, no background) ===== */
 
 .sr-only {
@@ -282,8 +306,11 @@
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
-          mask-composite: exclude;
+  mask-composite: exclude;
   pointer-events: none;
 }
 
@@ -433,6 +460,18 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 <script>
+// Xử lý đóng banner quảng cáo
+document.addEventListener('DOMContentLoaded', function() {
+    // Xử lý sự kiện đóng banner
+    const closeButtons = document.querySelectorAll('.ads-close');
+    closeButtons.forEach(button => {
+        const banner = button.closest('.ads-float');
+        
+        button.addEventListener('click', function() {
+            banner.style.display = 'none';
+        });
+    });
+});
 $(document).ready(function() {
     // Check if jQuery is loaded before initializing the carousel
     if (typeof jQuery != 'undefined' && typeof $.fn.owlCarousel != 'undefined') {

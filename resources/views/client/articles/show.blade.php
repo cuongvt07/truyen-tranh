@@ -60,7 +60,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-8 col-md-8 desc">
                     <div id="gioi-thieu-truyen" class="desc-text desc-text-full" itemprop="description">
-                        {{ $article->description }}
+                        {!! nl2br(e($article->description)) !!}
                     </div>
 
                     <div class="showmore">
