@@ -534,5 +534,9 @@ $(document).ready(function() {
     // Initialize ads check
     vtlai_check_adswidth();
 });
+function closeBanner(bannerId) {
+    var el = document.getElementById(bannerId);
+    if (el) el.style.display = 'none';
+}
 </script>
 @endpush
