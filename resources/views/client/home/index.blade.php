@@ -537,6 +537,13 @@ $(document).ready(function() {
 function closeBanner(bannerId) {
     var el = document.getElementById(bannerId);
     if (el) el.style.display = 'none';
+    // Nếu là banner trái hoặc phải thì đặt biến để không hiện lại
+    if (bannerId === 'left_ads_float' || bannerId === 'right_ads_float') {
+        window.vtlai_remove_fads = true;
+        if (typeof window.vtlai_check_adswidth === 'function') {
+            window.vtlai_check_adswidth();
+        }
+    }
 }
 </script>
 @endpush
