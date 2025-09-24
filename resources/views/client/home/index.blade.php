@@ -505,45 +505,11 @@ $(document).ready(function() {
     } else {
         console.error("jQuery or OwlCarousel not loaded properly");
     }
-    
-    // Ads float script
-    var vtlai_remove_fads = false;
-    
-    window.vtlai_check_adswidth = function() {
-        if (vtlai_remove_fads) {
-            document.getElementById('left_ads_float').style.display = 'none';
-            document.getElementById('right_ads_float').style.display = 'none';
-            return;
-        } else if (document.cookie.indexOf('vtlai_remove_float_ads') != -1) {
-            vtlai_remove_fads = true;
-            vtlai_check_adswidth();
-            return;
-        } else {
-            var lwidth = parseInt(document.body.clientWidth);
-            if (lwidth < 1110) {
-                document.getElementById('left_ads_float').style.display = 'none';
-                document.getElementById('right_ads_float').style.display = 'none';
-            } else {
-                document.getElementById('left_ads_float').style.display = 'block';
-                document.getElementById('right_ads_float').style.display = 'block';
-            }
-            setTimeout('vtlai_check_adswidth()', 10);
-        }
-    };
-    
-    // Initialize ads check
-    vtlai_check_adswidth();
+
 });
 function closeBanner(bannerId) {
     var el = document.getElementById(bannerId);
     if (el) el.style.display = 'none';
-    // Nếu là banner trái hoặc phải thì đặt biến để không hiện lại
-    if (bannerId === 'left_ads_float' || bannerId === 'right_ads_float') {
-        window.vtlai_remove_fads = true;
-        if (typeof window.vtlai_check_adswidth === 'function') {
-            window.vtlai_check_adswidth();
-        }
-    }
 }
 </script>
 @endpush
