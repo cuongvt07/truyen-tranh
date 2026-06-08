@@ -53,6 +53,15 @@
                             style="max-height: 100px; border: 1px solid #ccc;">
                     </div>
                 </div>
+                <div class="form-group mb-2">
+                    <label for="favicon_file">Favicon (32×32 hoặc .ico)</label>
+                    <input type="file" name="favicon_file" class="form-control-file" id="favicon_file_input" accept="image/x-icon,image/png,image/svg+xml">
+                    <div class="mt-2">
+                        <img id="favicon_file_preview"
+                            src="{{ !empty($settings['favicon_file']) ? asset('storage/' . $settings['favicon_file']) : asset('static/favicon.ico') }}"
+                            alt="Favicon" style="width:40px;height:40px;border:1px solid #ccc;object-fit:contain;background:#fff">
+                    </div>
+                </div>
             </div>
         </div>
 

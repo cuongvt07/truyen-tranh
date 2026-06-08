@@ -1,0 +1,115 @@
+.price-list {
+    display: grid;
+    grid-gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+    justify-content: space-between;
+    margin-top: 20px;
+}
+.section h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.price_item__icon {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    margin-bottom: 12px;
+}
+
+.price-item__cost {
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.price-item__cost span {
+    font-weight: 500;
+}
+
+.price-item {
+    margin: 5px;
+}
+
+.price-item .btn {
+    width: 100%;
+}
+.price-item h2 {
+    min-height: 52px;
+}
+.huge-recomendations {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 20px;
+}
+.recommended-product .image {
+    display: block;
+    max-height: 320px;
+    height: calc(100% - 62px);
+    margin-bottom: 10px;
+}
+.recommended-product__info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.recommended-product__info .btn {
+    min-width: 120px;
+}
+@media only screen and (max-width: 900px) {
+    .huge-recomendations {
+        grid-template-columns: 1fr 0.5fr;
+    }
+}
+@media only screen and (max-width: 750px) {
+    .huge-recomendations {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media only screen and (max-width: 650px) {
+    .price-list {
+        display: block;
+    }
+
+    .price-item {
+        display: flex;
+        width: 100%;
+    }
+    .price_item__icon {
+        width: 75px;
+        height: 75px;
+        margin: 0;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+    .price-item__info {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .price-item__cost-info {
+        flex-shrink: 0;
+        min-width: 125px;
+        margin-left: 20px;
+    }
+
+    .price-item__cost {
+        text-align: left;
+    }
+
+    .price-item__cost br {
+        display: none;
+    }
+}
+@media only screen and (max-width: 380px) {
+    .price_item__title {
+        display: none;
+    }
+    .recommended-product .price_item__title {
+        display: block;
+    }
+    .price-item__info {
+        justify-content: flex-end;
+    }
+}

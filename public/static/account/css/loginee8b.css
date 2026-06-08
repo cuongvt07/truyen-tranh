@@ -1,0 +1,43 @@
+.container-login {
+    max-width: 500px;
+    padding: 70px 5px 10px 5px;
+    margin: 0 auto;
+}
+.container-login .text-input {
+    margin-bottom: 7px;
+}
+.container-login .control-btn{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+.container-login .control-btn .btn {
+    min-width: 140px;
+}
+.container-login .forgot-password-link {
+    font-size: 14px;
+}
+.container-login .login-notice {
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+.container-login .login-notice p:not(:last-child) {
+    margin-bottom: 10px;
+}
+.account-span {
+    display: block;
+    text-align: center;
+    font-size: 14px;
+}
+.alternative {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.btn-google {
+    background-color: #c10000;
+}
+.btn-facebook {
+    background-color: #000b7b;
+}

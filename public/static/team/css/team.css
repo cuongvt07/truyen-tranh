@@ -1,0 +1,113 @@
+.header-manga {
+    padding-top: 0;
+}
+.poster .btn {
+    margin-bottom: 5px;
+}
+
+.header-manga h1 {
+    color: var(--text-color);
+}
+.search {
+    margin-bottom: 20px;
+}
+.last-chapters .last-chapters__list {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr;
+}
+.last-chapters .image.image-cover {
+    width: 47px;
+    height: 60px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+.last-chapters .item {
+    color: var(--text-color);
+    text-decoration: none;
+    margin-bottom: 8px;
+}
+.last-chapters .item {
+    display: flex;
+    align-items: center;
+}
+
+.last-chapters .title {
+    margin-right: 20px;
+    font-weight: 500;
+}
+.last-chapters .chapter-name {
+    display: flex;
+    align-items: center;
+
+    color: var(--meta-color);
+    text-decoration: none;
+}
+.members-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+.member {
+    display: flex;
+    color: var(--text-color);
+    text-decoration: none;
+}
+.member .profile-avatar {
+    margin-right: 5px;
+}
+.member .nickname {
+    font-weight: 500;
+}
+.member .role {
+    font-size: 13px;
+}
+.stats {
+    display: flex;
+    flex-wrap: wrap;
+}
+.stat {
+    display: flex;
+    
+    background: var(--btn-invincible-color);
+    padding: 5px 7px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+}
+.stat .num {
+    margin: -5px 5px -5px -7px;
+    padding: 5px 7px 5px 7px;
+    background: var(--btn-invincible-color);
+}
+.team-sites a {
+    display: block;
+    color: var(--text-color);
+}
+@media only screen and (max-width: 877px) {
+    .last-chapters .last-chapters__list {
+        grid-template-columns: 1fr 0.5fr;
+    }
+    .members-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media only screen and (max-width: 500px) {
+    
+    .team-sites {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+        margin-bottom: 20px;
+    }
+    
+}
+@media only screen and (max-width: 680px) {
+    .members-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media only screen and (max-width: 445px) {
+    .members-list {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}

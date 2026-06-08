@@ -24,7 +24,7 @@ class User extends Model implements AuthenticatableContract,
 
     protected $fillable
         = [
-            'username', 'name', 'email', 'password', 'avatar', 'description',
+            'username', 'name', 'email', 'google_id', 'password', 'avatar', 'background', 'description',
             'address', 'email_verified_at',
             'role', 'date_of_birth', 'gender', 'remember_token', 'points'
         ];
@@ -203,6 +203,11 @@ class User extends Model implements AuthenticatableContract,
     public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Comment::class, 'user_id', 'id');
+    }
+
+    public function chapterUnlocks(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ChapterUnlock::class, 'user_id', 'id');
     }
 
     public function setShouldReLogin($value)

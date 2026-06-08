@@ -11,10 +11,9 @@ class GenreController extends Controller
     public function show(Genre $genre)
     {
         $articles = $genre->articles()->paginate();
-        return view('client.articles.index', [
+        return view('client.genres.show', [
+            'genre'    => $genre,
             'articles' => $articles,
-            'title' => 'Thể loại ' . $genre->name,
-            'description' => $genre->description,
         ]);
     }
 }

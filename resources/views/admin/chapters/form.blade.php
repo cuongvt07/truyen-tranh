@@ -28,6 +28,29 @@
         
         <!-- Thông báo trạng thái -->
         <div id="storage-status" class="mt-2"></div>
+
+        <hr>
+        <div class="form-group">
+            <label for="credit_cost">Credit để mở chương này (ghi đè mặc định của truyện)</label>
+            <input type="number" name="credit_cost" id="credit_cost"
+                   min="0" class="form-control"
+                   value="{{ old('credit_cost', $chapter->credit_cost ?? '') }}"
+                   placeholder="Để trống = dùng mặc định của truyện">
+            @php
+                $articleDefault = $article->credit_per_chapter ?? 0;
+                $startChap      = $article->credit_start_chapter ?? null;
+            @endphp
+            <small class="form-text text-muted">
+                Truyện đang cấu hình:
+                @if($startChap)
+                    thu credit từ chương <strong>{{ $startChap }}</strong>,
+                    mặc định <strong>{{ $articleDefault }}</strong> credit/chương.
+                @else
+                    <em>miễn phí toàn bộ</em>.
+                @endif
+                Để trống để dùng mặc định đó.
+            </small>
+        </div>
     </div>
     <div class="box-footer mt20">
         <button type="submit" class="btn btn-primary">{{ __('Xác nhận') }}</button>

@@ -9,6 +9,7 @@
             @yield('template_title') |
         @endif {{ config('app.name', 'Laravel') }}
     </title>
+    <link rel="icon" href="{{ setting('favicon_file') ? asset('storage/' . setting('favicon_file')) : asset('static/favicon.ico') }}">
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -33,10 +34,44 @@
     <link rel="stylesheet" href="/plugins/summernote/summernote-bs4.min.css">
 
     <link rel="stylesheet" href="/dist/css/custom.css">
+
+    {{-- Theme nâng cấp (navy + Be Vietnam Pro) — đặt SAU CSS gốc để override --}}
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}?v=1">
+    <style>
+        /* Badge đếm: hình tròn, nền đỏ, chữ trắng */
+        .badge-count {
+            background-color: #dc3545 !important;
+            color: #fff !important;
+            border-radius: 50% !important;
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+            padding: 0 !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1;
+            box-sizing: border-box;
+        }
+        /* Số ≥3 chữ số (vd 99+) thì giãn thành viên thuốc cho khỏi tràn */
+        .badge-count.badge-count--wide { width: auto; border-radius: 999px !important; padding: 0 6px !important; }
+        /* Khi nằm trong sidebar (.right đẩy sang phải) vẫn căn giữa dọc */
+        .nav-sidebar .badge-count.right { top: 50%; transform: translateY(-50%); }
+    </style>
+    @stack('styles')
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
+    @php
+        $isAdminUser = (bool) optional($currentUser ?? null)->is_admin;
+        $navPendingArticles = $isAdminUser ? \App\Models\Article::withoutGlobalScope(\App\Scopes\ApprovedArticleScope::class)->where('status', \App\Enums\ArticleStatus::PENDING->value)->count() : 0;
+        $navOpenReports = $isAdminUser ? \App\Models\CommentReport::where('resolved', false)->count() : 0;
+        $navPendingTotal = $navPendingArticles + $navOpenReports;
+    @endphp
 
     <!-- Preloader -->
     <!-- <div id="preloader" class="preloader">
@@ -59,6 +94,29 @@
 
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
+            @if($isAdminUser)
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-toggle="dropdown" href="#" title="Cần xử lý">
+                    <i class="far fa-bell"></i>
+                    @if($navPendingTotal)
+                        <span class="badge badge-count navbar-badge {{ $navPendingTotal > 99 ? 'badge-count--wide' : '' }}">{{ $navPendingTotal > 99 ? '99+' : $navPendingTotal }}</span>
+                    @endif
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                    <span class="dropdown-item dropdown-header">{{ $navPendingTotal }} mục cần xử lý</span>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('admin.articles.index', ['status' => 0]) }}" class="dropdown-item">
+                        <i class="fas fa-newspaper mr-2 text-warning"></i> Truyện chờ duyệt
+                        <span class="float-right badge badge-warning badge-pill">{{ $navPendingArticles }}</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('admin.comment_reports.index') }}" class="dropdown-item">
+                        <i class="fas fa-flag mr-2 text-danger"></i> Báo cáo bình luận
+                        <span class="float-right badge badge-danger badge-pill">{{ $navOpenReports }}</span>
+                    </a>
+                </div>
+            </li>
+            @endif
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('users.change_password') }}"
                    role="button" title="Đổi mật khẩu">
@@ -123,111 +181,196 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                     data-accordion="false">
+                    {{-- ===== TỔNG QUAN ===== --}}
                     @if($currentUser->is_admin)
+                        <li class="nav-header">TỔNG QUAN</li>
                         <li class="nav-item">
-                            <a href="{{ route('admin.dashboard') }}"
-                               class="nav-link {{ set_active('admin.dashboard') }}">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Trang tổng quan
-                                </p>
+                            <a href="{{ route('admin.dashboard') }}" class="nav-link {{ set_active('admin.dashboard') }}">
+                                <i class="nav-icon fas fa-tachometer-alt"></i><p>Trang tổng quan</p>
                             </a>
                         </li>
-                        <li class="nav-item menu-is-opening menu-open">
-                            <a href="#" class="nav-link {{ set_active('admin.users.*') }}">
-                                <i class="fa-solid fa-user"></i>
-                                <p>
-                                    Quản lý tài khoản
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
+                    @endif
+
+                    {{-- ===== QUẢN LÝ NỘI DUNG ===== --}}
+                    @if($currentUser->is_poster || $currentUser->is_admin)
+                        @php
+                            $openContent = request()->routeIs('admin.articles.*','admin.chapters.*','admin.characters.*','admin.teams.*','admin.collections.*','admin.authors.*','admin.genres.*','admin.tags.*','admin.comments.*','admin.comment_reports.*');
+                            $pendingArticles = $navPendingArticles ?? 0;
+                            $openReports = $navOpenReports ?? 0;
+                        @endphp
+                        <li class="nav-item has-treeview {{ $openContent ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $openContent ? 'active' : '' }}">
+                                <i class="nav-icon fa-solid fa-folder-open"></i>
+                                <p>Quản lý nội dung <i class="right fas fa-angle-left"></i></p>
                             </a>
-                            <ul class="nav nav-treeview" style="display: block;">
+                            <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.users.index') }}"
-                                       class="nav-link {{ set_active('admin.users.index') }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Tất cả tài khoản
-                                        </p>
+                                    <a href="{{ route('admin.articles.index') }}" class="nav-link {{ set_active('admin.articles.*') }}">
+                                        <i class="nav-icon fa-solid fa-newspaper"></i>
+                                        <p>Truyện @if($pendingArticles)<span class="badge badge-count right {{ $pendingArticles > 99 ? 'badge-count--wide' : '' }}">{{ $pendingArticles > 99 ? '99+' : $pendingArticles }}</span>@endif</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.users.banned') }}"
-                                       class="nav-link {{ set_active('admin.users.banned') }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Tài khoản bị cấm
-                                        </p>
+                                    <a href="{{ route('admin.chapters.all') }}" class="nav-link {{ set_active('admin.chapters.all') }}">
+                                        <i class="nav-icon fa-solid fa-list-ol"></i><p>Chương</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.users.poster') }}"
-                                       class="nav-link {{ set_active('admin.users.poster') }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Tài khoản người đăng bài
-                                        </p>
+                                    <a href="{{ route('admin.characters.index') }}" class="nav-link {{ set_active('admin.characters.*') }}">
+                                        <i class="nav-icon fa-solid fa-user-pen"></i><p>Nhân vật</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.users.admin') }}"
-                                       class="nav-link {{ set_active('admin.users.admin') }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Tài khoản quản trị viên
-                                        </p>
+                                    <a href="{{ route('admin.teams.index') }}" class="nav-link {{ set_active('admin.teams.*') }}">
+                                        <i class="nav-icon fa-solid fa-user-group"></i><p>Nhóm dịch</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.collections.index') }}" class="nav-link {{ set_active('admin.collections.*') }}">
+                                        <i class="nav-icon fa-solid fa-layer-group"></i><p>Bộ sưu tập</p>
+                                    </a>
+                                </li>
+                                @if($currentUser->is_admin)
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.authors.index') }}" class="nav-link {{ set_active('admin.authors.*') }}">
+                                        <i class="nav-icon fa-solid fa-pen"></i><p>Tác giả</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.genres.index') }}" class="nav-link {{ set_active('admin.genres.*') }}">
+                                        <i class="nav-icon fa-solid fa-bars"></i><p>Thể loại</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.tags.index') }}" class="nav-link {{ set_active('admin.tags.*') }}">
+                                        <i class="nav-icon fa-solid fa-tags"></i><p>Tags</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.comments.index') }}" class="nav-link {{ set_active('admin.comments.*') }}">
+                                        <i class="nav-icon fa-solid fa-comments"></i><p>Bình luận</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.comment_reports.index') }}" class="nav-link {{ set_active('admin.comment_reports.*') }}">
+                                        <i class="nav-icon fa-solid fa-flag"></i>
+                                        <p>Báo cáo bình luận @if($openReports)<span class="badge badge-count right {{ $openReports > 99 ? 'badge-count--wide' : '' }}">{{ $openReports > 99 ? '99+' : $openReports }}</span>@endif</p>
+                                    </a>
+                                </li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
+
+                    {{-- ===== CREDIT & THANH TOÁN ===== --}}
+                    @if($currentUser->is_admin)
+                        @php $openCredit = request()->routeIs('admin.credit-packages.*','admin.transactions.*','admin.vips.*'); @endphp
+                        <li class="nav-item has-treeview {{ $openCredit ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $openCredit ? 'active' : '' }}">
+                                <i class="nav-icon fa-solid fa-coins"></i>
+                                <p>Credit &amp; VIP <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.credit-packages.index') }}" class="nav-link {{ set_active('admin.credit-packages.*') }}">
+                                        <i class="nav-icon fa-solid fa-box-open"></i><p>Gói Credit</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.transactions.index') }}" class="nav-link {{ set_active('admin.transactions.*') }}">
+                                        <i class="nav-icon fa-solid fa-receipt"></i><p>Giao dịch</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.vips.index') }}" class="nav-link {{ set_active('admin.vips.*') }}">
+                                        <i class="nav-icon fa-solid fa-crown"></i><p>Tài khoản VIP</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
                     @endif
-                    @if($currentUser->is_poster || $currentUser->is_admin)
-                        <li class="nav-item">
-                            <a href="{{ route('admin.articles.index') }}"
-                               class="nav-link {{ set_active('admin.articles.*') }}">
-                                <i class="fa-solid fa-newspaper"></i>
-                                <p>
-                                    Truyện
-                                </p>
+
+                    {{-- ===== TÀI KHOẢN ===== --}}
+                    @if($currentUser->is_admin)
+                        @php $openAccount = request()->routeIs('admin.users.*'); @endphp
+                        <li class="nav-item has-treeview {{ $openAccount ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $openAccount ? 'active' : '' }}">
+                                <i class="nav-icon fa-solid fa-users-gear"></i>
+                                <p>Tài khoản <i class="right fas fa-angle-left"></i></p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.users.index') }}" class="nav-link {{ set_active('admin.users.index') }}">
+                                        <i class="nav-icon fa-solid fa-users"></i><p>Tất cả tài khoản</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.users.poster') }}" class="nav-link {{ set_active('admin.users.poster') }}">
+                                        <i class="nav-icon fa-solid fa-user-edit"></i><p>Người đăng bài</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.users.admin') }}" class="nav-link {{ set_active('admin.users.admin') }}">
+                                        <i class="nav-icon fa-solid fa-user-shield"></i><p>Quản trị viên</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.users.banned') }}" class="nav-link {{ set_active('admin.users.banned') }}">
+                                        <i class="nav-icon fa-solid fa-user-slash"></i><p>Tài khoản bị cấm</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
+
+                    {{-- ===== SEO & MARKETING ===== --}}
                     @if($currentUser->is_admin)
-                        <li class="nav-item">
-                            <a href="{{ route('admin.authors.index') }}"
-                               class="nav-link {{ set_active('admin.authors.*') }}">
-                                <i class="fa-solid fa-pen"></i>
-                                <p>
-                                    Tác giả
-                                </p>
+                        @php $openSeo = request()->routeIs('admin.seo.*'); @endphp
+                        <li class="nav-item has-treeview {{ $openSeo ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $openSeo ? 'active' : '' }}">
+                                <i class="nav-icon fa-solid fa-bullhorn"></i>
+                                <p>SEO &amp; Marketing <i class="right fas fa-angle-left"></i></p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.seo.settings') }}" class="nav-link {{ set_active('admin.seo.*') }}">
+                                        <i class="nav-icon fa-solid fa-magnifying-glass-chart"></i><p>SEO</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url('/sitemap.xml') }}" target="_blank" class="nav-link">
+                                        <i class="nav-icon fa-solid fa-sitemap"></i><p>Sitemap</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.genres.index') }}"
-                               class="nav-link {{ set_active('admin.genres.*') }}">
-                                <i class="fa-solid fa-bars"></i>
-                                <p>
-                                    Thể loại
-                                </p>
+                    @endif
+
+                    {{-- ===== CÀI ĐẶT ===== --}}
+                    @if($currentUser->is_admin)
+                        @php $openSettings = request()->routeIs('admin.settings.*','admin.menus.*','admin.ads.*'); @endphp
+                        <li class="nav-item has-treeview {{ $openSettings ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $openSettings ? 'active' : '' }}">
+                                <i class="nav-icon fa-solid fa-gear"></i>
+                                <p>Cài đặt <i class="right fas fa-angle-left"></i></p>
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.menus.index') }}"
-                               class="nav-link {{ set_active('admin.menus.*') }}">
-                                <i class="fa-solid fa-folder"></i>
-                                <p>
-                                    Menu
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.settings.index') }}"
-                               class="nav-link {{ set_active('admin.settings.*') }}">
-                                <i class="fa-solid fa-wrench"></i>
-                                <p>
-                                    Settings
-                                </p>
-                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.settings.index') }}" class="nav-link {{ set_active('admin.settings.*') }}">
+                                        <i class="nav-icon fa-solid fa-sliders"></i><p>Cấu hình chung</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.menus.index') }}" class="nav-link {{ set_active('admin.menus.*') }}">
+                                        <i class="nav-icon fa-solid fa-bars"></i><p>Menu điều hướng</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.ads.index') }}" class="nav-link {{ set_active('admin.ads.*') }}">
+                                        <i class="nav-icon fa-solid fa-rectangle-ad"></i><p>Quảng cáo</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
                 </ul>
@@ -349,6 +492,8 @@
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="/dist/js/pages/dashboard.js"></script>
 <script src="/dist/js/custom.js"></script>
+{{-- UI enhancement (sidebar memory, lazy-load, confirm delete, cover preview) --}}
+<script src="{{ asset('js/admin-ui.js') }}?v=1"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
 <script !src="">
     function debounce(func, wait, immediate) {
@@ -436,6 +581,8 @@
         });
     });
 </script>
+
+@stack('scripts')
 
 </body>
 

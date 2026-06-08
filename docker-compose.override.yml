@@ -1,0 +1,52 @@
+services:
+  app:
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      CACHE_STORE: ${CACHE_STORE:-redis}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
+      SESSION_DRIVER: ${SESSION_DRIVER:-redis}
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-false}
+      RUN_SEEDERS: ${RUN_SEEDERS:-false}
+      RUN_CACHE_WARMUP: "false"
+      OPCACHE_VALIDATE_TIMESTAMPS: "1"
+      OPCACHE_REVALIDATE_FREQ: "0"
+    volumes:
+      - ./:/var/www/html
+      - ./storage:/var/www/html/storage
+      - ./storage/app/public:/var/www/html/storage/app/public
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+      - app-vendor:/var/www/html/vendor
+      - app-node-modules:/var/www/html/node_modules
+
+  nginx:
+    ports:
+      - "${HTTP_PORT:-8080}:80"
+    volumes:
+      - ./public:/var/www/html/public:ro
+      - ./storage/app/public:/var/www/html/public/storage:ro
+
+  queue:
+    command: ["php", "artisan", "queue:listen", "redis", "--sleep=1", "--tries=1"]
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      CACHE_STORE: ${CACHE_STORE:-redis}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
+      SESSION_DRIVER: ${SESSION_DRIVER:-redis}
+      RUN_MIGRATIONS: "false"
+      RUN_SEEDERS: "false"
+      RUN_CACHE_WARMUP: "false"
+      OPCACHE_VALIDATE_TIMESTAMPS: "1"
+      OPCACHE_REVALIDATE_FREQ: "0"
+    volumes:
+      - ./:/var/www/html
+      - ./storage:/var/www/html/storage
+      - ./storage/app/public:/var/www/html/storage/app/public
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+      - app-vendor:/var/www/html/vendor
+      - app-node-modules:/var/www/html/node_modules
+
+volumes:
+  app-vendor:
+  app-node-modules:

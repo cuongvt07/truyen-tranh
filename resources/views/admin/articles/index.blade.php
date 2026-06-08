@@ -1,181 +1,131 @@
 @extends('layout.admin')
+@section('template_title', 'Danh sách truyện')
 
-@section('template_title')
-    {{ __('Danh sách truyện') }}
-@endsection
+@php
+    use App\Enums\ArticleStatus;
+    use App\Enums\ArticleCompleteStatus;
+@endphp
 
 @section('content')
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="create" style="margin-bottom: 10px">
-                        <a href="{{ route('admin.articles.create') }}" class="btn btn-primary"
-                           data-placement="left">
-                            {{ __('Thêm truyện mới') }}
-                        </a>
-                    </div>
+<div class="content"><div class="container-fluid">
+    @includeWhen(session('success'), 'admin.partials.flash')
 
-                    <div class="search">
-                        <form id="searchForm" action="{{ route('admin.articles.index') }}" method="GET">
-                            <input type="search" id="searchInput" class="form-control form-control-sm"
-                                   placeholder="Tìm kiếm theo tên truyện" name="search">
-                        </form>
-                    </div>
-                </div>
-                <div class="card-body">
-                    @if ($message = session('success'))
-                        <div class="alert alert-success">
-                            <p>{{ $message }}</p>
-                        </div>
-                    @endif
-                    <div class="dataTables_wrapper dt-bootstrap4">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <table data-bs-spy="scroll"
-                                       class="table table-responsive table-bordered table-striped dataTable dtr-inline table-hover"
-                                       aria-describedby="example1_info">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Ảnh</th>
-                                        <th>Tên truyện</th>
-                                        <th>Tác giả</th>
-                                        <th>Thể loại</th>
-                                        <th>Số chương đã đăng</th>
-                                        <th>Lượt xem</th>
-                                        <th>Trạng thái hoàn thành</th>
-                                        <th>Trạng thái duyệt</th>
-                                        <th>Người tạo</th>
-                                        <th>Thời gian tạo</th>
-                                        <th>Thời gian cập nhật</th>
-                                        <th>Hành động</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($articles as $article)
-                                        <tr class="even">
-                                            <td>{{ $article->id }}</td>
-                                            <td>
-                                                <img src="{{ $article->cover_image }}" alt="{{ $article->title }}"
-                                                     width="100px">
-                                            </td>
-                                            <td><a href="{{ route('articles.show', $article->id) }}">{{ $article->title }}</a></td>
-                                            <td>
-                                                @foreach($article->authors as $author)
-                                                    <a href="{{ route('authors.show', $author->id) }}"
-                                                       class="badge badge-primary">
-                                                        {{ $author->name }}
-                                                    </a>
-                                                @endforeach
-                                            </td>
-                                            <td>
-                                                @foreach($article->genres as $genre)
-                                                    <a href="{{ route('genres.show', $genre->id) }}"
-                                                       class="badge badge-success">
-                                                        {{ $genre->name }}
-                                                    </a>
-                                                @endforeach
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('admin.articles.show_chapters', $article->id) }}">
-                                                    {{ $article->chapters_text }}
-                                                </a>
-                                            </td>
-                                            <td> {{ $article->view_text }}</td>
-                                            <td> {{ $article->completed_text }}</td>
-                                            <td> {{ $article->status_text }}</td>
-                                            <td>{{ $article->user->name }}</td>
-                                            <td title="{{ $article->created_at }}">{{ $article->created_at_text }}</td>
-                                            <td title="{{ $article->updated_at }}">{{ $article->updated_at_text }}</td>
-                                            <td>
-                                                <a class="btn btn-sm btn-primary"
-                                                   href="{{ route('articles.show', $article->id) }}"><i
-                                                        class="fa fa-fw fa-eye"></i> {{ __('Chi tiết') }}</a>
-                                                <a class="btn btn-sm btn-info"
-                                                   href="{{ route('admin.articles.create_chapter', $article->id) }}"><i
-                                                        class="fa fa-fw fa-plus"></i> {{ __('Thêm chương') }}</a>
-                                                <a class="btn btn-sm btn-success"
-                                                   href="{{ route('admin.articles.edit', $article->id) }}"><i
-                                                        class="fa fa-fw fa-edit"></i> {{ __('Sửa') }}</a>
-                                                @if($currentUser->is_admin)
-                                                    <form
-                                                        action="{{ route('admin.articles.change_status', [$article->id, \App\Enums\ArticleStatus::APPROVED]) }}"
-                                                        method="POST" class="formApprove">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        @if($article->status == \App\Enums\ArticleStatus::PENDING->value)
-                                                            <button type="submit"
-                                                                    class="btn btn-secondary btn-sm btnApprove">
-                                                                <i
-                                                                    class="fa fa-fw fa-check"></i> {{ __('Duyệt bài') }}
-                                                            </button>
-                                                        @elseif ($article->status == \App\Enums\ArticleStatus::HIDDEN->value)
-                                                            <button type="submit"
-                                                                    class="btn btn-warning btn-sm btnVisible">
-                                                                <i
-                                                                    class="fa fa-fw fa-check"></i> {{ __('Hiện bài') }}
-                                                            </button>
-                                                        @endif
-                                                    </form>
-                                                    @if($article->status == \App\Enums\ArticleStatus::APPROVED->value)
-                                                        <form
-                                                            action="{{ route('admin.articles.change_status', [$article->id, \App\Enums\ArticleStatus::HIDDEN]) }}"
-                                                            method="POST" class="formHidden">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <button type="submit" class="btn btn-dark btn-sm btnHidden">
-                                                                <i
-                                                                    class="fa fa-fw fa-eye-slash"></i> {{ __('Ẩn bài') }}
-                                                            </button>
-                                                        </form>
-                                                    @endif
-                                                    <form
-                                                        action="{{ route('admin.articles.change_complete_status', $article->id) }}"
-                                                        method="POST" class="formSetCompleted">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        @if($article->is_completed == \App\Enums\ArticleCompleteStatus::COMPLETED->value)
-                                                            <button type="submit"
-                                                                    class="btn btn-outline-secondary btn-sm btnSetNotCompleted">
-                                                                <i
-                                                                    class="fa fa-fw fa-close"></i> {{ __(\App\Enums\ArticleCompleteStatus::NOT_COMPLETED->label()) }}
-                                                            </button>
-                                                        @elseif ($article->is_completed == \App\Enums\ArticleCompleteStatus::NOT_COMPLETED->value)
-                                                            <button type="submit"
-                                                                    class="btn btn-outline-primary btn-sm btnSetCompleted">
-                                                                <i
-                                                                    class="fa fa-fw fa-check"></i> {{ __(\App\Enums\ArticleCompleteStatus::COMPLETED->label()) }}
-                                                            </button>
-                                                        @endif
-
-                                                    </form>
-                                                @endif
-                                                <form
-                                                    action="{{ route('admin.articles.destroy', $article->id) }}"
-                                                    method="POST" class="formDelete">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm btnDelete">
-                                                        <i
-                                                            class="fa fa-fw fa-trash"></i> {{ __('Xoá') }}
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12 col-md-7">
-                                {!! $articles->links() !!}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    {{-- Filter bar --}}
+    <div class="card card-outline card-primary mb-3"><div class="card-body py-2">
+        <form method="GET" class="form-row align-items-center">
+            <div class="col-md-3 mb-2"><div class="input-group input-group-sm">
+                <input type="text" name="search" class="form-control" placeholder="Tìm theo tên truyện..." value="{{ request('search') }}">
+                <div class="input-group-append"><button class="btn btn-primary"><i class="fas fa-search"></i></button></div>
+            </div></div>
+            <div class="col-md-2 mb-2">
+                <select name="status" class="form-control form-control-sm" onchange="this.form.submit()">
+                    <option value="">Trạng thái duyệt</option>
+                    <option value="1" @selected(request('status')==='1')>Đã duyệt</option>
+                    <option value="0" @selected(request('status')==='0')>Chờ duyệt</option>
+                    <option value="2" @selected(request('status')==='2')>Đã ẩn</option>
+                </select>
             </div>
+            <div class="col-md-2 mb-2">
+                <select name="completed" class="form-control form-control-sm" onchange="this.form.submit()">
+                    <option value="">Tiến độ</option>
+                    <option value="0" @selected(request('completed')==='0')>Đang ra</option>
+                    <option value="1" @selected(request('completed')==='1')>Hoàn thành</option>
+                </select>
+            </div>
+            <div class="col-md-2 mb-2">
+                <select name="sort" class="form-control form-control-sm" onchange="this.form.submit()">
+                    <option value="newest" @selected(request('sort')==='newest')>Mới nhất</option>
+                    <option value="updated" @selected(request('sort')==='updated')>Cập nhật</option>
+                    <option value="views" @selected(request('sort')==='views')>Lượt xem</option>
+                    <option value="title" @selected(request('sort')==='title')>Tên A-Z</option>
+                </select>
+            </div>
+            <div class="col-md-2 mb-2"><a href="{{ route('admin.articles.index') }}" class="btn btn-sm btn-outline-secondary btn-block"><i class="fas fa-times"></i> Xoá lọc</a></div>
+        </form>
+    </div></div>
+
+    {{-- Table --}}
+    <div class="card">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <span class="text-muted small">Hiển thị {{ $articles->firstItem() ?? 0 }}–{{ $articles->lastItem() ?? 0 }} / {{ $articles->total() }} truyện</span>
+            <a href="{{ route('admin.articles.create') }}" class="btn btn-sm btn-primary"><i class="fas fa-plus mr-1"></i> Thêm truyện mới</a>
         </div>
+        <div class="card-body p-0 table-responsive">
+            @forelse($articles as $article)
+            @if($loop->first)
+            <table class="table table-hover mb-0 align-middle">
+                <thead><tr>
+                    <th width="50">#</th>
+                    <th>Truyện</th>
+                    <th>Thể loại</th>
+                    <th width="80" class="text-center">Chương</th>
+                    <th width="90" class="text-center">Lượt xem</th>
+                    <th width="150">Trạng thái</th>
+                    <th width="100">Cập nhật</th>
+                    <th width="70" class="text-center">Thao tác</th>
+                </tr></thead>
+                <tbody>
+            @endif
+                <tr>
+                    <td class="text-muted">{{ $article->id }}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ novel_poster($article) }}" style="width:44px;height:60px;object-fit:cover;border-radius:4px;flex-shrink:0;margin-right:10px">
+                            <div style="min-width:0">
+                                <a href="{{ route('articles.show', $article->id) }}" target="_blank" class="font-weight-600 d-block text-truncate" style="max-width:260px">{{ $article->title }}</a>
+                                <small class="text-muted">
+                                    @foreach($article->authors->take(2) as $a){{ $a->name }}@if(!$loop->last), @endif @endforeach
+                                </small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        @foreach($article->genres->take(3) as $g)<span class="badge badge-success badge-pill">{{ $g->name }}</span> @endforeach
+                        @if($article->genres->count() > 3)<span class="text-muted small">+{{ $article->genres->count()-3 }}</span>@endif
+                    </td>
+                    <td class="text-center"><a href="{{ route('admin.articles.show_chapters', $article->id) }}">{{ $article->chapters_count }}</a></td>
+                    <td class="text-center">{{ number_format($article->view) }}</td>
+                    <td>
+                        @php $st = [0=>['Chờ duyệt','warning'],1=>['Đã duyệt','success'],2=>['Đã ẩn','secondary']][$article->status] ?? ['?','secondary']; @endphp
+                        <span class="badge badge-{{ $st[1] }} badge-pill">{{ $st[0] }}</span>
+                        <span class="badge badge-{{ $article->is_completed ? 'info' : 'light' }} badge-pill">{{ $article->is_completed ? 'Full' : 'Đang ra' }}</span>
+                    </td>
+                    <td class="text-muted small" title="{{ $article->updated_at }}">{{ optional($article->updated_at)->format('d/m/Y') }}</td>
+                    <td class="text-center">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="{{ route('articles.show', $article->id) }}" target="_blank"><i class="fas fa-eye mr-2 text-muted"></i> Xem</a>
+                                <a class="dropdown-item" href="{{ route('admin.articles.edit', $article->id) }}"><i class="fas fa-edit mr-2 text-primary"></i> Sửa</a>
+                                <a class="dropdown-item" href="{{ route('admin.articles.create_chapter', $article->id) }}"><i class="fas fa-plus mr-2 text-info"></i> Thêm chương</a>
+                                @if($currentUser->is_admin)
+                                    <div class="dropdown-divider"></div>
+                                    @if($article->status == ArticleStatus::PENDING->value)
+                                        <form action="{{ route('admin.articles.change_status', [$article->id, ArticleStatus::APPROVED]) }}" method="POST">@csrf @method('PATCH')
+                                            <button class="dropdown-item text-success"><i class="fas fa-check mr-2"></i> Duyệt bài</button></form>
+                                    @elseif($article->status == ArticleStatus::HIDDEN->value)
+                                        <form action="{{ route('admin.articles.change_status', [$article->id, ArticleStatus::APPROVED]) }}" method="POST">@csrf @method('PATCH')
+                                            <button class="dropdown-item text-warning"><i class="fas fa-eye mr-2"></i> Hiện bài</button></form>
+                                    @elseif($article->status == ArticleStatus::APPROVED->value)
+                                        <form action="{{ route('admin.articles.change_status', [$article->id, ArticleStatus::HIDDEN]) }}" method="POST">@csrf @method('PATCH')
+                                            <button class="dropdown-item"><i class="fas fa-eye-slash mr-2 text-muted"></i> Ẩn bài</button></form>
+                                    @endif
+                                    <form action="{{ route('admin.articles.change_complete_status', $article->id) }}" method="POST">@csrf @method('PATCH')
+                                        <button class="dropdown-item"><i class="fas fa-flag-checkered mr-2 text-muted"></i> {{ $article->is_completed ? 'Đánh dấu đang ra' : 'Đánh dấu hoàn thành' }}</button></form>
+                                @endif
+                                <div class="dropdown-divider"></div>
+                                <form action="{{ route('admin.articles.destroy', $article->id) }}" method="POST" class="form-delete" data-confirm="Xoá truyện «{{ $article->title }}»?">@csrf @method('DELETE')
+                                    <button class="dropdown-item text-danger"><i class="fas fa-trash mr-2"></i> Xoá</button></form>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                @if($loop->last)</tbody></table>@endif
+            @empty
+                <div class="text-center py-5"><i class="fas fa-inbox fa-3x text-muted mb-3"></i><h5 class="text-muted">Không tìm thấy truyện nào</h5></div>
+            @endforelse
+        </div>
+        @if($articles->hasPages())<div class="card-footer">{{ $articles->withQueryString()->links() }}</div>@endif
     </div>
+</div></div>
 @endsection

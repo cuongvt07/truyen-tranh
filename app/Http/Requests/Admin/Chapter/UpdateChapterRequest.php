@@ -18,6 +18,7 @@ class UpdateChapterRequest extends ChapterBaseRequest
                     ->where('article_id', $this->route('article')->id),
             ],
             'content' => 'required',
+            'credit_cost' => ['nullable', 'integer', 'min:0'],
         ];
     }
 }

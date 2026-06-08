@@ -17,17 +17,24 @@ class SettingController extends Controller
     public function update(Request $request)
     {
         $data = $request->except([
-            '_token', 'logo_file', 'site_name', 'bank1_qr_image', 'bank2_qr_image', 
-            'banner_top', 'banner_bottom', 'banner_left', 'banner_right', 
-            'banner_top_url', 'banner_bottom_url', 'banner_left_url', 'banner_right_url'
+            '_token', '_method', 'logo_file', 'favicon_file', 'site_name', 'bank1_qr_image', 'bank2_qr_image',
+            'banner_top', 'banner_bottom', 'banner_left', 'banner_right',
+            'banner_top_url', 'banner_bottom_url', 'banner_left_url', 'banner_right_url',
         ]);
 
-        // Cập nhật các dữ liệu khác
+        // Cập nhật các dữ liệu khác (bảng settings)
         foreach ($data as $key => $value) {
+            if (is_array($value)) continue;
             DB::table('settings')->updateOrInsert(
                 ['meta_key' => $key],
                 ['meta_value' => $value]
             );
+        }
+
+        // site_name (đồng bộ cả settings + seo_settings để title SEO dùng chung)
+        if ($request->filled('site_name')) {
+            DB::table('settings')->updateOrInsert(['meta_key' => 'site_name'], ['meta_value' => $request->input('site_name')]);
+            DB::table('seo_settings')->updateOrInsert(['key' => 'site_name'], ['value' => $request->input('site_name'), 'updated_at' => now()]);
         }
 
         // --- Lưu ảnh logo ---
@@ -37,6 +44,16 @@ class SettingController extends Controller
             DB::table('settings')->updateOrInsert(
                 ['meta_key' => 'logo_file'],
                 ['meta_value' => $logoPath]
+            );
+        }
+
+        // --- Lưu favicon ---
+        if ($request->hasFile('favicon_file')) {
+            $fav = $request->file('favicon_file');
+            $favPath = $fav->store('logo', 'public');
+            DB::table('settings')->updateOrInsert(
+                ['meta_key' => 'favicon_file'],
+                ['meta_value' => $favPath]
             );
         }
 

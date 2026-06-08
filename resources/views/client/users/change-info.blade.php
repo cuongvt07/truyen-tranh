@@ -1,86 +1,93 @@
 @extends('client.users.profile')
-@section('template_title')
-    {{ __('Chỉnh sửa thông tin') }}
-@endsection
+@section('template_title', __('messages.account.nav_settings'))
 
 @section('user_content')
-    <div id="changeInfoResult">
-        <form action="{{ route('users.update') }}" method="post" enctype="multipart/form-data">
-            @csrf
-            @method('patch')
-            <div class="user-page clearfix">
-                <h1 class="postname">
-                    Thông tin tài khoản
-                </h1>
-                <div class="account-info clearfix">
-                    <h2 class="posttitle">Cập nhật thông tin tài khoản</h2>
-                    <div class="account-form clearfix">
-                        <div class="row">
-                            <div class="col-md-9 col-sm-8">
-                                @if($message = session('status'))
-                                    <div class="alert alert-success" role="alert">
-                                        {{ $message }}
-                                    </div>
-                                @endif
-                                <div class="form-group">
-                                    <label for="username" class="control-label">UserName</label>
-                                    <input value="{{ old('username', $user->username) }}" name="username" id="username" type="text"
-                                           class="form-control" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="email" class="control-label">Email</label>
-                                    <input value="{{ old('email', $user->email) }}" name="email" id="email" type="email"
-                                           class="form-control" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="name" class="control-label">Tên đầy đủ</label>
-                                    <input value="{{ old('name', $user->name) }}" name="name" id="name" type="text"
-                                           class="form-control" required>
-                                </div>
+{{-- Tabs: Thông tin / Bảo mật --}}
+<div class="block list-names" style="margin-bottom:14px">
+    <a href="{{ route('users.change_info') }}" class="btn">{{ __('messages.account.tab_info') }}</a>
+    <a href="{{ route('users.change_password') }}" class="btn btn-invincible">{{ __('messages.account.tab_security') }}</a>
+</div>
 
-                                <div class="form-group">
-                                    <label for="gender" class="control-label">Giới tính</label>
-                                    <select name="gender" id="gender">
-                                        @foreach(\App\Enums\Gender::cases() as $gender)
-                                            <option value="{{ $gender->value }}"
-                                                    class="form-control" {{ $user->gender == $gender->value ? 'selected' : '' }}>{{ $gender->label() }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+<div class="block">
+    @if(session('status'))
+        <div class="alert-success" style="background:#1e3a1e;border:1px solid #2e5e2e;padding:10px 14px;border-radius:6px;margin-bottom:14px;color:#9f9">{{ session('status') }}</div>
+    @endif
+    @if($errors->any())
+        <div class="error-block" style="background:#3a1010;border:1px solid #7a2020;padding:10px 14px;border-radius:6px;margin-bottom:14px;color:#f88">
+            @foreach($errors->all() as $e)<div>{{ $e }}</div>@endforeach
+        </div>
+    @endif
 
-                                <div class="form-group">
-                                    <label for="date_of_birth" class="control-label">Ngày sinh</label>
-                                    <div class="input-group date" data-provide="datepicker">
-                                        <input value="{{ $user->date_of_birth_text }}" type="date" name="date_of_birth"
-                                               id="date_of_birth" class="form-control">
-                                        <span class="input-group-addon">
-                                        <span class="glyphicon glyphicon-calendar"></span>
-                                    </span>
-                                    </div>
-                                </div>
+    <form action="{{ route('users.update') }}" method="post" enctype="multipart/form-data" class="settings-form">
+        @csrf @method('patch')
 
-                                <div class="form-group">
-                                    <label for="address" class="control-label">Địa chỉ</label>
-                                    <input value="{{ $user->address }}" name="address" id="address" class="form-control">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="avatar" class="control-label">Avatar</label>
-                                    <input type="file" name="avatar" id="avatar" class="form-control" accept="image/*"/>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="description" class="control-label">Giới thiệu</label>
-                                    <textarea name="description" id="description" rows="5" class="form-control">{{ $user->description }}</textarea>
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Lưu thông tin</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        {{-- Avatar --}}
+        <div class="form-row">
+            <label class="form-label">{{ __('messages.account.avatar') }}</label>
+            <div class="img-upload">
+                <div class="img-preview" style="border-radius:50%">
+                    <img src="{{ $user->avatar ?: asset('static/account/images/no-ava.jpg') }}" alt="">
                 </div>
+                <input type="file" name="avatar" accept="image/*">
             </div>
-        </form>
-    </div>
+        </div>
+
+        {{-- Background --}}
+        <div class="form-row">
+            <label class="form-label">{{ __('messages.account.background') }}</label>
+            <div class="img-upload">
+                <div class="img-preview wide">
+                    <img src="{{ $user->background ?: ($user->avatar ?: asset('static/core/images/no_cover.webp')) }}" alt="">
+                </div>
+                <input type="file" name="background" accept="image/*">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label class="form-label">{{ __('messages.account.username') }}</label>
+            <input type="text" name="username" value="{{ old('username', $user->username) }}" required>
+        </div>
+        <div class="form-row">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" value="{{ old('email', $user->email) }}" required>
+        </div>
+        <div class="form-row">
+            <label class="form-label">{{ __('messages.account.full_name') }}</label>
+            <input type="text" name="name" value="{{ old('name', $user->name) }}">
+        </div>
+        <div class="form-row">
+            <label class="form-label">{{ __('messages.account.gender') }}</label>
+            <select name="gender">
+                @foreach(\App\Enums\Gender::cases() as $g)
+                    <option value="{{ $g->value }}" {{ $user->gender == $g->value ? 'selected' : '' }}>{{ $g->label() }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="form-row">
+            <label class="form-label">{{ __('messages.account.date_of_birth') }}</label>
+            <input type="date" name="date_of_birth" value="{{ old('date_of_birth', $user->date_of_birth) }}">
+        </div>
+        <div class="form-row">
+            <label class="form-label">{{ __('messages.account.about_me') }}</label>
+            <textarea name="description" rows="5">{{ old('description', $user->description) }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">{{ __('messages.account.save_changes') }}</button>
+    </form>
+</div>
+
+<style>
+.settings-form .form-row { margin-bottom:16px; }
+.settings-form .form-label { display:block; font-size:13px; margin-bottom:6px; color:var(--meta-color,#999); font-weight:500; }
+.settings-form input[type=text], .settings-form input[type=email], .settings-form input[type=date],
+.settings-form select, .settings-form textarea {
+    width:100%; max-width:480px; padding:9px 12px; border-radius:5px; border:1px solid var(--border,#2a2a3e);
+    background:var(--bg,#131320); color:inherit; font-size:14px;
+}
+.settings-form .img-upload { display:flex; align-items:center; gap:14px; }
+.settings-form .img-preview { width:80px; height:80px; overflow:hidden; border:1px solid var(--border,#2a2a3e); border-radius:8px; flex-shrink:0; }
+.settings-form .img-preview.wide { width:160px; height:80px; }
+.settings-form .img-preview img { width:100%; height:100%; object-fit:cover; }
+.list-names .btn { text-decoration:none; }
+</style>
 @endsection

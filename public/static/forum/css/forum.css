@@ -1,0 +1,122 @@
+.forum-post {
+    display: flex;
+}
+.forum-section-name {
+    color: #fff;
+    font-size: 16px;
+    font-family: var(--h-font);
+    background-color: var(--btn-color);
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+.forum-theme .forum-theme__info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.forum-theme .forum-theme__info .info {
+    margin-right: 20px;
+}
+.forum-theme .last-post > * {
+    display: block;
+}
+.forum-post .icon {
+    font-size: 18px;
+    margin-right: 20px;
+}
+.forum-post .title {
+    font-weight: 500;
+    margin-bottom: 0;
+}
+.forum-post .title a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+.forum-post {
+    margin-bottom: 4px;
+}
+.last-post span {
+    color: var(--meta-color);
+    text-decoration: none;
+}
+.meta-color a {
+    color: var(--meta-color);
+    text-decoration: none;
+}
+.forum-post .stats {
+    display: flex;
+    align-items: center;
+}
+.forum-post .stats > * {
+    font-size: 16px;
+    margin-left: 10px;
+}
+.forum-single .stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.forum-single .stats .right {
+    display: flex;
+}
+.stats .right > * {
+    margin-left: 10px;
+}
+.breadcumps {
+    margin-bottom: 10px;
+}
+.last-bread i {
+    display: none;
+}
+.forum-single .text-info .image {
+    max-height: 1030px;
+    max-width: 630px;
+}
+.forum-single h1.page-title {
+    margin-bottom: 10px;
+}
+.theme-links {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.theme-links .breadcumps {
+    margin-bottom: 0;
+}
+
+@media only screen and (max-width: 610px) {
+    .forum-theme .forum-theme__info {
+        display: block;
+    }
+    .forum-theme .forum-theme__info .info {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    .breadcumps > *:not(.last-bread) {
+        display: none;
+    }
+    .last-bread {
+        display: inline-block;
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 500;
+
+        padding: 3px 7px;
+        border-radius: 3px;
+
+        background: var(--btn-invincible-color);
+    }
+    .last-bread i {
+        display: inline-block;
+    }
+
+    .forum-single .stats {
+        flex-direction: column;
+    }
+    .forum-single .stats .left {
+        margin-bottom: 5px;
+    }
+}

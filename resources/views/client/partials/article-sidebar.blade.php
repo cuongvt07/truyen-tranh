@@ -2,7 +2,7 @@
 @if($sameAuthorArticles->count())
     <div class="list list-truyen col-xs-12">
         <div class="title-list">
-            <h4>Truyện cùng tác giả</h4>
+            <h4>{{ __('messages.ui.same_author') }}</h4>
         </div>
         @foreach($sameAuthorArticles as $item)
             <div class="row">
@@ -23,7 +23,7 @@
 @if($suggestedArticles->count())
     <div class="list list-truyen col-xs-12">
         <div class="title-list">
-            <h4>CÓ THỂ BẠN THÍCH</h4>
+            <h4>{{ __('messages.ui.you_may_like') }}</h4>
         </div>
         @foreach($suggestedArticles as $item)
             <div class="row">

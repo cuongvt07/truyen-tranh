@@ -1,0 +1,82 @@
+.flex-content {
+    position: relative;
+}
+.main {
+    width: calc(100% - 300px);
+}
+
+.main form {
+    margin-bottom: 20px;
+}
+.second-information {
+    position: sticky;
+    top: 80px;
+    float: right;
+    height: calc(100vh - 87px);
+    max-width: 265px;
+}
+.second-information .search button {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+.filter-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    height: 100%;
+}
+.filter-container .filters {
+    height: 100%;
+    overflow: auto;
+}
+.filter-container .btns {    
+    display: grid;
+    width: 100%;
+    gap: 10px;
+    grid-template-columns: 1fr 1fr;
+}
+.expand {
+    padding: 5px 0;
+    margin-bottom: 5px;
+    user-select: none;
+    border-bottom: 1px solid var(--input-border-color);
+}
+.second-information .option,
+.expand {
+    margin-bottom: 5px;
+}
+.expand .name{
+    font-weight: 500;
+    cursor: pointer;
+}
+.second-information .filter-name {
+    font-weight: 500;
+}
+.expand-content {
+    padding-left: 5px;
+    margin-top: 10px;
+}
+.filters {
+    padding: 5px 0px;
+}
+.page-title__catalog {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+@media only screen and (max-width: 1055px) {
+    .flex-content {
+        flex-direction: column-reverse;
+    }
+    .second-information {
+        position: relative;
+        top: 0;
+        height: auto;
+    }
+    .second-information,
+    .main {
+        width: 100%;
+        max-width: 100%;
+    }
+}

@@ -1,74 +1,57 @@
-@extends('layout.client')
-@section('template_title')
-    {{ __($title) }}
+@extends('layout.novelight')
+
+@section('template_title', $title)
+@section('meta_description', $description ?? $title)
+
+@section('page_css')
+<link rel="stylesheet" href="{{ asset('static/core/css/catalogee8b.css') }}?ver=1.8.0">
 @endsection
 
 @section('content')
-    <div class="container" id="list-page">
-        <div class="col-xs-12 col-sm-12 col-md-9 col-truyen-main">
-            <div class="text-center"></div>
-            <div class="list list-truyen col-xs-12">
-                <div class="title-list">
-                    <h2>{{ __($title) }}</h2>
-                </div>
-                @foreach ($articles as $article)
-                    <div class="row" itemscope itemtype="https://schema.org/Book">
-                        <div class="col-xs-3">
-                            <div><img src="{{ $article->cover_image }}" class="cover" alt="title"></div>
-                        </div>
-                        <div class="col-xs-7">
-                            <div>
-                                <span class="glyphicon glyphicon-book"></span>
-                                <h3 class="truyen-title" itemprop="name">
-                                    <a href="{{ route('articles.show', $article->id) }}" title="{{ $article->title }}"
-                                       itemprop="url">
-                                        {{ $article->title }}
-                                    </a>
-                                </h3>
-                                @if ($article->is_completed)
-                                    <span class="label-title label-full"></span>
-                                @endif
-                                @foreach ($article->authors as $author)
-                                    <span class="author" itemprop="author">
-                                        <span class="glyphicon glyphicon-pencil"></span>
-                                        <a href="{{ route('authors.show', $author->id) }}" title="{{ $author->name }}"
-                                           itemprop="author">
-                                        {{ $author->name }}
-                                    </a>
-                                    </span>
-                                @endforeach
-                            </div>
-                        </div>
-                        <div class="col-xs-2 text-info">
-                            <div>
-                                @if ($article->chapters->isEmpty())
-                                    <span class="chapter-text">Chưa có chương nào</span>
-                                @else
-                                    @php
-                                        $newestChapter = $article->newest_chapter;
-                                    @endphp
-                                    <a title="{{ $newestChapter->title }}"
-                                       href="{{ route('articles.chapters.show', [$article->id, $newestChapter->number]) }}">
-                                        <span class="chapter-text">{{ $newestChapter->number_text }}</span>
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
+<div class="container">
+
+    <header class="header-manga" style="margin-bottom:0">
+        <div class="container">
+            <h1>{{ $title }}</h1>
+            @if(!empty($description))
+                <p class="meta-color" style="font-size:14px;margin-top:4px">{{ $description }}</p>
+            @endif
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="manga-list block catalog-list">
+            @forelse($articles as $article)
+                @php
+                    $poster = novel_poster($article);
+                    $newest = $article->chapters->isNotEmpty() ? $article->chapters->sortByDesc('number')->first() : null;
+                @endphp
+                <a href="{{ route('articles.show', $article->id) }}" class="manga-item catalog-item">
+                    <div class="poster image image-cover lazy-load-bg">
+                        <img class="lazy-image" loading="lazy" src="{{ $poster }}" alt="{{ $article->title }}">
+                        @if($article->is_completed)
+                            <span class="label-completed" style="position:absolute;top:4px;right:4px;background:var(--primary);color:#fff;font-size:10px;padding:2px 5px;border-radius:3px">{{ __('messages.catalog.status_completed') }}</span>
+                        @endif
                     </div>
-                @endforeach
+                    <div class="manga-list__info">
+                        <div class="title clamp clamp-2">{{ $article->title }}</div>
+                        @if($article->authors->count())
+                            <div class="meta-color" style="font-size:12px"><i class="fa fa-user"></i> {{ $article->authors->first()->name }}</div>
+                        @endif
+                        @if($newest)
+                            <div class="meta-color" style="font-size:12px"><i class="fa fa-book"></i> {{ __('messages.catalog.chapter', ['number' => $newest->number]) }}</div>
+                        @endif
+                    </div>
+                </a>
+            @empty
+                <div class="nothing" style="padding:40px 0;text-align:center">{{ __('messages.catalog.no_results') }}</div>
+            @endforelse
+        </div>
+    </section>
 
+    <div style="display:flex;justify-content:center;padding:20px 0">
+        {{ $articles->links() }}
+    </div>
 
-            </div>
-        </div>
-        <div class="visible-md-block visible-lg-block col-md-3 text-center col-truyen-side">
-            @include('client.partials.right-sidebar')
-        </div>
-    </div>
-    <div class="row category">
-        <div class="container text-center pagination-container">
-            <div class="col-xs-12 col-sm-12 col-md-9 col-truyen-main">
-                {{ $articles->links() }}
-            </div>
-        </div>
-    </div>
+</div>
 @endsection

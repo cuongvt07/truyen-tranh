@@ -1,74 +1,67 @@
-@extends('layout.client')
-@section('template_title')
-    {{ __('Đăng ký') }}
+@extends('layout.novelight')
+
+@section('template_title', 'Đăng ký')
+
+@section('page_css')
+<link rel="stylesheet" href="{{ asset('static/account/css/login.css') }}?ver=1.8.0">
 @endsection
 
 @section('content')
-    <form action="{{ route('register') }}" method="POST">
-        @csrf
-        <div class="row">
-            <div class="col-sm-12">
-                <div id="login-signup-form">
-                    <div id="ctl00_mainContent_pnlStandardLogin">
-                        <div class="row">
-                            <div class="col-sm-offset-3 col-sm-6">
-                                <div class="user-page clearfix">
-                                    <div class="form-group">
-                                        <label for="username">UserName</label>
-                                        <input type="text" class="form-control" id="username" name="username"
-                                               value="{{ old('username') }}" required>
-                                        @if ($errors->has('username'))
-                                            <span class="text-danger">{{ $errors->first('username') }}</span>
-                                        @endif
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email"
-                                               value="{{ old('email') }}" placeholder="example@email.com" required
-                                               autocomplete="username">
-                                        @if ($errors->has('email'))
-                                            <span class="text-danger">{{ $errors->first('email') }}</span>
-                                        @endif
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password">Mật khẩu</label>
-                                        <input type="password" class="form-control" id="password" name="password"
-                                               value="{{ old('password') }}" required>
-                                        @if ($errors->has('password'))
-                                            <span class="text-danger">{{ $errors->first('password') }}</span>
-                                        @endif
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password_confirmation">Xác nhận mật khẩu</label>
-                                        <input type="password" class="form-control" id="password_confirmation"
-                                               name="password_confirmation" value="{{ old('password_confirmation') }}"
-                                               required>
-                                        @if ($errors->has('password_confirmation'))
-                                            <span class="text-danger">{{ $errors->first('password_confirmation') }}</span>
-                                        @endif
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="name">Họ và tên <small>(Tuỳ chọn)</small></label>
-                                        <input type="text" class="form-control" id="name" name="name"
-                                               value="{{ old('name') }}"
-                                               required>
-                                        @if ($errors->has('name'))
-                                            <span class="text-danger">{{ $errors->first('name') }}</span>
-                                        @endif
-                                    </div>
+<div class="container">
+    <div class="container-login">
+        <div id="login" class="login-form block">
+            <h2>Đăng ký</h2>
 
-                                    <div class="login-action">
-                                        <div class="form-group">
-                                            <input type="submit" value="Đăng ký" id="user-login" tabindex="10"
-                                                   class="btn btn-primary">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            @if($errors->any())
+                <div class="login-notice" style="color:#f66">
+                    @foreach($errors->all() as $e)<p>{{ $e }}</p>@endforeach
                 </div>
+            @endif
+
+            <form method="post" action="{{ route('register') }}">
+                @csrf
+
+                <div class="text-input">
+                    <div class="left-icon"><i class="fa fa-id-card"></i></div>
+                    <input type="text" name="name" placeholder="Tên hiển thị" value="{{ old('name') }}" required autofocus>
+                </div>
+
+                <div class="text-input">
+                    <div class="left-icon"><i class="fa fa-user"></i></div>
+                    <input type="text" name="username" placeholder="Tên đăng nhập" value="{{ old('username') }}" required>
+                </div>
+
+                <div class="text-input">
+                    <div class="left-icon"><i class="fa fa-envelope"></i></div>
+                    <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
+                </div>
+
+                <div class="text-input">
+                    <div class="left-icon"><i class="fa fa-key"></i></div>
+                    <input type="password" name="password" placeholder="Mật khẩu" required>
+                </div>
+
+                <div class="text-input">
+                    <div class="left-icon"><i class="fa fa-lock"></i></div>
+                    <input type="password" name="password_confirmation" placeholder="Xác nhận mật khẩu" required>
+                </div>
+
+                <div class="control-btn">
+                    <span></span>
+                    <button class="btn btn-primary" type="submit">Đăng ký</button>
+                </div>
+            </form>
+
+            <hr>
+            <div class="alternative">
+                <a href="{{ route('auth.google') }}" class="btn btn-google"><i class="fab fa-google"></i><span> Google</span></a>
             </div>
+            <p style="font-size:12px;margin-top:10px">Khi đăng ký, bạn đồng ý với
+                <a href="{{ route('pages.terms') }}">Điều khoản</a> và
+                <a href="{{ route('pages.rules') }}">Nội quy</a>.</p>
         </div>
-    </form>
+
+        <span class="account-span">Đã có tài khoản? <a href="{{ route('login') }}">Đăng nhập</a></span>
+    </div>
+</div>
 @endsection

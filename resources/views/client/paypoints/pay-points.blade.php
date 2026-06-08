@@ -1,23 +1,24 @@
-@extends('layout.client')
+@extends('layout.novelight')
+
+@section('template_title', __('messages.pay.topup_and_buy_vip'))
 
 @section('content')
 <div class="container">
-    <div class="d-flex justify-content-center mb-4" style="
-    display: flex;
-    justify-content: center;
-    margin-bottom: 15px;
-">
-        <h1 style="font-size: 24px;">Nạp Tiền vào Tài Khoản</h1>
-    </div>
+    <header class="header-manga" style="margin-bottom:10px">
+        <div class="container">
+            <h1><i class="fa fa-credit-card"></i> {{ __('messages.pay.deposit_to_account') }}</h1>
+            @auth<p class="meta-color" style="font-size:14px;margin-top:4px">{{ __('messages.pay.current_balance') }} <strong style="color:var(--primary)">{{ number_format(auth()->user()->points ?? 0) }}</strong> {{ __('messages.pay.coins') }}</p>@endauth
+        </div>
+    </header>
 
     <div class="container">
         <div class="row box">
             <!-- Cột trái: các nút nạp -->
             <div class="col-md-4 mb-4">
                 <div class="d-grid gap-3" style="display: flex; flex-direction: column; gap: 14px;">
-                    <button class="btn btn-primary py-3" id="deposit20k">💸 Nạp 20.000đ</button>
-                    <button class="btn btn-primary py-3" id="deposit50k">💸 Nạp 50.000đ</button>
-                    <button class="btn btn-primary py-3" id="deposit100k">💸 Nạp 100.000đ</button>
+                    <button class="btn btn-primary py-3" id="deposit20k">💸 {{ __('messages.pay.deposit_amount', ['amount' => '20.000đ']) }}</button>
+                    <button class="btn btn-primary py-3" id="deposit50k">💸 {{ __('messages.pay.deposit_amount', ['amount' => '50.000đ']) }}</button>
+                    <button class="btn btn-primary py-3" id="deposit100k">💸 {{ __('messages.pay.deposit_amount', ['amount' => '100.000đ']) }}</button>
                 </div>
             </div>
 
@@ -25,21 +26,21 @@
             <div class="col-md-6">
                 <div id="paymentInfo" style="display:none;">
                     <div class="card shadow p-3">
-                        <h5 class="mb-3 text-primary fw-bold" style="font-size: 24px; text-align: center;">💳 Thông tin chuyển khoản</h5>
+                        <h5 class="mb-3 text-primary fw-bold" style="font-size: 24px; text-align: center;">💳 {{ __('messages.pay.transfer_info') }}</h5>
 
                         <div class="row align-items-center box2">
                             <!-- Cột trái: thông tin -->
                             <div class="col-md-7">
                                 <ul class="list-group list-group-flush small">
-                                    <li class="list-group-item px-0"><strong>Mã giao dịch:</strong> <span
+                                    <li class="list-group-item px-0"><strong>{{ __('messages.pay.transaction_code') }}</strong> <span
                                             id="chargeId"></span></li>
-                                    <li class="list-group-item px-0"><strong>Số tiền:</strong> <span id="amount"></span>
+                                    <li class="list-group-item px-0"><strong>{{ __('messages.pay.amount') }}</strong> <span id="amount"></span>
                                     </li>
-                                    <li class="list-group-item px-0"><strong>Ngân hàng:</strong> <span id="bankName"></span>
+                                    <li class="list-group-item px-0"><strong>{{ __('messages.pay.bank') }}</strong> <span id="bankName"></span>
                                     </li>
-                                    <li class="list-group-item px-0"><strong>Số tài khoản:</strong> <span
+                                    <li class="list-group-item px-0"><strong>{{ __('messages.pay.account_number') }}</strong> <span
                                             id="accountNumber"></span></li>
-                                    <li class="list-group-item px-0"><strong>Chủ tài khoản:</strong> <span
+                                    <li class="list-group-item px-0"><strong>{{ __('messages.pay.account_holder') }}</strong> <span
                                             id="accountHolder"></span></li>
                                 </ul>
                             </div>
@@ -52,13 +53,13 @@
 
                                     <!-- Đang kiểm tra -->
                                     <p class="text-muted mt-2" id="checkingText" style="font-size: 14px;">
-                                        Đang kiểm tra<span id="dots">.</span>
+                                        {{ __('messages.pay.checking') }}<span id="dots">.</span>
                                     </p>
 
                                     <!-- Dấu tích khi thành công -->
                                     <div id="successCheck" class="mt-2" style="display: none;">
                                         <span style="font-size: 40px; color: green;">✔️</span>
-                                        <p class="text-success fw-bold mt-1">Thanh toán thành công!</p>
+                                        <p class="text-success fw-bold mt-1">{{ __('messages.pay.payment_success') }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -74,7 +75,7 @@
         <div class="row box">
             <div class="col-md-12 mb-4">
                 <div class="d-grid gap-3" style="display: flex; flex-direction: column; gap: 14px;">
-                     <h5 class="mb-3 text-primary fw-bold" style="font-size: 24px; text-align: center;">🌟 Mua Gói VIP</h5>
+                     <h5 class="mb-3 text-primary fw-bold" style="font-size: 24px; text-align: center;">🌟 {{ __('messages.pay.buy_vip_package') }}</h5>
                     <div style="display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;">
                         @foreach(getPremiumPackages() as $i => $package)
                             <div class="package-option d-flex flex-column align-items-center text-center p-4" id="deposit{{$package['coins']}}" onclick="selectVipPackage({{ $i }})">
@@ -83,7 +84,7 @@
                                     <p class="package-price">{{ number_format($package['coins']) }} xu</p>
                                 </div>
                                 <div class="package-duration" style="font-size: 14px; color: #6c757d;">
-                                    <span>{{ $package['days'] }} ngày VIP</span>
+                                    <span>{{ $package['days'] }} {{ __('messages.pay.vip_days') }}</span>
                                 </div>
                                 <div class="package-status" style="margin-top: 10px;">
                                     <?php
@@ -91,9 +92,9 @@
                                     ?>
                                     @if(isset($userPoints))
                                         @if($userPoints >= $package['coins'])
-                                            <span class="status-available">Đủ điểm để đăng ký!</span>
+                                            <span class="status-available">{{ __('messages.pay.enough_points') }}</span>
                                         @else
-                                            <span class="status-unavailable">Không đủ điểm để đăng ký!</span>
+                                            <span class="status-unavailable">{{ __('messages.pay.not_enough_points') }}</span>
                                         @endif
                                     @endif
                                 </div>
@@ -107,8 +108,8 @@
                 <div class="popup-content">
                     <p id="vipConfirmMessage"></p>
                     <div class="d-flex justify-content-center">
-                        <button id="confirmVipBtn" class="btn btn-success">Xác nhận</button>
-                        <button id="cancelVipBtn" class="btn btn-danger">Hủy</button>
+                        <button id="confirmVipBtn" class="btn btn-success">{{ __('messages.pay.confirm') }}</button>
+                        <button id="cancelVipBtn" class="btn btn-danger">{{ __('messages.pay.cancel') }}</button>
                     </div>
                 </div>
             </div>
@@ -116,14 +117,14 @@
             <!-- Thông tin Gói VIP -->
             <div class="col-md-12" id="vipInfo" style="display: none;">
                 <div class="card shadow p-3">
-                    <h5 class="mb-3 text-primary fw-bold" style="font-size: 24px; text-align: center;">💳 Thông tin Gói VIP</h5>
+                    <h5 class="mb-3 text-primary fw-bold" style="font-size: 24px; text-align: center;">💳 {{ __('messages.pay.vip_package_info') }}</h5>
 
                     <div class="row align-items-center box2">
                         <div class="col-md-7">
                             <ul class="list-group list-group-flush small">
-                                <li class="list-group-item px-0"><strong>Mã giao dịch:</strong> <span id="vipChargeId"></span></li>
-                                <li class="list-group-item px-0"><strong>Số tiền:</strong> <span id="vipAmount"></span></li>
-                                <li class="list-group-item px-0"><strong>Loại gói:</strong> <span id="vipPackage"></span></li>
+                                <li class="list-group-item px-0"><strong>{{ __('messages.pay.transaction_code') }}</strong> <span id="vipChargeId"></span></li>
+                                <li class="list-group-item px-0"><strong>{{ __('messages.pay.amount') }}</strong> <span id="vipAmount"></span></li>
+                                <li class="list-group-item px-0"><strong>{{ __('messages.pay.package_type') }}</strong> <span id="vipPackage"></span></li>
                             </ul>
                         </div>
 
@@ -132,12 +133,12 @@
                             <div id="vipQrCodeContainer" style="display:none; display: block;width: 350px;">
                                 <img src="" id="vipQrCodeImage" alt="QR Code"
                                     style="max-width: 100%; border: 1px solid #ddd; padding: 5px; border-radius: 10px;">
-                                <p class="text-muted mt-2" id="vipCheckingText" style="font-size: 14px;">Đang kiểm tra<span id="vipDots">.</span></p>
+                                <p class="text-muted mt-2" id="vipCheckingText" style="font-size: 14px;">{{ __('messages.pay.checking') }}<span id="vipDots">.</span></p>
 
                                 <!-- Dấu tích khi thành công -->
                                 <div id="vipSuccessCheck" class="mt-2" style="display: none;">
                                     <span style="font-size: 40px; color: green;">✔️</span>
-                                    <p class="text-success fw-bold mt-1">Thanh toán Gói VIP thành công!</p>
+                                    <p class="text-success fw-bold mt-1">{{ __('messages.pay.vip_payment_success') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -361,7 +362,7 @@ function selectVipPackage(packageId) {
     if (userPoints >= coins) {
         showVipConfirmPopup(packageId, coins);
     } else {
-        const confirmation = confirm('Bạn không đủ điểm để đăng ký VIP. Bạn có muốn nạp thêm không?');
+        const confirmation = confirm('{{ __('messages.pay.not_enough_points_topup_prompt') }}');
         if (confirmation) {
             window.location.href = '{{ route('client.paypoints') }}';
         }
@@ -372,7 +373,10 @@ function showVipConfirmPopup(packageId, coins) {
     const package = @json(getPremiumPackages());
     const selectedPackage = package[packageId];
 
-    const message = `Xác nhận mua gói:\nTên gói: ${selectedPackage.name}\nGiá: ${selectedPackage.coins} xu\nSố ngày VIP: ${selectedPackage.days}`;
+    const message = @json(__('messages.pay.confirm_buy_title')) + '\n'
+        + @json(__('messages.pay.label_package')) + ' ' + selectedPackage.name + '\n'
+        + @json(__('messages.pay.label_price')) + ' ' + selectedPackage.coins + ' ' + @json(__('messages.pay.coins')) + '\n'
+        + @json(__('messages.pay.label_vip_days')) + ' ' + selectedPackage.days;
 
     document.getElementById('vipConfirmMessage').innerText = message;
 
@@ -399,14 +403,14 @@ function purchaseVip(packageId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message + ' Hạn VIP: ' + data.vip_end);
+            alert(data.message + ' ' + @json(__('messages.pay.vip_deadline')) + ' ' + data.vip_end);
             window.location.reload();
         } else {
             alert(data.message);
         }
     })
     .catch(err => {
-        alert('Có lỗi xảy ra: ' + err);
+        alert(@json(__('messages.pay.error_occurred')) + ' ' + err);
     });
 }
 

@@ -1,0 +1,12 @@
+article_tag
+articles_authors
+articles_genres
+authors
+bookmarks
+chapters
+comment_reports
+comment_votes
+comments
+genres
+reading_histories
+tags

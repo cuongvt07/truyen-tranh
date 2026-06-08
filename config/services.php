@@ -31,4 +31,17 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'google' => [
+        'client_id'     => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect'      => env('GOOGLE_REDIRECT_URI', env('APP_URL') . '/auth/google/callback'),
+    ],
+
+    'paypal' => [
+        'client_id'  => env('PAYPAL_CLIENT_ID'),
+        'secret'     => env('PAYPAL_SECRET'),
+        'mode'       => env('PAYPAL_MODE', 'sandbox'),
+        'webhook_id' => env('PAYPAL_WEBHOOK_ID'), // từ PayPal developer dashboard
+    ],
+
 ];

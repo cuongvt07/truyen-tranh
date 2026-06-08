@@ -1,0 +1,85 @@
+h1,
+.h1 {
+    font-size: 26px;
+    font-family: var(--h-font);
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.character-mobile-header {
+    display: none;
+}
+.character-mobile-info {
+    display: none;
+}
+.character-tag {
+    font-weight: 500;
+}
+.character-block {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 20px;
+}
+.poster button {
+    width: 100%;
+    margin-bottom: 5px;
+}
+.character-block .poster .image {
+    max-height: 240px;
+    width: 150px;
+}
+.character-block .poster {
+    margin-bottom: 20px;
+}
+form p{
+    margin-bottom: 10px;
+}
+form p > label {
+    display: block;
+}
+.form-suggestion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.form-suggestion .user {
+    display: flex;
+    color: var(--text-color);
+    text-decoration: none;
+}
+.form-suggestion .user .small-text {
+    font-size: 13px;
+}
+.form-suggestion .user .nickname {
+    font-weight: 500;
+}
+.form-suggestion .control-btns {
+    display: flex;
+}
+.form-suggestion .btn {
+    margin: 0 10px;
+}
+.history .btn {
+    margin-bottom: 10px;
+}
+@media only screen and (max-width: 500px) {
+    h1,
+    .h1,
+    .character-tag {
+        display: block;
+        text-align: center;
+    }
+    .character-mobile-header {
+        display: block;
+    }
+    .character-info .character-tag,
+    h1 {
+        display: none;
+    }
+    .character-block {
+        display: block;
+    }
+    .character-block .poster .image {
+        width: 150px;
+        margin: 0 auto;
+    }
+}

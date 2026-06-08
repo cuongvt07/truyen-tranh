@@ -9,8 +9,20 @@ class Chapter extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'content', 'number', 'article_id'];
+    protected $fillable = ['title', 'content', 'number', 'article_id', 'credit_cost'];
     protected $perPage = 50;
+
+    protected static function booted(): void
+    {
+        // Làm mới sitemap khi chương thêm/sửa/xoá; bỏ qua khi chỉ tăng lượt xem.
+        static::saved(function (self $chapter) {
+            $ignore = ['view', 'updated_at'];
+            if (count(array_diff(array_keys($chapter->getChanges()), $ignore)) > 0) {
+                bump_sitemap_version();
+            }
+        });
+        static::deleted(fn () => bump_sitemap_version());
+    }
 
     protected function getViewTextAttribute(): string
     {
@@ -51,6 +63,28 @@ class Chapter extends Model
     public function article(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Article::class, 'article_id', 'id');
+    }
+
+    public function unlocks(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ChapterUnlock::class, 'chapter_id', 'id');
+    }
+
+    /**
+     * Returns the credit cost to unlock this chapter.
+     * Returns 0 if the chapter is free (below credit_start_chapter or no config).
+     */
+    public function getEffectiveCreditCost(Article $article): int
+    {
+        $start = $article->credit_start_chapter;
+        if ($start === null || $this->number < $start) {
+            return 0;
+        }
+        // Per-chapter override takes precedence over article default
+        if ($this->credit_cost !== null) {
+            return (int) $this->credit_cost;
+        }
+        return (int) $article->credit_per_chapter;
     }
 
     public function increaseViewCount()

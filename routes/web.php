@@ -49,8 +49,26 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/banned',
         [UserAuthController::class, 'handleBanned'])
         ->name('users.handle_banned');
-    Route::post('/vip/buy', 
+    Route::post('/vip/buy',
         [BuyPackageVipController::class, 'buyVip'])->name('vip.buy');
+
+    // Đăng & quản lý truyện của user (scoped own, giao diện novelight)
+    Route::get('/dang-truyen', [\App\Http\Controllers\Client\MyArticleController::class, 'create'])->name('my-articles.create');
+    Route::post('/dang-truyen', [\App\Http\Controllers\Client\MyArticleController::class, 'store'])->name('my-articles.store');
+    Route::get('/truyen-cua-toi', [\App\Http\Controllers\Client\MyArticleController::class, 'index'])->name('my-articles.index');
+    Route::get('/truyen-cua-toi/{article}/sua', [\App\Http\Controllers\Client\MyArticleController::class, 'edit'])->name('my-articles.edit');
+    Route::patch('/truyen-cua-toi/{article}', [\App\Http\Controllers\Client\MyArticleController::class, 'update'])->name('my-articles.update');
+    Route::delete('/truyen-cua-toi/{article}', [\App\Http\Controllers\Client\MyArticleController::class, 'destroy'])->name('my-articles.destroy');
+    Route::get('/truyen-cua-toi/{article}/them-chuong', [\App\Http\Controllers\Client\MyArticleController::class, 'createChapter'])->name('my-articles.create_chapter');
+    Route::post('/truyen-cua-toi/{article}/them-chuong', [\App\Http\Controllers\Client\MyArticleController::class, 'storeChapter'])->name('my-articles.store_chapter');
+
+    // Nhân vật / Nhóm dịch / Bộ sưu tập (community, scoped owner)
+    Route::get('/nhan-vat/them', [\App\Http\Controllers\Client\CharacterController::class, 'create'])->name('characters.create');
+    Route::resource('characters', \App\Http\Controllers\Client\CharacterController::class)->except(['create', 'show'])->parameters(['characters' => 'id']);
+    Route::get('/nhom-dich/them', [\App\Http\Controllers\Client\TeamController::class, 'create'])->name('teams.create');
+    Route::resource('teams', \App\Http\Controllers\Client\TeamController::class)->except(['create', 'show'])->parameters(['teams' => 'id']);
+    Route::get('/bo-suu-tap/them', [\App\Http\Controllers\Client\CollectionController::class, 'create'])->name('collections.create');
+    Route::resource('collections', \App\Http\Controllers\Client\CollectionController::class)->except(['create', 'show'])->parameters(['collections' => 'id']);
     // articles
     //      articles - comments
     Route::post('/articles/{article}/comments',
@@ -59,6 +77,12 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/articles/{article}/comments/{comment}',
         [CommentController::class, 'destroy'])
         ->name('articles.comments.destroy');
+    Route::post('/comments/{comment}/vote',
+        [CommentController::class, 'vote'])
+        ->name('comments.vote');
+    Route::post('/comments/{comment}/report',
+        [CommentController::class, 'report'])
+        ->name('comments.report');
     //      articles - bookmarks
     Route::post('/articles/{article}/bookmarks',
         [BookmarkController::class, 'store'])
@@ -89,11 +113,21 @@ Route::middleware(['auth'])->group(function () {
                     Route::resource('authors', AuthorController::class);
                     // genres
                     Route::resource('genres', GenreController::class);
-                    // menus
-                    Route::resource('menus', MenuController::class);
+                    // menus (WordPress-style: kéo-thả 1 trang, cha-con dropdown)
+                    Route::get('menus', [MenuController::class, 'index'])->name('menus.index');
+                    Route::post('menus/{menu}/items', [MenuController::class, 'storeItem'])->name('menus.items.store');
+                    Route::put('menu-items/{item}', [MenuController::class, 'updateItem'])->name('menus.items.update');
+                    Route::delete('menu-items/{item}', [MenuController::class, 'destroyItem'])->name('menus.items.destroy');
+                    Route::post('menus/{menu}/reorder', [MenuController::class, 'reorder'])->name('menus.reorder');
                     // settings
                     Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
                     Route::post('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+                    // ads (quảng cáo)
+                    Route::post('ads/{ad}/toggle', [\App\Http\Controllers\Admin\AdController::class, 'toggle'])->name('ads.toggle');
+                    Route::resource('ads', \App\Http\Controllers\Admin\AdController::class)->except('show');
+                    // SEO settings
+                    Route::get('/seo', [\App\Http\Controllers\Admin\SeoController::class, 'settings'])->name('seo.settings');
+                    Route::post('/seo', [\App\Http\Controllers\Admin\SeoController::class, 'updateSettings'])->name('seo.update');
                     // users
                     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
                     Route::get('/users/admin',
@@ -154,12 +188,66 @@ Route::middleware(['auth'])->group(function () {
                 [ArticleController::class, 'updateCompleteStatus'])
                 ->name('articles.change_complete_status');
             Route::resource('articles', ArticleController::class);
+
+            // Module cộng đồng (admin/poster quản lý toàn bộ)
+            Route::resource('characters', \App\Http\Controllers\Admin\CharacterController::class)->except('show');
+            Route::resource('teams', \App\Http\Controllers\Admin\TeamController::class)->except('show');
+            Route::resource('collections', \App\Http\Controllers\Admin\CollectionController::class)->except('show');
+
+            // Tags (quản lý + gộp)
+            Route::get('tags', [\App\Http\Controllers\Admin\TagController::class, 'index'])->name('tags.index');
+            Route::post('tags', [\App\Http\Controllers\Admin\TagController::class, 'store'])->name('tags.store');
+            Route::patch('tags/{tag}', [\App\Http\Controllers\Admin\TagController::class, 'update'])->name('tags.update');
+            Route::delete('tags/{tag}', [\App\Http\Controllers\Admin\TagController::class, 'destroy'])->name('tags.destroy');
+            Route::post('tags/merge', [\App\Http\Controllers\Admin\TagController::class, 'merge'])->name('tags.merge');
+
+            // Chương toàn cục
+            Route::get('chapters', [ChapterController::class, 'allIndex'])->name('chapters.all');
+
+            // Quản lý bình luận (moderation)
+            Route::get('comments', [\App\Http\Controllers\Admin\CommentController::class, 'index'])->name('comments.index');
+            Route::delete('comments/{comment}', [\App\Http\Controllers\Admin\CommentController::class, 'destroy'])->name('comments.destroy');
+            Route::post('comments/bulk-destroy', [\App\Http\Controllers\Admin\CommentController::class, 'bulkDestroy'])->name('comments.bulk_destroy');
+            // Báo cáo bình luận
+            Route::get('comment-reports', [\App\Http\Controllers\Admin\CommentController::class, 'reports'])->name('comment_reports.index');
+            Route::post('comment-reports/{comment}/resolve', [\App\Http\Controllers\Admin\CommentController::class, 'resolveReports'])->name('comment_reports.resolve');
+
+            // ===== MODULE CREDIT =====
+            // Gói Credit (CRUD)
+            Route::resource('credit-packages', \App\Http\Controllers\Admin\CreditPackageController::class)->except('show');
+            // Giao dịch
+            Route::get('transactions', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('transactions.index');
+            Route::get('transactions/{transaction}', [\App\Http\Controllers\Admin\TransactionController::class, 'show'])->name('transactions.show');
+            Route::patch('transactions/{transaction}/status', [\App\Http\Controllers\Admin\TransactionController::class, 'updateStatus'])->name('transactions.update-status');
+            // VIP
+            Route::get('vips', [\App\Http\Controllers\Admin\VipController::class, 'index'])->name('vips.index');
+            Route::get('vips/create', [\App\Http\Controllers\Admin\VipController::class, 'create'])->name('vips.create');
+            Route::post('vips', [\App\Http\Controllers\Admin\VipController::class, 'store'])->name('vips.store');
+            Route::delete('vips/{vip}', [\App\Http\Controllers\Admin\VipController::class, 'destroy'])->name('vips.destroy');
         });
 });
 require __DIR__.'/auth.php';
 
 
 // Route guest
+// SEO public
+Route::get('/robots.txt', [\App\Http\Controllers\SeoController::class, 'robots'])->name('seo.robots');
+Route::get('/sitemap.xml', [\App\Http\Controllers\SeoController::class, 'sitemap'])->name('seo.sitemap');
+Route::get('/sitemap-pages.xml', [\App\Http\Controllers\SeoController::class, 'sitemapPages'])->name('seo.sitemap.pages');
+Route::get('/sitemap-genres.xml', [\App\Http\Controllers\SeoController::class, 'sitemapGenres'])->name('seo.sitemap.genres');
+Route::get('/sitemap-authors.xml', [\App\Http\Controllers\SeoController::class, 'sitemapAuthors'])->name('seo.sitemap.authors');
+Route::get('/sitemap-articles.xml', [\App\Http\Controllers\SeoController::class, 'sitemapArticles'])->name('seo.sitemap.articles');
+Route::get('/sitemap-chapters-{page}.xml', [\App\Http\Controllers\SeoController::class, 'sitemapChapters'])->where('page', '[0-9]+')->name('seo.sitemap.chapters');
+
+// đổi ngôn ngữ
+Route::get('/locale/{locale}', function (string $locale) {
+    if (array_key_exists($locale, config('locales.supported', []))) {
+        session()->put('locale', $locale);
+        cookie()->queue(cookie('locale', $locale, 60 * 24 * 365));
+    }
+    return redirect()->back();
+})->name('locale.switch');
+
 // home
 Route::get('/',
     [HomeController::class, 'index'])
@@ -176,6 +264,31 @@ Route::get('/moi-cap-nhat',
 Route::get('/da-hoan-thanh',
     [HomeController::class, 'showCompletedArticles'])
     ->name('home.show_completed_articles');
+// catalog (lọc truyện)
+Route::get('/catalog',
+    [App\Http\Controllers\Client\CatalogController::class, 'index'])
+    ->name('catalog.index');
+// live search (instant)
+Route::get('/ajax/search-live',
+    [App\Http\Controllers\Client\CatalogController::class, 'liveSearch'])
+    ->name('catalog.live_search');
+// trang tĩnh
+Route::get('/faq', [App\Http\Controllers\Client\PageController::class, 'faq'])->name('pages.faq');
+Route::get('/rules', [App\Http\Controllers\Client\PageController::class, 'rules'])->name('pages.rules');
+Route::get('/dmca', [App\Http\Controllers\Client\PageController::class, 'dmca'])->name('pages.dmca');
+Route::get('/terms', [App\Http\Controllers\Client\PageController::class, 'terms'])->name('pages.terms');
+Route::get('/feedback', [App\Http\Controllers\Client\PageController::class, 'feedback'])->name('pages.feedback');
+Route::get('/pricing', [App\Http\Controllers\Client\PageController::class, 'pricing'])->name('pages.pricing');
+
+// PayPal webhook (no auth, no CSRF — excluded in VerifyCsrfToken)
+Route::post('/paypal/webhook', [App\Http\Controllers\PaypalController::class, 'webhook'])->name('paypal.webhook');
+
+// PayPal checkout (yêu cầu đăng nhập)
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout/{creditPackage}', [App\Http\Controllers\PaypalController::class, 'checkout'])->name('checkout.show');
+    Route::post('/paypal/create-order',  [App\Http\Controllers\PaypalController::class, 'createOrder'])->name('paypal.create_order');
+    Route::post('/paypal/capture-order', [App\Http\Controllers\PaypalController::class, 'captureOrder'])->name('paypal.capture_order');
+});
 // genres
 Route::get('/genres/{genre}',
     [App\Http\Controllers\Client\GenreController::class, 'show'])
@@ -188,6 +301,7 @@ Route::get('/articles/{article}/chapters/{number}',
     [\App\Http\Controllers\Client\ChapterController::class, 'show'])
     ->name('articles.chapters.show');
 Route::post('articles/{article}/chapters/{number}/mark-ad-clicked', [\App\Http\Controllers\Client\ChapterController::class, 'markAdClicked'])->name('articles.chapters.markAdClicked');
+Route::post('articles/{article}/chapters/{number}/unlock', [\App\Http\Controllers\Client\ChapterController::class, 'unlock'])->name('articles.chapters.unlock')->middleware('auth');
 // authors
 Route::get('/authors/{author}',
     [\App\Http\Controllers\Client\AuthorController::class, 'show'])
@@ -204,6 +318,16 @@ Route::get('/users/{user?}', [UserAuthController::class, 'show'])
 Route::get('/users/{user}/comments',
     [UserAuthController::class, 'showComments'])
     ->name('users.show_comments');
+// các tab profile bổ sung (clone novelight)
+Route::get('/users/{user}/notifications', [UserAuthController::class, 'notifications'])->name('users.notifications');
+Route::get('/users/{user}/collections', [UserAuthController::class, 'collections'])->name('users.collections');
+Route::get('/users/{user}/teams', [UserAuthController::class, 'teams'])->name('users.teams');
+Route::get('/users/{user}/favourites', [UserAuthController::class, 'favourites'])->name('users.favourites');
+Route::get('/users/{user}/transactions', [UserAuthController::class, 'transactions'])->name('users.transactions');
+Route::get('/users/{user}/achievements', [UserAuthController::class, 'achievements'])->name('users.achievements');
+Route::get('/users/{user}/suggestions', [UserAuthController::class, 'suggestions'])->name('users.suggestions');
+Route::get('/users/{user}/banlist', [UserAuthController::class, 'banlist'])->name('users.banlist');
+Route::get('/users/{user}/history', [UserAuthController::class, 'readingHistory'])->name('users.reading_history');
 
 Route::post('/generate-qr', [PaymentController::class, 'createDeposit'])->name('generate.qr');
 Route::get('/paypoints', [PaymentController::class, 'showPaypoints'])

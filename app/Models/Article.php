@@ -24,7 +24,34 @@ class Article extends Model
         }
     }
 
-    protected $fillable = ['title', 'description', 'user_id', 'cover_image', 'affi_link', 'affi_image'];
+    protected $fillable = [
+        'title', 'alt_title', 'illustrator', 'description', 'user_id',
+        'cover_image', 'background_image',
+        'affi_link', 'affi_image',
+        'novel_type', 'is_adult', 'year_of_release', 'country',
+        'is_completed', 'rating', 'rating_count',
+        'similar_article_ids', 'translation_request_article_ids',
+        'related_genre_ids', 'view',
+        'credit_start_chapter', 'credit_per_chapter',
+    ];
+
+    protected $casts = [
+        'similar_article_ids' => 'array',
+        'translation_request_article_ids' => 'array',
+        'related_genre_ids' => 'array',
+    ];
+
+    protected static function booted(): void
+    {
+        // Làm mới sitemap khi nội dung đổi; bỏ qua thay đổi chỉ liên quan lượt xem/đánh giá.
+        static::saved(function (self $article) {
+            $ignore = ['view', 'rating', 'rating_count', 'updated_at'];
+            if (count(array_diff(array_keys($article->getChanges()), $ignore)) > 0) {
+                bump_sitemap_version();
+            }
+        });
+        static::deleted(fn () => bump_sitemap_version());
+    }
 
     protected function getCompletedTextAttribute()
     {
@@ -46,7 +73,8 @@ class Article extends Model
 
     protected function getChaptersTextAttribute()
     {
-        $value = $this->chapters->count();
+        // Dùng chapters_count (withCount) nếu có để tránh load toàn bộ chương (N+1)
+        $value = $this->chapters_count ?? $this->chapters()->count();
         return $value.' chương';
     }
 
@@ -110,6 +138,21 @@ class Article extends Model
         return $this->hasMany(Chapter::class, 'article_id', 'id');
     }
 
+    public function tags(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'article_tag');
+    }
+
+    public function characters(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Character::class, 'article_character');
+    }
+
+    public function collections(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Collection::class, 'collection_article');
+    }
+
     public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Comment::class, 'article_id', 'id');
@@ -157,7 +200,17 @@ class Article extends Model
 
     public function getNewestCommentsPaginate($perPage = 10
     ): \Illuminate\Contracts\Pagination\LengthAwarePaginator {
-        return self::comments()->orderByDesc('updated_at')
+        return self::comments()
+            ->whereNull('parent_id')                       // chỉ comment gốc
+            ->with([
+                'user',
+                'votes',
+                'replies' => function ($q) {
+                    return $q->with(['user', 'votes']);
+                },
+            ])
+            ->orderByDesc('score')
+            ->orderByDesc('created_at')
             ->paginate($perPage, ['*'], 'comment_page');
     }
 

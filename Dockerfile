@@ -1,46 +1,100 @@
-FROM php:8.1-fpm
+# syntax=docker/dockerfile:1.7
 
-# Cài các gói hệ thống cần thiết
-RUN apt-get update && apt-get install -y \
-    git curl zip unzip libpng-dev libonig-dev libxml2-dev libzip-dev \
-    libjpeg-dev libfreetype6-dev nginx \
- && docker-php-ext-configure gd --with-freetype --with-jpeg \
- && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
- && apt-get clean && rm -rf /var/lib/apt/lists/*
+FROM composer:2 AS vendor
 
-# Cài Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+WORKDIR /app
 
-# Thiết lập thư mục làm việc
-WORKDIR /var/www
-
-# Copy toàn bộ mã nguồn (sau khi composer xong để tránh rebuild khi code thay đổi)
-COPY . .
-
-# Copy composer files trước để tận dụng cache khi không thay đổi code
 COPY composer.json composer.lock ./
+RUN --mount=type=cache,target=/tmp/cache/composer \
+    composer install \
+        --no-dev \
+        --prefer-dist \
+        --no-interaction \
+        --no-progress \
+        --no-scripts \
+        --optimize-autoloader
 
-# Cài dependencies Laravel (chỉ install, không update)
-RUN composer install --no-dev --optimize-autoloader
+COPY . .
+RUN composer dump-autoload --no-dev --classmap-authoritative
 
-# Chỉnh quyền thư mục
-RUN chown -R www-data:www-data /var/www \
- && chmod -R 775 storage bootstrap/cache
 
-# Copy file .env nếu cần (tùy bạn giữ sẵn trong project)
-COPY .env .env
+FROM node:22-alpine AS frontend
 
-# Laravel optimize thủ công – KHÔNG chạy migrate ở đây
-RUN php artisan config:cache \
- && php artisan route:cache \
- && php artisan view:cache \
- || true
+WORKDIR /app
 
-# User chạy PHP-FPM
+COPY package*.json ./
+RUN --mount=type=cache,target=/root/.npm \
+    if [ -f package.json ]; then \
+        if [ -f package-lock.json ]; then npm ci; else npm install; fi; \
+    fi
+
+COPY . .
+RUN if [ -f package.json ]; then npm run build; fi \
+    && mkdir -p public/build
+
+
+FROM php:8.3-fpm-alpine AS app
+
+WORKDIR /var/www/html
+
+ENV OPCACHE_VALIDATE_TIMESTAMPS=0 \
+    OPCACHE_REVALIDATE_FREQ=0
+
+RUN apk add --no-cache \
+        bash \
+        curl \
+        freetype \
+        icu-libs \
+        libjpeg-turbo \
+        libpng \
+        libzip \
+        mysql-client \
+    && apk add --no-cache --virtual .build-deps \
+        $PHPIZE_DEPS \
+        freetype-dev \
+        icu-dev \
+        libjpeg-turbo-dev \
+        libpng-dev \
+        libzip-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j"$(nproc)" \
+        bcmath \
+        exif \
+        gd \
+        intl \
+        opcache \
+        pcntl \
+        pdo_mysql \
+        zip \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && apk del .build-deps
+
+COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+
+COPY --from=vendor --chown=www-data:www-data /app /var/www/html
+COPY --from=frontend --chown=www-data:www-data /app/public/build /var/www/html/public/build
+
+RUN mkdir -p \
+        storage/app/public \
+        storage/framework/cache \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs \
+        bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod +x /usr/local/bin/entrypoint.sh scripts/backup-comics-db.sh scripts/export-db.sh scripts/import-db.sh
+
 USER www-data
 
-# Expose port cho PHP-FPM
-EXPOSE 9000
-
-# Khởi động
+ENTRYPOINT ["entrypoint.sh"]
 CMD ["php-fpm"]
+
+
+FROM nginx:1.27-alpine AS nginx
+
+WORKDIR /var/www/html
+
+COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=app /var/www/html/public /var/www/html/public

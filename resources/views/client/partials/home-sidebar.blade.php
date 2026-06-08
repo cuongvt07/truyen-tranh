@@ -1,6 +1,6 @@
 <div class="list list-truyen list-cat col-xs-12">
     <div class="title-list" onclick="toggleGenres()" style="display: flex; justify-content: space-between; align-items: center;">
-        <h4>Thể loại</h4>
+        <h4>{{ __('messages.ui.genres') }}</h4>
         <i id="genre-arrow" class="fa fa-chevron-down" aria-hidden="true"></i>
     </div>
     <div class="row" id="genre-content" style="display: none;">

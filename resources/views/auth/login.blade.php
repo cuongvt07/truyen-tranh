@@ -1,69 +1,50 @@
-@extends('layout.client')
+@extends('layout.novelight')
 
-@section('template_title')
-    {{ __('Đăng nhập') }}
+@section('template_title', 'Đăng nhập')
+
+@section('page_css')
+<link rel="stylesheet" href="{{ asset('static/account/css/login.css') }}?ver=1.8.0">
 @endsection
 
 @section('content')
-<form action="{{ route('login.post') }}" method="POST">
-    @csrf
-    <div class="row">
-        <div class="col-sm-12">
-            <div id="login-signup-form">
-                <div id="ctl00_mainContent_pnlStandardLogin">
-                    <div class="row">
-                        <div class="col-sm-offset-3 col-sm-6">
-                            <div class="user-page clearfix">
-                                {{-- Login: email hoặc username --}}
-                                <div class="form-group">
-                                    <label for="login">Email hoặc tên đăng nhập</label>
-                                    <input type="text" class="form-control" id="login" name="login"
-                                           value="{{ old('login') }}" placeholder="Email hoặc Tên đăng nhập" required>
-                                    @error('login')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
+<div class="container">
+    <div class="container-login">
+        <div id="login" class="login-form block">
+            <h2>Đăng nhập</h2>
 
-                                {{-- Password --}}
-                                <div class="form-group">
-                                    <label for="password">Mật khẩu</label>
-                                    <input type="password" class="form-control" id="password" name="password" required>
-                                    @error('password')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-
-                                {{-- Remember me --}}
-                                <div class="form-group">
-                                    <input type="checkbox" id="remember" name="remember" value="true" {{ old('remember') ? 'checked' : '' }}>
-                                    <label for="remember">Ghi nhớ</label>
-                                </div>
-
-                                {{-- Actions --}}
-                                <div class="login-action">
-                                    <div class="form-group">
-                                        <a id="user-password-recovery" class="login-link" href="{{ route('password.request') }}">Quên mật khẩu</a>
-                                        <a id="user-signup-link" class="login-link" href="{{ route('register') }}">Đăng ký mới</a>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="submit" value="Đăng nhập" id="user-login" tabindex="10" class="btn btn-primary">
-                                    </div>
-                                </div>
-
-                                {{-- Nếu muốn hiện lỗi chung --}}
-                                @if ($errors->has('error'))
-                                    <div class="alert alert-danger">{{ $errors->first('error') }}</div>
-                                @endif
-                            </div>
-
-                            {{-- Social login (tuỳ chọn) --}}
-                            {{-- ... --}}
-                        </div>
-                    </div>
+            @if($errors->any())
+                <div class="login-notice" style="color:#f66">
+                    @foreach($errors->all() as $e)<p>{{ $e }}</p>@endforeach
                 </div>
+            @endif
+
+            <form method="post" action="{{ route('login') }}">
+                @csrf
+
+                <div class="text-input">
+                    <div class="left-icon"><i class="fa fa-user"></i></div>
+                    <input type="text" name="login" placeholder="Email hoặc tên đăng nhập"
+                           value="{{ old('login') }}" required autofocus>
+                </div>
+
+                <div class="text-input">
+                    <div class="left-icon"><i class="fa fa-key"></i></div>
+                    <input type="password" name="password" placeholder="Mật khẩu" required>
+                </div>
+
+                <div class="control-btn">
+                    <a class="forgot-password-link" href="{{ route('password.request') }}">Quên mật khẩu?</a>
+                    <button class="btn btn-primary" type="submit">Đăng nhập</button>
+                </div>
+            </form>
+
+            <hr>
+            <div class="alternative">
+                <a href="{{ route('auth.google') }}" class="btn btn-google"><i class="fab fa-google"></i><span> Google</span></a>
             </div>
         </div>
-    </div>
 
-</form>
+        <span class="account-span">Chưa có tài khoản? <a href="{{ route('register') }}">Đăng ký</a></span>
+    </div>
+</div>
 @endsection

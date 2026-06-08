@@ -1,50 +1,39 @@
 @extends('client.users.profile')
-@section('template_title')
-    {{ __('Thay đổi mật khẩu') }}
-@endsection
+@section('template_title', __('messages.account.change_password'))
+
 @section('user_content')
-    <div class="col-md-9 col-sm-8">
-        <div id="pnlPassword" class="user-page clearfix">
-            <h1 class="postname">
-                Đổi mật khẩu
-            </h1>
-            <div class="row">
-                <div class="col-sm-9">
-                    <form action="{{ route('password.update') }}" method="post">
-                        @csrf
-                        @method('put')
-                        @if($message = session('status'))
-                            <div class="alert alert-success" role="alert">
-                                {{ $message }}
-                            </div>
-                        @endif
-                        <div class="form-group">
-                            <label for="current_password">Mật khẩu hiện tại</label>
-                            <input value="{{ old('current_password') }}" name="current_password" id="current_password" type="password" class="form-control"/>
-                            @if ($errors->has('current_password'))
-                                <span class="text-danger">{{ $errors->first('current_password') }}</span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Mật khẩu mới</label>
-                            <input value="{{ old('password') }}" name="password" id="password" type="password" class="form-control"/>
-                            @if ($errors->has('password'))
-                                <span class="text-danger">{{ $errors->first('password') }}</span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <label for="password_confirmation">Xác nhận mật khẩu mới</label>
-                            <input name="password_confirmation" id="password_confirmation" type="password" class="form-control"/>
-                            @if ($errors->has('password_confirmation'))
-                                <span class="text-danger">{{ $errors->first('password_confirmation') }}</span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<div class="block">
+    <h2>{{ __('messages.account.change_password') }}</h2>
+
+    @if($message = session('status'))
+        <div class="alert-success" style="background:#1e3a1e;border:1px solid #2e5e2e;padding:10px 14px;border-radius:6px;margin-bottom:14px;color:#9f9">{{ $message }}</div>
+    @endif
+
+    <form action="{{ route('password.update') }}" method="post" class="auth-form">
+        @csrf @method('put')
+
+        <div class="text-input">
+            <label>{{ __('messages.account.current_password') }}</label>
+            <input type="password" name="current_password" required>
+            @error('current_password')<span style="color:#f88;font-size:12px">{{ $message }}</span>@enderror
         </div>
-    </div>
+        <div class="text-input">
+            <label>{{ __('messages.account.new_password') }}</label>
+            <input type="password" name="password" required>
+            @error('password')<span style="color:#f88;font-size:12px">{{ $message }}</span>@enderror
+        </div>
+        <div class="text-input">
+            <label>{{ __('messages.account.confirm_new_password') }}</label>
+            <input type="password" name="password_confirmation" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">{{ __('messages.account.change_password') }}</button>
+    </form>
+</div>
+
+<style>
+.auth-form .text-input { margin-bottom:14px; }
+.auth-form .text-input label { display:block; font-size:13px; margin-bottom:4px; color:var(--meta-color,#999); }
+.auth-form .text-input input { width:100%; max-width:400px; padding:9px 12px; border-radius:4px; border:1px solid var(--border,#2a2a3e); background:var(--bg,#131320); color:inherit; font-size:14px; }
+</style>
 @endsection

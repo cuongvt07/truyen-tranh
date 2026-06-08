@@ -16,6 +16,12 @@ class Author extends Model
 
     protected $fillable = ['name', 'description'];
 
+    protected static function booted(): void
+    {
+        static::saved(fn () => bump_sitemap_version());
+        static::deleted(fn () => bump_sitemap_version());
+    }
+
     public function articles(
     ): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {

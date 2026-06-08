@@ -1,515 +1,285 @@
-@extends('layout.client')
+@extends('layout.novelight')
 
-@section('template_title')
-{{ __( 'Trang chủ' ) }}
+@section('template_title', __('messages.nav.home'))
+
+@section('page_css')
+<link rel="stylesheet" href="{{ asset('static/core/css/indexee8b.css') }}?ver=1.8.0">
 @endsection
 
-@section('content')
-<div class="owl-slider">
-    <div id="carousel" class="owl-carousel">
-        @foreach($hotArticles->take(5) as $article)
-            <div class="item hot-slide">
-            <div class="slider-image" 
-                style="background-image:url('{{ $article->cover_image ?? 'https://via.placeholder.com/800x400?text='.urlencode($article->title) }}')">
-                <a href="{{ route('articles.show', $article->id) }}">
-                <span class="sr-only">{{ $article->title }}</span>
-                </a>
-            </div>
-
-            <div class="slider-content">
-                <div class="slider-content-inner">
-                <h3 class="hot-title">
-                    <a href="{{ route('articles.show', $article->id) }}">{{ $article->title }}</a>
-                </h3>
-
-                <div class="hot-genres">
-                    Thể loại : {{ $article->genres?->pluck('name')->join(' , ') }}
-                </div>
-
-                <p class="hot-desc">
-                    {{ Str::limit(strip_tags($article->description), 100) }}
-                </p>
-                </div>
-            </div>
-            </div>
-        @endforeach
-    </div>
-</div>
-
-@if(isset($banners['banner_top']))
-<div id="top_banner_above_hot_articles">
-    <a href="{{ $banners['banner_top_url'] ?? '#' }}" target="_blank">
-        <img src="{{ asset('storage/' . $banners['banner_top']) }}"
-            alt="Banner trên cùng"
-            onerror="this.onerror=null; this.src='fallback-top.png';">
-    </a>
-</div>
-@endif
-<div class="container hidden-xs" id="intro-index">
-    <div class="title-list">
-        <h2><a href="{{ route('home.show_hot_articles') }}">Được đọc nhiều nhất</a></h2>
-        <a href="{{ route('home.show_hot_articles') }}"><span class="glyphicon glyphicon-fire"></span></a>
-    </div>
-    @php $i = 1; @endphp
-    @foreach($hotArticles as $article)
-        <div class="index-intro">
-            <div class="item top-{{ $i }}" itemscope itemtype="https://schema.org/Book">
-                <a href="{{ route('articles.show', $article->id) }}" itemprop="url">
-                    @if ($article->is_completed)
-                    <span class="full-label"></span>
-                    @endif
-                    @if ($article->updated_at && $article->updated_at->isAfter(now()->subDays(1)))
-                    <span class="update-label">Mới</span>
-                    @endif
-                    <img src="{{ $article->cover_image }}" width="129" height="192" alt="#"
-                        class="img-responsive item-img" itemprop="image" />
-                    <div class="title">
-                        <h3 itemprop="name">{{ $article->title }}</h3>
-                    </div>
-                </a>
-            </div>
-        </div>
-    @php $i++; @endphp
-    @endforeach
-</div>
-
-<div class="container visible-xs" id="intro-index-mobile">
-    <div class="title-list">
-        <h2><a href="{{ route('home.show_hot_articles') }}">Được đọc nhiều nhất</a></h2>
-        <a href="{{ route('home.show_hot_articles') }}"><span class="glyphicon glyphicon-fire"></span></a>
-    </div>
-
-    <div class="section-stories-hot__list">
-        @foreach($hotArticles->take(15) as $article)
-        <div class="text-center index-intro-mobile position-relative">
-            <a href="{{ route('articles.show', $article->id) }}" class="d-block text-decoration-none position-relative">
-                @if ($article->is_completed)
-                <span class="full-label"></span>
-                @endif
-                @if ($article->updated_at && $article->updated_at->isAfter(now()->subDays(1)))
-                    <span class="update-label">Mới</span>
-                @endif
-                <div class="image-wrapper position-relative">
-                    <img src="{{ $article->cover_image }}" class="img-responsive" alt="{{ $article->title }}" />
-                    <div class="overlay-title">
-                        {{ $article->title }}
-                    </div>
-                </div>
-            </a>
-        </div>
-        @endforeach
-    </div>
-</div>
-
-<div class="container" id="list-index">
-    <div id="novel-history-main" class="list list-truyen list-history col-xs-12 col-sm-12 col-md-8 col-truyen-main">
-    </div>
-    <div class="list list-truyen list-new col-xs-12 col-sm-12 col-md-8 col-truyen-main">
-        <div class="title-list">
-            <h2>
-                <a href="{{ route('home.show_new_update_articles') }}" title="Latest Release">
-                    Mới cập nhật
-                </a>
-            </h2>
-            <a href="{{ route('home.show_new_update_articles') }}" title="Latest Release">
-                <span class="glyphicon glyphicon-menu-right"></span>
-            </a>
-        </div>
-
-        @foreach ($newUpdateArticles as $article)
-        <div class="row" itemscope="" itemtype="https://schema.org/Book">
-            <div class="col-xs-9 col-sm-6 col-md-5 col-title">
-                <span class="glyphicon glyphicon-chevron-right"></span>
-                <h3 itemprop="name">
-                    <a href="{{ route('articles.show', $article->id) }}" itemprop="url">
-                        {{ $article->title }}
-                    </a>
-                </h3>
-                <span class="label-title label-new"></span>
-                @if ($article->is_completed)
-                <span class="label-title label-full"></span>
-                @endif
-            </div>
-            <div class="hidden-xs col-sm-3 col-md-3 col-cat text-888">
-                @foreach ($article->genres as $genre)
-                <a itemprop="genre" href="{{ route('genres.show', $genre->id) }}" title="{{ $genre->name }}">{{ $genre->name }}</a>,
-                @endforeach
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-2 col-chap text-info">
-                @if ($article->chapters->isEmpty())
-                <span class="chapter-text">
-                    Chưa có chương nào
-                </span>
-                @else
-                @php
-                $newestChapter = $article->newest_chapter;
-                @endphp
-                <a title="{{ $newestChapter->title }}"
-                    href="{{ route('articles.chapters.show', [$article->id, $newestChapter->number]) }}">
-                    <span class="chapter-text">
-                        {{ $newestChapter->number_text }}
-                    </span>
-                </a>
-                @endif
-            </div>
-            <div class="hidden-xs hidden-sm col-md-2 col-time text-888">
-                {{ $article->updated_at_text }}
-            </div>
-        </div>
-        @endforeach
-    </div>
-    <div class="visible-md-block visible-lg-block col-md-4 text-center col-truyen-side">
-        @include('client.partials.right-sidebar')
-    </div>
-</div>
-
-<div class="container" id="truyen-slide">
-    <div class="list list-thumbnail col-xs-12">
-        <div class="title-list">
-            <h2>
-                <a href="{{ route('home.show_completed_articles') }}" title="Truyện đã hoàn thành">
-                    Đã hoàn thành
-                </a>
-            </h2>
-            <a href="{{ route('home.show_completed_articles') }}" title="Truyện đã hoàn thành">
-                <span class="glyphicon glyphicon-menu-right"></span>
-            </a>
-        </div>
-        <div class="row">
-            @foreach($completedArticles as $article)
-            <div class="col-xs-4 col-sm-3 col-md-2">
-                <a href="{{ route('articles.show', $article->id) }}" title="{{ $article->title }}">
-                    <img src="{{ $article->cover_image }}" width="164" height="245" alt="#" />
-                    <div class="caption">
-                        <h3>
-                            {{ $article->title }}
-                        </h3>
-                        <small class="btn-xs label-primary">
-                            Full - {{ $article->chapters->count() }} chương
-                        </small>
-                    </div>
-                </a>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</div>
-
-<!-- BANNER TRÁI -->
-<div id="left_ads_float" class="ads-float">
-    <div class="ads-close" onclick="closeBanner('left_ads_float')">×</div>
-    <a href="{{ $banners['banner_left_url'] ?? '#' }}" target="_blank">
-        <img src="{{ asset('storage/' . ($banners['banner_left'] ?? 'images/default_banner_left.jpg')) }}"
-             width="120"
-             onerror="this.onerror=null; this.src='fallback.png';" />
-    </a>
-</div>
-
-<!-- BANNER PHẢI -->
-<div id="right_ads_float" class="ads-float">
-    <div class="ads-close" onclick="closeBanner('right_ads_float')">×</div>
-    <a href="{{ $banners['banner_right_url'] ?? '#' }}" target="_blank">
-        <img src="{{ asset('storage/' . ($banners['banner_right'] ?? 'images/default_banner_right.jpg')) }}"
-             width="120"
-             onerror="this.onerror=null; this.src='fallback.png';" />
-    </a>
-</div>
-
-<!-- BANNER DƯỚI -->
-<div id="bottom_ads_float" class="ads-float">
-    <div class="ads-close" onclick="closeBanner('bottom_ads_float')">×</div>
-    <a href="{{ $banners['banner_bottom_url'] ?? '#' }}" target="_blank">
-        <img src="{{ asset('storage/' . ($banners['banner_bottom'] ?? 'images/default_banner_bottom.jpg')) }}"
-             height="90"
-             onerror="this.onerror=null; this.src='fallback.png';" />
-    </a>
-</div>
-
+@section('page_js')
+<script src="{{ asset('static/core/js/indexee8b.js') }}?ver=1.8.0"></script>
 @endsection
 
 @push('styles')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
 <style>
-.ads-close {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    width: 20px;
-    height: 20px;
-    background: #333;
-    color: #fff;
-    text-align: center;
-    line-height: 20px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 14px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
-    transition: all 0.3s ease;
+/* Thể loại: slider 1 hàng (override grid) */
+.index-tags-swiper { display: block !important; }
+.index-tags-swiper .swiper-container { overflow: hidden; }
+.index-tags-swiper .swiper-slide { height: 100px; }
+.index-tags-swiper .swiper-slide .tag {
+    display: block; position: relative; width: 100%; height: 100px;
+    background: #000; border-radius: 5px; overflow: hidden;
 }
-
-.ads-close:hover {
-    background: #ff0000;
-    transform: scale(1.1);
-}
-/* ===== Owl Slider - Full CSS (content overlay centered at bottom, no background) ===== */
-
-.sr-only {
-  position: absolute !important;
-  width: 1px; height: 1px;
-  padding: 0; margin: -1px;
-  overflow: hidden; clip: rect(0,0,0,0);
-  white-space: nowrap; border: 0;
-}
-
-.owl-slider {
-  margin-bottom: 30px;
-  max-width: 100%;
-  overflow: hidden;
-}
-
-.owl-carousel .item {
-  position: relative;
-  display: block;
-}
-
-/* Ảnh nền lặp ngang để phủ full chiều rộng */
-.slider-image {
-  width: 100%;
-  height: 300px;
-  background-repeat: repeat-x;
-  background-size: auto 100%;
-  background-position: left center;
-  position: relative;
-  overflow: hidden;
-  border-radius: 14px;
-}
-
-/* Khung “hot” phát sáng + viền gradient */
-.hot-slide .slider-image {
-  box-shadow: 0 8px 24px rgba(255, 71, 0, 0.28);
-  animation: hotGlow 2.6s ease-in-out infinite;
-}
-@keyframes hotGlow {
-  0%, 100% { box-shadow: 0 8px 24px rgba(255, 71, 0, 0.22); }
-  50%      { box-shadow: 0 10px 28px rgba(255, 120, 0, 0.34); }
-}
-
-/* Viền gradient mảnh */
-.hot-slide .slider-image::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  padding: 2px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #ff4d00, #ffb800, #ff4d00);
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
-
-/* Gradient mờ đáy ảnh để tăng độ đọc (không phải nền content) */
-.hot-slide .slider-image::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 45%;
-  background: linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0));
-  pointer-events: none;
-}
-
-/* Ribbon HOT */
-.hot-ribbon {
-  position: absolute;
-  top: 12px; left: -36px;
-  transform: rotate(-45deg);
-  background: linear-gradient(90deg, #ff4d00, #ff9a00);
-  color: #fff;
-  font-weight: 800;
-  letter-spacing: 1px;
-  padding: 8px 48px;
-  box-shadow: 0 4px 12px rgba(255,77,0,0.45);
-  z-index: 3;
-}
-.hot-ribbon span { font-size: 12px; }
-
-/* Content overlay: center bottom, no background */
-.owl-carousel .slider-content {
-  position: absolute;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 40px);
-  max-width: 960px;
-  text-align: left;
-  background: none;
-  border: 0;
-  box-shadow: none;
-  z-index: 2;
-}
-
-.owl-carousel .slider-content-inner {
-  margin: 0 auto;
-}
-
-/* Title */
-.hot-title {
-  margin: 0 0 6px;
-  font-size: 24px;
-  font-weight: 800;
-  line-height: 1.2;
-  text-transform: uppercase;
-  letter-spacing: .4px;
-}
-.hot-title a { color: #fff; text-decoration: none; }
-.hot-title a:hover { opacity: .9; }
-
-/* Genres (name joined by " / ") */
-.hot-genres {
-  font-size: 13px;
-  color: #fff;
-  margin-bottom: 8px;
-  font-weight: 600;
-  letter-spacing: .2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Description */
-.hot-desc {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #f8f8f8;
-}
-
-/* Owl nav */
-.owl-nav button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255,255,255,0.7) !important;
-  color: #333 !important;
-  border-radius: 50% !important;
-  width: 50px !important;
-  height: 50px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
-  z-index: 4;
-}
-.owl-nav button:hover { background: rgba(255,255,255,0.9) !important; }
-.owl-nav button svg { width: 20px; height: 20px; fill: #333; }
-.owl-nav button.owl-prev { left: 20px; }
-.owl-nav button.owl-next { right: 20px; }
-
-.owl-nav {
-    display: none;
-}
-
-/* Dots */
-.owl-dots {
-    position: absolute;
-    text-align: center;
-    z-index: 1;
-    top: 90%;
-    right: 5%;
-}
-.owl-dots button.owl-dot {
-  width: 12px; height: 12px;
-  border-radius: 50%;
-  margin: 0 5px;
-  background: #ccc;
-  transition: background .3s ease, transform .2s ease;
-}
-.owl-dots button.owl-dot.active {
-  background: #ff6a00; /* hợp tông HOT */
-  transform: scale(1.05);
-}
-
-/* Responsive */
-@media (max-width: 991px) {
-  .slider-image { height: 260px; }
-  .hot-title { font-size: 20px; }
-  .hot-desc  { font-size: 13px; }
-}
-@media (max-width: 767px) {
-  .slider-image { height: 220px; }
-  .owl-carousel .slider-content { bottom: 14px; }
-  .hot-title { font-size: 18px; }
-  .hot-genres { font-size: 12px; }
-}
-@media (max-width: 480px) {
-  .slider-image { height: 200px; }
-  .hot-title { font-size: 17px; }
-  .hot-desc  { font-size: 12px; }
-}
-
 </style>
 @endpush
 
-@push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-<script>
-// Xử lý đóng banner quảng cáo
-document.addEventListener('DOMContentLoaded', function() {
-    // Xử lý sự kiện đóng banner
-    const closeButtons = document.querySelectorAll('.ads-close');
-    closeButtons.forEach(button => {
-        const banner = button.closest('.ads-float');
-        
-        button.addEventListener('click', function() {
-            banner.style.display = 'none';
-        });
-    });
-});
-$(document).ready(function() {
-    // Check if jQuery is loaded before initializing the carousel
-    if (typeof jQuery != 'undefined' && typeof $.fn.owlCarousel != 'undefined') {
-        $("#carousel").owlCarousel({
-            autoplay: true,
-            loop: true,
-            margin: 0,
-            items: 1, // Hiển thị 1 item mỗi lần
-            slideBy: 1, // Trượt từng item một
-            autoplayTimeout: 3000,
-            smartSpeed: 800,
-            autoplayHoverPause: true,
-            nav: true,
-            dots: true,
-            lazyLoad: true,
-            animateIn: 'fadeIn',
-            animateOut: 'fadeOut',
-            navText: [
-                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>',
-                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>'
-            ],
-            responsive: {
-                0: {
-                    nav: false
-                },
-                768: {
-                    nav: true
-                }
-            }
-        });
-    } else {
-        console.error("jQuery or OwlCarousel not loaded properly");
-    }
+@section('content')
+@php $navGenres = \App\Models\Genre::orderBy('name')->get(); @endphp
+<div class="container">
 
-});
-function closeBanner(bannerId) {
-    var el = document.getElementById(bannerId);
-    if (el) el.style.display = 'none';
-}
-</script>
-@endpush
+    {{-- 1. POPULAR SWIPER --}}
+    <section class="section">
+        <h2>{{ __('messages.home.popular') }}</h2>
+        <div class="block popular">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    @foreach($hotArticles as $article)
+                        <div class="swiper-slide">
+                            <a href="{{ route('articles.show', $article->id) }}" class="manga-item">
+                                <div class="poster image image-cover lazy-load-bg">
+                                    <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
+                                </div>
+                                <span>{{ $article->is_completed ? __('messages.ui.status_completed') : __('messages.ui.status_ongoing') }} • {{ number_format($article->rating ?? 0, 1) }}<i class="fa fa-star"></i></span>
+                                <div class="title clamp clamp-2">{{ $article->title }}</div>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- 2. INDEX-TAGS (genres) --}}
+    @php
+        // Map tên thể loại -> ảnh fix cứng (bổ sung sau khi có ảnh thật)
+        $genreImgMap = [
+            'Tình cảm'  => 'media/genres/romance.jpg',
+            'Hài hước'  => 'media/genres/comedy.jpg',
+            'Kinh dị'   => 'media/genres/horror.jpg',
+            'Kiếm hiệp' => 'media/genres/action.jpg',
+            'Thám hiểm' => 'media/genres/fantasy.jpg',
+            'Xuyên không'=> 'media/genres/fantasy.jpg',
+            'Trinh thám'=> 'media/genres/scifi.jpg',
+            'Hồi ký'    => 'media/genres/romance.jpg',
+            // English fallbacks
+            'Fantasy'   => 'media/genres/fantasy.jpg',
+            'Action'    => 'media/genres/action.jpg',
+            'Romance'   => 'media/genres/romance.jpg',
+            'Comedy'    => 'media/genres/comedy.jpg',
+            'Sci-Fi'    => 'media/genres/scifi.jpg',
+            'Horror'    => 'media/genres/horror.jpg',
+        ];
+    @endphp
+    <div class="section">
+        <div class="block index-tags index-tags-swiper">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    @foreach(($navGenres ?? collect()) as $genre)
+                        @php
+                            $img = $genre->cover_image
+                                ?? ($genreImgMap[$genre->name] ?? null);
+                            $imgUrl = $img ? asset($img) : asset('static/core/images/no_cover.webp');
+                        @endphp
+                        <div class="swiper-slide">
+                            <a href="{{ route('genres.show', $genre->id) }}" class="tag">
+                                <div class="background" style="background-image: url('{{ $imgUrl }}');"></div>
+                                <div class="title">{{ $genre->name }}</div>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- 3. TRANSLATION REQUESTS SWIPER (dùng random articles) --}}
+    <div class="section">
+        <h2>{{ __('messages.home.translate_req') }}</h2>
+        <div class="block translation-requests">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    @foreach($randomArticles as $article)
+                        <div class="swiper-slide">
+                            <a href="{{ route('articles.show', $article->id) }}" class="manga-item">
+                                <div class="poster image image-cover lazy-load-bg">
+                                    <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
+                                </div>
+                                <div class="title clamp clamp-2">{{ $article->title }}</div>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- 4. I'M READING (bookmarks) --}}
+    <section class="section">
+        <h2>{{ __('messages.home.reading') }}</h2>
+        <div class="block reading">
+            @forelse($myBookmarks as $article)
+                <a href="{{ route('articles.show', $article->id) }}" class="manga-item">
+                    <div class="poster image image-cover lazy-load-bg">
+                        <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
+                    </div>
+                    <div class="title clamp clamp-2">{{ $article->title }}</div>
+                </a>
+            @empty
+                <div class="nothing">{{ __('messages.ui.no_articles_in_list') }}</div>
+            @endforelse
+        </div>
+    </section>
+
+    {{-- 5. NEW RELEASES SWIPER --}}
+    <section class="section">
+        <h2>{{ __('messages.home.new_releases') }}</h2>
+        <div class="new-realeses">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    @foreach($newUpdateArticles->take(10) as $article)
+                        <div class="swiper-slide" style="background-image: url('{{ novel_poster($article) }}');">
+                            <div class="background">
+                                <a href="{{ route('articles.show', $article->id) }}" class="new-realeses__item no-link">
+                                    <div class="left">
+                                        <div class="poster image image-cover lazy-load-bg">
+                                            <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
+                                        </div>
+                                    </div>
+                                    <div class="right">
+                                        <div class="title clamp clamp-2">{{ $article->title }}</div>
+                                        <div class="author">{{ optional($article->authors->first())->name ?? '' }}</div>
+                                        <div class="excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($article->description), 200) }}</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- 6. RECENTLY ADDED + SIDEBAR --}}
+    <section class="section flex-content">
+        <div class="main">
+            <h2>{{ __('messages.home.recently') }}</h2>
+            <div class="block recently">
+                @foreach($newUpdateArticles as $article)
+                    <a href="{{ route('articles.show', $article->id) }}" class="manga-line-item">
+                        <div class="poster image image-cover lazy-load-bg">
+                            <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
+                        </div>
+                        <div class="info">
+                            <div class="title clamp clamp-1">{{ $article->title }}</div>
+                            <div class="tag">
+                                @foreach($article->genres->take(2) as $g){{ $g->name }}@if(!$loop->last), @endif @endforeach
+                            </div>
+                            <div>{{ optional($article->updated_at)->format('d.m.Y') }}</div>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- Sidebar phải --}}
+        <div class="second-information second-information__index">
+
+            {{-- Discord banner --}}
+            <a href="#" class="promo-banner" style="background-image: url('{{ asset('static/core/images/discord_background.webp') }}'); background-size: contain;">
+                <div class="wrapper">
+                    <div class="title">{{ config('app.name') }}</div>
+                    <div class="description">{{ __('messages.ui.promo_tagline') }}</div>
+                </div>
+            </a>
+
+            {{-- Hoàn thành (thay News) --}}
+            <h2>{{ __('messages.ui.completed') }}</h2>
+            <div class="block">
+                @foreach($completedArticles as $article)
+                    <a href="{{ route('articles.show', $article->id) }}" class="news-post">
+                        <div class="title">{{ $article->title }}</div>
+                        <div class="date"><i class="fa fa-eye"></i> {{ number_format($article->view) }}</div>
+                    </a>
+                @endforeach
+            </div>
+
+            {{-- Forum (fix cứng tạm) --}}
+            <h2>Forum</h2>
+            <div class="block">
+                <a href="#" class="news-post">
+                    <div class="title">{{ __('messages.ui.forum_intro') }}</div>
+                    <div class="date">{{ now()->format('d.m.Y') }}</div>
+                </a>
+                <a href="#" class="news-post">
+                    <div class="title">{{ __('messages.ui.forum_suggest') }}</div>
+                    <div class="date">{{ now()->subDays(2)->format('d.m.Y') }}</div>
+                </a>
+                <a href="#" class="news-post">
+                    <div class="title">{{ __('messages.ui.forum_report') }}</div>
+                    <div class="date">{{ now()->subDays(5)->format('d.m.Y') }}</div>
+                </a>
+                <a href="#" class="news-post">
+                    <div class="title">{{ __('messages.ui.forum_vip') }}</div>
+                    <div class="date">{{ now()->subDays(7)->format('d.m.Y') }}</div>
+                </a>
+            </div>
+
+            {{-- Last collections (dùng genres nhóm 3 ảnh) --}}
+            <h2>{{ __('messages.ui.featured_genres') }}</h2>
+            <div class="collections">
+                <div class="collection-mini-grid">
+                    @foreach(($navGenres ?? collect())->take(4) as $genre)
+                        @php
+                            $genreArts = $genre->articles()->inRandomOrder()->take(3)->get();
+                        @endphp
+                        <a href="{{ route('genres.show', $genre->id) }}" class="collection-item">
+                            <div class="collection__inner">
+                                <div class="collection-name clamp clamp-1">{{ $genre->name }}</div>
+                                <div class="collection-author meta-color clamp clamp-1">
+                                    <i class="fa fa-book"></i> {{ __('messages.ui.article_count', ['count' => $genre->articles()->count()]) }}
+                                </div>
+                                <div class="collection-meta__books">
+                                    @foreach($genreArts as $ga)
+                                        <div class="image image-cover lazy-load-bg">
+                                            <img class="lazy-image" loading="eager" src="{{ novel_poster($ga) }}" alt="">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- 7. LAST COMMENTS --}}
+    <section class="section">
+        <h2>{{ __('messages.home.last_comments') }}</h2>
+        <div class="block comment-blocks">
+            @forelse($lastComments as $comment)
+                <div class="comment-block">
+                    <div class="comment-block__header">
+                        <div class="left">
+                            <div class="comment-header__ava image image-cover lazy-load-bg">
+                                <img class="lazy-image" loading="eager" src="{{ asset('static/account/images/no-ava.jpg') }}" alt="">
+                            </div>
+                            <div class="nickname">{{ $comment->user_name }}</div>
+                        </div>
+                        <div class="right">
+                            <div class="date meta-color">{{ \Carbon\Carbon::parse($comment->created_at)->format('d.m.Y') }}</div>
+                        </div>
+                    </div>
+                    <div class="text-info clamp clamp-3">{{ $comment->content }}</div>
+                    <a href="{{ route('articles.show', $comment->article_id) }}" class="link clamp clamp-1">
+                        <i class="fa fa-book"></i> {{ $comment->article_title }}
+                    </a>
+                </div>
+            @empty
+                <div class="nothing">{{ __('messages.ui.no_comments') }}</div>
+            @endforelse
+        </div>
+    </section>
+
+</div>
+@endsection

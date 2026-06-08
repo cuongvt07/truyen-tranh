@@ -1,94 +1,48 @@
 @extends('client.users.profile')
-@section('template_title')
-    {{ __('Tài khoản ' . $user->username) }}
-@endsection
+@section('template_title', __('messages.account.account_title', ['name' => $user->username]))
+
 @section('user_content')
-    <div class="user-page clearfix">
-        <h1 class="postname">
-            Thông tin chung
-        </h1>
-        <div class="row">
-            <div class="col-xs-12 col-md-6">
-                <div class="account-info clearfix">
-                    <h2 class="posttitle">
-                        Thông tin tài khoản
-                    </h2>
-                    <div class="info-detail">
-                        <div class="group">
-                            <div class="label">Username</div>
-                            <div class="detail">
-                                {!! $user->renderUserName() !!}
-                            </div>
-                        </div>
-                        <div class="group">
-                            <div class="label">Họ và tên</div>
-                            <div class="detail">
-                                {{ $user->name }}
-                            </div>
-                        </div>
-                        <div class="group">
-                            <div class="label">Email</div>
-                            <div class="detail">
-                                {{ $user->email }}
-                            </div>
-                        </div>
-                        <div class="group">
-                            <div class="label">Giới tính</div>
-                            <div class="detail">
-                                {{ $user->gender_text }}
-                            </div>
-                        </div>
-
-                        <div class="group">
-                            <div class="label">Ngày sinh</div>
-                            <div class="detail">
-                                {{ $user->date_of_birth_text }}
-                            </div>
-                        </div>
-
-                        @if (!empty($user->phone_number))
-                            <div class="group">
-                                <div class="label">Số điện thoại</div>
-                                <div class="detail">
-                                    {{ $user->phone_number }}
-                                </div>
-                            </div>
-                        @endif
-
-                        @if (!empty($user->address))
-                            <div class="group">
-                                <div class="label">Địa chỉ</div>
-                                <div class="detail">
-                                    {{ $user->address }}
-                                </div>
-                            </div>
-                        @endif
-
-                        <div class="group">
-                            <div class="label">Vai trò</div>
-                            <div class="detail">
-                                {!! $user->renderRoleText() !!}
-                            </div>
-                        </div>
-
-                        <div class="group">
-                            <div class="label">Trạng thái</div>
-                            <div class="detail">
-                                {{ $user->verified_status_text }}
-                            </div>
-                        </div>
-
-                        @if (!empty($user->description))
-                            <div class="group">
-                                <div class="label">Giới thiệu</div>
-                                <div class="detail">
-                                    {!! nl2br($user->description) !!}
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="block">
+    <h2>{{ __('messages.account.account_info') }}</h2>
+    <div class="info-row">
+        <div class="label">Username</div>
+        <div class="detail">{!! method_exists($user,'renderUserName') ? $user->renderUserName() : e($user->username) !!}</div>
     </div>
+    <div class="info-row">
+        <div class="label">{{ __('messages.account.full_name') }}</div>
+        <div class="detail">{{ $user->name }}</div>
+    </div>
+    <div class="info-row">
+        <div class="label">Email</div>
+        <div class="detail">{{ $user->email }}</div>
+    </div>
+    @if(!empty($user->gender_text))
+    <div class="info-row">
+        <div class="label">{{ __('messages.account.gender') }}</div>
+        <div class="detail">{{ $user->gender_text }}</div>
+    </div>
+    @endif
+    @if(!empty($user->date_of_birth_text))
+    <div class="info-row">
+        <div class="label">{{ __('messages.account.date_of_birth') }}</div>
+        <div class="detail">{{ $user->date_of_birth_text }}</div>
+    </div>
+    @endif
+    <div class="info-row">
+        <div class="label">{{ __('messages.account.role') }}</div>
+        <div class="detail">{!! method_exists($user,'renderRoleText') ? $user->renderRoleText() : '' !!}</div>
+    </div>
+    @if(isset($user->points))
+    <div class="info-row">
+        <div class="label">{{ __('messages.account.points') }}</div>
+        <div class="detail"><i class="fa fa-coins"></i> {{ number_format($user->points) }}</div>
+    </div>
+    @endif
+    @if(!empty($user->description))
+    <div class="info-row">
+        <div class="label">{{ __('messages.account.about') }}</div>
+        <div class="detail">{!! nl2br(e($user->description)) !!}</div>
+    </div>
+    @endif
+</div>
 @endsection

@@ -12,30 +12,32 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $hotArticles = Article::getHotArticles()->with('genres')->take(16)->get();
-        $newUpdateArticles = Article::getNewUpdateArticles()->take(30)->get();
-        $completedArticles = Article::getCompletedArticles()->take(12)->get();
-        $bannerKeys = [
-            'banner_top', 'banner_bottom', 'banner_left', 'banner_right',
-            'banner_top_url', 'banner_bottom_url', 'banner_left_url', 'banner_right_url'
-        ];
-        
-        $banners = DB::table('settings')
-                ->whereIn('meta_key', $bannerKeys)
-                ->pluck('meta_value', 'meta_key')
-                ->toArray();
-                
-        foreach ($bannerKeys as $key) {
-            if (!array_key_exists($key, $banners)) {
-                $banners[$key] = '';
-            }
-        }
+        $hotArticles         = Article::getHotArticles()->with('genres')->take(16)->get();
+        $newUpdateArticles   = Article::getNewUpdateArticles()->with('genres')->take(30)->get();
+        $completedArticles   = Article::getCompletedArticles()->take(12)->get();
+        $randomArticles      = Article::inRandomOrder()->take(12)->get();   // Translation requests
+        $lastComments        = DB::table('comments')
+                                 ->join('users', 'users.id', '=', 'comments.user_id')
+                                 ->join('articles', 'articles.id', '=', 'comments.article_id')
+                                 ->select('comments.*', 'users.name as user_name', 'articles.title as article_title', 'articles.id as article_id')
+                                 ->orderByDesc('comments.created_at')
+                                 ->limit(6)
+                                 ->get();
+        // Bookmarks của user hiện tại (không check auth - demo full)
+        $myBookmarks = \App\Models\Bookmark::with('article')
+                         ->orderByDesc('created_at')
+                         ->limit(8)
+                         ->get()
+                         ->pluck('article')
+                         ->filter();
 
         return view('client.home.index', [
-            'hotArticles' => $hotArticles,
+            'hotArticles'       => $hotArticles,
             'newUpdateArticles' => $newUpdateArticles,
             'completedArticles' => $completedArticles,
-            'banners' => $banners,
+            'randomArticles'    => $randomArticles,
+            'lastComments'      => $lastComments,
+            'myBookmarks'       => $myBookmarks,
         ]);
     }
 

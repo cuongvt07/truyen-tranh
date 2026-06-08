@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\Genre;
-use App\Models\Menu;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -27,7 +26,6 @@ class ClientLayoutServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('client.*', function ($view) {
-            $links = Menu::all();
             $genres = Genre::all();
             $currentUser = Auth::user();
             
@@ -55,8 +53,7 @@ class ClientLayoutServiceProvider extends ServiceProvider
                 }
             }
 
-            $view->with('links', $links)
-                ->with('genres', $genres)
+            $view->with('genres', $genres)
                 ->with('currentUser', $currentUser)
                 ->with('isUserLoggedIn', $isUserLoggedIn)
                 ->with('activeVipDays', $activeVipDays);

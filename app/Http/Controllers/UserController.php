@@ -57,6 +57,12 @@ class UserController extends Controller
             $image->move(public_path('images/users'), $imageName);
             $validatedData['avatar'] = '/images/users/' . $imageName;
         }
+        if($request->hasfile('background')) {
+            $bg = $request->file('background');
+            $bgName = $user->id . '-bg.' . $bg->extension();
+            $bg->move(public_path('images/users'), $bgName);
+            $validatedData['background'] = '/images/users/' . $bgName;
+        }
         $request->user()->fill($validatedData);
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
@@ -111,6 +117,68 @@ class UserController extends Controller
     {
         return view('client.users.change-password', [
             'user' => $request->user(),
+        ]);
+    }
+
+    public function notifications(User $user): View
+    {
+        return view('client.users.notifications', ['user' => $user]);
+    }
+
+    public function collections(User $user): View
+    {
+        $isMine = \Illuminate\Support\Facades\Auth::id() === $user->id;
+        $collections = \App\Models\Collection::where('user_id', $user->id)
+            ->when(!$isMine, fn ($q) => $q->where('is_private', false))
+            ->withCount('articles')->orderByDesc('updated_at')->get();
+        return view('client.users.collections', compact('user', 'collections'));
+    }
+
+    public function teams(User $user): View
+    {
+        $teams = \App\Models\Team::where('user_id', $user->id)->orderByDesc('updated_at')->get();
+        return view('client.users.teams', compact('user', 'teams'));
+    }
+
+    public function favourites(User $user): View
+    {
+        return view('client.users.favourites', ['user' => $user]);
+    }
+
+    public function achievements(User $user): View
+    {
+        return view('client.users.achievements', ['user' => $user]);
+    }
+
+    public function suggestions(User $user): View
+    {
+        return view('client.users.suggestions', ['user' => $user]);
+    }
+
+    public function banlist(User $user): View
+    {
+        return view('client.users.banlist', ['user' => $user]);
+    }
+
+    public function readingHistory(User $user): View
+    {
+        $history = \App\Models\ReadingHistory::where('user_id', $user->id)
+            ->with(['article', 'chapter'])
+            ->orderByDesc('read_at')
+            ->get()
+            ->unique('article_id')
+            ->values();
+
+        return view('client.users.reading-history', compact('user', 'history'));
+    }
+
+    public function transactions(User $user): View
+    {
+        $deposits = \App\Models\Deposit::where('user_id', $user->id)
+            ->orderByDesc('created_at')->paginate(15);
+        return view('client.users.transactions', [
+            'user' => $user,
+            'deposits' => $deposits,
         ]);
     }
 

@@ -17,6 +17,7 @@ class StoreChapterRequest extends ChapterBaseRequest
                 Rule::unique(Chapter::class)->where('article_id', $articleId),
             ],
             'content' => 'required',
+            'credit_cost' => ['nullable', 'integer', 'min:0'],
         ];
     }
 }

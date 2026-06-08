@@ -12,6 +12,28 @@ use Illuminate\Http\Request;
 class ChapterController extends Controller
 {
     /**
+     * Danh sách chương toàn cục (mọi truyện) — có lọc theo truyện + tìm.
+     */
+    public function allIndex(Request $request)
+    {
+        $query = Chapter::query()->with('article:id,title');
+
+        if ($articleId = $request->get('article_id')) {
+            $query->where('article_id', (int) $articleId);
+        }
+        if ($s = trim((string) $request->get('q'))) {
+            $query->where('title', 'like', "%$s%");
+        }
+
+        $chapters = $query->orderByDesc('id')
+            ->paginate($request->get('per_page', 20))->withQueryString();
+        $total = Chapter::count();
+        $articles = Article::orderBy('title')->limit(500)->get(['id', 'title']);
+
+        return view('admin.chapters.all', compact('chapters', 'total', 'articles'));
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index(Request $request, Article $article)

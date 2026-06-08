@@ -21,20 +21,44 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $currentUser = Auth::user();
-        // if currentUser is Admin
+        // Bỏ scope duyệt để admin/poster thấy cả bài Chờ duyệt / Đã ẩn
         if ($currentUser->is_admin) {
-            $articles = Article::query();
+            $articles = Article::withoutGlobalScope(\App\Scopes\ApprovedArticleScope::class);
         } else {
             // else currentUser is Poster
-            $articles = $currentUser->articles();
+            $articles = $currentUser->articles()->withoutGlobalScope(\App\Scopes\ApprovedArticleScope::class);
         }
-        $articles->orderByDesc("id");
-        if ($request->has('search')) {
-            $searchText = $request->input('search');
-            $articles->where('title', 'like', '%'.$searchText.'%');
+        // Eager load để tránh N+1 (authors, genres) + đếm chương
+        $articles->with(['authors:id,name', 'genres:id,name', 'user:id,name'])
+                 ->withCount('chapters');
+
+        if ($search = trim((string) $request->input('search'))) {
+            $articles->where('title', 'like', '%' . $search . '%');
+        }
+        if ($request->filled('status')) {
+            $articles->where('status', (int) $request->input('status'));
+        }
+        if ($request->filled('completed')) {
+            $articles->where('is_completed', (int) $request->input('completed'));
         }
 
-        $articles = $articles->paginate();
+        $sort = $request->input('sort', 'newest');
+        switch ($sort) {
+            case 'views':
+                $articles->orderByDesc('view');
+                break;
+            case 'updated':
+                $articles->orderByDesc('updated_at');
+                break;
+            case 'title':
+                $articles->orderBy('title');
+                break;
+            default:
+                $articles->orderByDesc('id');
+                break;
+        }
+
+        $articles = $articles->paginate($request->input('per_page', 20))->withQueryString();
         return view('admin.articles.index', ['articles' => $articles]);
     }
 
@@ -46,10 +70,12 @@ class ArticleController extends Controller
         $article = new Article();
         $authors = Author::all();
         $genres = Genre::all();
+        $articleOptions = Article::orderBy('title')->get(['id', 'title']);
         return view('admin.articles.create', [
             'article' => $article,
             'authors' => $authors,
             'genres' => $genres,
+            'articleOptions' => $articleOptions,
             'selectedGenres' => array(),
             'selectedAuthors' => array(),
         ]);
@@ -63,11 +89,14 @@ class ArticleController extends Controller
         $request->validated();
         $validateData = $request->all();
         $validateData['user_id'] = Auth::id();
+        $validateData = $this->normalizeDetailBlockSettings($request, $validateData);
+        $validateData = $this->normalizeCreditFields($validateData);
 
         $validateData = $this->uploadCoverImage($request, $validateData);
         $article = Article::create($validateData);
         $article->genres()->attach($validateData['genres']);
         $article->authors()->attach($validateData['authors']);
+        $this->syncTags($article, $request->input('tags'));
 
         if ($request->has('affiliate_links')) {
             foreach ($request->affiliate_links as $index => $linkData) {
@@ -107,12 +136,14 @@ class ArticleController extends Controller
     {
         $authors = Author::all();
         $genres = Genre::all();
+        $articleOptions = Article::where('id', '!=', $article->id)->orderBy('title')->get(['id', 'title']);
         $selectedGenres = $article->genres->pluck('id')->toArray();
         $selectedAuthors = $article->authors->pluck('id')->toArray();
         return view('admin.articles.edit', [
             'article' => $article,
             'authors' => $authors,
             'genres' => $genres,
+            'articleOptions' => $articleOptions,
             'selectedGenres' => $selectedGenres,
             'selectedAuthors' => $selectedAuthors,
         ]);
@@ -125,12 +156,15 @@ class ArticleController extends Controller
     {
         $request->validated();
         $data = $request->all();
+        $data = $this->normalizeDetailBlockSettings($request, $data, $article->id);
+        $data = $this->normalizeCreditFields($data);
 
         $data = $this->uploadCoverImage($request, $data);
 
         $article->update($data);
         $article->genres()->sync($data['genres'] ?? []);
         $article->authors()->sync($data['authors'] ?? []);
+        $this->syncTags($article, $request->input('tags'));
 
         $article->affiliateLinks()->delete();
 
@@ -174,7 +208,7 @@ class ArticleController extends Controller
         if (!validateArticleStatus($status)) {
             return redirect()->route('admin.articles.index');
         }
-        if ($article->status != ArticleStatus::HIDDEN->label()) {
+        if ((int) $article->status !== 2) {
             $statusText = mb_strtolower(ArticleStatus::from($status)->label());
         } else {
             $statusText = "đã được hiển thị lại";
@@ -199,6 +233,57 @@ class ArticleController extends Controller
         }
         return redirect()->route('admin.articles.index')
             ->with('success', $message);
+    }
+
+    /** Đồng bộ tags (text phân cách dấu phẩy -> firstOrCreate). */
+    private function syncTags(Article $article, ?string $raw): void
+    {
+        $names = collect(explode(',', (string) $raw))
+            ->map(function ($tag) {
+                return trim($tag);
+            })
+            ->filter()
+            ->unique();
+        $ids = $names->map(function ($name) {
+            return \App\Models\Tag::firstOrCreate(['name' => $name])->id;
+        })->all();
+        $article->tags()->sync($ids);
+    }
+
+    private function normalizeDetailBlockSettings(Request $request, array $data, ?int $articleId = null): array
+    {
+        $data['similar_article_ids'] = $this->normalizeIdList(
+            $request->input('similar_article_ids', []),
+            $articleId
+        );
+        $data['translation_request_article_ids'] = $this->normalizeIdList(
+            $request->input('translation_request_article_ids', []),
+            $articleId
+        );
+        $data['related_genre_ids'] = $this->normalizeIdList(
+            $request->input('related_genre_ids', [])
+        );
+
+        return $data;
+    }
+
+    private function normalizeIdList($ids, ?int $excludeId = null): ?array
+    {
+        $ids = collect((array) $ids)
+            ->filter(function ($id) {
+                return is_numeric($id);
+            })
+            ->map(function ($id) {
+                return (int) $id;
+            })
+            ->filter(function ($id) use ($excludeId) {
+                return $id > 0 && ($excludeId === null || $id !== $excludeId);
+            })
+            ->unique()
+            ->values()
+            ->all();
+
+        return $ids ?: null;
     }
 
     /**
@@ -234,6 +319,17 @@ class ArticleController extends Controller
      *
      * @return array
      */
+    private function normalizeCreditFields(array $data): array
+    {
+        if (isset($data['credit_start_chapter']) && $data['credit_start_chapter'] === '') {
+            $data['credit_start_chapter'] = null;
+        }
+        if (isset($data['credit_per_chapter']) && $data['credit_per_chapter'] === '') {
+            $data['credit_per_chapter'] = 0;
+        }
+        return $data;
+    }
+
     private function uploadAffiImage(UpdateArticleRequest $request, array $data): array
     {
         if ($request->hasFile('affi_image')) {
