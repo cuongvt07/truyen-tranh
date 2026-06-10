@@ -18,11 +18,11 @@
     <div class="block" style="padding:16px">
         @forelse($articles as $article)
             <div class="my-story">
-                <a href="{{ route('articles.show', $article->id) }}" class="my-story__poster">
+                <a href="{{ route('articles.show', $article) }}" class="my-story__poster">
                     <img src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                 </a>
                 <div class="my-story__info">
-                    <a href="{{ route('articles.show', $article->id) }}" class="my-story__title">{{ $article->title }}</a>
+                    <a href="{{ route('articles.show', $article) }}" class="my-story__title">{{ $article->title }}</a>
                     <div class="meta-color" style="font-size:13px">
                         <i class="fa fa-book"></i> {{ __('messages.myarticle.chapters_count', ['count' => $article->chapters_count]) }}
                         • {{ $article->is_completed ? __('messages.myarticle.status_completed') : __('messages.myarticle.status_ongoing') }}

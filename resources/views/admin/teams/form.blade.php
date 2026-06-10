@@ -1,40 +1,229 @@
 @extends('layout.admin')
-@section('template_title', $mode === 'create' ? 'Tạo nhóm dịch' : 'Sửa nhóm dịch')
-@php $action = $mode === 'create' ? route('admin.teams.store') : route('admin.teams.update', $item->id); @endphp
+
+@section('template_title', $mode === 'create' ? 'Thêm mới Nhóm dịch' : 'Chỉnh sửa Nhóm dịch: ' . $item->name)
 
 @section('content')
-<div class="content"><div class="container-fluid">
-    <form method="post" action="{{ $action }}" enctype="multipart/form-data"><div class="row">
-        <div class="col-md-8"><div class="card card-primary card-outline">
-            <div class="card-header"><h3 class="card-title"><i class="fas fa-info-circle mr-2"></i>Thông tin nhóm</h3></div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label>Tên nhóm <span class="text-danger">*</span></label>
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $item->name) }}" required autofocus>
-                    @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
-                <div class="form-group"><label>Mô tả</label><textarea name="description" class="form-control" rows="4">{{ old('description', $item->description) }}</textarea></div>
-                <div class="form-group"><label>Website</label><input type="text" name="site" class="form-control" value="{{ old('site', $item->site) }}" placeholder="https://..."></div>
-                <div class="row">
-                    <div class="form-group col-md-6"><label>Nội dung quyên góp</label><input type="text" name="donation_text" class="form-control" value="{{ old('donation_text', $item->donation_text) }}"></div>
-                    <div class="form-group col-md-6"><label>Link quyên góp</label><input type="text" name="donation_url" class="form-control" value="{{ old('donation_url', $item->donation_url) }}" placeholder="https://..."></div>
-                </div>
+@php 
+    $action = $mode === 'create' ? route('admin.teams.store') : route('admin.teams.update', $item->id); 
+@endphp
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-users"></i>
+                    {{ $mode === 'create' ? 'Thêm mới Nhóm dịch' : 'Chỉnh sửa Nhóm dịch' }}
+                </h3>
             </div>
-        </div></div>
-        <div class="col-md-4">
-            <div class="card card-secondary card-outline">
-                <div class="card-header"><h3 class="card-title"><i class="fas fa-image mr-2"></i>Ảnh nhóm</h3></div>
-                <div class="card-body text-center">
-                    <img id="cover-preview" src="{{ $item->photo ?: asset('static/core/images/no_cover.webp') }}" style="width:120px;height:120px;object-fit:cover;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.2)">
-                    <div class="cover-upload-zone mt-3"><i class="fas fa-cloud-upload-alt fa-2x text-muted"></i><p class="mt-2 mb-1 small">Chọn ảnh</p><input type="file" name="photo" id="cover-input" accept="image/*"></div>
-                    <input type="text" name="photo_url" class="form-control mt-2" placeholder="Hoặc URL ảnh...">
+            <form method="POST" action="{{ $action }}" enctype="multipart/form-data">
+                @csrf
+                @if($mode === 'edit') @method('PATCH') @endif
+                
+                <div class="card-body">
+                    {{-- Tên nhóm --}}
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-heading text-muted"></i>
+                            Tên nhóm <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" 
+                               name="name" 
+                               class="form-control @error('name') is-invalid @enderror" 
+                               value="{{ old('name', $item->name) }}" 
+                               required 
+                               autofocus
+                               placeholder="Nhập tên nhóm dịch">
+                        @error('name')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
+                        <small class="form-text text-muted">Tên hiển thị của nhóm dịch</small>
+                    </div>
+
+                    {{-- Mô tả --}}
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-align-left text-muted"></i>
+                            Mô tả
+                        </label>
+                        <textarea name="description" 
+                                  class="form-control @error('description') is-invalid @enderror" 
+                                  rows="4"
+                                  placeholder="Giới thiệu ngắn gọn về nhóm dịch...">{{ old('description', $item->description) }}</textarea>
+                        @error('description')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
+                        <small class="form-text text-muted">Thông tin về nhóm dịch, thành viên, lĩnh vực...</small>
+                    </div>
+
+                    <hr>
+
+                    {{-- Website --}}
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-globe text-muted"></i>
+                            Website
+                        </label>
+                        <input type="url" 
+                               name="site" 
+                               class="form-control @error('site') is-invalid @enderror" 
+                               value="{{ old('site', $item->site) }}" 
+                               placeholder="https://example.com">
+                        @error('site')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
+                        <small class="form-text text-muted">Trang web chính thức của nhóm (nếu có)</small>
+                    </div>
+
+                    {{-- Donation --}}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-hand-holding-usd text-muted"></i>
+                                    Nội dung quyên góp
+                                </label>
+                                <input type="text" 
+                                       name="donation_text" 
+                                       class="form-control @error('donation_text') is-invalid @enderror" 
+                                       value="{{ old('donation_text', $item->donation_text) }}"
+                                       placeholder="Ủng hộ nhóm dịch">
+                                @error('donation_text')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-link text-muted"></i>
+                                    Link quyên góp
+                                </label>
+                                <input type="url" 
+                                       name="donation_url" 
+                                       class="form-control @error('donation_url') is-invalid @enderror" 
+                                       value="{{ old('donation_url', $item->donation_url) }}"
+                                       placeholder="https://...">
+                                @error('donation_url')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted mb-3">
+                        <i class="fas fa-info-circle"></i>
+                        Thông tin để độc giả có thể ủng hộ nhóm dịch
+                    </small>
                 </div>
-            </div>
-            <div class="card card-primary card-outline"><div class="card-body d-flex justify-content-between">
-                <a href="{{ route('admin.teams.index') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Huỷ</a>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> {{ $mode === 'create' ? 'Tạo' : 'Lưu' }}</button>
-            </div></div>
+
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> {{ $mode === 'create' ? 'Lưu nhóm dịch' : 'Cập nhật' }}
+                    </button>
+                    <a href="{{ route('admin.teams.index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </form>
         </div>
-    </div></form>
-</div></div>
+    </div>
+
+    {{-- Sidebar for image --}}
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-image"></i>
+                    Ảnh đại diện
+                </h3>
+            </div>
+            <form method="POST" action="{{ $action }}" enctype="multipart/form-data">
+                @csrf
+                @if($mode === 'edit') @method('PATCH') @endif
+                
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <img id="cover-preview" 
+                             src="{{ $item->photo ?: asset('static/core/images/no_cover.webp') }}" 
+                             alt="Preview"
+                             style="width: 150px; height: 150px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,.2); border: 3px solid #fff;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="btn btn-sm btn-outline-primary btn-block" for="cover-input">
+                            <i class="fas fa-upload"></i> Chọn ảnh
+                        </label>
+                        <input type="file" 
+                               name="photo" 
+                               id="cover-input" 
+                               class="d-none @error('photo') is-invalid @enderror"
+                               accept="image/*">
+                        @error('photo')
+                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group mb-0">
+                        <input type="text" 
+                               name="photo_url" 
+                               class="form-control form-control-sm @error('photo_url') is-invalid @enderror" 
+                               placeholder="Hoặc nhập URL ảnh..."
+                               value="{{ old('photo_url') }}">
+                        @error('photo_url')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
+                        <small class="form-text text-muted">Link ảnh từ nguồn khác</small>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        @if($item->exists)
+        <div class="card card-secondary">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-info-circle"></i>
+                    Thông tin
+                </h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <strong>ID:</strong> 
+                        <span class="badge badge-secondary">{{ $item->id }}</span>
+                    </li>
+                    <li class="mb-2">
+                        <strong>Người tạo:</strong><br>
+                        <small class="text-muted">
+                            <i class="fas fa-user"></i> 
+                            {{ optional($item->user)->username ?? 'N/A' }}
+                        </small>
+                    </li>
+                    <li class="mb-2">
+                        <strong>Tạo lúc:</strong><br>
+                        <small class="text-muted">
+                            <i class="fas fa-clock"></i> 
+                            {{ $item->created_at?->format('d/m/Y H:i') }}
+                        </small>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        @endif
+    </div>
+</div>
+
+@push('scripts')
+<script>
+document.getElementById('cover-input')?.addEventListener('change', function(e) {
+    if (e.target.files && e.target.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            document.getElementById('cover-preview').src = ev.target.result;
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    }
+});
+</script>
+@endpush
 @endsection

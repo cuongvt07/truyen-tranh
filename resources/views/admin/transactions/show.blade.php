@@ -36,7 +36,7 @@
                             @if($transaction->payment_method === 'paypal')
                                 <strong>${{ number_format($transaction->amount, 2) }}</strong>
                             @else
-                                <strong>{{ number_format($transaction->amount, 0, ',', '.') }}đ</strong>
+                                <strong>{{ number_format($transaction->amount, 0, ',', '.') }}$</strong>
                             @endif
                         </td>
                     </tr>

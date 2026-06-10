@@ -101,18 +101,17 @@ class User extends Model implements AuthenticatableContract,
 
     public static function getAdmins()
     {
-        return self::query()->where('role', UserRole::ADMIN);
+        return self::query()->where('role', UserRole::ADMIN->value);
     }
 
     public static function getPosters()
     {
-        return self::query()->where('role', UserRole::POSTER);
+        return self::query()->where('role', UserRole::POSTER->value);
     }
 
     public static function getBanneds()
     {
-        $bannedUserIds = BannedUser::query()->pluck('user_id')->toArray();
-        return self::query()->whereIn('id', $bannedUserIds);
+        return self::query()->whereHas('banned');
     }
 
     protected function getRoleTextAttribute()
@@ -124,13 +123,13 @@ class User extends Model implements AuthenticatableContract,
     protected function getDateOfBirthTextAttribute()
     {
         $value = $this->date_of_birth;
-        return Carbon::parse($value)->toDateString();
+        return $value ? Carbon::parse($value)->toDateString() : '—';
     }
 
     protected function getGenderTextAttribute()
     {
         $value = $this->gender;
-        return Gender::from($value)->label();
+        return $value !== null ? Gender::from((int) $value)->label() : '—';
     }
 
     public function getVerifiedStatusTextAttribute()
@@ -150,6 +149,10 @@ class User extends Model implements AuthenticatableContract,
 
     protected function getBannedAttribute()
     {
+        if ($this->relationLoaded('banned')) {
+            return $this->getRelation('banned');
+        }
+
         if (is_route('admin.*')) {
             return $this->banned()->first();
         } else {

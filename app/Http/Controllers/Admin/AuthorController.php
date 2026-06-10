@@ -16,14 +16,39 @@ class AuthorController extends Controller
      */
     public function index(Request $request)
     {
-        $authors = Author::query()->orderByDesc("id");
-        if ($request->has('search')) {
-            $searchText = $request->input('search');
-            $authors->where('name', 'like', '%'.$searchText.'%');
+        $query = Author::query()->withCount('articles');
+        
+        // Search
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%');
+        }
+        
+        // Sorting
+        $sort = $request->get('sort', 'name');
+        switch ($sort) {
+            case 'name':
+                $query->orderBy('name');
+                break;
+            case 'articles_count':
+                $query->orderByDesc('articles_count');
+                break;
+            case 'id_desc':
+                $query->orderByDesc('id');
+                break;
+            case 'id_asc':
+                $query->orderBy('id');
+                break;
+            default:
+                $query->orderBy('name');
         }
 
-        $authors = $authors->paginate();
-        return view('admin.authors.index', ['authors' => $authors]);
+        $authors = $query->paginate(30)->withQueryString();
+        
+        return view('admin.authors.index', [
+            'authors' => $authors,
+            'filters' => $request->only(['search', 'sort'])
+        ]);
     }
 
     /**

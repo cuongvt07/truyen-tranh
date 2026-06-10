@@ -1,0 +1,48 @@
+@extends('layout.novelight')
+
+@section('template_title', 'FAQ - ' . config('app.name'))
+
+@section('page_css')
+<link rel="stylesheet" href="{{ asset('static/forum/css/forum.css') }}">
+<link rel="stylesheet" href="{{ asset('static/faq/css/faqee8b.css') }}?ver=1.8.0">
+@endsection
+
+@section('content')
+<div class="container">
+    <h1 class="page-title" style="text-align:center">
+        {{ app()->getLocale() === 'vi' ? 'Câu hỏi thường gặp' : 'Frequently Asked Questions' }}
+    </h1>
+
+    <div class="faq-theme-blocks">
+        @forelse($categories as $category)
+            @php
+                $locale = app()->getLocale();
+                $title = $category->{"title_$locale"} ?? $category->title_en;
+                $description = $category->{"description_$locale"} ?? $category->description_en ?? '';
+                $count = $category->articles_count ?? 0;
+            @endphp
+            <a href="{{ route('pages.faq.topic', $category->slug) }}" class="block faq-theme-card">
+                @if($category->icon)
+                    <div class="faq-theme-card__icon">
+                        <i class="{{ $category->icon }}"></i>
+                    </div>
+                @endif
+                <h2 class="faq-theme-card__title">{{ $title }}</h2>
+                @if($description)
+                    <p class="faq-theme-card__description">{{ $description }}</p>
+                @endif
+                <div class="meta-color faq-theme-card__meta">
+                    <i class="fa fa-newspaper"></i>
+                    {{ $count }} {{ $locale === 'vi' ? 'bài viết' : 'Articles' }}
+                </div>
+            </a>
+        @empty
+            <div class="block text-center py-5">
+                <p class="meta-color">
+                    {{ app()->getLocale() === 'vi' ? 'Chưa có danh mục FAQ nào.' : 'No FAQ categories yet.' }}
+                </p>
+            </div>
+        @endforelse
+    </div>
+</div>
+@endsection

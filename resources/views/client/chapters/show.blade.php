@@ -1,8 +1,8 @@
 @php
     $prevChapter = $article->chapters()->where('number', '<', $chapter->number)->orderByDesc('number')->first();
     $nextChapter = $article->chapters()->where('number', '>', $chapter->number)->orderBy('number')->first();
-    $prevUrl = $prevChapter ? route('articles.chapters.show', [$article->id, $prevChapter->number]) : null;
-    $nextUrl = $nextChapter ? route('articles.chapters.show', [$article->id, $nextChapter->number]) : null;
+    $prevUrl = $prevChapter ? route('articles.chapters.show', [$article, $prevChapter->number]) : null;
+    $nextUrl = $nextChapter ? route('articles.chapters.show', [$article, $nextChapter->number]) : null;
 @endphp
 <!doctype html>
 <html lang="vi">
@@ -23,7 +23,7 @@
 <body chapter_ph="">
 
 <header class="header-chapter">
-    <a href="{{ route('articles.show', $article->id) }}" class="header-title btn header-btn">
+    <a href="{{ route('articles.show', $article) }}" class="header-title btn header-btn">
         <span class="clamp clamp-1"><i class="fa fa-arrow-left"></i> {{ $article->title }}</span>
     </a>
     <div class="control-btns">
@@ -136,7 +136,7 @@
     </div>
     <div class="chapter-list">
         @foreach($articleChapters as $ch)
-            <a href="{{ route('articles.chapters.show', [$article->id, $ch->number]) }}"
+            <a href="{{ route('articles.chapters.show', [$article, $ch->number]) }}"
                class="chapter {{ $ch->number == $chapter->number ? 'active' : '' }}">
                 {{ __('messages.chapter.chapter') }} {{ $ch->number }}: {{ $ch->title }}
             </a>
@@ -245,7 +245,7 @@ document.getElementById('table-of-contents-btn')?.addEventListener('click', func
 const CHAPTER_SELECT_VIP_PACKAGE_MSG = @json(__('messages.chapter.select_vip_package_alert'));
 $(document).ready(function() {
     $('#adLink').on('click', function() {
-        $.post('{{ route('articles.chapters.markAdClicked', [$article->id, $chapter->number]) }}', {_token:'{{ csrf_token() }}'}, function(r) {
+        $.post('{{ route('articles.chapters.markAdClicked', [$article, $chapter->number]) }}', {_token:'{{ csrf_token() }}'}, function(r) {
             if (r.success) $('#adPopup').hide();
         });
     });

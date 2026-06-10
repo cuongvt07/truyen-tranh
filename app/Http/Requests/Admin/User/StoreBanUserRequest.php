@@ -7,7 +7,8 @@ class StoreBanUserRequest extends UserBaseRequest
     public function rules(): array
     {
         return [
-            'reason' => 'required',
+            'reason' => 'required|string|max:255',
+            'ban_days' => 'nullable|integer|min:1',
         ];
     }
 }

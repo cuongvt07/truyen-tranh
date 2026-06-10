@@ -20,7 +20,7 @@
                         <div class="comment-header__ava image image-cover lazy-load-bg">
                             <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="">
                         </div>
-                        <a href="{{ route('articles.show', $article->id) }}" class="nickname">{{ $article->title }}</a>
+                        <a href="{{ route('articles.show', $article) }}" class="nickname">{{ $article->title }}</a>
                     </div>
                     <div class="right">
                         <div class="date meta-color">{{ optional($comment->created_at)->format('d.m.Y H:i') }}</div>

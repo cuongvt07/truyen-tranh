@@ -144,6 +144,8 @@
                         <li><a href="{{ route('home.index') }}" class="header-btn no-link"><i class="fa fa-home"></i> {{ __('messages.nav.home') }}</a></li>
                         <li class="header-nav__list"><div class="header-btn header-browse tippy-browse"><i class="fa fa-layer-group"></i> {{ __('messages.nav.browse') }} <i class="fa fa-caret-down"></i></div></li>
                         <li><a href="#" id="open-live-search" class="header-btn no-link open-close" p-target="fullscreen-search"><i class="fa fa-search"></i> {{ __('messages.nav.search') }}</a></li>
+                        <li><a href="{{ route('pages.forum') }}" class="header-btn no-link"><i class="fa fa-comments"></i> {{ __('messages.nav.forum') }}</a></li>
+                        <li><a href="{{ route('pages.faq') }}" class="header-btn no-link"><i class="fa fa-circle-question"></i> {{ __('messages.nav.faq') }}</a></li>
                         <li><a href="{{ route('home.show_new_update_articles') }}" class="header-btn no-link"><i class="fa fa-bolt"></i> {{ __('messages.nav.new') }}</a></li>
                         <li><a href="{{ route('home.show_completed_articles') }}" class="header-btn no-link"><i class="fa fa-check-circle"></i> {{ __('messages.nav.completed') }}</a></li>
                     @endforelse
@@ -160,7 +162,7 @@
                     <a href="#" class="header-btn header-bell"><i class="fa fa-bell"></i></a>
 
                     {{-- Số xu --}}
-                    <a href="{{ route('pages.pricing') }}" class="header-btn header-coins">
+                    <a href="{{ route('users.transactions', Auth::id()) }}" class="header-btn header-coins">
                         {{ number_format($authUser->points ?? 0) }}<i class="fa fa-coins"></i>
                     </a>
 
@@ -230,6 +232,8 @@
                 @empty
                     <li><a href="{{ route('home.index') }}"><i class="fa fa-home"></i> {{ __('messages.nav.home') }}</a></li>
                     <li><div class="tippy-browse"><span><i class="fa fa-layer-group"></i> {{ __('messages.nav.browse') }}</span> <i class="fa fa-caret-down"></i></div></li>
+                    <li><a href="{{ route('pages.forum') }}"><i class="fa fa-comments"></i> {{ __('messages.nav.forum') }}</a></li>
+                    <li><a href="{{ route('pages.faq') }}"><i class="fa fa-circle-question"></i> {{ __('messages.nav.faq') }}</a></li>
                     <li><a href="{{ route('home.show_new_update_articles') }}"><i class="fa fa-bolt"></i> {{ __('messages.nav.new') }}</a></li>
                     <li><a href="{{ route('home.show_completed_articles') }}"><i class="fa fa-check-circle"></i> {{ __('messages.nav.completed') }}</a></li>
                 @endforelse
@@ -260,7 +264,7 @@
             @else
                 {{-- Fallback: tự liệt kê tất cả thể loại --}}
                 @foreach($navGenres as $genre)
-                    <li><a href="{{ route('genres.show', $genre->id) }}">{{ $genre->name }}</a></li>
+                    <li><a href="{{ route('genres.show', $genre) }}">{{ $genre->name }}</a></li>
                 @endforeach
                 <hr>
                 <li><a href="{{ route('catalog.index') }}">{{ __('messages.nav.all') }}</a></li>
@@ -294,7 +298,7 @@
                 <li><a href="#"><i class="fa fa-user-friends"></i> {{ __('messages.ui.menu_teams') }}</a></li>
                 <li><a href="{{ route('users.change_info') }}"><i class="fa fa-cog"></i> {{ __('messages.ui.menu_settings') }}</a></li>
                 <hr>
-                <li><a href="{{ route('client.paypoints') }}"><i class="fa fa-money-bill"></i> {{ __('messages.ui.menu_topup') }}</a></li>
+                <li><a href="{{ route('users.transactions', Auth::id()) }}"><i class="fa fa-money-bill"></i> {{ __('messages.ui.menu_topup') }}</a></li>
                 <hr>
                 <li>
                     <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-header').submit();">

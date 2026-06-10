@@ -8,12 +8,13 @@ use Illuminate\Http\Request;
 
 class GenreController extends Controller
 {
-    public function show(Genre $genre)
+    public function show(Request $request, Genre $genre)
     {
-        $articles = $genre->articles()->paginate();
-        return view('client.genres.show', [
-            'genre'    => $genre,
-            'articles' => $articles,
-        ]);
+        if ($request->route()->originalParameter('genre') !== $genre->getRouteKey()) {
+            return redirect()->route('genres.show', $genre, 301);
+        }
+
+        // Redirect to catalog with pre-selected genre
+        return redirect()->route('catalog.index', ['genres' => [$genre->id]]);
     }
 }

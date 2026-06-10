@@ -13,7 +13,15 @@ class BannedUser extends Model
 
     protected function getRemainingDaysAttribute($value)
     {
+        if (!$this->expired_at) {
+            return 'Vĩnh viễn';
+        }
+
         $expiredDate = Carbon::parse($this->expired_at);
+        if ($expiredDate->isPast()) {
+            return 'Đã hết hạn';
+        }
+
         $remainingDays = Carbon::now()->diffInDays($expiredDate);
 
         return $remainingDays . ' ngày';

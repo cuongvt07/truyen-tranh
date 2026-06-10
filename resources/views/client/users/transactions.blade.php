@@ -10,7 +10,7 @@
 <div class="block">
     <h1 class="page-title" style="margin-bottom:16px">{{ __('messages.pay.balance') }} {{ number_format($balance) }} {{ __('messages.pay.coins') }}</h1>
     @if($isMine ?? false)
-        <div class="btn-group-inline">
+        <div class="btn-group-inline" style="margin-top:8px">
             <a href="{{ route('pages.pricing') }}" class="btn btn-primary">{{ __('messages.pay.topup_coins') }}</a>
         </div>
     @endif
@@ -37,7 +37,7 @@
                 @foreach($deposits as $d)
                     <tr>
                         <td>{{ $d->transaction_id ?? $d->id }}</td>
-                        <td>{{ number_format($d->amount) }}đ</td>
+                        <td>{{ number_format($d->amount) }}$</td>
                         <td>{{ $d->payment_method ?? '—' }}</td>
                         <td>
                             @php $st = ['pending'=>[__('messages.pay.status_pending'),'#e0a020'],'completed'=>[__('messages.pay.status_completed'),'#4caf50'],'failed'=>[__('messages.pay.status_failed'),'#e84040']][$d->status] ?? [$d->status,'#888']; @endphp

@@ -1,21 +1,30 @@
 @extends('layout.admin')
 
-@section('template_title', 'Sửa gói Credit')
+@section('template_title', 'Chỉnh sửa Gói Credit: ' . $creditPackage->name)
 
 @section('content')
 <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-10">
         <div class="card">
             <div class="card-header">
-                <h4 class="mb-0"><i class="fa fa-edit"></i> Sửa gói: {{ $creditPackage->name }}</h4>
+                <h3 class="card-title">
+                    <i class="fas fa-edit"></i>
+                    Chỉnh sửa: {{ $creditPackage->name }}
+                </h3>
             </div>
             <div class="card-body">
                 <form action="{{ route('admin.credit-packages.update', $creditPackage->id) }}" method="POST">
-                    @csrf @method('PUT')
+                    @csrf 
+                    @method('PUT')
                     @include('admin.credit-packages._form', ['pkg' => $creditPackage])
-                    <div class="d-flex gap-2 mt-3">
-                        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Cập nhật</button>
-                        <a href="{{ route('admin.credit-packages.index') }}" class="btn btn-secondary">Hủy</a>
+                    
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Cập nhật
+                        </button>
+                        <a href="{{ route('admin.credit-packages.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </a>
                     </div>
                 </form>
             </div>

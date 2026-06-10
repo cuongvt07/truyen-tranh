@@ -52,14 +52,21 @@ class CatalogController extends Controller
             default:                 $query->orderByDesc('updated_at'); break;
         }
 
-        $articles = $query->paginate(24)->withQueryString();
+        $articles = $query->paginate(30)->withQueryString();
         $genres   = Genre::orderBy('name')->get();
 
+        // Get selected genre name if only one genre is selected
+        $selectedGenreName = null;
+        if (count($selectedGenres) === 1) {
+            $selectedGenreName = Genre::find($selectedGenres[0])?->name;
+        }
+
         return view('client.catalog.index', [
-            'articles'       => $articles,
-            'genres'         => $genres,
-            'selectedGenres' => $selectedGenres,
-            'filters'        => $request->only(['search', 'status', 'type', 'country', 'ordering']),
+            'articles'          => $articles,
+            'genres'            => $genres,
+            'selectedGenres'    => $selectedGenres,
+            'selectedGenreName' => $selectedGenreName,
+            'filters'           => $request->only(['search', 'status', 'type', 'country', 'ordering']),
         ]);
     }
 

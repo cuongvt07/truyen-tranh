@@ -9,11 +9,23 @@ class UpdateArticleRequest extends ArticleBaseRequest
 {
     public function rules(): array
     {
-        $id = $this->route('article');
+        $article = $this->route('article');
+        $id = $article instanceof Article ? $article->id : $article;
+        $slugId = $article instanceof Article ? optional($article->slug)->id : null;
+
         return [
             'title' => [
                 'required',
                 Rule::unique(Article::class)->ignore($id),
+            ],
+            'slug' => [
+                'nullable',
+                'string',
+                'max:255',
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+                Rule::unique('slugs', 'slug')
+                    ->where(fn ($query) => $query->where('type', 'article'))
+                    ->ignore($slugId),
             ],
             'similar_article_ids' => ['nullable', 'array'],
             'similar_article_ids.*' => ['integer', 'exists:articles,id'],

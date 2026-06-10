@@ -25,7 +25,7 @@
                         <div class="col-md-4">
                             <ul class="dropdown-menu">
                                 @foreach ($chunk as $genre)
-                                    <li><a href="{{ route('genres.show', $genre['id']) }}"
+                                    <li><a href="{{ route('genres.show', $genre['slug']['slug'] ?? $genre['id']) }}"
                                            title="{{ $genre['name'] }}">{{ $genre['name'] }}</a></li>
                                 @endforeach
                             </ul>

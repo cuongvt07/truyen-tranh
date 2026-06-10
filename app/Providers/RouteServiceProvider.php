@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Article;
+use App\Models\Genre;
+use App\Models\Slug;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -24,6 +27,16 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Route::bind('article', function ($value) {
+            return Slug::resolve('article', $value)
+                ?? (is_numeric($value) ? Article::findOrFail($value) : abort(404));
+        });
+
+        Route::bind('genre', function ($value) {
+            return Slug::resolve('genre', $value)
+                ?? (is_numeric($value) ? Genre::findOrFail($value) : abort(404));
+        });
+
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });

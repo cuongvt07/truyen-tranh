@@ -12,12 +12,37 @@ class CollectionController extends Controller
     public function index(Request $request)
     {
         $q = Collection::query()->with('user:id,username')->withCount('articles');
+        
+        // Search
         if ($s = trim((string) $request->get('q'))) {
-            $q->where('name', 'like', "%$s%");
+            $q->where('name', 'like', "%$s%")
+              ->orWhere('description', 'like', "%$s%");
         }
-        $items = $q->orderByDesc('id')->paginate($request->get('per_page', 15))->withQueryString();
+        
+        // Filter by privacy
+        if ($request->filled('privacy')) {
+            if ($request->privacy === 'public') {
+                $q->where('is_private', 0);
+            } elseif ($request->privacy === 'private') {
+                $q->where('is_private', 1);
+            }
+        }
+        
+        // Sorting
+        $sort = $request->get('sort', 'id_desc');
+        match($sort) {
+            'name' => $q->orderBy('name'),
+            'articles_count' => $q->orderBy('articles_count', 'desc'),
+            'id_asc' => $q->orderBy('id'),
+            default => $q->orderByDesc('id'),
+        };
+        
+        $items = $q->paginate(30)->withQueryString();
         $total = Collection::count();
-        return view('admin.collections.index', compact('items', 'total'));
+        $publicCount = Collection::where('is_private', 0)->count();
+        $privateCount = Collection::where('is_private', 1)->count();
+        
+        return view('admin.collections.index', compact('items', 'total', 'publicCount', 'privateCount'));
     }
 
     public function create()

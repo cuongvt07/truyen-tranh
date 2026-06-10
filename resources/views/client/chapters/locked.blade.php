@@ -1,8 +1,8 @@
 @php
     $prevChapter = $article->chapters()->where('number', '<', $chapter->number)->orderByDesc('number')->first();
     $nextChapter = $article->chapters()->where('number', '>', $chapter->number)->orderBy('number')->first();
-    $prevUrl = $prevChapter ? route('articles.chapters.show', [$article->id, $prevChapter->number]) : null;
-    $nextUrl = $nextChapter ? route('articles.chapters.show', [$article->id, $nextChapter->number]) : null;
+    $prevUrl = $prevChapter ? route('articles.chapters.show', [$article, $prevChapter->number]) : null;
+    $nextUrl = $nextChapter ? route('articles.chapters.show', [$article, $nextChapter->number]) : null;
 @endphp
 <!doctype html>
 <html lang="vi">
@@ -82,7 +82,7 @@
 <body chapter_ph="">
 
 <header class="header-chapter">
-    <a href="{{ route('articles.show', $article->id) }}" class="header-title btn header-btn">
+    <a href="{{ route('articles.show', $article) }}" class="header-title btn header-btn">
         <span class="clamp clamp-1"><i class="fa fa-arrow-left"></i> {{ $article->title }}</span>
     </a>
 </header>
@@ -117,7 +117,7 @@
 
             @if($userPoints >= $creditCost)
                 <button class="btn-unlock" id="btn-unlock"
-                        data-url="{{ route('articles.chapters.unlock', [$article->id, $chapter->number]) }}">
+                        data-url="{{ route('articles.chapters.unlock', [$article, $chapter->number]) }}">
                     Mở khoá chương này
                 </button>
             @else

@@ -35,7 +35,7 @@ class ReadingHistory extends Model
     public static function continueReading(int $userId, int $limit = 20)
     {
         return static::where('user_id', $userId)
-            ->with(['article.cover', 'chapter'])
+            ->with(['article.slug', 'chapter'])
             ->orderByDesc('read_at')
             ->get()
             ->unique('article_id')

@@ -8,7 +8,10 @@ class CreditPackage extends Model
 {
     protected $fillable = [
         'name',
+        'package_type',
         'coins',
+        'subscription_days',
+        'daily_credits',
         'price_vnd',
         'price_usd',
         'price_display',
@@ -27,6 +30,21 @@ class CreditPackage extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true)->orderBy('sort_order')->orderBy('coins');
+    }
+
+    public function scopeCredits($query)
+    {
+        return $query->where('package_type', 'credit');
+    }
+
+    public function scopeSubscriptions($query)
+    {
+        return $query->where('package_type', 'subscription');
+    }
+
+    public function isSubscription(): bool
+    {
+        return $this->package_type === 'subscription';
     }
 
     public function getPriceVndFormattedAttribute(): string

@@ -174,6 +174,116 @@
             </div>
         </div>
 
+        <!-- PAGE CONTENT SETTINGS -->
+        <div class="card mb-4 d-none">
+            <div class="card-header bg-secondary text-white">
+                Cấu hình nội dung trang Forum / FAQ / Rules
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    Có thể nhập HTML. Nếu để trống, website sẽ dùng nội dung clone mặc định từ Novelight.
+                </p>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="mb-3">English</h5>
+                        <div class="form-group mb-3">
+                            <label>Forum title</label>
+                            <input type="text" name="page_forum_title_en" class="form-control" value="{{ $settings['page_forum_title_en'] ?? '' }}" placeholder="Forum">
+                        </div>
+                        <div class="form-group mb-4">
+                            <label>Forum content HTML</label>
+                            <textarea name="page_forum_content_en" class="form-control" rows="8" placeholder="Leave empty to use default content">{{ $settings['page_forum_content_en'] ?? '' }}</textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>FAQ title</label>
+                            <input type="text" name="page_faq_title_en" class="form-control" value="{{ $settings['page_faq_title_en'] ?? '' }}" placeholder="Answers to frequently asked questions and problems">
+                        </div>
+                        <div class="form-group mb-4">
+                            <label>FAQ index content HTML</label>
+                            <textarea name="page_faq_content_en" class="form-control" rows="6" placeholder="Leave empty to use default content">{{ $settings['page_faq_content_en'] ?? '' }}</textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>FAQ Account title</label>
+                            <input type="text" name="page_faq_account_title_en" class="form-control" value="{{ $settings['page_faq_account_title_en'] ?? '' }}" placeholder="Account">
+                        </div>
+                        <div class="form-group mb-4">
+                            <label>FAQ Account content HTML</label>
+                            <textarea name="page_faq_account_content_en" class="form-control" rows="6" placeholder="Leave empty to use default content">{{ $settings['page_faq_account_content_en'] ?? '' }}</textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>FAQ General title</label>
+                            <input type="text" name="page_faq_general_title_en" class="form-control" value="{{ $settings['page_faq_general_title_en'] ?? '' }}" placeholder="General">
+                        </div>
+                        <div class="form-group mb-4">
+                            <label>FAQ General content HTML</label>
+                            <textarea name="page_faq_general_content_en" class="form-control" rows="6" placeholder="Leave empty to use default content">{{ $settings['page_faq_general_content_en'] ?? '' }}</textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>Rules title</label>
+                            <input type="text" name="page_rules_title_en" class="form-control" value="{{ $settings['page_rules_title_en'] ?? '' }}" placeholder="General Site Rules and Ban Reasons">
+                        </div>
+                        <div class="form-group mb-2">
+                            <label>Rules content HTML</label>
+                            <textarea name="page_rules_content_en" class="form-control" rows="10" placeholder="Leave empty to use default content">{{ $settings['page_rules_content_en'] ?? '' }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5 class="mb-3">Tiếng Việt</h5>
+                        <div class="form-group mb-3">
+                            <label>Tiêu đề Forum</label>
+                            <input type="text" name="page_forum_title_vi" class="form-control" value="{{ $settings['page_forum_title_vi'] ?? '' }}" placeholder="Diễn đàn">
+                        </div>
+                        <div class="form-group mb-4">
+                            <label>Nội dung Forum HTML</label>
+                            <textarea name="page_forum_content_vi" class="form-control" rows="8" placeholder="Để trống để dùng nội dung mặc định">{{ $settings['page_forum_content_vi'] ?? '' }}</textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>Tiêu đề FAQ</label>
+                            <input type="text" name="page_faq_title_vi" class="form-control" value="{{ $settings['page_faq_title_vi'] ?? '' }}" placeholder="Câu hỏi thường gặp và các vấn đề phổ biến">
+                        </div>
+                        <div class="form-group mb-4">
+                            <label>Nội dung FAQ index HTML</label>
+                            <textarea name="page_faq_content_vi" class="form-control" rows="6" placeholder="Để trống để dùng nội dung mặc định">{{ $settings['page_faq_content_vi'] ?? '' }}</textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>Tiêu đề FAQ Tài khoản</label>
+                            <input type="text" name="page_faq_account_title_vi" class="form-control" value="{{ $settings['page_faq_account_title_vi'] ?? '' }}" placeholder="Tài khoản">
+                        </div>
+                        <div class="form-group mb-4">
+                            <label>Nội dung FAQ Tài khoản HTML</label>
+                            <textarea name="page_faq_account_content_vi" class="form-control" rows="6" placeholder="Để trống để dùng nội dung mặc định">{{ $settings['page_faq_account_content_vi'] ?? '' }}</textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>Tiêu đề FAQ Chung</label>
+                            <input type="text" name="page_faq_general_title_vi" class="form-control" value="{{ $settings['page_faq_general_title_vi'] ?? '' }}" placeholder="Chung">
+                        </div>
+                        <div class="form-group mb-4">
+                            <label>Nội dung FAQ Chung HTML</label>
+                            <textarea name="page_faq_general_content_vi" class="form-control" rows="6" placeholder="Để trống để dùng nội dung mặc định">{{ $settings['page_faq_general_content_vi'] ?? '' }}</textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>Tiêu đề Rules</label>
+                            <input type="text" name="page_rules_title_vi" class="form-control" value="{{ $settings['page_rules_title_vi'] ?? '' }}" placeholder="Nội quy chung và lý do khóa tài khoản">
+                        </div>
+                        <div class="form-group mb-2">
+                            <label>Nội dung Rules HTML</label>
+                            <textarea name="page_rules_content_vi" class="form-control" rows="10" placeholder="Để trống để dùng nội dung mặc định">{{ $settings['page_rules_content_vi'] ?? '' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- KHỐI GÓI ƯU ĐÃI PREMIUM -->
         @php
             $packages = getPremiumPackages();
@@ -303,4 +413,3 @@
         });
     });
 </script>
-

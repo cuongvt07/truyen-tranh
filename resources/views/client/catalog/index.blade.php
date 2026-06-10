@@ -1,6 +1,6 @@
 @extends('layout.novelight')
 
-@section('template_title', __('messages.catalog.page_title'))
+@section('template_title', $selectedGenreName ? __('messages.catalog.genre_label') . ': ' . $selectedGenreName : __('messages.catalog.page_title'))
 
 @section('page_css')
 <link rel="stylesheet" href="{{ asset('static/core/css/catalogee8b.css') }}?ver=1.8.0">
@@ -13,7 +13,13 @@
         {{-- Results --}}
         <div class="main block">
             <div class="page-title__catalog">
-                <h1 class="page-title">{{ __('messages.catalog.page_title') }}</h1>
+                <h1 class="page-title">
+                    @if($selectedGenreName)
+                        <i class="fa fa-layer-group"></i> {{ $selectedGenreName }}
+                    @else
+                        {{ __('messages.catalog.page_title') }}
+                    @endif
+                </h1>
                 <div class="text-input checkbox-input select">
                     <div class="text-input__wrapper">
                         <select name="ordering" id="catalog-ordering"
@@ -34,7 +40,7 @@
 
             <div class="manga-grid-list">
                 @forelse($articles as $article)
-                    <a href="{{ route('articles.show', $article->id) }}" class="item">
+                    <a href="{{ route('articles.show', $article) }}" class="item">
                         <div class="poster image image-cover lazy-load-bg">
                             <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                             @if($article->is_completed)<span class="grid-badge">Full</span>@endif
@@ -140,7 +146,46 @@
 .page-title__catalog .page-title { font-size:28px; margin:0; }
 .page-title__catalog select { padding:8px 12px; border-radius:6px; border:1px solid var(--input-border-color,#2a2a3e); background:var(--bg,#fff); color:inherit; min-width:170px; cursor:pointer; }
 .catalog-flex .second-information { width:280px; flex-shrink:0; position:sticky; top:90px; padding:16px; border-radius:8px; }
-.grid-badge { background:var(--primary,#e84040); color:#fff; font-size:11px; padding:2px 6px; border-radius:3px; }
+.grid-badge { background:var(--primary,#e84040); color:#fff; font-size:11px; padding:2px 6px; border-radius:3px; position:absolute; top:4px; right:4px; }
+
+/* Grid layout: 5 columns on desktop, 2 on mobile */
+.manga-grid-list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.manga-grid-list .item {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s;
+}
+.manga-grid-list .item:hover {
+    transform: translateY(-4px);
+}
+.manga-grid-list .item .poster {
+    width: 100%;
+    padding-top: 140%;
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+.manga-grid-list .item .poster img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.manga-grid-list .item .title {
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
 .filter-container .search { margin-bottom:14px; }
 .filter-container .text-input { display:flex; align-items:center; border:1px solid var(--input-border-color,#2a2a3e); border-radius:5px; overflow:hidden; }
 .filter-container .search input { flex:1; border:none; background:transparent; padding:9px 10px; color:inherit; }
@@ -153,6 +198,23 @@
 .filter-container .expand-content.hide { display:none; }
 .filter-container .btns { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px; }
 .filter-container .btns .btn { text-align:center; }
-@media (max-width:1055px){ .catalog-flex { flex-direction:column-reverse; } .catalog-flex .main, .catalog-flex .second-information { width:100%; position:static; } }
+
+/* Tablet: 3 columns */
+@media (max-width:1055px){ 
+    .catalog-flex { flex-direction:column-reverse; } 
+    .catalog-flex .main, .catalog-flex .second-information { width:100%; position:static; }
+    .manga-grid-list { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Mobile: 2 columns */
+@media (max-width:768px){ 
+    .manga-grid-list { 
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    .manga-grid-list .item .title {
+        font-size: 13px;
+    }
+}
 </style>
 @endsection

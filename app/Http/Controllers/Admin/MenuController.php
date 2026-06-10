@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use App\Models\MenuItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class MenuController extends Controller
 {
@@ -24,11 +25,69 @@ class MenuController extends Controller
             ? $menu->items()->whereNull('parent_id')->with(['children' => fn ($q) => $q->orderBy('order')])->orderBy('order')->get()
             : collect();
 
+        // Danh sách nguồn dữ liệu để người dùng chọn (giống WordPress)
+        $availableSources = $this->getAvailableSources();
+
         return view('admin.menus.index', [
             'menus' => $menus,
             'menu'  => $menu,
             'tree'  => $tree,
+            'availableSources' => $availableSources,
         ]);
+    }
+
+    /** Lấy các nguồn dữ liệu có sẵn để tạo menu */
+    private function getAvailableSources(): array
+    {
+        $locale = app()->getLocale();
+        
+        // Genres sử dụng polymorphic slug
+        $genres = \App\Models\Genre::with('slug')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($genre) {
+                return (object)[
+                    'id' => $genre->id,
+                    'name' => $genre->name,
+                    'slug' => $genre->slug?->slug ?? $genre->id,
+                ];
+            });
+        
+        // Static pages - chỉ lấy những trang có route cố định
+        $staticPages = collect([
+            (object)['id' => 'rules', 'title' => 'Nội quy', 'slug' => 'rules', 'type' => 'rules', 'route' => 'pages.rules'],
+            (object)['id' => 'terms', 'title' => 'Điều khoản', 'slug' => 'terms', 'type' => 'terms', 'route' => 'pages.terms'],
+            (object)['id' => 'dmca', 'title' => 'DMCA', 'slug' => 'dmca', 'type' => 'dmca', 'route' => 'pages.dmca'],
+            (object)['id' => 'pricing', 'title' => 'Bảng giá', 'slug' => 'pricing', 'type' => 'pricing', 'route' => 'pages.pricing'],
+            (object)['id' => 'feedback', 'title' => 'Góp ý', 'slug' => 'feedback', 'type' => 'feedback', 'route' => 'pages.feedback'],
+            (object)['id' => 'faq', 'title' => 'FAQ', 'slug' => 'faq', 'type' => 'faq', 'route' => 'pages.faq'],
+            (object)['id' => 'forum', 'title' => 'Forum', 'slug' => 'forum', 'type' => 'forum', 'route' => 'pages.forum'],
+        ]);
+        
+        return [
+            'genres' => $genres,
+            'static_pages' => $staticPages,
+            'forum_categories' => \App\Models\ForumCategory::where('is_active', true)
+                ->orderBy('sort_order')
+                ->get()
+                ->map(function ($cat) use ($locale) {
+                    return (object)[
+                        'id' => $cat->id,
+                        'title' => $cat->{"title_$locale"} ?? $cat->title_en,
+                        'slug' => $cat->slug,
+                    ];
+                }),
+            'faq_categories' => \App\Models\FaqCategory::where('is_active', true)
+                ->orderBy('sort_order')
+                ->get()
+                ->map(function ($cat) use ($locale) {
+                    return (object)[
+                        'id' => $cat->id,
+                        'title' => $cat->{"title_$locale"} ?? $cat->title_en,
+                        'slug' => $cat->slug,
+                    ];
+                }),
+        ];
     }
 
     /** Thêm mục mới (vào cuối menu) */
@@ -43,6 +102,104 @@ class MenuController extends Controller
 
         Menu::flushCache($menu->location);
         return $this->back($menu->location, 'Đã thêm mục menu.');
+    }
+
+    /** Thêm nhiều mục từ nguồn có sẵn (genres, pages, etc.) */
+    public function addFromSource(Request $request, Menu $menu)
+    {
+        $request->validate([
+            'source_type' => 'required|in:genre,static_page,forum_category,faq_category,custom',
+            'items' => 'required|array',
+            'items.*.id' => 'required_unless:source_type,custom',
+            'items.*.label' => 'required_if:source_type,custom',
+            'items.*.url' => 'required_if:source_type,custom',
+        ]);
+
+        $sourceType = $request->input('source_type');
+        $items = $request->input('items', []);
+        $maxOrder = (int) $menu->items()->max('order');
+
+        foreach ($items as $index => $item) {
+            $menuItemData = $this->buildMenuItemFromSource($sourceType, $item);
+            $menuItemData['menu_id'] = $menu->id;
+            $menuItemData['parent_id'] = null;
+            $menuItemData['is_active'] = true;
+            $menuItemData['order'] = $maxOrder + $index + 1;
+            
+            MenuItem::create($menuItemData);
+        }
+
+        Menu::flushCache($menu->location);
+        return $this->back($menu->location, 'Đã thêm ' . count($items) . ' mục menu.');
+    }
+
+    /** Tạo dữ liệu menu item từ nguồn */
+    private function buildMenuItemFromSource(string $sourceType, array $item): array
+    {
+        switch ($sourceType) {
+            case 'genre':
+                $genre = \App\Models\Genre::with('slug')->find($item['id']);
+                if (!$genre) {
+                    throw new \Exception("Genre not found");
+                }
+                $slug = $genre->slug?->slug ?? $genre->id;
+                return [
+                    'label' => $genre->name,
+                    'url' => '/genres/' . $slug, // Relative path
+                    'icon' => '',
+                    'target' => '_self',
+                ];
+            
+            case 'static_page':
+                // Static pages với route cố định
+                $routeName = $item['route'] ?? null;
+                if (!$routeName || !Route::has($routeName)) {
+                    throw new \Exception("Static page route not found");
+                }
+                // Lấy path từ route
+                $path = '/' . ltrim(Route::getRoutes()->getByName($routeName)->uri(), '/');
+                return [
+                    'label' => $item['label'] ?? $item['title'] ?? 'Page',
+                    'url' => $path, // Relative path
+                    'icon' => '',
+                    'target' => '_self',
+                ];
+            
+            case 'forum_category':
+                $category = \App\Models\ForumCategory::find($item['id']);
+                if (!$category) {
+                    throw new \Exception("Forum category not found");
+                }
+                $locale = app()->getLocale();
+                return [
+                    'label' => $category->{"title_$locale"} ?? $category->title_en,
+                    'url' => '/forum/' . $category->slug, // Relative path
+                    'icon' => '',
+                    'target' => '_self',
+                ];
+            
+            case 'faq_category':
+                $category = \App\Models\FaqCategory::find($item['id']);
+                if (!$category) {
+                    throw new \Exception("FAQ category not found");
+                }
+                $locale = app()->getLocale();
+                return [
+                    'label' => $category->{"title_$locale"} ?? $category->title_en,
+                    'url' => '/faq/' . $category->slug, // Relative path
+                    'icon' => '',
+                    'target' => '_self',
+                ];
+            
+            case 'custom':
+            default:
+                return [
+                    'label' => $item['label'] ?? 'Link',
+                    'url' => $item['url'] ?? '#',
+                    'icon' => $item['icon'] ?? '',
+                    'target' => $item['target'] ?? '_self',
+                ];
+        }
     }
 
     /** Cập nhật 1 mục (title/url/icon/khóa dịch/target/active) */

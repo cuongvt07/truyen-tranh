@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\CreditPackage;
 use App\Models\Deposit;
+use App\Services\PackageBenefitService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class PaypalController extends Controller
 {
-    private string $baseUrl;
+    private $baseUrl;
 
     public function __construct()
     {
@@ -39,13 +40,16 @@ class PaypalController extends Controller
 
         $pkg   = CreditPackage::findOrFail($request->package_id);
         $token = $this->getAccessToken();
+        $description = $pkg->isSubscription()
+            ? "Mua subscription {$pkg->subscription_days} ngay - {$pkg->name}"
+            : "Mua {$pkg->coins} xu - {$pkg->name}";
 
         $res = Http::withToken($token)
             ->post("{$this->baseUrl}/v2/checkout/orders", [
                 'intent' => 'CAPTURE',
                 'purchase_units' => [[
                     'reference_id' => 'pkg_' . $pkg->id,
-                    'description'  => "Mua {$pkg->coins} xu - {$pkg->name}",
+                    'description'  => $description,
                     'amount'       => [
                         'currency_code' => 'USD',
                         'value'         => number_format($pkg->price_usd, 2, '.', ''),
@@ -110,14 +114,25 @@ class PaypalController extends Controller
             'transaction_id'    => $captureId,
             'payment_reference' => $request->order_id,
             'status'            => 'completed',
-            'content'           => "PayPal: {$pkg->name} ({$pkg->coins} xu)",
+            'content'           => $pkg->isSubscription()
+                ? "PayPal: {$pkg->name} (subscription {$pkg->subscription_days} days, {$pkg->daily_credits} credits/day)"
+                : "PayPal: {$pkg->name} ({$pkg->coins} xu)",
         ]);
 
         // Cộng xu cho user
-        auth()->user()->increment('points', $pkg->coins);
+        $benefit = app(PackageBenefitService::class)->grant(auth()->user(), $pkg);
+
+        if ($pkg->isSubscription()) {
+            return response()->json([
+                'success' => true,
+                'type'    => 'subscription',
+                'message' => "Thanh toán thành công! Subscription đã kích hoạt đến " . $benefit['vip_end']->format('d/m/Y') . ". Bạn đã nhận " . number_format($benefit['initial_credits']) . " credit ngày đầu.",
+            ]);
+        }
 
         return response()->json([
             'success' => true,
+            'type'    => 'credit',
             'coins'   => $pkg->coins,
             'message' => "Thanh toán thành công! Bạn nhận được {$pkg->coins} xu.",
         ]);

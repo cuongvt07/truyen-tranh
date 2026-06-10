@@ -23,6 +23,8 @@ storage/framework/views/*
 storage/logs/*
 !storage/**/.gitkeep
 
+public/storage
+
 bootstrap/cache/*
 !bootstrap/cache/.gitkeep
 

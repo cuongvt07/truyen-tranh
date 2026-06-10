@@ -18,7 +18,7 @@
                     $genres = Genre::all();
                 ?>
                 @foreach($genres as $genre)
-                    <a href="{{ route('genres.show', $genre->id) }}" class="tag">
+                    <a href="{{ route('genres.show', $genre) }}" class="tag">
                         {{ $genre->name }}
                     </a>
                 @endforeach

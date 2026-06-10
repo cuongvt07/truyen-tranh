@@ -11,7 +11,7 @@
     '@context' => 'https://schema.org',
     '@type' => 'Book',
     'name' => $article->title,
-    'url' => route('articles.show', $article->id),
+    'url' => route('articles.show', $article),
     'description' => \Illuminate\Support\Str::limit(strip_tags($article->description), 250),
     'image' => novel_poster($article),
     'author' => ['@type' => 'Person', 'name' => optional($article->authors->first())->name ?? 'Updating'],
@@ -43,7 +43,6 @@
     $poster = novel_poster($article);
     $bg = novel_bg($article);
     $firstChapter = $article->chapters()->orderBy('number')->first();
-    $latestChapters = $article->chapters()->orderByDesc('number')->take(10)->get();
     $chapterCount = $article->chapters()->count();
 @endphp
 
@@ -76,7 +75,7 @@
                 @if($article->genres->count())
                 <section class="tags section">
                     @foreach($article->genres as $genre)
-                        <a href="{{ route('genres.show', $genre->id) }}">{{ $genre->name }}</a>
+                        <a href="{{ route('genres.show', $genre) }}">{{ $genre->name }}</a>
                     @endforeach
                 </section>
                 @endif
@@ -88,11 +87,27 @@
                     </h2>
                     <div class="chapters">
                         @forelse($latestChapters as $chapter)
-                            <a href="{{ route('articles.chapters.show', [$article->id, $chapter->number]) }}" class="chapter ">
+                            @php
+                                $chapterCreditCost = $chapter->getEffectiveCreditCost($article);
+                                $chapterIsPaid = $chapterCreditCost > 0;
+                                $chapterIsUnlocked = $chapterIsPaid && (($unlockedChapterIds ?? collect())->contains($chapter->id) || ($hasActiveVip ?? false));
+                            @endphp
+                            <a href="{{ route('articles.chapters.show', [$article, $chapter->number]) }}" class="chapter ">
                                 <div class="title">
                                     {{ __('messages.article.chapter') }} {{ $chapter->number }} - <span>{{ $chapter->title }}</span>
                                 </div>
                                 <div class="chapter-info">
+                                    @if($chapterIsPaid)
+                                        @guest
+                                            <span class="cost"><i class="fa fa-lock"></i></span>
+                                        @else
+                                            @if($chapterIsUnlocked)
+                                                <span class="cost paid">paid</span>
+                                            @else
+                                                <span class="cost"><i class="fa fa-money-bill"></i> {{ number_format($chapterCreditCost) }}</span>
+                                            @endif
+                                        @endguest
+                                    @endif
                                     <span class="author"><i class="fa fa-eye"></i> {{ number_format($chapter->view) }}</span>
                                     <span class="date">{{ optional($chapter->created_at)->format('d.m.Y') }}</span>
                                 </div>
@@ -115,7 +130,7 @@
                     </h2>
                     <div class="swiper-container"><div class="swiper-wrapper">
                         @foreach($suggestedArticles as $s)
-                            <a href="{{ route('articles.show', $s->id) }}" class="swiper-slide manga-list-item">
+                            <a href="{{ route('articles.show', $s) }}" class="swiper-slide manga-list-item">
                                 <div class="image image-cover lazy-load-bg">
                                     <img class="lazy-image" loading="eager" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
                                 </div>
@@ -141,7 +156,7 @@
                     </h2>
                     <div class="swiper-container"><div class="swiper-wrapper">
                         @foreach($translationRequests as $s)
-                            <a href="{{ route('articles.show', $s->id) }}" class="swiper-slide manga-list-item">
+                            <a href="{{ route('articles.show', $s) }}" class="swiper-slide manga-list-item">
                                 <div class="image image-cover lazy-load-bg">
                                     <img class="lazy-image" loading="eager" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
                                 </div>
@@ -161,7 +176,7 @@
                     <h2 class="section-title">{{ __('messages.article.related_collections') }}</h2>
                     <div class="collections"><div class="collection-mini-grid">
                         @foreach($relatedGenres as $genre)
-                            <a href="{{ route('genres.show', $genre->id) }}" class="collection-item">
+                            <a href="{{ route('genres.show', $genre) }}" class="collection-item">
                                 <div class="collection__inner">
                                     <div class="collection-name clamp clamp-1">{{ $genre->name }}</div>
                                     <div class="collection-author meta-color clamp clamp-1">
@@ -226,11 +241,27 @@
             <div class="main-section hide" id="chapters">
                 <div id="all-chapters-list" class="chapters">
                     @foreach($chapters as $chapter)
-                        <a href="{{ route('articles.chapters.show', [$article->id, $chapter->number]) }}" class="chapter ">
+                        @php
+                            $chapterCreditCost = $chapter->getEffectiveCreditCost($article);
+                            $chapterIsPaid = $chapterCreditCost > 0;
+                            $chapterIsUnlocked = $chapterIsPaid && (($unlockedChapterIds ?? collect())->contains($chapter->id) || ($hasActiveVip ?? false));
+                        @endphp
+                        <a href="{{ route('articles.chapters.show', [$article, $chapter->number]) }}" class="chapter ">
                             <div class="title">
                                 {{ __('messages.article.chapter') }} {{ $chapter->number }} - <span>{{ $chapter->title }}</span>
                             </div>
                             <div class="chapter-info">
+                                @if($chapterIsPaid)
+                                    @guest
+                                        <span class="cost"><i class="fa fa-lock"></i></span>
+                                    @else
+                                        @if($chapterIsUnlocked)
+                                            <span class="cost paid">paid</span>
+                                        @else
+                                            <span class="cost"><i class="fa fa-money-bill"></i> {{ number_format($chapterCreditCost) }}</span>
+                                        @endif
+                                    @endguest
+                                @endif
                                 <span class="author"><i class="fa fa-eye"></i> {{ number_format($chapter->view) }}</span>
                                 <span class="date">{{ optional($chapter->created_at)->format('d.m.Y') }}</span>
                             </div>
@@ -280,7 +311,7 @@
             </div>
 
             @if($firstChapter)
-                <a href="{{ route('articles.chapters.show', [$article->id, $firstChapter->number]) }}" class="btn btn-primary read-btn">
+                <a href="{{ route('articles.chapters.show', [$article, $firstChapter->number]) }}" class="btn btn-primary read-btn">
                     {{ __('messages.article.read_from_start') }}
                 </a>
             @endif
@@ -351,7 +382,7 @@
                     <div class="sub-header">{{ __('messages.article.genres') }}</div>
                     <div class="info">
                         @foreach($article->genres as $genre)
-                            <a href="{{ route('genres.show', $genre->id) }}">{{ $genre->name }}</a>
+                            <a href="{{ route('genres.show', $genre) }}">{{ $genre->name }}</a>
                         @endforeach
                     </div>
                 </div>
@@ -411,6 +442,20 @@
     align-items:center;
     margin-left:auto;
     flex:0 0 auto;
+}
+.chapter-info .cost.paid{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:38px;
+    padding:2px 7px;
+    border-radius:4px;
+    background:#1f9d55;
+    color:#fff!important;
+    font-size:12px;
+    line-height:1.35;
+    text-transform:uppercase;
+    font-weight:700;
 }
 @media only screen and (max-width: 768px){
     .article-detail-flex{flex-direction:column-reverse!important}

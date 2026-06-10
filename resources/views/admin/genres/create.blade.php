@@ -1,36 +1,25 @@
 @extends('layout.admin')
-@section('template_title')
-    {{ __('Thêm mới thể loại') }}
-@endsection
 
-@php
-    $method = "POST";
-@endphp
+@section('template_title', 'Thêm mới Thể loại')
 
 @section('content')
-    <section class="content container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                @includeif('partials.errors')
-                <div class="card card-default">
-                    <div class="card-header">
-                        <div class="float-left">
-                            <span class="card-title">{{ __('Thêm mới') }}</span>
-                        </div>
-                        <div class="float-right">
-                            <a class="btn btn-primary" href="{{ route('admin.genres.index') }}"> {{ __('Trở lại') }}</a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('admin.genres.store') }}" role="form"
-                              enctype="multipart/form-data">
-                            @csrf
-                            @method($method)
-                            @include('admin.genres.form')
-                        </form>
-                    </div>
-                </div>
-            </div>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Thêm mới Thể loại</h3>
+    </div>
+    <form action="{{ route('admin.genres.store') }}" method="POST">
+        @csrf
+        <div class="card-body">
+            @include('admin.genres.form')
         </div>
-    </section>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Lưu thể loại
+            </button>
+            <a href="{{ route('admin.genres.index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </form>
+</div>
 @endsection

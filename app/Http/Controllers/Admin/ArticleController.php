@@ -10,6 +10,7 @@ use App\Http\Requests\Article\ChangeStatusRequest;
 use App\Models\Article;
 use App\Models\Author;
 use App\Models\Genre;
+use App\Models\Slug;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
@@ -94,6 +95,7 @@ class ArticleController extends Controller
 
         $validateData = $this->uploadCoverImage($request, $validateData);
         $article = Article::create($validateData);
+        Slug::ensureFor($article, 'article', $request->input('slug') ?: $article->title);
         $article->genres()->attach($validateData['genres']);
         $article->authors()->attach($validateData['authors']);
         $this->syncTags($article, $request->input('tags'));
@@ -134,6 +136,7 @@ class ArticleController extends Controller
      */
     public function edit(Article $article)
     {
+        $article->load('slug');
         $authors = Author::all();
         $genres = Genre::all();
         $articleOptions = Article::where('id', '!=', $article->id)->orderBy('title')->get(['id', 'title']);
@@ -162,6 +165,7 @@ class ArticleController extends Controller
         $data = $this->uploadCoverImage($request, $data);
 
         $article->update($data);
+        Slug::ensureFor($article, 'article', $request->input('slug') ?: $article->title);
         $article->genres()->sync($data['genres'] ?? []);
         $article->authors()->sync($data['authors'] ?? []);
         $this->syncTags($article, $request->input('tags'));

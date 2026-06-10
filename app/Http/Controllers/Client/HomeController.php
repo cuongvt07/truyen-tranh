@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Client;
 use App\Enums\ArticleCompleteStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Models\Collection;
+use App\Models\ReadingHistory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -19,17 +22,39 @@ class HomeController extends Controller
         $lastComments        = DB::table('comments')
                                  ->join('users', 'users.id', '=', 'comments.user_id')
                                  ->join('articles', 'articles.id', '=', 'comments.article_id')
-                                 ->select('comments.*', 'users.name as user_name', 'articles.title as article_title', 'articles.id as article_id')
+                                 ->leftJoin('slugs', function ($join) {
+                                     $join->on('slugs.sluggable_id', '=', 'articles.id')
+                                         ->where('slugs.sluggable_type', Article::class)
+                                         ->where('slugs.type', 'article');
+                                 })
+                                 ->select('comments.*', 'users.name as user_name', 'articles.title as article_title', 'articles.id as article_id', 'slugs.slug as article_slug')
                                  ->orderByDesc('comments.created_at')
                                  ->limit(6)
                                  ->get();
-        // Bookmarks của user hiện tại (không check auth - demo full)
-        $myBookmarks = \App\Models\Bookmark::with('article')
-                         ->orderByDesc('created_at')
-                         ->limit(8)
-                         ->get()
-                         ->pluck('article')
-                         ->filter();
+        $readingHistory = Auth::check()
+            ? ReadingHistory::continueReading(Auth::id(), 6)
+            : collect();
+        $lastCollections = Collection::query()
+            ->with(['user:id,name,username', 'articles.slug'])
+            ->withCount('articles')
+            ->where('is_private', false)
+            ->orderByDesc('created_at')
+            ->take(4)
+            ->get();
+
+        $collectionIds = $lastCollections->pluck('id');
+        $collectionCommentCounts = $collectionIds->isNotEmpty()
+            ? DB::table('collection_article')
+                ->join('comments', 'comments.article_id', '=', 'collection_article.article_id')
+                ->whereIn('collection_article.collection_id', $collectionIds)
+                ->selectRaw('collection_article.collection_id, COUNT(comments.id) as total')
+                ->groupBy('collection_article.collection_id')
+                ->pluck('total', 'collection_id')
+            : collect();
+
+        $lastCollections->each(function ($collection) use ($collectionCommentCounts) {
+            $collection->setAttribute('comments_count', (int) ($collectionCommentCounts[$collection->id] ?? 0));
+        });
 
         return view('client.home.index', [
             'hotArticles'       => $hotArticles,
@@ -37,7 +62,8 @@ class HomeController extends Controller
             'completedArticles' => $completedArticles,
             'randomArticles'    => $randomArticles,
             'lastComments'      => $lastComments,
-            'myBookmarks'       => $myBookmarks,
+            'readingHistory'    => $readingHistory,
+            'lastCollections'   => $lastCollections,
         ]);
     }
 

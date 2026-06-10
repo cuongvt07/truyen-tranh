@@ -44,7 +44,15 @@
                     <h2 class="price_item__title block-title">{{ $premium['name'] }}</h2>
                     <div class="recommended-coupons"><i class="fa fa-crown" style="color:#f0c040"></i> {{ $premium['desc'] }}</div>
                 </div>
-                <a href="{{ route('client.paypoints') }}" class="btn btn-primary">{{ $premium['price'] }}</a>
+                @auth
+                    @if(!empty($premium['id']) && ($premium['price_usd'] ?? 0) > 0)
+                        <a href="{{ route('checkout.show', $premium['id']) }}" class="btn btn-primary">{{ $premium['price'] }}</a>
+                    @else
+                        <a href="{{ route('client.paypoints') }}" class="btn btn-primary">{{ $premium['price'] }}</a>
+                    @endif
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-primary">{{ $premium['price'] }}</a>
+                @endauth
             </div>
         </div>
     </div>
@@ -62,7 +70,15 @@
                     <h2 class="price_item__title block-title">{{ $premium['name'] }}</h2>
                     <div class="price-item__cost-info">
                         <div class="price-item__cost"><span>{{ $premium['desc'] }}</span><br>{{ $premium['price'] }}</div>
-                        <a href="{{ route('client.paypoints') }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>
+                        @auth
+                            @if(!empty($premium['id']) && ($premium['price_usd'] ?? 0) > 0)
+                                <a href="{{ route('checkout.show', $premium['id']) }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>
+                            @else
+                                <a href="{{ route('client.paypoints') }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>
+                            @endif
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>
+                        @endauth
                     </div>
                 </div>
             </div>

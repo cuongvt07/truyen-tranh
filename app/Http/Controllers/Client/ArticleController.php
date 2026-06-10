@@ -4,18 +4,43 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Models\ChapterUnlock;
 use App\Models\Genre;
+use App\Models\UserVip;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Nette\Utils\Paginator;
 
 class ArticleController extends Controller
 {
-    public function show(Article $article)
+    public function show(Request $request, Article $article)
     {
+        if ($request->route()->originalParameter('article') !== $article->getRouteKey()) {
+            return redirect()->route('articles.show', $article, 301);
+        }
+
         $article->increaseViewCount();
 
         $chapters = $article->chapters()->paginate();
+        $latestChapters = $article->chapters()->orderByDesc('number')->take(10)->get();
         $comments = $article->getNewestCommentsPaginate();
+        $displayChapterIds = $latestChapters->pluck('id')
+            ->merge($chapters->getCollection()->pluck('id'))
+            ->unique()
+            ->values();
+
+        $unlockedChapterIds = collect();
+        $hasActiveVip = false;
+
+        if (Auth::check()) {
+            $hasActiveVip = UserVip::where('user_id', Auth::id())
+                ->where('end_at', '>=', now())
+                ->exists();
+
+            $unlockedChapterIds = ChapterUnlock::where('user_id', Auth::id())
+                ->whereIn('chapter_id', $displayChapterIds)
+                ->pluck('chapter_id');
+        }
 
         // Truyện cùng tác giả (loại bỏ chính nó)
         $firstAuthor = $article->authors->first();
@@ -58,6 +83,9 @@ class ArticleController extends Controller
         return view('client.articles.show', [
             'article' => $article,
             'chapters' => $chapters,
+            'latestChapters' => $latestChapters,
+            'unlockedChapterIds' => $unlockedChapterIds,
+            'hasActiveVip' => $hasActiveVip,
             'comments' => $comments,
             'sameAuthorArticles' => $sameAuthorArticles,
             'suggestedArticles' => $suggestedArticles,

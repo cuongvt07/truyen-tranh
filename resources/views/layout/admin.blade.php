@@ -182,7 +182,7 @@
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                     data-accordion="false">
                     {{-- ===== TỔNG QUAN ===== --}}
-                    @if($currentUser->is_admin)
+                    @if($currentUser->is_poster || $currentUser->is_admin)
                         <li class="nav-header">TỔNG QUAN</li>
                         <li class="nav-item">
                             <a href="{{ route('admin.dashboard') }}" class="nav-link {{ set_active('admin.dashboard') }}">
@@ -323,6 +323,76 @@
                         </li>
                     @endif
 
+                    {{-- ===== FORUM MODULE ===== --}}
+                    @if($currentUser->is_admin)
+                        @php
+                            $openForum = request()->routeIs('admin.forum.*');
+                            $forumPendingPosts = \App\Models\ForumPost::where('status', 'pending')->count();
+                        @endphp
+                        <li class="nav-item has-treeview {{ $openForum ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $openForum ? 'active' : '' }}">
+                                <i class="nav-icon fa-solid fa-comments"></i>
+                                <p>Forum <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.forum.categories.index') }}" class="nav-link {{ set_active('admin.forum.categories.*') }}">
+                                        <i class="nav-icon fa-solid fa-folder"></i><p>Categories</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.forum.posts.index') }}" class="nav-link {{ set_active('admin.forum.posts.*') }}">
+                                        <i class="nav-icon fa-solid fa-file-lines"></i>
+                                        <p>Posts @if($forumPendingPosts)<span class="badge badge-count right {{ $forumPendingPosts > 99 ? 'badge-count--wide' : '' }}">{{ $forumPendingPosts > 99 ? '99+' : $forumPendingPosts }}</span>@endif</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.forum.comments.index') }}" class="nav-link {{ set_active('admin.forum.comments.*') }}">
+                                        <i class="nav-icon fa-solid fa-comment"></i><p>Comments</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.forum.settings.index') }}" class="nav-link {{ set_active('admin.forum.settings.*') }}">
+                                        <i class="nav-icon fa-solid fa-gear"></i><p>Settings</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+
+                    {{-- ===== FAQ MODULE ===== --}}
+                    @if($currentUser->is_admin)
+                        @php $openFaq = request()->routeIs('admin.faq.*'); @endphp
+                        <li class="nav-item has-treeview {{ $openFaq ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $openFaq ? 'active' : '' }}">
+                                <i class="nav-icon fa-solid fa-circle-question"></i>
+                                <p>FAQ <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.faq.categories.index') }}" class="nav-link {{ set_active('admin.faq.categories.*') }}">
+                                        <i class="nav-icon fa-solid fa-folder"></i><p>Categories</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.faq.articles.index') }}" class="nav-link {{ set_active('admin.faq.articles.*') }}">
+                                        <i class="nav-icon fa-solid fa-newspaper"></i><p>Articles</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.faq.comments.index') }}" class="nav-link {{ set_active('admin.faq.comments.*') }}">
+                                        <i class="nav-icon fa-solid fa-comment"></i><p>Comments</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.faq.settings.index') }}" class="nav-link {{ set_active('admin.faq.settings.*') }}">
+                                        <i class="nav-icon fa-solid fa-gear"></i><p>Settings</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+
                     {{-- ===== SEO & MARKETING ===== --}}
                     @if($currentUser->is_admin)
                         @php $openSeo = request()->routeIs('admin.seo.*'); @endphp
@@ -348,7 +418,7 @@
 
                     {{-- ===== CÀI ĐẶT ===== --}}
                     @if($currentUser->is_admin)
-                        @php $openSettings = request()->routeIs('admin.settings.*','admin.menus.*','admin.ads.*'); @endphp
+                        @php $openSettings = request()->routeIs('admin.settings.*','admin.static-pages.*','admin.menus.*','admin.ads.*'); @endphp
                         <li class="nav-item has-treeview {{ $openSettings ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ $openSettings ? 'active' : '' }}">
                                 <i class="nav-icon fa-solid fa-gear"></i>
@@ -358,6 +428,11 @@
                                 <li class="nav-item">
                                     <a href="{{ route('admin.settings.index') }}" class="nav-link {{ set_active('admin.settings.*') }}">
                                         <i class="nav-icon fa-solid fa-sliders"></i><p>Cấu hình chung</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.static-pages.index') }}" class="nav-link {{ set_active('admin.static-pages.*') }}">
+                                        <i class="nav-icon fa-solid fa-file-lines"></i><p>Cấu hình trang</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">

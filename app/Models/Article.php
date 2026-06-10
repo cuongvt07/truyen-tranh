@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Facades\Auth;
 
 class Article extends Model
@@ -46,6 +46,9 @@ class Article extends Model
         // Làm mới sitemap khi nội dung đổi; bỏ qua thay đổi chỉ liên quan lượt xem/đánh giá.
         static::saved(function (self $article) {
             $ignore = ['view', 'rating', 'rating_count', 'updated_at'];
+            if ($article->wasRecentlyCreated || $article->wasChanged('title') || !$article->slug()->exists()) {
+                Slug::ensureFor($article, 'article', $article->title);
+            }
             if (count(array_diff(array_keys($article->getChanges()), $ignore)) > 0) {
                 bump_sitemap_version();
             }
@@ -117,6 +120,18 @@ class Article extends Model
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function slug(): MorphOne
+    {
+        return $this->morphOne(Slug::class, 'sluggable')->where('type', 'article');
+    }
+
+    public function getRouteKey()
+    {
+        return $this->relationLoaded('slug')
+            ? ($this->slug?->slug ?? $this->getKey())
+            : ($this->slug()->value('slug') ?? $this->getKey());
     }
 
     public function authors(

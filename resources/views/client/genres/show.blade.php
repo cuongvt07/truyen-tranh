@@ -25,7 +25,7 @@
                     $poster = novel_poster($article);
                     $newest = $article->chapters->isNotEmpty() ? $article->chapters->sortByDesc('number')->first() : null;
                 @endphp
-                <a href="{{ route('articles.show', $article->id) }}" class="manga-item catalog-item">
+                <a href="{{ route('articles.show', $article) }}" class="manga-item catalog-item">
                     <div class="poster image image-cover lazy-load-bg">
                         <img class="lazy-image" loading="lazy" src="{{ $poster }}" alt="{{ $article->title }}">
                         @if($article->is_completed)

@@ -11,11 +11,24 @@ class TeamController extends Controller
     public function index(Request $request)
     {
         $q = Team::query()->with('user:id,username');
+        
+        // Search
         if ($s = trim((string) $request->get('q'))) {
-            $q->where('name', 'like', "%$s%");
+            $q->where('name', 'like', "%$s%")
+              ->orWhere('description', 'like', "%$s%");
         }
-        $items = $q->orderByDesc('id')->paginate($request->get('per_page', 15))->withQueryString();
+        
+        // Sorting
+        $sort = $request->get('sort', 'id_desc');
+        match($sort) {
+            'name' => $q->orderBy('name'),
+            'id_asc' => $q->orderBy('id'),
+            default => $q->orderByDesc('id'),
+        };
+        
+        $items = $q->paginate(30)->withQueryString();
         $total = Team::count();
+        
         return view('admin.teams.index', compact('items', 'total'));
     }
 

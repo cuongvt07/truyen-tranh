@@ -100,7 +100,7 @@
             </div>
         </div>
         <div id="fb-comments" class="tabcontent" data-tab="tab2">
-            <div class="fb-comments" data-href="{{ url()->route('articles.show', $article->id) }}" data-width=""
+            <div class="fb-comments" data-href="{{ url()->route('articles.show', $article) }}" data-width=""
                  data-numposts="10"></div>
         </div>
     </div>

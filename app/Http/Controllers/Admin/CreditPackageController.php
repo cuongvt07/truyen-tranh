@@ -23,8 +23,10 @@ class CreditPackageController extends Controller
     {
         $data = $request->validate([
             'name'          => 'required|string|max:255',
+            'package_type'  => 'required|in:credit,subscription',
             'coins'         => 'required|integer|min:1',
-            'price_vnd'     => 'required|integer|min:0',
+            'subscription_days' => 'nullable|integer|min:0',
+            'daily_credits' => 'nullable|integer|min:0',
             'price_usd'     => 'nullable|numeric|min:0',
             'price_display' => 'nullable|string|max:50',
             'icon'          => 'nullable|string|max:500',
@@ -35,7 +37,9 @@ class CreditPackageController extends Controller
 
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_active']   = $request->boolean('is_active');
+        $data['price_vnd']   = 0;
         $data['price_usd']   = $data['price_usd'] ?? 0;
+        $this->normalizePackageBenefits($data);
 
         CreditPackage::create($data);
 
@@ -52,8 +56,10 @@ class CreditPackageController extends Controller
     {
         $data = $request->validate([
             'name'          => 'required|string|max:255',
+            'package_type'  => 'required|in:credit,subscription',
             'coins'         => 'required|integer|min:1',
-            'price_vnd'     => 'required|integer|min:0',
+            'subscription_days' => 'nullable|integer|min:0',
+            'daily_credits' => 'nullable|integer|min:0',
             'price_usd'     => 'nullable|numeric|min:0',
             'price_display' => 'nullable|string|max:50',
             'icon'          => 'nullable|string|max:500',
@@ -64,12 +70,26 @@ class CreditPackageController extends Controller
 
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_active']   = $request->boolean('is_active');
+        $data['price_vnd']   = 0;
         $data['price_usd']   = $data['price_usd'] ?? 0;
+        $this->normalizePackageBenefits($data);
 
         $creditPackage->update($data);
 
         return redirect()->route('admin.credit-packages.index')
             ->with('success', 'Cập nhật gói thành công!');
+    }
+
+    private function normalizePackageBenefits(array &$data): void
+    {
+        if (($data['package_type'] ?? 'credit') === 'subscription') {
+            $data['subscription_days'] = max(1, (int) ($data['subscription_days'] ?? 0));
+            $data['daily_credits'] = max(0, (int) ($data['daily_credits'] ?? 0));
+            return;
+        }
+
+        $data['subscription_days'] = 0;
+        $data['daily_credits'] = 0;
     }
 
     public function destroy(CreditPackage $creditPackage)

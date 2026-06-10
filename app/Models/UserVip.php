@@ -11,6 +11,8 @@ class UserVip extends Model
         'package_name',
         'package_days',
         'package_coins',
+        'daily_credits',
+        'last_daily_credit_at',
         'start_at',
         'end_at',
     ];
@@ -18,6 +20,7 @@ class UserVip extends Model
     protected $dates = [
         'start_at',
         'end_at',
+        'last_daily_credit_at',
     ];
 
     public function user()

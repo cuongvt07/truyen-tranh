@@ -120,7 +120,11 @@
             @endif
             <div class="order-item-info">
                 <strong>{{ $package->name }}</strong>
-                <span>Buy {{ number_format($package->coins) }} coupons for ${{ number_format($package->price_usd, 0) }}</span>
+                @if($package->isSubscription())
+                    <span>Hide ads for {{ $package->subscription_days }} days + {{ number_format($package->daily_credits) }} credits/day</span>
+                @else
+                    <span>Buy {{ number_format($package->coins) }} credits for ${{ number_format($package->price_usd, 0) }}</span>
+                @endif
             </div>
             <div class="order-item-price">${{ number_format($package->price_usd, 2) }}</div>
         </div>
@@ -143,7 +147,7 @@
         <div class="success-icon">✅</div>
         <h3>Thanh toán thành công!</h3>
         <p id="success-msg"></p>
-        <a href="{{ route('users.show') }}" class="btn btn-primary">Xem tài khoản</a>
+        <a href="{{ route('users.transactions', auth()->id()) }}" class="btn btn-primary">Xem giao dịch</a>
         <a href="{{ route('pages.pricing') }}" class="btn btn-outline-secondary ms-2">Mua thêm</a>
     </div>
 </div>
@@ -155,6 +159,7 @@
 (function () {
     const PACKAGE_ID = {{ $package->id }};
     const CSRF       = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+    const TRANSACTIONS_URL = @json(route('users.transactions', auth()->id()));
 
     paypal.Buttons({
         style: {
@@ -192,6 +197,9 @@
                 document.getElementById('payment-card').style.display  = 'none';
                 document.getElementById('checkout-success').style.display = 'block';
                 document.getElementById('success-msg').textContent = d.message;
+                setTimeout(() => {
+                    window.location.href = TRANSACTIONS_URL;
+                }, 3000);
             });
         },
 

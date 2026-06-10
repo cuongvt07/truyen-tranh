@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Genre\StoreGenreRequest;
 use App\Http\Requests\Admin\Genre\UpdateGenreRequest;
 use App\Models\Genre;
+use App\Models\Slug;
 use Illuminate\Http\Request;
 
 class GenreController extends Controller
@@ -15,14 +16,35 @@ class GenreController extends Controller
      */
     public function index(Request $request)
     {
-        $genres = Genre::query()->orderByDesc("id");
-        if ($request->has('search')) {
-            $searchText = $request->input('search');
-            $genres->where('name', 'like', '%' . $searchText . '%');
+        $query = Genre::query();
+        
+        // Search
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+        
+        // Sorting
+        $sort = $request->get('sort', 'name');
+        switch ($sort) {
+            case 'name':
+                $query->orderBy('name');
+                break;
+            case 'id_desc':
+                $query->orderByDesc('id');
+                break;
+            case 'id_asc':
+                $query->orderBy('id');
+                break;
+            default:
+                $query->orderBy('name');
         }
 
-        $genres = $genres->paginate();
-        return view('admin.genres.index', ['genres' => $genres]);
+        $genres = $query->paginate(30)->withQueryString();
+        
+        return view('admin.genres.index', [
+            'genres' => $genres,
+            'filters' => $request->only(['search', 'sort'])
+        ]);
     }
 
     /**
@@ -40,7 +62,8 @@ class GenreController extends Controller
     public function store(StoreGenreRequest $request)
     {
         $request->validated();
-        Genre::create($request->all());
+        $genre = Genre::create($request->all());
+        Slug::ensureFor($genre, 'genre', $request->input('slug') ?: $genre->name);
         return redirect()->route('admin.genres.index')->with('success', 'Tạo mới thể loại thành công!');
     }
 
@@ -57,6 +80,7 @@ class GenreController extends Controller
      */
     public function edit(Genre $genre)
     {
+        $genre->load('slug');
         return view('admin.genres.edit', ['genre' => $genre]);
     }
 
@@ -67,6 +91,7 @@ class GenreController extends Controller
     {
         $request->validated();
         $genre->update($request->all());
+        Slug::ensureFor($genre, 'genre', $request->input('slug') ?: $genre->name);
         return redirect()->route('admin.genres.index')->with('success', 'Cập nhật thông tin thể loại thành công!');
     }
 

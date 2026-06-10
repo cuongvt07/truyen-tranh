@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="content"><div class="container-fluid">
-    <p class="text-muted mb-2"><small>Kéo <i class="fas fa-grip-vertical"></i> để sắp xếp, kéo thụt vào để tạo menu con (dropdown). Nhớ bấm <b>Lưu sắp xếp</b>.</small></p>
+    <p class="text-muted mb-2"><small>Chọn mục từ cột bên trái hoặc tạo link tùy chỉnh. Kéo <i class="fas fa-grip-vertical"></i> để sắp xếp, kéo thụt vào để tạo menu con (dropdown).</small></p>
     @include('admin.partials.flash')
 
     {{-- Tabs chọn vị trí --}}
@@ -25,39 +25,180 @@
     @endif
 
     <div class="row">
-        {{-- Thêm mục (đơn giản: icon / title / url) --}}
+        {{-- Cột trái: Nguồn dữ liệu để chọn (giống WordPress) --}}
         <div class="col-lg-4">
-            <div class="card card-primary card-outline">
-                <div class="card-header"><h3 class="card-title"><i class="fas fa-plus"></i> Thêm mục</h3></div>
-                <form method="POST" action="{{ route('admin.menus.items.store', $menu->id) }}">
-                    @csrf
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label class="mb-1">Tiêu đề <span class="text-danger">*</span></label>
-                            <input type="text" name="label" class="form-control form-control-sm" value="{{ old('label') }}" placeholder="Trang chủ" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="mb-1">URL</label>
-                            <input type="text" name="url" class="form-control form-control-sm" value="{{ old('url', '/') }}" placeholder="/catalog hoặc #browse">
-                        </div>
-                        <div class="form-group mb-0">
-                            <label class="mb-1">Icon <small class="text-muted">(FontAwesome)</small></label>
-                            <input type="text" name="icon" class="form-control form-control-sm" value="{{ old('icon') }}" placeholder="fa fa-home">
+            
+            {{-- Accordion cho các nguồn dữ liệu --}}
+            <div class="accordion" id="menu-sources-accordion">
+                
+                {{-- Link tùy chỉnh --}}
+                <div class="card card-outline">
+                    <div class="card-header p-0">
+                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapse-custom">
+                            <i class="fas fa-link"></i> Link tùy chỉnh
+                        </button>
+                    </div>
+                    <div id="collapse-custom" class="collapse show" data-parent="#menu-sources-accordion">
+                        <div class="card-body">
+                            <form id="custom-link-form">
+                                <div class="form-group">
+                                    <label class="mb-1">Tiêu đề <span class="text-danger">*</span></label>
+                                    <input type="text" name="label" class="form-control form-control-sm" placeholder="Trang chủ" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="mb-1">URL <span class="text-danger">*</span></label>
+                                    <input type="text" name="url" class="form-control form-control-sm" placeholder="/catalog hoặc #browse" required>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label class="mb-1">Icon <small class="text-muted">(FontAwesome)</small></label>
+                                    <input type="text" name="icon" class="form-control form-control-sm" placeholder="fa fa-home">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm btn-block"><i class="fas fa-plus"></i> Thêm vào menu</button>
+                            </form>
                         </div>
                     </div>
-                    <div class="card-footer text-right">
-                        <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Thêm</button>
+                </div>
+
+                {{-- Thể loại --}}
+                <div class="card card-outline">
+                    <div class="card-header p-0">
+                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapse-genres">
+                            <i class="fas fa-folder"></i> Thể loại <span class="badge badge-secondary ml-1">{{ $availableSources['genres']->count() }}</span>
+                        </button>
                     </div>
-                </form>
+                    <div id="collapse-genres" class="collapse" data-parent="#menu-sources-accordion">
+                        <div class="card-body p-2" style="max-height: 300px; overflow-y: auto;">
+                            @forelse($availableSources['genres'] as $genre)
+                                <div class="custom-control custom-checkbox py-1">
+                                    <input type="checkbox" class="custom-control-input source-checkbox" 
+                                           id="genre-{{ $genre->id }}" 
+                                           data-source="genre" 
+                                           data-id="{{ $genre->id }}"
+                                           data-label="{{ $genre->name }}"
+                                           data-url="{{ route('genres.show', $genre->slug) }}">
+                                    <label class="custom-control-label" for="genre-{{ $genre->id }}">{{ $genre->name }}</label>
+                                </div>
+                            @empty
+                                <p class="text-muted small mb-0">Chưa có thể loại nào</p>
+                            @endforelse
+                        </div>
+                        <div class="card-footer p-2 text-right">
+                            <button type="button" class="btn btn-sm btn-primary add-selected-btn" data-source="genre">
+                                <i class="fas fa-plus"></i> Thêm đã chọn
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Trang tĩnh --}}
+                <div class="card card-outline">
+                    <div class="card-header p-0">
+                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapse-pages">
+                            <i class="fas fa-file-alt"></i> Trang tĩnh <span class="badge badge-secondary ml-1">{{ $availableSources['static_pages']->count() }}</span>
+                        </button>
+                    </div>
+                    <div id="collapse-pages" class="collapse" data-parent="#menu-sources-accordion">
+                        <div class="card-body p-2" style="max-height: 300px; overflow-y: auto;">
+                            @forelse($availableSources['static_pages'] as $page)
+                                <div class="custom-control custom-checkbox py-1">
+                                    <input type="checkbox" class="custom-control-input source-checkbox" 
+                                           id="page-{{ $page->id }}" 
+                                           data-source="static_page" 
+                                           data-id="{{ $page->id }}"
+                                           data-label="{{ $page->title }}"
+                                           data-route="{{ $page->route }}"
+                                           data-url="{{ route($page->route) }}">
+                                    <label class="custom-control-label" for="page-{{ $page->id }}">
+                                        {{ $page->title }}
+                                        @if($page->type)
+                                            <small class="text-muted">({{ $page->type }})</small>
+                                        @endif
+                                    </label>
+                                </div>
+                            @empty
+                                <p class="text-muted small mb-0">Chưa có trang nào</p>
+                            @endforelse
+                        </div>
+                        <div class="card-footer p-2 text-right">
+                            <button type="button" class="btn btn-sm btn-primary add-selected-btn" data-source="static_page">
+                                <i class="fas fa-plus"></i> Thêm đã chọn
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Forum Categories --}}
+                <div class="card card-outline">
+                    <div class="card-header p-0">
+                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapse-forum">
+                            <i class="fas fa-comments"></i> Forum <span class="badge badge-secondary ml-1">{{ $availableSources['forum_categories']->count() }}</span>
+                        </button>
+                    </div>
+                    <div id="collapse-forum" class="collapse" data-parent="#menu-sources-accordion">
+                        <div class="card-body p-2" style="max-height: 300px; overflow-y: auto;">
+                            @forelse($availableSources['forum_categories'] as $cat)
+                                <div class="custom-control custom-checkbox py-1">
+                                    <input type="checkbox" class="custom-control-input source-checkbox" 
+                                           id="forum-cat-{{ $cat->id }}" 
+                                           data-source="forum_category" 
+                                           data-id="{{ $cat->id }}"
+                                           data-label="{{ $cat->title }}"
+                                           data-url="{{ route('pages.forum.category', $cat->slug) }}">
+                                    <label class="custom-control-label" for="forum-cat-{{ $cat->id }}">{{ $cat->title }}</label>
+                                </div>
+                            @empty
+                                <p class="text-muted small mb-0">Chưa có danh mục forum nào</p>
+                            @endforelse
+                        </div>
+                        <div class="card-footer p-2 text-right">
+                            <button type="button" class="btn btn-sm btn-primary add-selected-btn" data-source="forum_category">
+                                <i class="fas fa-plus"></i> Thêm đã chọn
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- FAQ Categories --}}
+                <div class="card card-outline">
+                    <div class="card-header p-0">
+                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapse-faq">
+                            <i class="fas fa-question-circle"></i> FAQ <span class="badge badge-secondary ml-1">{{ $availableSources['faq_categories']->count() }}</span>
+                        </button>
+                    </div>
+                    <div id="collapse-faq" class="collapse" data-parent="#menu-sources-accordion">
+                        <div class="card-body p-2" style="max-height: 300px; overflow-y: auto;">
+                            @forelse($availableSources['faq_categories'] as $cat)
+                                <div class="custom-control custom-checkbox py-1">
+                                    <input type="checkbox" class="custom-control-input source-checkbox" 
+                                           id="faq-cat-{{ $cat->id }}" 
+                                           data-source="faq_category" 
+                                           data-id="{{ $cat->id }}"
+                                           data-label="{{ $cat->title }}"
+                                           data-url="{{ route('pages.faq.topic', $cat->slug) }}">
+                                    <label class="custom-control-label" for="faq-cat-{{ $cat->id }}">{{ $cat->title }}</label>
+                                </div>
+                            @empty
+                                <p class="text-muted small mb-0">Chưa có danh mục FAQ nào</p>
+                            @endforelse
+                        </div>
+                        <div class="card-footer p-2 text-right">
+                            <button type="button" class="btn btn-sm btn-primary add-selected-btn" data-source="faq_category">
+                                <i class="fas fa-plus"></i> Thêm đã chọn
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <div class="card card-secondary card-outline">
+            
+            <div class="card card-secondary card-outline mt-3">
                 <div class="card-body small text-muted py-2">
                     <b>URL đặc biệt:</b> <code>#browse</code> mở dropdown thể loại, <code>#search</code> mở ô tìm kiếm.
                 </div>
             </div>
         </div>
 
-        {{-- Builder kéo-thả --}}
+        {{-- Cột phải: Builder kéo-thả --}}
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -80,7 +221,10 @@
                             </ol>
                         </div>
                     @else
-                        <div class="text-center text-muted py-4">Chưa có mục nào. Thêm ở cột bên trái.</div>
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-arrow-left fa-2x mb-2"></i>
+                            <p>Chưa có mục nào. Chọn mục từ cột bên trái để thêm vào menu.</p>
+                        </div>
                     @endif
                 </div>
             </div>
@@ -140,7 +284,12 @@
 
 @push('styles')
 <style>
-/* Builder kéo-thả kiểu WordPress — tự viết toàn bộ (KHÔNG dùng CSS mặc định Nestable để tránh chọi) */
+/* Accordion header buttons */
+.accordion .btn-link { color: #495057; font-weight: 600; text-decoration: none; padding: 12px 16px; }
+.accordion .btn-link:hover { color: #007bff; background: #f8f9fa; }
+.accordion .btn-link:not(.collapsed) { color: #007bff; background: #e7f3ff; }
+
+/* Builder kéo-thả kiểu WordPress */
 #menu-nestable { position: relative; }
 #menu-nestable .dd-list { list-style: none; margin: 0; padding: 0; }
 #menu-nestable .dd-list .dd-list { padding-left: 32px; }
@@ -180,6 +329,7 @@
 <script>
 $(function () {
     var CSRF = '{{ csrf_token() }}';
+    var ADD_FROM_SOURCE_URL = '{{ route('admin.menus.items.addFromSource', $menu->id) }}';
 
     // Nestable: kéo-thả, lồng tối đa 2 cấp (cha -> con dropdown)
     if ($.fn.nestable) {
@@ -216,6 +366,75 @@ $(function () {
         $f.find('[name=label_key]').val(d.labelKey || '');
         $f.find('[name=is_active]').prop('checked', d.active == 1);
         $('#edit-item-modal').modal('show');
+    });
+
+    // Thêm custom link
+    $('#custom-link-form').on('submit', function (e) {
+        e.preventDefault();
+        var $form = $(this);
+        var data = {
+            source_type: 'custom',
+            items: [{
+                label: $form.find('[name=label]').val(),
+                url: $form.find('[name=url]').val(),
+                icon: $form.find('[name=icon]').val()
+            }]
+        };
+        
+        $.ajax({
+            url: ADD_FROM_SOURCE_URL,
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': CSRF },
+            data: data,
+            success: function () {
+                location.reload();
+            },
+            error: function (xhr) {
+                alert('Lỗi: ' + (xhr.responseJSON?.message || 'Không thể thêm mục'));
+            }
+        });
+    });
+
+    // Thêm các mục đã chọn từ nguồn
+    $('.add-selected-btn').on('click', function () {
+        var sourceType = $(this).data('source');
+        var $checkboxes = $('[data-source="' + sourceType + '"]:checked');
+        
+        if ($checkboxes.length === 0) {
+            alert('Vui lòng chọn ít nhất 1 mục');
+            return;
+        }
+
+        var items = [];
+        $checkboxes.each(function () {
+            var item = {
+                id: $(this).data('id'),
+                label: $(this).data('label'),
+                url: $(this).data('url')
+            };
+            // Thêm route nếu là static_page
+            if (sourceType === 'static_page') {
+                item.route = $(this).data('route');
+                item.title = $(this).data('label');
+            }
+            items.push(item);
+        });
+
+        $.ajax({
+            url: ADD_FROM_SOURCE_URL,
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': CSRF },
+            data: {
+                source_type: sourceType,
+                items: items
+            },
+            success: function () {
+                location.reload();
+            },
+            error: function (xhr) {
+                alert('Lỗi: ' + (xhr.responseJSON?.message || 'Không thể thêm mục'));
+            }
+        });
     });
 });
 </script>

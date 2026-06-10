@@ -55,7 +55,7 @@
                                         <tr class="even">
                                             <td>{{ $chapter->number_text }}</td>
                                             <td>
-                                                <a href="{{ route('articles.chapters.show', [$article->id, $chapter->number]) }}">{{ $chapter->title }}</a>
+                                                <a href="{{ route('articles.chapters.show', [$article, $chapter->number]) }}">{{ $chapter->title }}</a>
                                             </td>
                                             <td>{{ $chapter->view_text }}</td>
                                             <td title="{{ $chapter->created_at }}">{{ $chapter->created_at_text }}</td>
@@ -65,7 +65,7 @@
                                                     action="{{ route('admin.articles.destroy_chapter', [$article->id, $chapter->id]) }}"
                                                     method="POST" class="formDelete">
                                                     <a class="btn btn-sm btn-primary"
-                                                       href="{{ route('articles.chapters.show', [$article->id, $chapter->number]) }}"><i
+                                                       href="{{ route('articles.chapters.show', [$article, $chapter->number]) }}"><i
                                                             class="fa fa-fw fa-eye"></i> {{ __('Chi tiết') }}</a>
                                                     <a class="btn btn-sm btn-success"
                                                        href="{{ route('admin.articles.edit_chapter', [$article->id, $chapter->id]) }}"><i

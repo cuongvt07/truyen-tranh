@@ -8,7 +8,7 @@
             <div class="search-name">{{ __('messages.catalog.results_count', ['count' => $results->count()]) }}</div>
             <div class="search-results__inner">
                 @foreach($results as $article)
-                    <a href="{{ route('articles.show', $article->id) }}" class="manga-list-item">
+                    <a href="{{ route('articles.show', $article) }}" class="manga-list-item">
                         <div class="image image-cover">
                             <img src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                         </div>

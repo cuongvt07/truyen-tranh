@@ -15,30 +15,45 @@
     </div>
 
     <div class="col-md-6 mb-3">
-        <label class="form-label">Credits <span class="text-danger">*</span></label>
-        <input type="number" name="coins" class="form-control @error('coins') is-invalid @enderror"
-               value="{{ old('coins', $pkg?->coins) }}" min="1" required>
-        @error('coins')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        <label class="form-label">Package type <span class="text-danger">*</span></label>
+        <select name="package_type" id="package_type" class="form-control @error('package_type') is-invalid @enderror" required>
+            @php $type = old('package_type', $pkg?->package_type ?? 'credit'); @endphp
+            <option value="credit" {{ $type === 'credit' ? 'selected' : '' }}>Credit only</option>
+            <option value="subscription" {{ $type === 'subscription' ? 'selected' : '' }}>Subscription: hide ads + daily credits</option>
+        </select>
+        @error('package_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 
     <div class="col-md-4 mb-3">
-        <label class="form-label">Price USD (PayPal) <span class="text-danger">*</span></label>
+        <label class="form-label">Credits <span class="text-danger">*</span></label>
+        <input type="number" name="coins" class="form-control @error('coins') is-invalid @enderror"
+               value="{{ old('coins', $pkg?->coins) }}" min="1" required>
+        <small class="text-muted">Credit packages grant this amount once. Subscription packages use this as package cost/label.</small>
+        @error('coins')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    </div>
+
+    <div class="col-md-4 mb-3 subscription-fields">
+        <label class="form-label">Subscription days</label>
+        <input type="number" name="subscription_days" class="form-control @error('subscription_days') is-invalid @enderror"
+               value="{{ old('subscription_days', $pkg?->subscription_days ?? 0) }}" min="0">
+        @error('subscription_days')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    </div>
+
+    <div class="col-md-4 mb-3 subscription-fields">
+        <label class="form-label">Daily credits</label>
+        <input type="number" name="daily_credits" class="form-control @error('daily_credits') is-invalid @enderror"
+               value="{{ old('daily_credits', $pkg?->daily_credits ?? 0) }}" min="0">
+        @error('daily_credits')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <label class="form-label">Price USD (PayPal)</label>
         <div class="input-group">
             <span class="input-group-text">$</span>
             <input type="number" name="price_usd" class="form-control @error('price_usd') is-invalid @enderror"
                    value="{{ old('price_usd', $pkg?->price_usd ?? 0) }}" min="0" step="0.01">
         </div>
         @error('price_usd')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-    </div>
-
-    <div class="col-md-4 mb-3">
-        <label class="form-label">Price VND (SePay)</label>
-        <div class="input-group">
-            <input type="number" name="price_vnd" class="form-control @error('price_vnd') is-invalid @enderror"
-                   value="{{ old('price_vnd', $pkg?->price_vnd) }}" min="0">
-            <span class="input-group-text">đ</span>
-        </div>
-        @error('price_vnd')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
     </div>
 
     <div class="col-md-4 mb-3">
@@ -72,3 +87,18 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const typeSelect = document.getElementById('package_type');
+    const fields = document.querySelectorAll('.subscription-fields');
+
+    function syncSubscriptionFields() {
+        const isSubscription = typeSelect.value === 'subscription';
+        fields.forEach(field => field.style.display = isSubscription ? '' : 'none');
+    }
+
+    typeSelect?.addEventListener('change', syncSubscriptionFields);
+    syncSubscriptionFields();
+});
+</script>

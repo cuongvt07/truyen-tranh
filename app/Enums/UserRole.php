@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Enums;
+
 enum UserRole: int
 {
     case USER = 0;
@@ -15,7 +17,7 @@ enum UserRole: int
         };
     }
 
-    public function color() : string
+    public function color(): string
     {
         return match ($this) {
             UserRole::USER => '',

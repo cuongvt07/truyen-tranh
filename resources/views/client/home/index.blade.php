@@ -20,6 +20,28 @@
     display: block; position: relative; width: 100%; height: 100px;
     background: #000; border-radius: 5px; overflow: hidden;
 }
+@media only screen and (max-width: 600px) {
+    .index-tags-swiper .swiper-container {
+        overflow: visible;
+    }
+    .index-tags-swiper .swiper-wrapper {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        transform: none !important;
+    }
+    .index-tags-swiper .swiper-slide {
+        width: auto !important;
+        height: 96px;
+        margin-right: 0 !important;
+    }
+    .index-tags-swiper .swiper-slide:nth-child(n+7) {
+        display: none;
+    }
+    .index-tags-swiper .swiper-slide .tag {
+        height: 96px;
+    }
+}
 </style>
 @endpush
 
@@ -35,7 +57,7 @@
                 <div class="swiper-wrapper">
                     @foreach($hotArticles as $article)
                         <div class="swiper-slide">
-                            <a href="{{ route('articles.show', $article->id) }}" class="manga-item">
+                            <a href="{{ route('articles.show', $article) }}" class="manga-item">
                                 <div class="poster image image-cover lazy-load-bg">
                                     <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                                 </div>
@@ -81,7 +103,7 @@
                             $imgUrl = $img ? asset($img) : asset('static/core/images/no_cover.webp');
                         @endphp
                         <div class="swiper-slide">
-                            <a href="{{ route('genres.show', $genre->id) }}" class="tag">
+                            <a href="{{ route('genres.show', $genre) }}" class="tag">
                                 <div class="background" style="background-image: url('{{ $imgUrl }}');"></div>
                                 <div class="title">{{ $genre->name }}</div>
                             </a>
@@ -100,7 +122,7 @@
                 <div class="swiper-wrapper">
                     @foreach($randomArticles as $article)
                         <div class="swiper-slide">
-                            <a href="{{ route('articles.show', $article->id) }}" class="manga-item">
+                            <a href="{{ route('articles.show', $article) }}" class="manga-item">
                                 <div class="poster image image-cover lazy-load-bg">
                                     <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                                 </div>
@@ -113,20 +135,33 @@
         </div>
     </div>
 
-    {{-- 4. I'M READING (bookmarks) --}}
+    {{-- 4. I'M READING --}}
     <section class="section">
         <h2>{{ __('messages.home.reading') }}</h2>
-        <div class="block reading">
-            @forelse($myBookmarks as $article)
-                <a href="{{ route('articles.show', $article->id) }}" class="manga-item">
-                    <div class="poster image image-cover lazy-load-bg">
-                        <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
+        <div class="block popular reading">
+            @if($readingHistory->isNotEmpty())
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        @foreach($readingHistory as $item)
+                            @php $article = $item->article; @endphp
+                            @if(!$article) @continue @endif
+                            <div class="swiper-slide">
+                                <a href="{{ $item->chapter ? route('articles.chapters.show', [$article, $item->chapter_number]) : route('articles.show', $article) }}" class="manga-item">
+                                    <div class="poster image image-cover lazy-load-bg">
+                                        <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
+                                    </div>
+                                    @if($item->chapter)
+                                        <span>Chapter {{ $item->chapter_number }}</span>
+                                    @endif
+                                    <div class="title clamp clamp-2">{{ $article->title }}</div>
+                                </a>
+                            </div>
+                        @endforeach
                     </div>
-                    <div class="title clamp clamp-2">{{ $article->title }}</div>
-                </a>
-            @empty
+                </div>
+            @else
                 <div class="nothing">{{ __('messages.ui.no_articles_in_list') }}</div>
-            @endforelse
+            @endif
         </div>
     </section>
 
@@ -139,7 +174,7 @@
                     @foreach($newUpdateArticles->take(10) as $article)
                         <div class="swiper-slide" style="background-image: url('{{ novel_poster($article) }}');">
                             <div class="background">
-                                <a href="{{ route('articles.show', $article->id) }}" class="new-realeses__item no-link">
+                                <a href="{{ route('articles.show', $article) }}" class="new-realeses__item no-link">
                                     <div class="left">
                                         <div class="poster image image-cover lazy-load-bg">
                                             <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
@@ -165,7 +200,7 @@
             <h2>{{ __('messages.home.recently') }}</h2>
             <div class="block recently">
                 @foreach($newUpdateArticles as $article)
-                    <a href="{{ route('articles.show', $article->id) }}" class="manga-line-item">
+                    <a href="{{ route('articles.show', $article) }}" class="manga-line-item">
                         <div class="poster image image-cover lazy-load-bg">
                             <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                         </div>
@@ -196,7 +231,7 @@
             <h2>{{ __('messages.ui.completed') }}</h2>
             <div class="block">
                 @foreach($completedArticles as $article)
-                    <a href="{{ route('articles.show', $article->id) }}" class="news-post">
+                    <a href="{{ route('articles.show', $article) }}" class="news-post">
                         <div class="title">{{ $article->title }}</div>
                         <div class="date"><i class="fa fa-eye"></i> {{ number_format($article->view) }}</div>
                     </a>
@@ -204,50 +239,33 @@
             </div>
 
             {{-- Forum (fix cứng tạm) --}}
-            <h2>Forum</h2>
-            <div class="block">
-                <a href="#" class="news-post">
-                    <div class="title">{{ __('messages.ui.forum_intro') }}</div>
-                    <div class="date">{{ now()->format('d.m.Y') }}</div>
-                </a>
-                <a href="#" class="news-post">
-                    <div class="title">{{ __('messages.ui.forum_suggest') }}</div>
-                    <div class="date">{{ now()->subDays(2)->format('d.m.Y') }}</div>
-                </a>
-                <a href="#" class="news-post">
-                    <div class="title">{{ __('messages.ui.forum_report') }}</div>
-                    <div class="date">{{ now()->subDays(5)->format('d.m.Y') }}</div>
-                </a>
-                <a href="#" class="news-post">
-                    <div class="title">{{ __('messages.ui.forum_vip') }}</div>
-                    <div class="date">{{ now()->subDays(7)->format('d.m.Y') }}</div>
-                </a>
-            </div>
-
             {{-- Last collections (dùng genres nhóm 3 ảnh) --}}
-            <h2>{{ __('messages.ui.featured_genres') }}</h2>
+            <h2>Last collections</h2>
             <div class="collections">
                 <div class="collection-mini-grid">
-                    @foreach(($navGenres ?? collect())->take(4) as $genre)
-                        @php
-                            $genreArts = $genre->articles()->inRandomOrder()->take(3)->get();
-                        @endphp
-                        <a href="{{ route('genres.show', $genre->id) }}" class="collection-item">
+                    @forelse($lastCollections as $collection)
+                        <a href="#" class="collection-item">
                             <div class="collection__inner">
-                                <div class="collection-name clamp clamp-1">{{ $genre->name }}</div>
+                                <div class="collection-name clamp clamp-1">{{ $collection->name }}</div>
                                 <div class="collection-author meta-color clamp clamp-1">
-                                    <i class="fa fa-book"></i> {{ __('messages.ui.article_count', ['count' => $genre->articles()->count()]) }}
+                                    <i class="fa fa-user"></i> {{ optional($collection->user)->username ?? optional($collection->user)->name ?? 'Unknown' }}
+                                </div>
+                                <div class="collection-meta__items">
+                                    <div><i class="fa fa-comment"></i> {{ number_format($collection->comments_count ?? 0) }}</div>
+                                    <div><i class="fa fa-book"></i> {{ number_format($collection->articles_count ?? 0) }}</div>
                                 </div>
                                 <div class="collection-meta__books">
-                                    @foreach($genreArts as $ga)
+                                    @foreach($collection->articles->take(3) as $article)
                                         <div class="image image-cover lazy-load-bg">
-                                            <img class="lazy-image" loading="eager" src="{{ novel_poster($ga) }}" alt="">
+                                            <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="">
                                         </div>
                                     @endforeach
                                 </div>
                             </div>
                         </a>
-                    @endforeach
+                    @empty
+                        <div class="nothing">{{ __('messages.account.collections_empty') }}</div>
+                    @endforelse
                 </div>
             </div>
         </div>
@@ -271,7 +289,7 @@
                         </div>
                     </div>
                     <div class="text-info clamp clamp-3">{{ $comment->content }}</div>
-                    <a href="{{ route('articles.show', $comment->article_id) }}" class="link clamp clamp-1">
+                    <a href="{{ route('articles.show', $comment->article_slug ?? $comment->article_id) }}" class="link clamp clamp-1">
                         <i class="fa fa-book"></i> {{ $comment->article_title }}
                     </a>
                 </div>

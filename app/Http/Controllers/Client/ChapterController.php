@@ -15,6 +15,10 @@ class ChapterController extends Controller
 {
     public function show(Article $article, $number)
     {
+        if (request()->route()->originalParameter('article') !== $article->getRouteKey()) {
+            return redirect()->route('articles.chapters.show', [$article, $number], 301);
+        }
+
         $chapter = $article->chapters()->where('number', $number)->first();
         if (empty($chapter)) {
             abort(404);
@@ -126,12 +130,12 @@ class ChapterController extends Controller
 
         // Already free or VIP
         if ($creditCost === 0 || $hasActiveVip) {
-            return response()->json(['success' => true, 'redirect' => route('articles.chapters.show', [$article->id, $number])]);
+            return response()->json(['success' => true, 'redirect' => route('articles.chapters.show', [$article, $number])]);
         }
 
         // Already unlocked
         if (ChapterUnlock::hasUnlocked(Auth::id(), $chapter->id)) {
-            return response()->json(['success' => true, 'redirect' => route('articles.chapters.show', [$article->id, $number])]);
+            return response()->json(['success' => true, 'redirect' => route('articles.chapters.show', [$article, $number])]);
         }
 
         $user = Auth::user();
@@ -151,7 +155,7 @@ class ChapterController extends Controller
 
         return response()->json([
             'success'  => true,
-            'redirect' => route('articles.chapters.show', [$article->id, $number]),
+            'redirect' => route('articles.chapters.show', [$article, $number]),
             'points'   => $user->fresh()->points,
         ]);
     }

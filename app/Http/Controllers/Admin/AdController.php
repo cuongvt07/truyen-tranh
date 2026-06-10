@@ -8,10 +8,46 @@ use Illuminate\Http\Request;
 
 class AdController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $ads = Ad::orderBy('priority')->orderBy('id')->get();
-        return view('admin.ads.index', compact('ads'));
+        $query = Ad::query();
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $isActive = $request->status === 'active';
+            $query->where('is_active', $isActive);
+        }
+
+        // Filter by display mode
+        if ($request->filled('mode')) {
+            $query->where('display_mode', $request->mode);
+        }
+
+        // Search
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Sorting
+        $sort = $request->get('sort', 'priority');
+        switch ($sort) {
+            case 'name':
+                $query->orderBy('name');
+                break;
+            case 'id_desc':
+                $query->orderByDesc('id');
+                break;
+            case 'priority':
+            default:
+                $query->orderBy('priority')->orderBy('id');
+        }
+
+        $ads = $query->paginate(30)->withQueryString();
+
+        return view('admin.ads.index', [
+            'ads' => $ads,
+            'filters' => $request->only(['status', 'mode', 'search', 'sort'])
+        ]);
     }
 
     public function create()

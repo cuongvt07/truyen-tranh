@@ -1252,12 +1252,11 @@ p.spoiler.active {
     color: #fff;
     font-size: 14px;
     line-height: 1;
-
     position: absolute;
     top: 10px;
     left: 0;
-
-    background: var(--ligtest-gray-color);
+    width: 50px;
+    background: var(--btn-premium-color);
     padding: 5px 10px 5px 5px;
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;

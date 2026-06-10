@@ -111,8 +111,8 @@ TXT;
     {
         $xml = $this->cached('genres', function () {
             $urls = [];
-            foreach (Genre::all(['id']) as $g) {
-                $urls[] = ['loc' => route('genres.show', $g->id), 'freq' => 'daily', 'pri' => '0.7'];
+            foreach (Genre::with('slug')->get(['id']) as $g) {
+                $urls[] = ['loc' => route('genres.show', $g), 'freq' => 'daily', 'pri' => '0.7'];
             }
             return $this->urlset($urls);
         });
@@ -144,10 +144,11 @@ TXT;
             Article::where('status', ArticleStatus::APPROVED->value)
                 ->orderByDesc('updated_at')
                 ->select(['id', 'updated_at'])
+                ->with('slug')
                 ->chunk(1000, function ($articles) use (&$urls) {
                     foreach ($articles as $art) {
                         $urls[] = [
-                            'loc'     => route('articles.show', $art->id),
+                            'loc'     => route('articles.show', $art),
                             'lastmod' => optional($art->updated_at)->toAtomString(),
                             'freq'    => 'weekly',
                             'pri'     => '0.8',
@@ -167,13 +168,18 @@ TXT;
         $xml = $this->cached("chapters_{$page}", function () use ($page) {
             $urls = [];
             $this->approvedChapterQuery()
-                ->select(['chapters.article_id', 'chapters.number', 'chapters.updated_at'])
+                ->leftJoin('slugs', function ($join) {
+                    $join->on('slugs.sluggable_id', '=', 'articles.id')
+                        ->where('slugs.sluggable_type', Article::class)
+                        ->where('slugs.type', 'article');
+                })
+                ->select(['chapters.article_id', 'chapters.number', 'chapters.updated_at', 'slugs.slug as article_slug'])
                 ->orderBy('chapters.id')
                 ->forPage($page, self::CHAPTERS_PER_PAGE)
                 ->get()
                 ->each(function ($ch) use (&$urls) {
                     $urls[] = [
-                        'loc'     => route('articles.chapters.show', [$ch->article_id, $ch->number]),
+                        'loc'     => route('articles.chapters.show', [$ch->article_slug ?? $ch->article_id, $ch->number]),
                         'lastmod' => optional($ch->updated_at)->toAtomString(),
                         'freq'    => 'monthly',
                         'pri'     => '0.6',

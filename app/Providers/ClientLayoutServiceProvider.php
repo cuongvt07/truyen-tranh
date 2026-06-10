@@ -26,7 +26,7 @@ class ClientLayoutServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('client.*', function ($view) {
-            $genres = Genre::all();
+            $genres = Genre::with('slug')->get();
             $currentUser = Auth::user();
             
             $isUserLoggedIn = Auth::check();

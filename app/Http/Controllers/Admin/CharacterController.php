@@ -10,16 +10,41 @@ class CharacterController extends Controller
 {
     public function index(Request $request)
     {
-        $q = Character::query()->with('user:id,username')->withCount('articles');
-        if ($s = trim((string) $request->get('q'))) {
-            $q->where('name', 'like', "%$s%");
+        $query = Character::query()->with('user:id,username')->withCount('articles');
+        
+        // Search
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
+        
+        // Filter by type
         if ($request->filled('type')) {
-            $q->where('type', (int) $request->get('type'));
+            $query->where('type', (int) $request->type);
         }
-        $items = $q->orderByDesc('id')->paginate($request->get('per_page', 15))->withQueryString();
-        $total = Character::count();
-        return view('admin.characters.index', compact('items', 'total'));
+        
+        // Sorting
+        $sort = $request->get('sort', 'id_desc');
+        switch ($sort) {
+            case 'name':
+                $query->orderBy('name');
+                break;
+            case 'articles_count':
+                $query->orderByDesc('articles_count');
+                break;
+            case 'id_asc':
+                $query->orderBy('id');
+                break;
+            case 'id_desc':
+            default:
+                $query->orderByDesc('id');
+        }
+
+        $items = $query->paginate(30)->withQueryString();
+
+        return view('admin.characters.index', [
+            'items' => $items,
+            'filters' => $request->only(['search', 'type', 'sort'])
+        ]);
     }
 
     public function create()

@@ -97,14 +97,15 @@ Route::middleware(['auth'])->group(function () {
             ['check_role:'.UserRole::POSTER->value.','.UserRole::ADMIN->value]
         )
         ->group(function () {
+            // dashboard: QTV thấy analytics, các role còn lại thấy tổng quan hiện tại
+            Route::get('/',
+                [DashboardController::class, 'index'])
+                ->name('dashboard');
+
             // authorize: admin
             Route::group(
                 ['middleware' => ['check_role:'.UserRole::ADMIN->value]],
                 function () {
-                    // dashboard
-                    Route::get('/',
-                        [DashboardController::class, 'index'])
-                        ->name('dashboard');
                     // logout
                     Route::delete('/logout',
                         [DashboardController::class, 'index'])
@@ -116,12 +117,14 @@ Route::middleware(['auth'])->group(function () {
                     // menus (WordPress-style: kéo-thả 1 trang, cha-con dropdown)
                     Route::get('menus', [MenuController::class, 'index'])->name('menus.index');
                     Route::post('menus/{menu}/items', [MenuController::class, 'storeItem'])->name('menus.items.store');
+                    Route::post('menus/{menu}/add-from-source', [MenuController::class, 'addFromSource'])->name('menus.items.addFromSource');
                     Route::put('menu-items/{item}', [MenuController::class, 'updateItem'])->name('menus.items.update');
                     Route::delete('menu-items/{item}', [MenuController::class, 'destroyItem'])->name('menus.items.destroy');
                     Route::post('menus/{menu}/reorder', [MenuController::class, 'reorder'])->name('menus.reorder');
                     // settings
                     Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
                     Route::post('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+                    Route::resource('static-pages', \App\Http\Controllers\Admin\StaticPageController::class)->except('show');
                     // ads (quảng cáo)
                     Route::post('ads/{ad}/toggle', [\App\Http\Controllers\Admin\AdController::class, 'toggle'])->name('ads.toggle');
                     Route::resource('ads', \App\Http\Controllers\Admin\AdController::class)->except('show');
@@ -212,6 +215,42 @@ Route::middleware(['auth'])->group(function () {
             Route::get('comment-reports', [\App\Http\Controllers\Admin\CommentController::class, 'reports'])->name('comment_reports.index');
             Route::post('comment-reports/{comment}/resolve', [\App\Http\Controllers\Admin\CommentController::class, 'resolveReports'])->name('comment_reports.resolve');
 
+            // ===== FORUM MODULE =====
+            Route::prefix('forum')->name('forum.')->group(function () {
+                // Categories
+                Route::resource('categories', \App\Http\Controllers\Admin\Forum\CategoryController::class)->except('show');
+                // Posts
+                Route::get('posts', [\App\Http\Controllers\Admin\Forum\PostController::class, 'index'])->name('posts.index');
+                Route::get('posts/{post}', [\App\Http\Controllers\Admin\Forum\PostController::class, 'show'])->name('posts.show');
+                Route::get('posts/{post}/edit', [\App\Http\Controllers\Admin\Forum\PostController::class, 'edit'])->name('posts.edit');
+                Route::patch('posts/{post}', [\App\Http\Controllers\Admin\Forum\PostController::class, 'update'])->name('posts.update');
+                Route::patch('posts/{post}/approve', [\App\Http\Controllers\Admin\Forum\PostController::class, 'approve'])->name('posts.approve');
+                Route::patch('posts/{post}/reject', [\App\Http\Controllers\Admin\Forum\PostController::class, 'reject'])->name('posts.reject');
+                Route::delete('posts/{post}', [\App\Http\Controllers\Admin\Forum\PostController::class, 'destroy'])->name('posts.destroy');
+                // Comments
+                Route::get('comments', [\App\Http\Controllers\Admin\Forum\CommentController::class, 'index'])->name('comments.index');
+                Route::delete('comments/{comment}', [\App\Http\Controllers\Admin\Forum\CommentController::class, 'destroy'])->name('comments.destroy');
+                Route::post('comments/bulk-destroy', [\App\Http\Controllers\Admin\Forum\CommentController::class, 'bulkDestroy'])->name('comments.bulk_destroy');
+                // Settings
+                Route::get('settings', [\App\Http\Controllers\Admin\Forum\SettingController::class, 'index'])->name('settings.index');
+                Route::post('settings', [\App\Http\Controllers\Admin\Forum\SettingController::class, 'update'])->name('settings.update');
+            });
+
+            // ===== FAQ MODULE =====
+            Route::prefix('faq')->name('faq.')->group(function () {
+                // Categories
+                Route::resource('categories', \App\Http\Controllers\Admin\Faq\CategoryController::class)->except('show');
+                // Articles
+                Route::resource('articles', \App\Http\Controllers\Admin\Faq\ArticleController::class)->except('show');
+                // Comments
+                Route::get('comments', [\App\Http\Controllers\Admin\Faq\CommentController::class, 'index'])->name('comments.index');
+                Route::delete('comments/{comment}', [\App\Http\Controllers\Admin\Faq\CommentController::class, 'destroy'])->name('comments.destroy');
+                Route::post('comments/bulk-destroy', [\App\Http\Controllers\Admin\Faq\CommentController::class, 'bulkDestroy'])->name('comments.bulk_destroy');
+                // Settings
+                Route::get('settings', [\App\Http\Controllers\Admin\Faq\SettingController::class, 'index'])->name('settings.index');
+                Route::post('settings', [\App\Http\Controllers\Admin\Faq\SettingController::class, 'update'])->name('settings.update');
+            });
+
             // ===== MODULE CREDIT =====
             // Gói Credit (CRUD)
             Route::resource('credit-packages', \App\Http\Controllers\Admin\CreditPackageController::class)->except('show');
@@ -273,7 +312,15 @@ Route::get('/ajax/search-live',
     [App\Http\Controllers\Client\CatalogController::class, 'liveSearch'])
     ->name('catalog.live_search');
 // trang tĩnh
-Route::get('/faq', [App\Http\Controllers\Client\PageController::class, 'faq'])->name('pages.faq');
+Route::get('/faq', [App\Http\Controllers\Client\Faq\CategoryController::class, 'index'])->name('pages.faq');
+Route::get('/faq/{faqCategory}', [App\Http\Controllers\Client\Faq\CategoryController::class, 'show'])->name('pages.faq.topic');
+Route::get('/faq/{faqCategory}/{faqArticle}', [App\Http\Controllers\Client\Faq\ArticleController::class, 'show'])
+    ->name('pages.faq.article');
+Route::get('/forum', [App\Http\Controllers\Client\PageController::class, 'forum'])->name('pages.forum');
+Route::get('/forum/{category}/{post}', [App\Http\Controllers\Client\PageController::class, 'forumPost'])
+    ->name('pages.forum.post');
+Route::get('/forum/{category}', [App\Http\Controllers\Client\PageController::class, 'forumCategory'])
+    ->name('pages.forum.category');
 Route::get('/rules', [App\Http\Controllers\Client\PageController::class, 'rules'])->name('pages.rules');
 Route::get('/dmca', [App\Http\Controllers\Client\PageController::class, 'dmca'])->name('pages.dmca');
 Route::get('/terms', [App\Http\Controllers\Client\PageController::class, 'terms'])->name('pages.terms');
@@ -285,6 +332,16 @@ Route::post('/paypal/webhook', [App\Http\Controllers\PaypalController::class, 'w
 
 // PayPal checkout (yêu cầu đăng nhập)
 Route::middleware('auth')->group(function () {
+    Route::post('/static-pages/{staticPage}/comments', [App\Http\Controllers\Client\StaticPageCommentController::class, 'store'])
+        ->name('static-pages.comments.store');
+    Route::delete('/static-pages/{staticPage}/comments/{comment}', [App\Http\Controllers\Client\StaticPageCommentController::class, 'destroy'])
+        ->name('static-pages.comments.destroy');
+    // Forum post CRUD (user)
+    Route::get('/forum/{category}/new-post', [App\Http\Controllers\Client\ForumPostController::class, 'create'])->name('forum.posts.create');
+    Route::post('/forum/{category}/new-post', [App\Http\Controllers\Client\ForumPostController::class, 'store'])->name('forum.posts.store');
+    Route::get('/forum/{category}/{post}/edit', [App\Http\Controllers\Client\ForumPostController::class, 'edit'])->name('forum.posts.edit');
+    Route::patch('/forum/{category}/{post}', [App\Http\Controllers\Client\ForumPostController::class, 'update'])->name('forum.posts.update');
+    Route::delete('/forum/{category}/{post}', [App\Http\Controllers\Client\ForumPostController::class, 'destroy'])->name('forum.posts.destroy');
     Route::get('/checkout/{creditPackage}', [App\Http\Controllers\PaypalController::class, 'checkout'])->name('checkout.show');
     Route::post('/paypal/create-order',  [App\Http\Controllers\PaypalController::class, 'createOrder'])->name('paypal.create_order');
     Route::post('/paypal/capture-order', [App\Http\Controllers\PaypalController::class, 'captureOrder'])->name('paypal.capture_order');

@@ -9,6 +9,17 @@
             @endif
         </div>
         <div class="form-group">
+            <label for="slug">Slug</label>
+            <input type="text" name="slug" id="slug"
+                   value="{{ old('slug', optional($article->slug)->slug) }}"
+                   class="form-control{{ $errors->has('slug') ? ' is-invalid' : '' }}"
+                   placeholder="tu-dong-tao-theo-ten-truyen">
+            <small class="form-text text-muted">URL: /articles/<span id="slug-preview">{{ old('slug', optional($article->slug)->slug) }}</span></small>
+            @if ($errors->has('slug'))
+                <div class="invalid-feedback">{{ $errors->first('slug') }}</div>
+            @endif
+        </div>
+        <div class="form-group">
             <label for="description">Mô tả</label>
             <textarea name="description" id="description"
                       class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}">{{ old('description', $article->description) }}</textarea>
@@ -263,6 +274,7 @@
     <script>
         $(document).ready(function () {
             previewImage();
+            bindSlugField();
             $('.detail-block-select').select2({
                 theme: 'bootstrap4',
                 width: '100%',
@@ -315,10 +327,53 @@
                 }
             }, 250));
         }
+
+        function slugifyText(value) {
+            return String(value || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd')
+                .replace(/Đ/g, 'd')
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .replace(/-{2,}/g, '-');
+        }
+
+        function bindSlugField() {
+            let titleInput = document.querySelector('#title');
+            let slugInput = document.querySelector('#slug');
+            let preview = document.querySelector('#slug-preview');
+
+            if (!titleInput || !slugInput) {
+                return;
+            }
+
+            let manualSlug = slugInput.value.length > 0;
+
+            function updatePreview() {
+                if (preview) {
+                    preview.textContent = slugInput.value || slugifyText(titleInput.value);
+                }
+            }
+
+            titleInput.addEventListener('input', function () {
+                if (!manualSlug) {
+                    slugInput.value = slugifyText(titleInput.value);
+                }
+                updatePreview();
+            });
+
+            slugInput.addEventListener('input', function () {
+                manualSlug = slugInput.value.length > 0;
+                slugInput.value = slugifyText(slugInput.value);
+                updatePreview();
+            });
+
+            if (!slugInput.value) {
+                slugInput.value = slugifyText(titleInput.value);
+            }
+            updatePreview();
+        }
     </script>
-    <script>
-        $(document).ready(function () {
-            previewImage();
-        });
-        </script>
 @endsection

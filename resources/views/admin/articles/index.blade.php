@@ -72,7 +72,7 @@
                         <div class="d-flex align-items-center">
                             <img src="{{ novel_poster($article) }}" style="width:44px;height:60px;object-fit:cover;border-radius:4px;flex-shrink:0;margin-right:10px">
                             <div style="min-width:0">
-                                <a href="{{ route('articles.show', $article->id) }}" target="_blank" class="font-weight-600 d-block text-truncate" style="max-width:260px">{{ $article->title }}</a>
+                                <a href="{{ route('articles.show', $article) }}" target="_blank" class="font-weight-600 d-block text-truncate" style="max-width:260px">{{ $article->title }}</a>
                                 <small class="text-muted">
                                     @foreach($article->authors->take(2) as $a){{ $a->name }}@if(!$loop->last), @endif @endforeach
                                 </small>
@@ -95,7 +95,7 @@
                         <div class="dropdown">
                             <button class="btn btn-sm btn-outline-secondary" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="{{ route('articles.show', $article->id) }}" target="_blank"><i class="fas fa-eye mr-2 text-muted"></i> Xem</a>
+                                <a class="dropdown-item" href="{{ route('articles.show', $article) }}" target="_blank"><i class="fas fa-eye mr-2 text-muted"></i> Xem</a>
                                 <a class="dropdown-item" href="{{ route('admin.articles.edit', $article->id) }}"><i class="fas fa-edit mr-2 text-primary"></i> Sửa</a>
                                 <a class="dropdown-item" href="{{ route('admin.articles.create_chapter', $article->id) }}"><i class="fas fa-plus mr-2 text-info"></i> Thêm chương</a>
                                 @if($currentUser->is_admin)

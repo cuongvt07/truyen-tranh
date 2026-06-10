@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Models\User;
+use App\Models\UserVip;
+use Illuminate\Console\Command;
+
+class GrantDailySubscriptionCredits extends Command
+{
+    protected $signature = 'subscriptions:grant-daily-credits';
+
+    protected $description = 'Grant daily credits for active ad-free subscriptions.';
+
+    public function handle(): int
+    {
+        $now = now();
+        $eligibleBefore = $now->copy()->subDay();
+        $granted = 0;
+        $credits = 0;
+
+        UserVip::query()
+            ->where('daily_credits', '>', 0)
+            ->where('start_at', '<=', $now)
+            ->where('end_at', '>=', $now)
+            ->where(function ($query) use ($eligibleBefore) {
+                $query->whereNull('last_daily_credit_at')
+                    ->orWhere('last_daily_credit_at', '<=', $eligibleBefore);
+            })
+            ->orderBy('id')
+            ->chunkById(100, function ($vips) use ($now, &$granted, &$credits) {
+                foreach ($vips as $vip) {
+                    $amount = (int) $vip->daily_credits;
+                    if ($amount <= 0) {
+                        continue;
+                    }
+
+                    User::where('id', $vip->user_id)->increment('points', $amount);
+                    $vip->forceFill(['last_daily_credit_at' => $now])->save();
+
+                    $granted++;
+                    $credits += $amount;
+                }
+            });
+
+        $this->info("Granted {$credits} credits across {$granted} active subscriptions.");
+
+        return self::SUCCESS;
+    }
+}
