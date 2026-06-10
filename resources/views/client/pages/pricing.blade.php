@@ -14,7 +14,7 @@
     <div class="huge-recomendations">
         {{-- Gói xu nổi bật --}}
         <div class="recommended-product block">
-            <a href="{{ route('client.paypoints') }}" class="image image-cover lazy-load-bg">
+            <a href="{{ !empty($featured['id']) ? route('checkout.show', $featured['id']) : route('client.paypoints') }}" class="image image-cover lazy-load-bg">
                 <img class="lazy-image" loading="eager" src="{{ asset($featured['icon']) }}" alt="{{ $featured['name'] }}">
             </a>
             <div class="recommended-product__info">
@@ -23,7 +23,7 @@
                     <div class="recommended-coupons"><i class="fa fa-coins" style="color:#f0c040"></i> {{ number_format($featured['coins']) }} {{ __('messages.pay.coins') }}</div>
                 </div>
                 @auth
-                    @if(!empty($featured['id']) && ($featured['price_usd'] ?? 0) > 0)
+                    @if(!empty($featured['id']))
                         <a href="{{ route('checkout.show', $featured['id']) }}" class="btn btn-primary">{{ $featured['price'] }}</a>
                     @else
                         <a href="{{ route('client.paypoints') }}" class="btn btn-primary">{{ $featured['price'] }}</a>
@@ -36,7 +36,7 @@
 
         {{-- Premium --}}
         <div class="recommended-product block">
-            <a href="{{ route('client.paypoints') }}" class="image image-cover lazy-load-bg">
+            <a href="{{ !empty($premium['id']) ? route('checkout.show', $premium['id']) : route('client.paypoints') }}" class="image image-cover lazy-load-bg">
                 <img class="lazy-image" loading="eager" src="{{ asset($premium['icon']) }}" alt="{{ $premium['name'] }}">
             </a>
             <div class="recommended-product__info">
@@ -45,7 +45,7 @@
                     <div class="recommended-coupons"><i class="fa fa-crown" style="color:#f0c040"></i> {{ $premium['desc'] }}</div>
                 </div>
                 @auth
-                    @if(!empty($premium['id']) && ($premium['price_usd'] ?? 0) > 0)
+                    @if(!empty($premium['id']))
                         <a href="{{ route('checkout.show', $premium['id']) }}" class="btn btn-primary">{{ $premium['price'] }}</a>
                     @else
                         <a href="{{ route('client.paypoints') }}" class="btn btn-primary">{{ $premium['price'] }}</a>
@@ -71,7 +71,7 @@
                     <div class="price-item__cost-info">
                         <div class="price-item__cost"><span>{{ $premium['desc'] }}</span><br>{{ $premium['price'] }}</div>
                         @auth
-                            @if(!empty($premium['id']) && ($premium['price_usd'] ?? 0) > 0)
+                            @if(!empty($premium['id']))
                                 <a href="{{ route('checkout.show', $premium['id']) }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>
                             @else
                                 <a href="{{ route('client.paypoints') }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>
@@ -94,7 +94,7 @@
                         <div class="price-item__cost-info">
                             <div class="price-item__cost"><span>{{ number_format($pack['coins']) }} {{ __('messages.pay.coins') }}</span><br>{{ $pack['price'] }}</div>
                             @auth
-                                @if(!empty($pack['id']) && ($pack['price_usd'] ?? 0) > 0)
+                                @if(!empty($pack['id']))
                                     <a href="{{ route('checkout.show', $pack['id']) }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>
                                 @else
                                     <a href="{{ route('client.paypoints') }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>

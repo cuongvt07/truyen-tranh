@@ -356,6 +356,7 @@ HTML;
         ])->toArray();
 
         $featured = $featuredPkg ? [
+            'id'        => $featuredPkg->id,
             'name'      => $featuredPkg->name,
             'coins'     => $featuredPkg->coins,
             'price'     => $featuredPkg->display_price,

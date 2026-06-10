@@ -109,7 +109,7 @@ class AdController extends Controller
         $validated = $request->validate([
             'name'             => 'required|string|max:160',
             'image_url'        => 'nullable|string|max:500',
-            'image_file'       => 'nullable|image|max:4096',
+            'image_file'       => 'nullable|image|max:32768',
             'link'             => 'nullable|string|max:500',
             'display_mode'     => 'required|in:' . implode(',', array_keys(Ad::MODES)),
             'placement'        => 'nullable|in:' . implode(',', array_keys(Ad::PLACEMENTS)),

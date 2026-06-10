@@ -86,7 +86,18 @@
 }
 .pay-method span { font-weight: 500; font-size: 0.95rem; }
 /* PayPal button container */
-#paypal-button-container { margin-top: 8px; }
+#paypal-button-container { margin-top: 12px; min-height: 48px; }
+.payment-status {
+    margin-top: 10px;
+    color: var(--text-muted,#6b7280);
+    font-size: 0.875rem;
+}
+.payment-status.error { color: #dc2626; }
+.paypal-mark {
+    color: #003087;
+    font-weight: 700;
+    letter-spacing: 0;
+}
 .checkout-notice {
     font-size: 0.8rem;
     color: var(--text-muted,#6b7280);
@@ -134,8 +145,16 @@
     <div class="checkout-card" id="payment-card">
         <h2>Payment methods</h2>
 
+        <div class="pay-method-list">
+            <div class="pay-method">
+                <div class="pm-icon"><span class="paypal-mark">PayPal</span></div>
+                <span>PayPal / Credit or debit card</span>
+            </div>
+        </div>
+
         {{-- PayPal smart buttons --}}
         <div id="paypal-button-container"></div>
+        <div id="payment-status" class="payment-status">Loading PayPal payment buttons...</div>
 
         <p class="checkout-notice">
             <i class="fa fa-lock"></i> Thanh toán bảo mật qua PayPal. Sau khi xác nhận xu sẽ được cộng ngay vào tài khoản.
@@ -154,12 +173,25 @@
 @endsection
 
 @section('page_js')
-<script src="https://www.paypal.com/sdk/js?client-id={{ $paypalClientId }}&currency=USD" crossorigin="anonymous"></script>
+@if($paypalClientId)
+<script src="https://www.paypal.com/sdk/js?client-id={{ urlencode($paypalClientId) }}&currency=USD" crossorigin="anonymous"></script>
 <script>
 (function () {
     const PACKAGE_ID = {{ $package->id }};
     const CSRF       = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
     const TRANSACTIONS_URL = @json(route('users.transactions', auth()->id()));
+    const statusEl = document.getElementById('payment-status');
+
+    function setPaymentError(message) {
+        if (!statusEl) return;
+        statusEl.textContent = message;
+        statusEl.classList.add('error');
+    }
+
+    if (!window.paypal || !paypal.Buttons) {
+        setPaymentError('PayPal payment buttons could not be loaded. Please refresh the page or check the PayPal client configuration.');
+        return;
+    }
 
     paypal.Buttons({
         style: {
@@ -205,13 +237,24 @@
 
         onError: function (err) {
             console.error(err);
-            alert('Có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại.');
+            setPaymentError('Có lỗi xảy ra trong quá trình tải phương thức thanh toán. Vui lòng thử lại.');
         },
 
         onCancel: function () {
             // user đóng popup PayPal, không làm gì
         },
-    }).render('#paypal-button-container');
+    }).render('#paypal-button-container').then(function () {
+        if (statusEl) statusEl.style.display = 'none';
+    }).catch(function (err) {
+        console.error(err);
+        setPaymentError('Không thể hiển thị PayPal. Vui lòng kiểm tra cấu hình PayPal hoặc thử lại sau.');
+    });
 })();
 </script>
+@else
+<script>
+    document.getElementById('payment-status').textContent = 'PayPal chưa được cấu hình. Vui lòng thêm PAYPAL_CLIENT_ID để hiển thị phương thức thanh toán.';
+    document.getElementById('payment-status').classList.add('error');
+</script>
+@endif
 @endsection

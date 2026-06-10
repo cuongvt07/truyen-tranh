@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM composer:2 AS vendor
+FROM composer:2.8 AS vendor
 
 WORKDIR /app
 
@@ -71,6 +71,7 @@ RUN apk add --no-cache \
     && apk del .build-deps
 
 COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY docker/php/local.ini /usr/local/etc/php/conf.d/local.ini
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 COPY --from=vendor --chown=www-data:www-data /app /var/www/html
