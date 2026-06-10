@@ -9,11 +9,15 @@
 
 <div class="block">
     <h1 class="page-title" style="margin-bottom:16px">{{ __('messages.pay.balance') }} {{ number_format($balance) }} {{ __('messages.pay.coins') }}</h1>
-    @if($isMine ?? false)
+    @auth
+    @if(auth()->id() === $user->id)
         <div class="btn-group-inline" style="margin-top:8px">
-            <a href="{{ route('pages.pricing') }}" class="btn btn-primary">{{ __('messages.pay.topup_coins') }}</a>
+            <a href="{{ route('pages.pricing') }}" class="btn btn-primary">
+                <i class="fa fa-store"></i> {{ __('messages.pay.store') }}
+            </a>
         </div>
     @endif
+    @endauth
 </div>
 
 <div class="block premium-settings-stats" style="margin-top:16px">
