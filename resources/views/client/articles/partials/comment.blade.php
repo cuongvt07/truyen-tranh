@@ -31,7 +31,7 @@
         <div class="right comment-vote" data-id="{{ $comment->id }}">
             <div class="btn btn-invincible like {{ $myVote === 1 ? 'active' : '' }}" data-vote="1" title="{{ __('messages.comments.like') }}"><i class="fa fa-chevron-up"></i></div>
             <span class="vote-score">{{ (int) $comment->score }}</span>
-            <div class="btn btn-invincible dislike {{ $myVote === -1 ? 'active' : '' }}" data-vote="-1" title="{{ __('messages.comments.dislike') }}"><i class="fa fa-chevron-down"></i></div>
+            <div class="btn btn-invincible dislike {{ $myVote === 1 ? '' : 'disabled' }}" data-vote="-1" title="{{ __('messages.comments.dislike') }}"><i class="fa fa-chevron-down"></i></div>
         </div>
     </div>
 

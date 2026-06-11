@@ -70,6 +70,7 @@
         $isAdminUser = (bool) optional($currentUser ?? null)->is_admin;
         $navPendingArticles = $isAdminUser ? \App\Models\Article::withoutGlobalScope(\App\Scopes\ApprovedArticleScope::class)->where('status', \App\Enums\ArticleStatus::PENDING->value)->count() : 0;
         $navOpenReports = $isAdminUser ? \App\Models\CommentReport::where('resolved', false)->count() : 0;
+        $navOpenChapterReports = $isAdminUser ? \App\Models\ChapterReport::where('resolved', false)->count() : 0;
         $navPendingTotal = $navPendingArticles + $navOpenReports;
     @endphp
 
@@ -194,7 +195,7 @@
                     {{-- ===== QUẢN LÝ NỘI DUNG ===== --}}
                     @if($currentUser->is_poster || $currentUser->is_admin)
                         @php
-                            $openContent = request()->routeIs('admin.articles.*','admin.chapters.*','admin.characters.*','admin.teams.*','admin.collections.*','admin.authors.*','admin.genres.*','admin.tags.*','admin.comments.*','admin.comment_reports.*');
+                            $openContent = request()->routeIs('admin.articles.*','admin.chapters.*','admin.characters.*','admin.teams.*','admin.collections.*','admin.authors.*','admin.genres.*','admin.tags.*','admin.comments.*','admin.comment_reports.*','admin.chapter_reports.*');
                             $pendingArticles = $navPendingArticles ?? 0;
                             $openReports = $navOpenReports ?? 0;
                         @endphp
@@ -257,6 +258,12 @@
                                         <p>Báo cáo bình luận @if($openReports)<span class="badge badge-count right {{ $openReports > 99 ? 'badge-count--wide' : '' }}">{{ $openReports > 99 ? '99+' : $openReports }}</span>@endif</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.chapter_reports.index') }}" class="nav-link {{ set_active('admin.chapter_reports.*') }}">
+                                        <i class="nav-icon fa-solid fa-triangle-exclamation"></i>
+                                        <p>Báo cáo lỗi chương @if(($navOpenChapterReports ?? 0))<span class="badge badge-count right {{ $navOpenChapterReports > 99 ? 'badge-count--wide' : '' }}">{{ $navOpenChapterReports > 99 ? '99+' : $navOpenChapterReports }}</span>@endif</p>
+                                    </a>
+                                </li>
                                 @endif
                             </ul>
                         </li>
@@ -264,7 +271,7 @@
 
                     {{-- ===== CREDIT & THANH TOÁN ===== --}}
                     @if($currentUser->is_admin)
-                        @php $openCredit = request()->routeIs('admin.credit-packages.*','admin.transactions.*','admin.vips.*'); @endphp
+                        @php $openCredit = request()->routeIs('admin.credit-packages.*','admin.transactions.*','admin.vips.*','admin.payment_settings.*'); @endphp
                         <li class="nav-item has-treeview {{ $openCredit ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ $openCredit ? 'active' : '' }}">
                                 <i class="nav-icon fa-solid fa-coins"></i>
@@ -284,6 +291,11 @@
                                 <li class="nav-item">
                                     <a href="{{ route('admin.vips.index') }}" class="nav-link {{ set_active('admin.vips.*') }}">
                                         <i class="nav-icon fa-solid fa-crown"></i><p>Tài khoản VIP</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.payment_settings.index') }}" class="nav-link {{ set_active('admin.payment_settings.*') }}">
+                                        <i class="nav-icon fa-solid fa-key"></i><p>Cấu hình thanh toán</p>
                                     </a>
                                 </li>
                             </ul>

@@ -20,13 +20,19 @@
     <link rel="stylesheet" href="{{ asset('static/book/css/chapteree8b.css') }}?ver=1.8.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-<body chapter_ph="">
+<body chapter_ph="{{ (int) ($bookmarkParagraph ?? 0) }}">
 
 <header class="header-chapter">
     <a href="{{ route('articles.show', $article) }}" class="header-title btn header-btn">
         <span class="clamp clamp-1"><i class="fa fa-arrow-left"></i> {{ $article->title }}</span>
     </a>
     <div class="control-btns">
+        @auth
+            <button type="button" id="bookmark-ph-btn" class="btn header-btn bookmark-paragraph"
+                    title="{{ __('messages.chapter.bookmark_paragraph') }}"><i class="fa fa-bookmark"></i></button>
+            <button type="button" id="report-chapter-btn" data-id="{{ $chapter->id }}" class="btn header-btn"
+                    title="{{ __('messages.chapter.report_chapter') }}"><i class="fa fa-warning"></i></button>
+        @endauth
         <button type="button" id="settings-open-btn" class="btn header-btn open-close"
                 p-target="chapter-settings"><i class="fa fa-cog"></i></button>
     </div>
@@ -59,24 +65,84 @@
         <h2>{{ __('messages.chapter.chapter') }} {{ $chapter->number }}: {{ $chapter->title }}</h2>
     </div>
     <div class="chapter-text" id="chapter-c">
-        {!! nl2br(e($chapter->content)) !!}
+        @php
+            $chapterParagraphs = preg_split('/(?:\r\n|\r|\n){2,}/', trim((string) $chapter->content)) ?: [];
+            $inlineAds = collect($inlineChapterAds ?? []);
+            $firstInlineAdAfter = max(1, (int) ($inlineAdFirstAfter ?? 4));
+            $inlineAdEvery = max(1, (int) ($inlineAdEvery ?? 8));
+            $inlineAdSlot = 0;
+        @endphp
+
+        @foreach($chapterParagraphs as $paragraphIndex => $paragraph)
+            @if(trim($paragraph) !== '')
+                <p>{!! nl2br(e($paragraph)) !!}</p>
+
+                @php
+                    $paragraphNumber = $paragraphIndex + 1;
+                    $shouldShowInlineAd = $inlineAds->isNotEmpty()
+                        && $inlineAdSlot < $inlineAds->count()
+                        && $paragraphNumber >= $firstInlineAdAfter
+                        && (($paragraphNumber - $firstInlineAdAfter) % $inlineAdEvery === 0);
+                @endphp
+
+                @if($shouldShowInlineAd)
+                    @php
+                        $inlineAd = $inlineAds[$inlineAdSlot];
+                        $inlineAdSlot++;
+                    @endphp
+                    @include('client.partials.chapter-inline-ad', ['ad' => $inlineAd])
+                @endif
+            @endif
+        @endforeach
     </div>
 </div>
 
 <div class="chapter-team__info">
     <div class="chapter-info-end">
+        @php
+            $cfText1 = setting('chapter_footer_text1');
+            $cfText2 = setting('chapter_footer_text2');
+            $cfImage = setting('chapter_footer_image');
+            $cfLink  = setting('chapter_footer_link');
+            $hasChapterFooter = $cfText1 || $cfText2 || $cfImage;
+        @endphp
         <div class="chapter_team">
-            <div class="text">
-                <span>{{ __('messages.chapter.posted_by') }}</span>
-                <div class="name">{{ optional($article->user)->name ?? config('app.name') }}</div>
-            </div>
+            @if($hasChapterFooter)
+                <a class="team" @if($cfLink) href="{{ $cfLink }}" target="_blank" rel="noopener" @endif>
+                    @if($cfImage)
+                        <div class="image image-cover lazy-load-bg">
+                            <img loading="lazy" class="lazy-image" src="{{ asset('storage/' . $cfImage) }}" alt="{{ $cfText2 ?: $cfText1 }}">
+                        </div>
+                    @endif
+                    <div class="text">
+                        @if($cfText1)<span>{{ $cfText1 }}</span>@endif
+                        @if($cfText2)<div class="name">{{ $cfText2 }}</div>@endif
+                    </div>
+                </a>
+            @else
+                <div class="text">
+                    <span>{{ __('messages.chapter.posted_by') }}</span>
+                    <div class="name">{{ optional($article->user)->name ?? config('app.name') }}</div>
+                </div>
+            @endif
         </div>
         <div class="buttons">
             @auth
-                <form method="POST" action="{{ route('articles.bookmarks.store', $article->id) }}" style="display:inline">
-                    @csrf
-                    <button type="submit" class="btn btn-invincible bookmark"><i class="fa fa-bookmark"></i> {{ __('messages.chapter.follow') }}</button>
-                </form>
+                <button type="button" id="btn-like-chapter" class="btn btn-invincible {{ ($userLikedChapter ?? false) ? 'liked' : '' }}"
+                        data-url="{{ route('articles.chapters.like', [$article, $chapter->number]) }}">
+                    <i class="fa fa-heart"></i> {{ __('messages.chapter.give_thanks') }} | <span id="likes-count">{{ (int) ($chapterLikesCount ?? 0) }}</span>
+                </button>
+                <button type="button" id="btn-bookmark-chapter" class="btn btn-invincible bookmark {{ ($currentListStatus ?? null) ? 'active' : '' }}"
+                        data-url="{{ route('articles.bookmarks.store', $article) }}">
+                    <i class="fa fa-bookmark"></i> <span class="bm-text">{{ ($currentListStatus ?? null) ? __('messages.chapter.bookmarked') : __('messages.chapter.bookmark') }}</span>
+                </button>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-invincible">
+                    <i class="fa fa-heart"></i> {{ __('messages.chapter.give_thanks') }} | <span>{{ (int) ($chapterLikesCount ?? 0) }}</span>
+                </a>
+                <a href="{{ route('login') }}" class="btn btn-invincible bookmark">
+                    <i class="fa fa-bookmark"></i> {{ __('messages.chapter.bookmark') }}
+                </a>
             @endauth
         </div>
     </div>
@@ -111,6 +177,7 @@
 
         <ul class="comments" style="list-style:none;padding:0">
             @foreach($comments as $comment)
+                @php $myVote = $comment->my_vote; @endphp
                 <li class="comment" style="margin-bottom:16px">
                     <div class="comment-header">
                         <div class="comment-header__info">
@@ -120,6 +187,14 @@
                     </div>
                     <div class="comment-body">
                         <div class="content">{{ $comment->content }}</div>
+                    </div>
+                    <div class="comment-controls">
+                        <div class="left"></div>
+                        <div class="right comment-vote" data-id="{{ $comment->id }}">
+                            <div class="btn btn-invincible like {{ $myVote === 1 ? 'active' : '' }}" data-vote="1" title="{{ __('messages.comments.like') }}"><i class="fa fa-chevron-up"></i></div>
+                            <span class="vote-score">{{ (int) $comment->score }}</span>
+                            <div class="btn btn-invincible dislike {{ $myVote === 1 ? '' : 'disabled' }}" data-vote="-1" title="{{ __('messages.comments.dislike') }}"><i class="fa fa-chevron-down"></i></div>
+                        </div>
                     </div>
                 </li>
             @endforeach
@@ -144,23 +219,47 @@
     </div>
 </div>
 
-{{-- Settings panel --}}
-<div class="chapter-panel" id="chapter-settings" style="display:none">
-    <div class="chapter-settings__header">
-        <span>{{ __('messages.chapter.reading_settings') }}</span>
-        <button class="btn btn-invincible open-close" p-target="chapter-settings"><i class="fa fa-close"></i></button>
-    </div>
-    <div class="chapter-settings__content" style="padding:16px">
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
-            <span>{{ __('messages.chapter.font_size') }}</span>
-            <button class="btn btn-invincible" onclick="changeFontSize(-1)">A-</button>
-            <button class="btn btn-invincible" onclick="changeFontSize(1)">A+</button>
+{{-- Settings panel (overlay bản gốc) --}}
+<div id="chapter-settings" class="fullscreen hide">
+    <div class="chapter-panel">
+        <div class="chapter-settings__header">
+            <div class="title">{{ __('messages.chapter.reading_settings') }}</div>
+            <div class="btn header-btn open-close" p-target="chapter-settings"><i class="fa fa-close"></i></div>
         </div>
-        <div style="display:flex;gap:8px;align-items:center">
-            <span>{{ __('messages.chapter.theme') }}</span>
-            <button class="btn btn-invincible" onclick="setTheme('light')">{{ __('messages.chapter.theme_light') }}</button>
-            <button class="btn btn-invincible" onclick="setTheme('dark')">{{ __('messages.chapter.theme_dark') }}</button>
-            <button class="btn btn-invincible" onclick="setTheme('sepia')">Sepia</button>
+        <div class="chapter-settings__content">
+            <div class="name-option">{{ __('messages.chapter.themes') }}</div>
+            <div class="themes">
+                <button type="button" class="btn-theme" theme="none">A</button>
+                <button type="button" class="btn-theme" theme="green-theme">A</button>
+                <button type="button" class="btn-theme" theme="light-sephia-theme">A</button>
+                <button type="button" class="btn-theme" theme="sephia-theme">A</button>
+                <button type="button" class="btn-theme" theme="light-dark-theme">A</button>
+                <button type="button" class="btn-theme" theme="dark-theme">A</button>
+            </div>
+            <div id="font-size" class="field">
+                <div class="name-option">{{ __('messages.chapter.font_size') }}</div>
+                <div class="control">
+                    <button type="button" class="btn btn-invincible btn-lower">-</button>
+                    <span>18</span>
+                    <button type="button" class="btn btn-invincible btn-upper">+</button>
+                </div>
+            </div>
+            <div id="line-height" class="field">
+                <div class="name-option">{{ __('messages.chapter.line_height') }}</div>
+                <div class="control">
+                    <button type="button" class="btn btn-invincible btn-lower">-</button>
+                    <span>1.3</span>
+                    <button type="button" class="btn btn-invincible btn-upper">+</button>
+                </div>
+            </div>
+            <div id="margin-bottom" class="field">
+                <div class="name-option">{{ __('messages.chapter.paragraph_indent') }}</div>
+                <div class="control">
+                    <button type="button" class="btn btn-invincible btn-lower">-</button>
+                    <span>19</span>
+                    <button type="button" class="btn btn-invincible btn-upper">+</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -203,10 +302,24 @@
 </div>
 @endif
 
+@auth
+{{-- Report chapter modal --}}
+<div id="chapter-report-overlay" class="chapter-report-overlay" hidden>
+    <div class="chapter-report-box">
+        <h4>{{ __('messages.chapter.report_modal_title') }}</h4>
+        <p class="meta-color">{{ __('messages.chapter.report_modal_desc') }}</p>
+        <textarea id="chapter-report-reason" rows="4" placeholder="{{ __('messages.chapter.report_placeholder') }}"></textarea>
+        <div class="chapter-report-actions">
+            <button type="button" class="btn btn-invincible" id="chapter-report-cancel">{{ __('messages.chapter.report_cancel') }}</button>
+            <button type="button" class="btn btn-primary" id="chapter-report-submit">{{ __('messages.chapter.report_submit') }}</button>
+        </div>
+    </div>
+</div>
+@endauth
+
 <script src="{{ asset('static/core/js/swiper.bundle.js') }}"></script>
 <script src="{{ asset('static/core/js/popper.js') }}"></script>
 <script src="{{ asset('static/core/js/mainee8b.js') }}?ver=1.8.0"></script>
-<script src="{{ asset('static/book/js/chapteree8b.js') }}?ver=1.8.0"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
 window.CSRF_TOKEN = "{{ csrf_token() }}";
@@ -218,21 +331,63 @@ document.addEventListener('keydown', function(e) {
     if (e.key === 'ArrowRight' || e.key === 'd') { @if($nextUrl) window.location='{{ $nextUrl }}'; @endif }
 });
 
-function changeFontSize(delta) {
-    const el = document.getElementById('chapter-c');
-    const cur = parseFloat(getComputedStyle(el).fontSize);
-    el.style.fontSize = (cur + delta) + 'px';
-    localStorage.setItem('chapterFontSize', cur + delta);
-}
-function setTheme(t) {
-    document.body.setAttribute('data-theme', t);
-    localStorage.setItem('chapterTheme', t);
-}
+// ===== Cài đặt đọc: Themes / Font Size / Line Height / Indent (client-side) =====
 (function() {
-    const fs = localStorage.getItem('chapterFontSize');
-    const th = localStorage.getItem('chapterTheme');
-    if (fs) document.getElementById('chapter-c').style.fontSize = fs + 'px';
-    if (th) document.body.setAttribute('data-theme', th);
+    const reader = document.getElementById('chapter-c');
+    if (!reader) return;
+    const THEMES = ['none', 'green-theme', 'light-sephia-theme', 'sephia-theme', 'light-dark-theme', 'dark-theme'];
+    const DEFAULTS = { fontSize: 18, lineHeight: 1.3, marginBottom: 19, theme: 'none' };
+    const num = (k, d) => { const v = parseFloat(localStorage.getItem('reader.' + k)); return isNaN(v) ? d : v; };
+    const rs = {
+        fontSize: num('fontSize', DEFAULTS.fontSize),
+        lineHeight: num('lineHeight', DEFAULTS.lineHeight),
+        marginBottom: num('marginBottom', DEFAULTS.marginBottom),
+        theme: localStorage.getItem('reader.theme') || DEFAULTS.theme,
+    };
+
+    function apply() {
+        reader.style.fontSize = rs.fontSize + 'px';
+        reader.style.lineHeight = rs.lineHeight;
+        reader.style.setProperty('--reader-p-margin', rs.marginBottom + 'px');
+        THEMES.forEach(t => { if (t !== 'none') document.body.classList.remove(t); });
+        if (rs.theme && rs.theme !== 'none') document.body.classList.add(rs.theme);
+    }
+
+    // Themes
+    document.querySelectorAll('#chapter-settings .btn-theme').forEach(btn => {
+        btn.addEventListener('click', function() {
+            rs.theme = this.getAttribute('theme');
+            localStorage.setItem('reader.theme', rs.theme);
+            apply();
+        });
+    });
+
+    // Fields (+/-)
+    function bindField(id, key, min, max, step, decimals) {
+        const field = document.getElementById(id);
+        if (!field) return;
+        const span = field.querySelector('span');
+        const show = () => span.textContent = decimals ? rs[key].toFixed(decimals) : rs[key];
+        show();
+        const change = (dir) => {
+            rs[key] = Math.min(max, Math.max(min, Math.round((rs[key] + dir * step) * 100) / 100));
+            show();
+            localStorage.setItem('reader.' + key, rs[key]);
+            apply();
+        };
+        field.querySelector('.btn-lower').addEventListener('click', () => change(-1));
+        field.querySelector('.btn-upper').addEventListener('click', () => change(1));
+    }
+    bindField('font-size', 'fontSize', 14, 36, 1, 0);
+    bindField('line-height', 'lineHeight', 1, 2.4, 0.1, 1);
+    bindField('margin-bottom', 'marginBottom', 5, 45, 1, 0);
+
+    apply();
+
+    // Click nền tối để đóng panel (đi qua nút X để mainee8b mở khoá cuộn)
+    document.getElementById('chapter-settings')?.addEventListener('click', function(e) {
+        if (e.target === this) this.querySelector('.open-close')?.click();
+    });
 })();
 
 // Table of contents button
@@ -240,6 +395,160 @@ document.getElementById('table-of-contents-btn')?.addEventListener('click', func
     const panel = document.getElementById('all-chapters');
     if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
 });
+
+// Ẩn header khi cuộn xuống (giữ lại hành vi từ chapteree8b.js)
+(function() {
+    let lastY = 0;
+    window.addEventListener('scroll', function() {
+        const y = window.scrollY;
+        if (y > lastY && y > 60) document.body.classList.add('scrolled');
+        else document.body.classList.remove('scrolled');
+        lastY = y;
+    }, { passive: true });
+    document.documentElement.addEventListener('click', function() {
+        document.body.classList.remove('scrolled');
+    });
+})();
+
+// Toast nhỏ tự chứa
+function chapterToast(msg, type) {
+    const t = document.createElement('div');
+    t.className = 'chapter-toast chapter-toast--' + (type || 'note');
+    t.textContent = msg;
+    document.body.appendChild(t);
+    requestAnimationFrame(() => t.classList.add('show'));
+    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 2600);
+}
+
+// Vote bình luận (giảm chỉ bấm được khi đã tăng)
+(function() {
+    const VOTE_BASE = @json(url('comments'));
+    const LOGIN_URL = @json(route('login'));
+    const IS_AUTH = {{ auth()->check() ? 'true' : 'false' }};
+    const CSRF = window.CSRF_TOKEN || document.querySelector('meta[name="csrf-token"]')?.content;
+
+    document.querySelectorAll('.chapter-comments .comment-vote').forEach(wrap => {
+        wrap.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (btn.classList.contains('dislike') && btn.classList.contains('disabled')) return;
+                if (!IS_AUTH) { window.location = LOGIN_URL; return; }
+                const id = wrap.getAttribute('data-id');
+                const val = btn.getAttribute('data-vote');
+                wrap.querySelectorAll('.btn').forEach(b => b.style.pointerEvents = 'none');
+                fetch(VOTE_BASE + '/' + id + '/vote', {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': CSRF, 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'value=' + encodeURIComponent(val)
+                }).then(r => r.json()).then(res => {
+                    if (res && res.ok) {
+                        wrap.querySelector('.vote-score').textContent = res.score;
+                        wrap.querySelector('.like').classList.toggle('active', res.myVote === 1);
+                        wrap.querySelector('.dislike').classList.toggle('disabled', res.myVote !== 1);
+                    }
+                }).finally(() => { wrap.querySelectorAll('.btn').forEach(b => b.style.pointerEvents = ''); });
+            });
+        });
+    });
+})();
+
+@auth
+// Bookmark đoạn đang đọc + Report chương
+(function() {
+    const BOOKMARK_URL = @json(route('articles.chapters.bookmarkParagraph', [$article, $chapter->number]));
+    const REPORT_URL   = @json(route('articles.chapters.report', [$article, $chapter->number]));
+    const CSRF = window.CSRF_TOKEN || document.querySelector('meta[name="csrf-token"]')?.content;
+    const body = document.body;
+    const content = document.getElementById('chapter-c');
+    const paragraphs = content ? Array.from(content.querySelectorAll(':scope > p')) : [];
+
+    function postForm(url, data) {
+        const fd = new FormData();
+        fd.append('_token', CSRF);
+        Object.keys(data).forEach(k => fd.append(k, data[k]));
+        return fetch(url, { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest' }, body: fd })
+            .then(r => r.json());
+    }
+    function markParagraph(index) {
+        paragraphs.forEach((p, i) => p.classList.toggle('bookmark-p', i === index));
+    }
+
+    // Khôi phục vị trí đã lưu (server lưu 1-based; 0 = chưa có)
+    const saved = parseInt(body.getAttribute('chapter_ph') || '0', 10);
+    if (saved > 0 && paragraphs[saved - 1]) {
+        markParagraph(saved - 1);
+        paragraphs[saved - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Bật/tắt chế độ chọn đoạn
+    let selecting = false;
+    document.getElementById('bookmark-ph-btn')?.addEventListener('click', function() {
+        selecting = !selecting;
+        body.classList.toggle('bookmark-ph-process', selecting);
+    });
+
+    // Click vào đoạn để lưu vị trí
+    paragraphs.forEach((p, i) => {
+        p.addEventListener('click', function() {
+            if (!selecting) return;
+            selecting = false;
+            body.classList.remove('bookmark-ph-process');
+            postForm(BOOKMARK_URL, { paragraph: i + 1 }).then(res => {
+                if (res && res.success) {
+                    markParagraph(i);
+                    chapterToast(@json(__('messages.chapter.bookmark_saved')), 'success');
+                }
+            }).catch(() => chapterToast(@json(__('messages.chapter.action_failed')), 'error'));
+        });
+    });
+
+    // Report chương
+    const overlay = document.getElementById('chapter-report-overlay');
+    document.getElementById('report-chapter-btn')?.addEventListener('click', () => { if (overlay) overlay.hidden = false; });
+    document.getElementById('chapter-report-cancel')?.addEventListener('click', () => { overlay.hidden = true; });
+    overlay?.addEventListener('click', (e) => { if (e.target === overlay) overlay.hidden = true; });
+    document.getElementById('chapter-report-submit')?.addEventListener('click', function() {
+        const reasonEl = document.getElementById('chapter-report-reason');
+        this.disabled = true;
+        postForm(REPORT_URL, { reason: reasonEl.value.trim() }).then(res => {
+            overlay.hidden = true;
+            reasonEl.value = '';
+            chapterToast((res && res.message) || @json(__('messages.chapter.report_sent')), 'success');
+        }).catch(() => chapterToast(@json(__('messages.chapter.action_failed')), 'error'))
+          .finally(() => { this.disabled = false; });
+    });
+
+    // Give thanks (like chương)
+    const likeBtn = document.getElementById('btn-like-chapter');
+    likeBtn?.addEventListener('click', function() {
+        this.style.pointerEvents = 'none';
+        postForm(this.dataset.url, {}).then(res => {
+            if (res && res.success) {
+                document.getElementById('likes-count').textContent = res.count;
+                this.classList.toggle('liked', res.liked);
+            }
+        }).catch(() => chapterToast(@json(__('messages.chapter.action_failed')), 'error'))
+          .finally(() => { this.style.pointerEvents = ''; });
+    });
+
+    // Bookmark (thêm/xoá truyện khỏi danh sách)
+    const BM_ON = @json(__('messages.chapter.bookmarked'));
+    const BM_OFF = @json(__('messages.chapter.bookmark'));
+    const bmBtn = document.getElementById('btn-bookmark-chapter');
+    bmBtn?.addEventListener('click', function() {
+        const active = this.classList.contains('active');
+        this.style.pointerEvents = 'none';
+        postForm(this.dataset.url, { status: active ? 'remove' : 'reading' }).then(res => {
+            if (res && res.success) {
+                const nowActive = !!res.status;
+                this.classList.toggle('active', nowActive);
+                this.querySelector('.bm-text').textContent = nowActive ? BM_ON : BM_OFF;
+                chapterToast(nowActive ? BM_ON : BM_OFF, 'success');
+            }
+        }).catch(() => chapterToast(@json(__('messages.chapter.action_failed')), 'error'))
+          .finally(() => { this.style.pointerEvents = ''; });
+    });
+})();
+@endauth
 
 @if($showPopup)
 const CHAPTER_SELECT_VIP_PACKAGE_MSG = @json(__('messages.chapter.select_vip_package_alert'));
@@ -274,13 +583,72 @@ $(document).ready(function() {
 </script>
 
 <style>
-[data-theme="dark"]  { background:#1a1a2e; color:#e0e0e0; }
-[data-theme="sepia"] { background:#f4ecd8; color:#5b4636; }
-#chapter-c { max-width:780px;margin:0 auto;padding:20px 16px;font-size:17px;line-height:1.9 }
+#chapter-c { max-width:780px;margin:0 auto;padding:20px 16px;font-size:17px;line-height:1.9;color:var(--text-color) }
+#chapter-c p { margin: 0 0 var(--reader-p-margin, 1.25em); }
+/* Chế độ chọn đoạn để bookmark */
+.bookmark-ph-process #chapter-c p { cursor:pointer; }
+.bookmark-ph-process #chapter-c p:hover { background:rgba(255,0,0,.06); }
+/* Comment vote widget */
+.chapter-comments .comment-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}
+.chapter-comments .comment-vote{display:flex;align-items:center;gap:6px}
+.chapter-comments .comment-vote .btn{min-width:32px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;background:var(--bg-soft,#eceef3);cursor:pointer;font-size:13px;line-height:1;padding:0;border:1px solid var(--border,#dde1e9);color:#5b6472;transition:.15s}
+.chapter-comments .comment-vote .btn:hover{background:var(--bg-soft-hover,#dfe3ec);color:#2b303a}
+.chapter-comments .comment-vote .btn.like.active{background:rgba(46,160,67,.15);color:#2ea043}
+.chapter-comments .comment-vote .btn.disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+.chapter-comments .comment-vote .vote-score{min-width:18px;text-align:center;font-weight:600;font-size:13px}
+/* FA subset thiếu chevron-up/down → vẽ tam giác lên/xuống bằng CSS */
+.chapter-comments .comment-vote .like,.chapter-comments .comment-vote .dislike{transform:none}
+.chapter-comments .comment-vote .fa-chevron-up,.chapter-comments .comment-vote .fa-chevron-down{font-family:inherit}
+.chapter-comments .comment-vote .fa-chevron-up::before,.chapter-comments .comment-vote .fa-chevron-down::before{content:"";display:inline-block;width:0;height:0;border:5px solid transparent}
+.chapter-comments .comment-vote .fa-chevron-up::before{border-bottom-color:currentColor;border-top:0}
+.chapter-comments .comment-vote .fa-chevron-down::before{border-top-color:currentColor;border-bottom:0}
+/* Nút Give thanks / Bookmark cuối chương */
+.chapter-info-end .buttons{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chapter-info-end .buttons .btn-invincible{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.chapter-info-end .buttons .btn-invincible.liked i,
+.chapter-info-end .buttons .btn-invincible.active i{color:#ff0d0d}
+/* Toast */
+.chapter-toast { position:fixed; left:50%; bottom:28px; transform:translate(-50%,12px); z-index:10000;
+    background:#222; color:#fff; padding:10px 18px; border-radius:8px; font-size:14px; max-width:90vw;
+    box-shadow:0 6px 24px rgba(0,0,0,.25); opacity:0; transition:opacity .25s, transform .25s; pointer-events:none; }
+.chapter-toast.show { opacity:1; transform:translate(-50%,0); }
+.chapter-toast--success { background:#1f9d55; }
+.chapter-toast--error { background:#e3342f; }
+/* Report modal */
+.chapter-report-overlay { position:fixed; inset:0; z-index:9998; background:rgba(0,0,0,.5);
+    display:flex; align-items:center; justify-content:center; padding:16px; }
+.chapter-report-overlay[hidden] { display:none; }
+.chapter-report-box { background:#fff; color:#222; border-radius:12px; padding:22px; width:100%; max-width:440px;
+    box-shadow:0 20px 60px rgba(0,0,0,.3); }
+.chapter-report-box h4 { margin:0 0 6px; }
+.chapter-report-box textarea { width:100%; margin:12px 0; padding:10px 12px; border:1px solid #d9dee7;
+    border-radius:8px; resize:vertical; font:inherit; outline:none; }
+.chapter-report-actions { display:flex; justify-content:flex-end; gap:10px; }
+.chapter-inline-ad { display:flex; justify-content:center; margin:42px auto; line-height:1.15; }
+.chapter-inline-ad__inner { width:min(100%, 300px); text-align:left; color:#111; font-family:Roboto, sans-serif; font-size:16px; font-weight:700; }
+.chapter-inline-ad__inner a { color:inherit; text-decoration:none; }
+.chapter-inline-ad__inner img { display:block; width:100%; height:198px; object-fit:cover; }
+.chapter-inline-ad__title { padding:6px 4px 0; }
 .ad-popup-overlay { position:fixed;inset:0;background:rgba(255,255,255,.85);backdrop-filter:blur(6px);z-index:9999;display:flex;justify-content:center;align-items:center }
 .ad-popup-content { background:#fff;border-radius:8px;padding:24px;width:min(600px,92vw);max-height:90vh;overflow-y:auto;box-shadow:0 4px 20px rgba(0,0,0,.2);text-align:center }
 .package-option { border:1px solid #ddd;border-radius:6px;padding:10px 14px;cursor:pointer;min-width:140px }
 .package-option:hover { background:#f5f5f5 }
+.chapter-info-end .buttons { display:flex; justify-content:center; }
+.chapter-info-end .btn-add-to-list {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    min-width:170px;
+    padding:10px 15px;
+}
+.chapter-info-end .btn-add-to-list .btn-list {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:38px;
+    margin:-10px -15px -10px 10px;
+    background:#ffefef47;
+}
 </style>
 </body>
 </html>

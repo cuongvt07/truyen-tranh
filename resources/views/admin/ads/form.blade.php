@@ -6,7 +6,34 @@
 @php
     $isEdit = $ad->exists;
     $selectedPages = old('pages', $ad->pages ?? ['all']);
+    $itemRows = old('items');
+    if ($itemRows === null) {
+        $itemRows = $ad->items->map(fn ($item) => [
+            'id' => $item->id,
+            'title' => $item->title,
+            'image_url' => $item->image_url,
+            'link' => $item->link,
+            'sort_order' => $item->sort_order,
+            'is_active' => $item->is_active,
+            'image' => $item->image,
+        ])->values()->all();
+    }
+    if (empty($itemRows)) {
+        $itemRows = [['title' => '', 'image_url' => '', 'link' => '', 'sort_order' => 0, 'is_active' => true, 'image' => null]];
+    }
 @endphp
+
+<style>
+.mode-chapter .form-group:has(input[name="chapter_start"]),
+.mode-chapter .form-group:has(input[name="chapter_interval"]),
+.mode-chapter .form-group:has(input[name="chapter_inline_first_after"]),
+.mode-chapter .form-group:has(input[name="chapter_inline_every"]) {
+    display: none;
+}
+.mode-chapter:has(input[name="chapter_start"]) > small.form-text {
+    display: none;
+}
+</style>
 
 <div class="card">
     <div class="card-header">
@@ -171,6 +198,24 @@
                                min="1" value="{{ old('chapter_interval', $ad->chapter_interval ?? 1) }}">
                         @error('chapter_interval')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
+                    <div class="form-group col-md-2">
+                        <label>Số item chèn trong 1 trang</label>
+                        <input type="number" name="chapter_inline_count" class="form-control @error('chapter_inline_count') is-invalid @enderror"
+                               min="1" max="20" value="{{ old('chapter_inline_count', $ad->chapter_inline_count ?? 1) }}">
+                        @error('chapter_inline_count')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>Sau đoạn thứ</label>
+                        <input type="number" name="chapter_inline_first_after" class="form-control @error('chapter_inline_first_after') is-invalid @enderror"
+                               min="1" max="200" value="{{ old('chapter_inline_first_after', $ad->chapter_inline_first_after ?? 4) }}">
+                        @error('chapter_inline_first_after')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>Cách mỗi N đoạn</label>
+                        <input type="number" name="chapter_inline_every" class="form-control @error('chapter_inline_every') is-invalid @enderror"
+                               min="1" max="200" value="{{ old('chapter_inline_every', $ad->chapter_inline_every ?? 8) }}">
+                        @error('chapter_inline_every')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                    </div>
                     <div class="form-group col-md-6 d-flex align-items-end" style="gap:20px">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="hide_for_vip" id="hide_for_vip" 
@@ -205,6 +250,59 @@
                         <label class="form-check-label" for="is_active"><strong>Đang bật quảng cáo</strong></label>
                     </div>
                 </div>
+            </div>
+            <div class="mode-chapter">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="fas fa-images"></i> Item quảng cáo chapter</h5>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="addAdItem">
+                        <i class="fas fa-plus"></i> Thêm item
+                    </button>
+                </div>
+                <div id="adItems" class="ad-items">
+                    @foreach($itemRows as $index => $item)
+                        <div class="ad-item border rounded p-3 mb-3" data-index="{{ $index }}">
+                            <input type="hidden" name="items[{{ $index }}][id]" value="{{ $item['id'] ?? '' }}">
+                            <input type="hidden" class="item-delete" name="items[{{ $index }}][delete]" value="0">
+                            <div class="row">
+                                <div class="form-group col-md-3">
+                                    <label>Tiêu đề</label>
+                                    <input type="text" name="items[{{ $index }}][title]" class="form-control" value="{{ $item['title'] ?? '' }}" placeholder="Find Your Path">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Link</label>
+                                    <input type="text" name="items[{{ $index }}][link]" class="form-control" value="{{ $item['link'] ?? '' }}" placeholder="https://...">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>URL ảnh</label>
+                                    <input type="text" name="items[{{ $index }}][image_url]" class="form-control" value="{{ $item['image_url'] ?? '' }}" placeholder="https://...">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Tải ảnh lên</label>
+                                    <input type="file" name="items[{{ $index }}][image_file]" class="form-control-file" accept="image/*">
+                                    @if(!empty($item['image']))
+                                        <img src="{{ $item['image'] }}" alt="" class="mt-2" style="width:80px;height:52px;object-fit:cover;border:1px solid #ddd;border-radius:4px">
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center" style="gap:18px">
+                                <div class="form-group mb-0" style="width:120px">
+                                    <label>Thứ tự</label>
+                                    <input type="number" name="items[{{ $index }}][sort_order]" class="form-control" min="0" value="{{ $item['sort_order'] ?? $index }}">
+                                </div>
+                                <div class="form-check mt-4">
+                                    <input type="hidden" name="items[{{ $index }}][is_active]" value="0">
+                                    <input class="form-check-input" type="checkbox" name="items[{{ $index }}][is_active]" value="1"
+                                           id="item_active_{{ $index }}" {{ ($item['is_active'] ?? true) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="item_active_{{ $index }}">Đang bật</label>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger mt-4 removeAdItem">
+                                    <i class="fas fa-trash"></i> Xóa item
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <small class="form-text text-muted mb-4">Mỗi item gồm tiêu đề, ảnh và link. Khi đọc chapter, hệ thống sẽ random item và lấy đúng số lượng đã cấu hình.</small>
             </div>
         </div>
 
@@ -253,7 +351,77 @@
     toggleFreq();
     toggleCooldown();
 
+    ['chapter_start', 'chapter_interval', 'chapter_inline_first_after', 'chapter_inline_every'].forEach(function (name) {
+        var field = document.querySelector('[name="' + name + '"]');
+        if (field && field.closest('.form-group')) {
+            field.closest('.form-group').style.display = 'none';
+        }
+    });
+    var inlineCount = document.querySelector('[name="chapter_inline_count"]');
+    if (inlineCount && inlineCount.closest('.form-group')) {
+        var label = inlineCount.closest('.form-group').querySelector('label');
+        if (label) label.textContent = 'Số item chèn trong 1 trang';
+        if (!inlineCount.closest('.form-group').querySelector('.chapter-inline-help')) {
+            inlineCount.insertAdjacentHTML('afterend', '<small class="form-text text-muted chapter-inline-help">Áp dụng cho mọi chương. Hệ thống tự chọn vị trí chèn và random item theo số lượng này.</small>');
+        }
+    }
+
     // Preview ảnh upload
+    if (inlineCount && inlineCount.closest('.mode-chapter')) {
+        var chapterConfig = inlineCount.closest('.mode-chapter');
+        var chapterTitle = chapterConfig.querySelector('h5');
+        if (chapterTitle) chapterTitle.innerHTML = '<i class="fas fa-book-open"></i> Cấu hình khi đọc chapter';
+        Array.prototype.forEach.call(chapterConfig.children, function (child) {
+            if (child.tagName === 'SMALL') child.style.display = 'none';
+        });
+    }
+    var hideVipLabel = document.querySelector('label[for="hide_for_vip"]');
+    if (hideVipLabel) hideVipLabel.textContent = 'Ẩn với user VIP';
+    var requireClickLabel = document.querySelector('label[for="require_click"]');
+    if (requireClickLabel) requireClickLabel.textContent = 'Phải click mới đọc tiếp';
+
+    var adItems = document.getElementById('adItems');
+    var addAdItem = document.getElementById('addAdItem');
+    var itemIndex = adItems ? adItems.querySelectorAll('.ad-item').length : 0;
+
+    function itemTemplate(index) {
+        return '' +
+            '<div class="ad-item border rounded p-3 mb-3" data-index="' + index + '">' +
+                '<input type="hidden" name="items[' + index + '][id]" value="">' +
+                '<input type="hidden" class="item-delete" name="items[' + index + '][delete]" value="0">' +
+                '<div class="row">' +
+                    '<div class="form-group col-md-3"><label>Tiêu đề</label><input type="text" name="items[' + index + '][title]" class="form-control" placeholder="Find Your Path"></div>' +
+                    '<div class="form-group col-md-3"><label>Link</label><input type="text" name="items[' + index + '][link]" class="form-control" placeholder="https://..."></div>' +
+                    '<div class="form-group col-md-3"><label>URL ảnh</label><input type="text" name="items[' + index + '][image_url]" class="form-control" placeholder="https://..."></div>' +
+                    '<div class="form-group col-md-3"><label>Tải ảnh lên</label><input type="file" name="items[' + index + '][image_file]" class="form-control-file" accept="image/*"></div>' +
+                '</div>' +
+                '<div class="d-flex align-items-center" style="gap:18px">' +
+                    '<div class="form-group mb-0" style="width:120px"><label>Thứ tự</label><input type="number" name="items[' + index + '][sort_order]" class="form-control" min="0" value="' + index + '"></div>' +
+                    '<div class="form-check mt-4"><input type="hidden" name="items[' + index + '][is_active]" value="0"><input class="form-check-input" type="checkbox" name="items[' + index + '][is_active]" value="1" id="item_active_' + index + '" checked><label class="form-check-label" for="item_active_' + index + '">Đang bật</label></div>' +
+                    '<button type="button" class="btn btn-sm btn-outline-danger mt-4 removeAdItem"><i class="fas fa-trash"></i> Xóa item</button>' +
+                '</div>' +
+            '</div>';
+    }
+
+    if (addAdItem && adItems) {
+        addAdItem.addEventListener('click', function () {
+            adItems.insertAdjacentHTML('beforeend', itemTemplate(itemIndex++));
+        });
+        adItems.addEventListener('click', function (event) {
+            var button = event.target.closest('.removeAdItem');
+            if (!button) return;
+            var row = button.closest('.ad-item');
+            var deleteInput = row.querySelector('.item-delete');
+            var idInput = row.querySelector('input[name$="[id]"]');
+            if (idInput && idInput.value) {
+                deleteInput.value = '1';
+                row.style.display = 'none';
+            } else {
+                row.remove();
+            }
+        });
+    }
+
     var fileInput = document.getElementById('ad_image_file');
     var preview = document.getElementById('ad_image_preview');
     if (fileInput) {

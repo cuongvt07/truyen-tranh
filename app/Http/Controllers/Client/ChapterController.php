@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ad;
 use App\Models\Article;
+use App\Models\Bookmark;
+use App\Models\ChapterLike;
+use App\Models\ChapterParagraphBookmark;
+use App\Models\ChapterReport;
 use App\Models\ChapterUnlock;
 use App\Models\ReadingHistory;
 use Illuminate\Http\Request;
@@ -58,28 +63,67 @@ class ChapterController extends Controller
         }
 
         // --- Ads (VIP sees none) ---
-        $chapterAd = null;
-        $chapterAds = $hasActiveVip ? collect() : (\App\Models\Ad::forPageGrouped('chapter')->get('chapter') ?? collect());
-        foreach ($chapterAds as $ad) {
+        $chapterAds = $hasActiveVip ? collect() : (Ad::forPageGrouped('chapter')->get('chapter') ?? collect());
+        $chapterAds = $chapterAds->filter(function (Ad $ad) use ($hasActiveVip, $number) {
             if ($ad->hide_for_vip && $hasActiveVip) {
-                continue;
+                return false;
             }
-            if ($number < $ad->chapter_start) {
-                continue;
+            $hasActiveItem = $ad->items
+                ->where('is_active', true)
+                ->first(fn ($item) => $item->image);
+
+            if (!$ad->image && !$ad->link && !$hasActiveItem) {
+                return false;
             }
-            $interval = max(1, (int) $ad->chapter_interval);
-            if ((($number - $ad->chapter_start) % $interval) !== 0) {
-                continue;
+
+            return true;
+        })->values();
+
+        $chapterAd = $chapterAds->first(fn (Ad $ad) => $ad->require_click);
+        $inlineCampaign = $chapterAds->first(fn (Ad $ad) => !$ad->require_click);
+        $inlineChapterAds = collect();
+        $inlineAdFirstAfter = 4;
+        $inlineAdEvery = 8;
+
+        if ($inlineCampaign) {
+            $inlineCount = max(1, (int) ($inlineCampaign->chapter_inline_count ?: 1));
+            $inlineItems = $inlineCampaign->items
+                ->where('is_active', true)
+                ->filter(fn ($item) => $item->image)
+                ->values();
+
+            if ($inlineItems->isEmpty() && $inlineCampaign->image) {
+                $inlineItems = collect([$inlineCampaign]);
             }
-            if (!$ad->image && !$ad->link) {
-                continue;
-            }
-            $chapterAd = $ad;
-            break;
+
+            $inlineChapterAds = $inlineItems->shuffle()->take($inlineCount)->values();
         }
 
         $showPopup    = $chapterAd !== null;
         $requireClick = (bool) ($chapterAd->require_click ?? false);
+        $popupAdItem = $chapterAd
+            ? $chapterAd->items->where('is_active', true)->filter(fn ($item) => $item->image)->shuffle()->first()
+            : null;
+
+        $chapterLikesCount = ChapterLike::where('chapter_id', $chapter->id)->count();
+        $userLikedChapter = false;
+        $hasStartedReading = false;
+        $currentListStatus = null;
+        $bookmarkParagraph = 0;
+        if (Auth::check()) {
+            $userLikedChapter = ChapterLike::where('user_id', Auth::id())
+                ->where('chapter_id', $chapter->id)
+                ->exists();
+            $hasStartedReading = ReadingHistory::where('user_id', Auth::id())
+                ->where('article_id', $article->id)
+                ->exists();
+            $currentListStatus = Bookmark::where('user_id', Auth::id())
+                ->where('article_id', $article->id)
+                ->value('status');
+            $bookmarkParagraph = (int) ChapterParagraphBookmark::where('user_id', Auth::id())
+                ->where('chapter_id', $chapter->id)
+                ->value('paragraph');
+        }
 
         // Đếm view
         $chapter->increaseViewCount();
@@ -100,11 +144,111 @@ class ChapterController extends Controller
             'comments'       => $comments,
             'showPopup'      => $showPopup,
             'requireClick'   => $requireClick,
-            'affiLink'       => $chapterAd?->link ?? '',
-            'affiImage'      => $chapterAd?->image ?? '',
+            'affiLink'       => $popupAdItem?->link ?? $chapterAd?->link ?? '',
+            'affiImage'      => $popupAdItem?->image ?? $chapterAd?->image ?? '',
+            'inlineChapterAds' => $inlineChapterAds,
+            'inlineAdFirstAfter' => $inlineAdFirstAfter,
+            'inlineAdEvery' => $inlineAdEvery,
             'isUserLoggedIn' => Auth::check(),
             'creditCost'     => $creditCost,
             'alreadyUnlocked' => $alreadyUnlocked,
+            'hasStartedReading' => $hasStartedReading,
+            'currentListStatus' => $currentListStatus,
+            'bookmarkParagraph' => $bookmarkParagraph,
+            'chapterLikesCount' => $chapterLikesCount,
+            'userLikedChapter' => $userLikedChapter,
+        ]);
+    }
+
+    /**
+     * "Give thanks" — like/unlike chương (toggle).
+     */
+    public function likeChapter(Request $request, Article $article, $number)
+    {
+        if (! Auth::check()) {
+            return response()->json(['success' => false], 401);
+        }
+
+        $chapter = $article->chapters()->where('number', $number)->firstOrFail();
+
+        $existing = ChapterLike::where('user_id', Auth::id())
+            ->where('chapter_id', $chapter->id)
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
+            $liked = false;
+        } else {
+            ChapterLike::create(['user_id' => Auth::id(), 'chapter_id' => $chapter->id]);
+            $liked = true;
+        }
+
+        return response()->json([
+            'success' => true,
+            'liked'   => $liked,
+            'count'   => ChapterLike::where('chapter_id', $chapter->id)->count(),
+        ]);
+    }
+
+    /**
+     * Lưu/xoá vị trí đoạn đang đọc dở của user trong chương (server-side bookmark).
+     * paragraph > 0: lưu; paragraph = 0: xoá.
+     */
+    public function bookmarkParagraph(Request $request, Article $article, $number)
+    {
+        if (! Auth::check()) {
+            return response()->json(['success' => false], 401);
+        }
+
+        $data = $request->validate([
+            'paragraph' => ['required', 'integer', 'min:0'],
+        ]);
+
+        $chapter = $article->chapters()->where('number', $number)->firstOrFail();
+        $paragraph = (int) $data['paragraph'];
+
+        if ($paragraph <= 0) {
+            ChapterParagraphBookmark::where('user_id', Auth::id())
+                ->where('chapter_id', $chapter->id)
+                ->delete();
+
+            return response()->json(['success' => true, 'paragraph' => 0]);
+        }
+
+        ChapterParagraphBookmark::updateOrCreate(
+            ['user_id' => Auth::id(), 'chapter_id' => $chapter->id],
+            ['article_id' => $article->id, 'paragraph' => $paragraph]
+        );
+
+        return response()->json(['success' => true, 'paragraph' => $paragraph]);
+    }
+
+    /**
+     * Ghi nhận báo cáo lỗi chương để admin xử lý.
+     */
+    public function report(Request $request, Article $article, $number)
+    {
+        if (! Auth::check()) {
+            return response()->json(['success' => false], 401);
+        }
+
+        $data = $request->validate([
+            'reason' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $chapter = $article->chapters()->where('number', $number)->firstOrFail();
+
+        ChapterReport::create([
+            'chapter_id' => $chapter->id,
+            'article_id' => $article->id,
+            'user_id'    => Auth::id(),
+            'reason'     => $data['reason'] ?? null,
+            'resolved'   => false,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => __('messages.chapter.report_sent'),
         ]);
     }
 

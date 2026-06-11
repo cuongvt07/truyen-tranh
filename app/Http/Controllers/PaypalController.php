@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CreditPackage;
 use App\Models\Deposit;
 use App\Services\PackageBenefitService;
+use App\Support\PaymentConfig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -15,10 +16,7 @@ class PaypalController extends Controller
 
     public function __construct()
     {
-        $mode = config('services.paypal.mode', 'sandbox');
-        $this->baseUrl = $mode === 'live'
-            ? 'https://api-m.paypal.com'
-            : 'https://api-m.sandbox.paypal.com';
+        $this->baseUrl = PaymentConfig::paypal()['base_url'];
     }
 
     // ─── Trang checkout ─────────────────────────────────────────────────────
@@ -29,7 +27,7 @@ class PaypalController extends Controller
 
         return view('client.checkout.index', [
             'package'        => $creditPackage,
-            'paypalClientId' => config('services.paypal.client_id'),
+            'paypalClientId' => PaymentConfig::paypal()['client_id'],
         ]);
     }
 
@@ -191,7 +189,7 @@ class PaypalController extends Controller
 
     private function verifyWebhookSignature(Request $request): bool
     {
-        $webhookId = config('services.paypal.webhook_id');
+        $webhookId = PaymentConfig::paypal()['webhook_id'];
         if (!$webhookId) {
             // Nếu chưa cấu hình webhook_id → bỏ qua verify (dev mode)
             Log::warning('PayPal webhook_id not configured, skipping signature verify');
@@ -219,8 +217,9 @@ class PaypalController extends Controller
     // ─── Lấy access token PayPal ─────────────────────────────────────────────
     private function getAccessToken(): string
     {
+        $cfg = PaymentConfig::paypal();
         $res = Http::asForm()
-            ->withBasicAuth(config('services.paypal.client_id'), config('services.paypal.secret'))
+            ->withBasicAuth($cfg['client_id'], $cfg['secret'])
             ->post("{$this->baseUrl}/v1/oauth2/token", ['grant_type' => 'client_credentials']);
 
         if ($res->failed()) {

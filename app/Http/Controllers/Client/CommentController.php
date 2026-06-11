@@ -77,16 +77,28 @@ class CommentController extends Controller
         $userId = Auth::id();
 
         $existing = CommentVote::where('comment_id', $comment->id)->where('user_id', $userId)->first();
+        $current  = $existing ? (int) $existing->value : 0;
 
-        if ($existing && (int) $existing->value === $value) {
-            $existing->delete();           // bấm lại cùng chiều => bỏ vote
-            $myVote = 0;
+        if ($value === -1) {
+            // Giảm chỉ để huỷ phiếu tăng hiện có; chưa tăng thì không được giảm.
+            if ($current === 1) {
+                $existing->delete();
+                $myVote = 0;
+            } else {
+                $myVote = $current;        // no-op: không cho downvote khi chưa upvote
+            }
         } else {
-            CommentVote::updateOrCreate(
-                ['comment_id' => $comment->id, 'user_id' => $userId],
-                ['value' => $value]
-            );
-            $myVote = $value;
+            // Tăng: bấm lại để huỷ.
+            if ($current === 1) {
+                $existing->delete();
+                $myVote = 0;
+            } else {
+                CommentVote::updateOrCreate(
+                    ['comment_id' => $comment->id, 'user_id' => $userId],
+                    ['value' => 1]
+                );
+                $myVote = 1;
+            }
         }
 
         $score = (int) CommentVote::where('comment_id', $comment->id)->sum('value');

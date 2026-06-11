@@ -20,6 +20,7 @@ class SettingController extends Controller
             '_token', '_method', 'logo_file', 'favicon_file', 'site_name', 'bank1_qr_image', 'bank2_qr_image',
             'banner_top', 'banner_bottom', 'banner_left', 'banner_right',
             'banner_top_url', 'banner_bottom_url', 'banner_left_url', 'banner_right_url',
+            'chapter_footer_image',
         ]);
 
         // Cập nhật các dữ liệu khác (bảng settings)
@@ -54,6 +55,15 @@ class SettingController extends Controller
             DB::table('settings')->updateOrInsert(
                 ['meta_key' => 'favicon_file'],
                 ['meta_value' => $favPath]
+            );
+        }
+
+        // --- Lưu ảnh footer chapter ---
+        if ($request->hasFile('chapter_footer_image')) {
+            $cfImg = $request->file('chapter_footer_image')->store('chapter_footer', 'public');
+            DB::table('settings')->updateOrInsert(
+                ['meta_key' => 'chapter_footer_image'],
+                ['meta_value' => $cfImg]
             );
         }
 

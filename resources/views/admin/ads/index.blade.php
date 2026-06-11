@@ -88,11 +88,12 @@
                 </thead>
                 <tbody>
                     @forelse($ads as $ad)
+                        @php $previewImage = $ad->image ?: optional($ad->items->first())->image; @endphp
                         <tr>
                             <td class="text-muted">{{ $ad->id }}</td>
                             <td class="text-center">
-                                @if($ad->image)
-                                    <img src="{{ $ad->image }}" alt="" 
+                                @if($previewImage)
+                                    <img src="{{ $previewImage }}" alt="" 
                                          style="width:48px;height:48px;object-fit:cover;border-radius:4px;border:1px solid #ddd">
                                 @else
                                     <i class="fas fa-image fa-2x text-muted"></i>
@@ -104,6 +105,9 @@
                                     <br><small class="text-muted">
                                         <i class="fas fa-link"></i> {{ Str::limit($ad->link, 50) }}
                                     </small>
+                                @endif
+                                @if($ad->items_count)
+                                    <br><small class="text-muted"><i class="fas fa-images"></i> {{ $ad->items_count }} items</small>
                                 @endif
                             </td>
                             <td>

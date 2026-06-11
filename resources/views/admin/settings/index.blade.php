@@ -65,6 +65,34 @@
             </div>
         </div>
 
+        <!-- KHỐI CẤU HÌNH FOOTER CHƯƠNG -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                📝 CẤU HÌNH FOOTER CHƯƠNG (hiển thị ở cuối nội dung mọi chương)
+            </div>
+            <div class="card-body row">
+                <div class="form-group col-md-6 mb-2">
+                    <label>Dòng chữ 1 <small class="text-muted">(vd: Chapter written by)</small></label>
+                    <input type="text" name="chapter_footer_text1" class="form-control" value="{{ $settings['chapter_footer_text1'] ?? '' }}">
+                </div>
+                <div class="form-group col-md-6 mb-2">
+                    <label>Dòng chữ 2 <small class="text-muted">(vd: tên nhóm dịch)</small></label>
+                    <input type="text" name="chapter_footer_text2" class="form-control" value="{{ $settings['chapter_footer_text2'] ?? '' }}">
+                </div>
+                <div class="form-group col-md-6 mb-2">
+                    <label>Link <small class="text-muted">(click vào chữ/ảnh sẽ mở link này)</small></label>
+                    <input type="url" name="chapter_footer_link" class="form-control" placeholder="https://..." value="{{ $settings['chapter_footer_link'] ?? '' }}">
+                </div>
+                <div class="form-group col-md-6 mb-2">
+                    <label for="chapter_footer_image">Ảnh</label>
+                    <input type="file" name="chapter_footer_image" class="form-control-file" accept="image/*">
+                    @if(!empty($settings['chapter_footer_image']))
+                        <div class="mt-2"><img src="{{ asset('storage/' . $settings['chapter_footer_image']) }}" alt="" style="height:64px;border:1px solid #ccc;object-fit:cover"></div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
         <!-- KHỐI CẤU HÌNH BANNER HIỂN THỊ -->
         <div class="card mb-4">
             <div class="card-header bg-dark text-white">

@@ -239,37 +239,35 @@
 
             {{-- All chapters --}}
             <div class="main-section hide" id="chapters">
-                <div id="all-chapters-list" class="chapters">
-                    @foreach($chapters as $chapter)
-                        @php
-                            $chapterCreditCost = $chapter->getEffectiveCreditCost($article);
-                            $chapterIsPaid = $chapterCreditCost > 0;
-                            $chapterIsUnlocked = $chapterIsPaid && (($unlockedChapterIds ?? collect())->contains($chapter->id) || ($hasActiveVip ?? false));
-                        @endphp
-                        <a href="{{ route('articles.chapters.show', [$article, $chapter->number]) }}" class="chapter ">
-                            <div class="title">
-                                {{ __('messages.article.chapter') }} {{ $chapter->number }} - <span>{{ $chapter->title }}</span>
+                <div class="control-btns">
+                    <button type="button" id="chapter-sort-btn" class="btn btn-invincible"><i class="fa fa-sort"></i> {{ __('messages.article.sort') }}</button>
+
+                    @if(count($chapterPages) > 1)
+                        <div class="text-input checkbox-input select">
+                            <div class="text-input__wrapper">
+                                <select name="select-pagination-chapter" id="select-pagination-chapter">
+                                    @foreach($chapterPages as $chapterPage)
+                                        <option value="{{ $chapterPage['page'] }}">{{ $chapterPage['label'] }}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <div class="chapter-info">
-                                @if($chapterIsPaid)
-                                    @guest
-                                        <span class="cost"><i class="fa fa-lock"></i></span>
-                                    @else
-                                        @if($chapterIsUnlocked)
-                                            <span class="cost paid">paid</span>
-                                        @else
-                                            <span class="cost"><i class="fa fa-money-bill"></i> {{ number_format($chapterCreditCost) }}</span>
-                                        @endif
-                                    @endguest
-                                @endif
-                                <span class="author"><i class="fa fa-eye"></i> {{ number_format($chapter->view) }}</span>
-                                <span class="date">{{ optional($chapter->created_at)->format('d.m.Y') }}</span>
-                            </div>
-                        </a>
-                    @endforeach
+                        </div>
+                    @endif
                 </div>
-                <div class="pagination-wrap">{{ $chapters->links() }}</div>
+
+                <div id="all-chapters-list" class="chapters">
+                    @include('client.articles.partials.chapter-list-items', [
+                        'chapters' => $chapters,
+                        'article' => $article,
+                        'unlockedChapterIds' => $unlockedChapterIds,
+                        'hasActiveVip' => $hasActiveVip,
+                    ])
+                </div>
             </div>
+            <script>
+                window.BOOK_ID = {{ $article->id }};
+                window.BOOKMARK_CH = null;
+            </script>
 
             {{-- Comments --}}
             <div class="main-section hide" id="comments">
@@ -311,25 +309,19 @@
             </div>
 
             @if($firstChapter)
-                <a href="{{ route('articles.chapters.show', [$article, $firstChapter->number]) }}" class="btn btn-primary read-btn">
-                    {{ __('messages.article.read_from_start') }}
+                @php
+                    $readChapterNumber = $continueChapterNumber ?: $firstChapter->number;
+                @endphp
+                <a href="{{ route('articles.chapters.show', [$article, $readChapterNumber]) }}" class="btn btn-primary read-btn">
+                    {{ $hasStartedReading ? __('messages.article.continue_reading') : __('messages.article.read_from_start') }}
                 </a>
             @endif
 
-            @auth
-                <form method="POST" action="{{ route('articles.bookmarks.store', $article->id) }}">
-                    @csrf
-                    <button type="submit" class="btn btn-add-to-list">
-                        <span class="text-add-to-list">{{ __('messages.article.follow') }}</span>
-                        <span class="btn-list"><i class="fa fa-bookmark"></i></span>
-                    </button>
-                </form>
-            @else
-                <a href="{{ route('login') }}" class="btn btn-add-to-list">
-                    <span class="text-add-to-list">{{ __('messages.article.follow') }}</span>
-                    <span class="btn-list"><i class="fa fa-bookmark"></i></span>
-                </a>
-            @endauth
+            @include('client.partials.add-to-list-button', [
+                'article' => $article,
+                'hasStartedReading' => $hasStartedReading,
+                'currentListStatus' => $currentListStatus,
+            ])
 
             <div class="block appreciate">
                 <div class="text"><i class="fa fa-star"></i> {{ number_format($article->rating ?? 0, 1) }}/5</div>
@@ -503,6 +495,13 @@ li.comment:last-child{border-bottom:none}
 .comment-vote .btn:hover{background:var(--bg-soft-hover,#dfe3ec);color:#2b303a}
 .comment-vote .btn.like.active{background:rgba(46,160,67,.15);color:#2ea043}
 .comment-vote .btn.dislike.active{background:rgba(248,81,73,.15);color:#f85149}
+.comment-vote .btn.disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+/* FA subset thiếu chevron-up/down → vẽ tam giác lên/xuống bằng CSS */
+.comment-vote .like,.comment-vote .dislike{transform:none}
+.comment-vote .fa-chevron-up,.comment-vote .fa-chevron-down{font-family:inherit}
+.comment-vote .fa-chevron-up::before,.comment-vote .fa-chevron-down::before{content:"";display:inline-block;width:0;height:0;border:5px solid transparent}
+.comment-vote .fa-chevron-up::before{border-bottom-color:currentColor;border-top:0}
+.comment-vote .fa-chevron-down::before{border-top-color:currentColor;border-bottom:0}
 .comment-vote .vote-score{min-width:18px;text-align:center;font-weight:600;font-size:13px}
 
 .show-replies-btn{display:inline-block;margin-top:8px;font-size:13px;font-weight:600;text-decoration:none}
@@ -600,11 +599,13 @@ li.comment:last-child{border-bottom:none}
 
     /* ---------- VOTE ---------- */
     $section.on('click', '.comment-vote .btn', function(){
-        if (needLogin()) return;
-        var $wrap = $(this).closest('.comment-vote');
-        var id = $wrap.data('id');
-        var val = $(this).data('vote');
         var $btn = $(this);
+        // Chưa upvote thì không cho bấm nút giảm.
+        if ($btn.hasClass('dislike') && $btn.hasClass('disabled')) return;
+        if (needLogin()) return;
+        var $wrap = $btn.closest('.comment-vote');
+        var id = $wrap.data('id');
+        var val = $btn.data('vote');
         if ($btn.prop('disabled')) return;
         $wrap.find('.btn').prop('disabled', true);
         ajax("{{ url('comments') }}/" + id + "/vote", {value: val})
@@ -612,7 +613,7 @@ li.comment:last-child{border-bottom:none}
                 if (!res.ok) return;
                 $wrap.find('.vote-score').text(res.score);
                 $wrap.find('.like').toggleClass('active', res.myVote === 1);
-                $wrap.find('.dislike').toggleClass('active', res.myVote === -1);
+                $wrap.find('.dislike').toggleClass('disabled', res.myVote !== 1);
             })
             .always(function(){ $wrap.find('.btn').prop('disabled', false); });
     });

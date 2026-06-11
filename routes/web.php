@@ -214,6 +214,10 @@ Route::middleware(['auth'])->group(function () {
             // Báo cáo bình luận
             Route::get('comment-reports', [\App\Http\Controllers\Admin\CommentController::class, 'reports'])->name('comment_reports.index');
             Route::post('comment-reports/{comment}/resolve', [\App\Http\Controllers\Admin\CommentController::class, 'resolveReports'])->name('comment_reports.resolve');
+            // Báo cáo lỗi chương
+            Route::get('chapter-reports', [\App\Http\Controllers\Admin\ChapterReportController::class, 'index'])->name('chapter_reports.index');
+            Route::post('chapter-reports/{report}/resolve', [\App\Http\Controllers\Admin\ChapterReportController::class, 'resolve'])->name('chapter_reports.resolve');
+            Route::delete('chapter-reports/{report}', [\App\Http\Controllers\Admin\ChapterReportController::class, 'destroy'])->name('chapter_reports.destroy');
 
             // ===== FORUM MODULE =====
             Route::prefix('forum')->name('forum.')->group(function () {
@@ -263,6 +267,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('vips/create', [\App\Http\Controllers\Admin\VipController::class, 'create'])->name('vips.create');
             Route::post('vips', [\App\Http\Controllers\Admin\VipController::class, 'store'])->name('vips.store');
             Route::delete('vips/{vip}', [\App\Http\Controllers\Admin\VipController::class, 'destroy'])->name('vips.destroy');
+            // Cấu hình thanh toán (chỉ super-admin — chứa secret PayPal)
+            Route::middleware('check_role:'.UserRole::ADMIN->value)->group(function () {
+                Route::get('payment-settings', [\App\Http\Controllers\Admin\PaymentSettingController::class, 'index'])->name('payment_settings.index');
+                Route::post('payment-settings', [\App\Http\Controllers\Admin\PaymentSettingController::class, 'update'])->name('payment_settings.update');
+            });
         });
 });
 require __DIR__.'/auth.php';
@@ -351,6 +360,9 @@ Route::get('/genres/{genre}',
     [App\Http\Controllers\Client\GenreController::class, 'show'])
     ->name('genres.show');
 // articles
+Route::get('/book/ajax/chapter-pagination',
+    [App\Http\Controllers\Client\ArticleController::class, 'chapterPagination'])
+    ->name('articles.chapter_pagination');
 Route::get('/articles/{article}',
     [App\Http\Controllers\Client\ArticleController::class, 'show'])
     ->name('articles.show');
@@ -359,6 +371,9 @@ Route::get('/articles/{article}/chapters/{number}',
     ->name('articles.chapters.show');
 Route::post('articles/{article}/chapters/{number}/mark-ad-clicked', [\App\Http\Controllers\Client\ChapterController::class, 'markAdClicked'])->name('articles.chapters.markAdClicked');
 Route::post('articles/{article}/chapters/{number}/unlock', [\App\Http\Controllers\Client\ChapterController::class, 'unlock'])->name('articles.chapters.unlock')->middleware('auth');
+Route::post('articles/{article}/chapters/{number}/bookmark-paragraph', [\App\Http\Controllers\Client\ChapterController::class, 'bookmarkParagraph'])->name('articles.chapters.bookmarkParagraph')->middleware('auth');
+Route::post('articles/{article}/chapters/{number}/report', [\App\Http\Controllers\Client\ChapterController::class, 'report'])->name('articles.chapters.report')->middleware('auth');
+Route::post('articles/{article}/chapters/{number}/like', [\App\Http\Controllers\Client\ChapterController::class, 'likeChapter'])->name('articles.chapters.like')->middleware('auth');
 // authors
 Route::get('/authors/{author}',
     [\App\Http\Controllers\Client\AuthorController::class, 'show'])

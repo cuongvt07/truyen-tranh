@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Models\Bookmark;
 use App\Models\ChapterUnlock;
 use App\Models\Genre;
+use App\Models\ReadingHistory;
 use App\Models\UserVip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +15,8 @@ use Nette\Utils\Paginator;
 
 class ArticleController extends Controller
 {
+    private const CHAPTERS_PER_PAGE = 50;
+
     public function show(Request $request, Article $article)
     {
         if ($request->route()->originalParameter('article') !== $article->getRouteKey()) {
@@ -21,16 +25,24 @@ class ArticleController extends Controller
 
         $article->increaseViewCount();
 
-        $chapters = $article->chapters()->paginate();
+        $chapterNumbers = $article->chapters()->orderByDesc('number')->pluck('number');
+        $chapterPages = $this->buildChapterPages($chapterNumbers, self::CHAPTERS_PER_PAGE);
+        $chapters = $article->chapters()
+            ->orderByDesc('number')
+            ->take(self::CHAPTERS_PER_PAGE)
+            ->get();
         $latestChapters = $article->chapters()->orderByDesc('number')->take(10)->get();
         $comments = $article->getNewestCommentsPaginate();
         $displayChapterIds = $latestChapters->pluck('id')
-            ->merge($chapters->getCollection()->pluck('id'))
+            ->merge($chapters->pluck('id'))
             ->unique()
             ->values();
 
         $unlockedChapterIds = collect();
         $hasActiveVip = false;
+        $hasStartedReading = false;
+        $continueChapterNumber = null;
+        $currentListStatus = null;
 
         if (Auth::check()) {
             $hasActiveVip = UserVip::where('user_id', Auth::id())
@@ -40,6 +52,18 @@ class ArticleController extends Controller
             $unlockedChapterIds = ChapterUnlock::where('user_id', Auth::id())
                 ->whereIn('chapter_id', $displayChapterIds)
                 ->pluck('chapter_id');
+
+            $lastHistory = ReadingHistory::where('user_id', Auth::id())
+                ->where('article_id', $article->id)
+                ->latest('read_at')
+                ->first();
+
+            $hasStartedReading = $lastHistory !== null;
+            $continueChapterNumber = $lastHistory?->chapter_number;
+
+            $currentListStatus = Bookmark::where('user_id', Auth::id())
+                ->where('article_id', $article->id)
+                ->value('status');
         }
 
         // Truyện cùng tác giả (loại bỏ chính nó)
@@ -83,15 +107,79 @@ class ArticleController extends Controller
         return view('client.articles.show', [
             'article' => $article,
             'chapters' => $chapters,
+            'chapterPages' => $chapterPages,
             'latestChapters' => $latestChapters,
             'unlockedChapterIds' => $unlockedChapterIds,
             'hasActiveVip' => $hasActiveVip,
+            'hasStartedReading' => $hasStartedReading,
+            'continueChapterNumber' => $continueChapterNumber,
+            'currentListStatus' => $currentListStatus,
             'comments' => $comments,
             'sameAuthorArticles' => $sameAuthorArticles,
             'suggestedArticles' => $suggestedArticles,
             'translationRequests' => $translationRequests,
             'relatedGenres' => $relatedGenres,
         ]);
+    }
+
+    /**
+     * AJAX: return a range (page) of chapters for the chapter tab dropdown.
+     * Matches the contract used by static/book/js/singleee8b.js.
+     */
+    public function chapterPagination(Request $request)
+    {
+        $request->validate([
+            'book_id' => ['required', 'integer'],
+            'page' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $article = Article::findOrFail($request->integer('book_id'));
+        $page = max(1, (int) $request->integer('page'));
+
+        $chapters = $article->chapters()
+            ->orderByDesc('number')
+            ->forPage($page, self::CHAPTERS_PER_PAGE)
+            ->get();
+
+        $unlockedChapterIds = collect();
+        $hasActiveVip = false;
+
+        if (Auth::check()) {
+            $hasActiveVip = UserVip::where('user_id', Auth::id())
+                ->where('end_at', '>=', now())
+                ->exists();
+
+            $unlockedChapterIds = ChapterUnlock::where('user_id', Auth::id())
+                ->whereIn('chapter_id', $chapters->pluck('id'))
+                ->pluck('chapter_id');
+        }
+
+        $html = view('client.articles.partials.chapter-list-items', [
+            'chapters' => $chapters,
+            'article' => $article,
+            'unlockedChapterIds' => $unlockedChapterIds,
+            'hasActiveVip' => $hasActiveVip,
+        ])->render();
+
+        return response()->json(['html' => $html]);
+    }
+
+    /**
+     * Group ordered chapter numbers into pages and build "min - max" range labels
+     * for the chapter-tab pagination dropdown.
+     */
+    private function buildChapterPages($numbers, int $perPage): array
+    {
+        $pages = [];
+
+        foreach (collect($numbers)->chunk($perPage)->values() as $index => $chunk) {
+            $pages[] = [
+                'page' => $index + 1,
+                'label' => $chunk->min() . ' - ' . $chunk->max(),
+            ];
+        }
+
+        return $pages;
     }
 
     private function configuredArticles($ids, int $articleId, int $limit)

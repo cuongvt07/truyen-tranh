@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Bookmark extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'description', 'is_public', 'user_id', 'article_id'];
+    protected $fillable = ['name', 'description', 'is_public', 'user_id', 'article_id', 'status'];
     protected function getCreatedAtTextAttribute()
     {
         return $this->created_at->diffForHumans();

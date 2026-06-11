@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -16,7 +17,9 @@ class Ad extends Model
         'display_mode', 'placement', 'pages',
         'frequency', 'frequency_value', 'delay_seconds',
         'after_click', 'cooldown_seconds',
-        'chapter_start', 'chapter_interval', 'hide_for_vip', 'require_click',
+        'chapter_start', 'chapter_interval', 'chapter_inline_count',
+        'chapter_inline_first_after', 'chapter_inline_every',
+        'hide_for_vip', 'require_click',
         'priority', 'is_active', 'start_at', 'end_at',
     ];
 
@@ -30,6 +33,9 @@ class Ad extends Model
         'cooldown_seconds' => 'integer',
         'chapter_start'    => 'integer',
         'chapter_interval' => 'integer',
+        'chapter_inline_count' => 'integer',
+        'chapter_inline_first_after' => 'integer',
+        'chapter_inline_every' => 'integer',
         'priority'         => 'integer',
         'start_at'         => 'datetime',
         'end_at'           => 'datetime',
@@ -89,6 +95,16 @@ class Ad extends Model
         return null;
     }
 
+    public function items(): HasMany
+    {
+        return $this->hasMany(AdItem::class)->orderBy('sort_order')->orderBy('id');
+    }
+
+    public function activeItems(): HasMany
+    {
+        return $this->items()->where('is_active', true);
+    }
+
     /** Còn trong khung thời gian lên lịch không */
     public function isLive(): bool
     {
@@ -117,6 +133,7 @@ class Ad extends Model
     {
         return Cache::rememberForever('ads_active_all', function () {
             return static::query()
+                ->with('items')
                 ->where('is_active', true)
                 ->orderBy('priority')
                 ->orderBy('id')
