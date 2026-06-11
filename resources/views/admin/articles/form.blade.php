@@ -157,43 +157,11 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="cover_image">Ảnh bìa</label>
-            <div class="m-5">
-                <img id="preview_image" src="{{ old('cover_image_url', $article->cover_image) }}"
-                     alt="{{ old('title', $article->title) }}" width="200px">
-
-            </div>
-            <ul class="nav nav-tabs" id="myTabs" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="tab1-tab" data-toggle="tab" href="#tab1" role="tab"
-                       aria-controls="tab1" aria-selected="true">Nhập URL ảnh</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="tab2-tab" data-toggle="tab" href="#tab2" role="tab" aria-controls="tab2"
-                       aria-selected="false">Tải lên tệp</a>
-                </li>
-            </ul>
-            <div class="tab-content" id="myTabsContent">
-                <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
-                    <div class="form-group mt-4">
-                        <input type="text" class="form-control"
-                               placeholder="https://example.com/image.jpg"
-                               id="cover_image_url_preview"
-                               name="cover_image_url_preview"
-                               value="{{ old('cover_image_url_preview', $article->cover_image) }}">
-                        <input type="hidden" name="cover_image_url"
-                               value="{{ old('cover_image_url', $article->cover_image) }}">
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
-                    <div class="form-group mt-4">
-                        <input type="file" class="form-control-file" name="cover_image" accept="image/*">
-                    </div>
-                </div>
-            </div>
-            @if ($errors->has('cover_image'))
-                <div class="invalid-feedback">{{ $errors->first('cover_image') }}</div>
-            @endif
+            @php $coverCurrent = ($article->cover_image && $article->cover_image !== '/images/articles/default.jpg') ? $article->cover_image : null; @endphp
+            <x-admin.image-upload name="cover_image" label="Ảnh bìa" :height="200"
+                :current="$coverCurrent"
+                urlName="cover_image_url" :urlValue="old('cover_image_url', $coverCurrent)" />
+            @error('cover_image')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
         </div>
         <div class="form-group">
             <label for="status">Link Audio Youtube</label>

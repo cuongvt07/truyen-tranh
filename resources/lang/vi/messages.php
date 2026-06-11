@@ -482,4 +482,45 @@ return array (
     'contact_admin_to_deposit' => 'Vui lÃ²ng liÃªn há»‡ admin Ä‘á»ƒ náº¡p Ä‘iá»ƒm.',
     'select_vip_package_alert' => 'Vui lÃ²ng chá»n gÃ³i VIP!',
   ),
+  'ads' =>
+  array (
+    'modes' =>
+    array (
+      'banner' => 'Banner cố định',
+      'click_anywhere' => 'Click bất kỳ đâu',
+      'popup' => 'Popup / che màn hình',
+      'chapter' => 'Chèn khi đọc chapter',
+    ),
+    'placements' =>
+    array (
+      'top' => 'Đầu trang (thanh trên)',
+      'bottom' => 'Cuối trang (thanh dưới)',
+      'float_left' => 'Nổi góc trái',
+      'float_right' => 'Nổi góc phải',
+      'in_content' => 'Giữa nội dung',
+      'sidebar' => 'Cột bên (sidebar)',
+    ),
+    'pages' =>
+    array (
+      'all' => 'Toàn site',
+      'home' => 'Trang chủ',
+      'article' => 'Chi tiết truyện',
+      'chapter' => 'Đọc chapter',
+      'genre' => 'Thể loại',
+      'catalog' => 'Catalog / tìm kiếm',
+    ),
+    'frequencies' =>
+    array (
+      'every_load' => 'Mỗi lần tải trang',
+      'once_session' => '1 lần / phiên',
+      'every_n_views' => 'Mỗi N lượt xem trang',
+    ),
+    'after_clicks' =>
+    array (
+      'none' => 'Không đổi (theo tần suất)',
+      'stop_session' => 'Ẩn hết trong phiên này',
+      'cooldown' => 'Chờ N giây rồi chạy lại',
+    ),
+    'repeat_hint' => 'Click bất kỳ đâu: chọn "Chờ N giây rồi chạy lại" để lặp lại sự kiện sau mỗi N giây (đặt N ở ô "Chờ lại (giây)").',
+  ),
 );

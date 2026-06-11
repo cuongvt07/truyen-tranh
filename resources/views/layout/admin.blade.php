@@ -118,6 +118,22 @@
                 </div>
             </li>
             @endif
+            @if(config('locales.switchable', true))
+                @php $curLocale = app()->getLocale(); $adminLocales = config('locales.supported', []); @endphp
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#" title="Language / Ngôn ngữ">
+                        {{ $adminLocales[$curLocale]['flag'] ?? '🌐' }}
+                        <span class="d-none d-md-inline">{{ $adminLocales[$curLocale]['name'] ?? strtoupper($curLocale) }}</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        @foreach($adminLocales as $code => $loc)
+                            <a href="{{ route('locale.switch', $code) }}" class="dropdown-item {{ $curLocale === $code ? 'active' : '' }}">
+                                {{ $loc['flag'] ?? '' }} {{ $loc['name'] ?? strtoupper($code) }}
+                            </a>
+                        @endforeach
+                    </div>
+                </li>
+            @endif
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('users.change_password') }}"
                    role="button" title="Đổi mật khẩu">

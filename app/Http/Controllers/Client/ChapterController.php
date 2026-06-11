@@ -52,15 +52,7 @@ class ChapterController extends Controller
             }
         }
 
-        // If locked: show gate view (no view count increment, no reading history)
-        if ($isLocked) {
-            return view('client.chapters.locked', [
-                'article'    => $article,
-                'chapter'    => $chapter,
-                'creditCost' => $creditCost,
-                'userPoints' => Auth::check() ? Auth::user()->points : 0,
-            ]);
-        }
+        // Chương khoá: vẫn vào trang đọc nhưng chỉ hiện teaser mờ + paywall (xử lý ở view).
 
         // --- Ads (VIP sees none) ---
         $chapterAds = $hasActiveVip ? collect() : (Ad::forPageGrouped('chapter')->get('chapter') ?? collect());
@@ -125,13 +117,19 @@ class ChapterController extends Controller
                 ->value('paragraph');
         }
 
-        // Đếm view
-        $chapter->increaseViewCount();
-        $article->increaseViewCount();
+        if ($isLocked) {
+            // Teaser: không tăng view, không ghi lịch sử, tắt popup + inline ad.
+            $showPopup = false;
+            $inlineChapterAds = collect();
+        } else {
+            // Đếm view
+            $chapter->increaseViewCount();
+            $article->increaseViewCount();
 
-        // Ghi lịch sử đọc
-        if (Auth::check()) {
-            ReadingHistory::record(Auth::id(), $article->id, $chapter->id, $number);
+            // Ghi lịch sử đọc
+            if (Auth::check()) {
+                ReadingHistory::record(Auth::id(), $article->id, $chapter->id, $number);
+            }
         }
 
         $comments = $article->getNewestCommentsPaginate();
@@ -152,6 +150,8 @@ class ChapterController extends Controller
             'isUserLoggedIn' => Auth::check(),
             'creditCost'     => $creditCost,
             'alreadyUnlocked' => $alreadyUnlocked,
+            'isLocked'       => $isLocked,
+            'userPoints'     => Auth::check() ? (int) Auth::user()->points : 0,
             'hasStartedReading' => $hasStartedReading,
             'currentListStatus' => $currentListStatus,
             'bookmarkParagraph' => $bookmarkParagraph,

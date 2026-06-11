@@ -53,7 +53,11 @@ class TeamController extends Controller
     public function update(Request $request, Team $team)
     {
         $data = $this->validateData($request);
-        if ($photo = $this->upload($request)) $data['photo'] = $photo;
+        if ($photo = $this->upload($request)) {
+            $data['photo'] = $photo;
+        } elseif ($request->input('photo_remove') === '1') {
+            $data['photo'] = null;
+        }
         $team->update($data);
         return redirect()->route('admin.teams.index')->with('success', 'Đã cập nhật nhóm!');
     }

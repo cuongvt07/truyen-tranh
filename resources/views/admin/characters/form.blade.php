@@ -83,38 +83,10 @@
                 @if($mode === 'edit') @method('PATCH') @endif
                 
                 <div class="card-body text-center">
-                    <div class="mb-3">
-                        <img id="cover-preview" 
-                             src="{{ $item->photo ?: asset('static/account/images/no-ava.jpg') }}" 
-                             alt="Preview"
-                             style="width:150px;height:150px;object-fit:cover;border-radius:50%;box-shadow:0 4px 12px rgba(0,0,0,.2);border:3px solid #fff">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="btn btn-sm btn-outline-primary btn-block" for="cover-input">
-                            <i class="fas fa-upload"></i> Chọn ảnh
-                        </label>
-                        <input type="file" 
-                               name="photo" 
-                               id="cover-input" 
-                               class="d-none @error('photo') is-invalid @enderror"
-                               accept="image/*">
-                        @error('photo')
-                            <span class="invalid-feedback d-block">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    
-                    <div class="form-group mb-0">
-                        <input type="text" 
-                               name="photo_url" 
-                               class="form-control form-control-sm @error('photo_url') is-invalid @enderror" 
-                               placeholder="Hoặc nhập URL ảnh..."
-                               value="{{ old('photo_url') }}">
-                        @error('photo_url')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                        <small class="form-text text-muted">Link ảnh từ nguồn khác</small>
-                    </div>
+                    <x-admin.image-upload name="photo" :height="150"
+                        :current="$item->photo ?: null"
+                        urlName="photo_url" :urlValue="old('photo_url')"
+                        hint="Link ảnh từ nguồn khác" />
                 </div>
             </form>
         </div>
@@ -148,17 +120,4 @@
     </div>
 </div>
 
-@push('scripts')
-<script>
-document.getElementById('cover-input')?.addEventListener('change', function(e) {
-    if (e.target.files && e.target.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            document.getElementById('cover-preview').src = ev.target.result;
-        };
-        reader.readAsDataURL(e.target.files[0]);
-    }
-});
-</script>
-@endpush
 @endsection

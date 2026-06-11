@@ -464,6 +464,13 @@ return array (
     'action_failed' => 'Something went wrong. Please try again.',
     'table_of_contents' => 'Table of contents',
     'posted_by' => 'Posted by',
+    'not_purchased' => 'You didn\'t buy this chapter',
+    'buy_for' => 'Buy (:cost coupons)',
+    'buy_processing' => 'Processing…',
+    'buy_success' => 'Unlocked! Loading…',
+    'not_enough_credit' => 'Not enough credit',
+    'topup_now' => 'Top up credit now →',
+    'login_to_buy' => 'Log in to buy',
     'give_thanks' => 'Give thanks',
     'bookmark' => 'Bookmark',
     'bookmarked' => 'Bookmarked',
@@ -497,5 +504,46 @@ return array (
     'deposit_more' => 'Deposit more',
     'contact_admin_to_deposit' => 'Please contact the admin to add points.',
     'select_vip_package_alert' => 'Please select a VIP package!',
+  ),
+  'ads' =>
+  array (
+    'modes' =>
+    array (
+      'banner' => 'Fixed banner',
+      'click_anywhere' => 'Click anywhere',
+      'popup' => 'Popup / overlay',
+      'chapter' => 'Inside chapter',
+    ),
+    'placements' =>
+    array (
+      'top' => 'Top bar',
+      'bottom' => 'Bottom bar',
+      'float_left' => 'Float left',
+      'float_right' => 'Float right',
+      'in_content' => 'In content',
+      'sidebar' => 'Sidebar',
+    ),
+    'pages' =>
+    array (
+      'all' => 'Whole site',
+      'home' => 'Home',
+      'article' => 'Article detail',
+      'chapter' => 'Chapter reader',
+      'genre' => 'Genre',
+      'catalog' => 'Catalog / search',
+    ),
+    'frequencies' =>
+    array (
+      'every_load' => 'Every page load',
+      'once_session' => 'Once per session',
+      'every_n_views' => 'Every N page views',
+    ),
+    'after_clicks' =>
+    array (
+      'none' => 'No change (by frequency)',
+      'stop_session' => 'Hide for this session',
+      'cooldown' => 'Wait N seconds then run again',
+    ),
+    'repeat_hint' => 'Click anywhere: choose "Wait N seconds then run again" to repeat the event every N seconds (set N in the "Cooldown (seconds)" field).',
   ),
 );

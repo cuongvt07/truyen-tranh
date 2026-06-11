@@ -64,37 +64,74 @@
     <div class="chapter-title-block" style="text-align:center;padding:20px 0 10px">
         <h2>{{ __('messages.chapter.chapter') }} {{ $chapter->number }}: {{ $chapter->title }}</h2>
     </div>
-    <div class="chapter-text" id="chapter-c">
+    @php
+        $chapterParagraphs = preg_split('/(?:\r\n|\r|\n){2,}/', trim((string) $chapter->content)) ?: [];
+        $isChapterLocked = $isLocked ?? false;
+    @endphp
+
+    @if($isChapterLocked)
+        {{-- Chương trả phí: chỉ hiện teaser mờ dần, không tải hết nội dung ra DOM --}}
         @php
-            $chapterParagraphs = preg_split('/(?:\r\n|\r|\n){2,}/', trim((string) $chapter->content)) ?: [];
-            $inlineAds = collect($inlineChapterAds ?? []);
-            $firstInlineAdAfter = max(1, (int) ($inlineAdFirstAfter ?? 4));
-            $inlineAdEvery = max(1, (int) ($inlineAdEvery ?? 8));
-            $inlineAdSlot = 0;
+            $nonEmpty = array_values(array_filter($chapterParagraphs, fn ($p) => trim($p) !== ''));
+            $previewCount = min(15, max(3, (int) floor(count($nonEmpty) * 0.2)));
+            $previewParagraphs = array_slice($nonEmpty, 0, $previewCount);
         @endphp
-
-        @foreach($chapterParagraphs as $paragraphIndex => $paragraph)
-            @if(trim($paragraph) !== '')
+        <div class="chapter-text chapter-text__limit" id="chapter-c">
+            @foreach($previewParagraphs as $paragraph)
                 <p>{!! nl2br(e($paragraph)) !!}</p>
+            @endforeach
+        </div>
 
-                @php
-                    $paragraphNumber = $paragraphIndex + 1;
-                    $shouldShowInlineAd = $inlineAds->isNotEmpty()
-                        && $inlineAdSlot < $inlineAds->count()
-                        && $paragraphNumber >= $firstInlineAdAfter
-                        && (($paragraphNumber - $firstInlineAdAfter) % $inlineAdEvery === 0);
-                @endphp
-
-                @if($shouldShowInlineAd)
-                    @php
-                        $inlineAd = $inlineAds[$inlineAdSlot];
-                        $inlineAdSlot++;
-                    @endphp
-                    @include('client.partials.chapter-inline-ad', ['ad' => $inlineAd])
+        {{-- Paywall --}}
+        <div class="chapter-paywall">
+            <p class="paywall-note">{{ __('messages.chapter.not_purchased') }}</p>
+            @auth
+                @if(($userPoints ?? 0) >= $creditCost)
+                    <button type="button" id="btn-buy-chapter" class="btn btn-primary"
+                            data-url="{{ route('articles.chapters.unlock', [$article, $chapter->number]) }}">
+                        {{ __('messages.chapter.buy_for', ['cost' => number_format($creditCost)]) }}
+                    </button>
+                @else
+                    <button type="button" class="btn" disabled>{{ __('messages.chapter.not_enough_credit') }}</button>
+                    <div class="paywall-topup"><a href="{{ route('client.paypoints') }}">{{ __('messages.chapter.topup_now') }}</a></div>
                 @endif
-            @endif
-        @endforeach
-    </div>
+                <div id="buy-msg"></div>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-primary">{{ __('messages.chapter.login_to_buy') }}</a>
+            @endauth
+        </div>
+    @else
+        <div class="chapter-text" id="chapter-c">
+            @php
+                $inlineAds = collect($inlineChapterAds ?? []);
+                $firstInlineAdAfter = max(1, (int) ($inlineAdFirstAfter ?? 4));
+                $inlineAdEvery = max(1, (int) ($inlineAdEvery ?? 8));
+                $inlineAdSlot = 0;
+            @endphp
+
+            @foreach($chapterParagraphs as $paragraphIndex => $paragraph)
+                @if(trim($paragraph) !== '')
+                    <p>{!! nl2br(e($paragraph)) !!}</p>
+
+                    @php
+                        $paragraphNumber = $paragraphIndex + 1;
+                        $shouldShowInlineAd = $inlineAds->isNotEmpty()
+                            && $inlineAdSlot < $inlineAds->count()
+                            && $paragraphNumber >= $firstInlineAdAfter
+                            && (($paragraphNumber - $firstInlineAdAfter) % $inlineAdEvery === 0);
+                    @endphp
+
+                    @if($shouldShowInlineAd)
+                        @php
+                            $inlineAd = $inlineAds[$inlineAdSlot];
+                            $inlineAdSlot++;
+                        @endphp
+                        @include('client.partials.chapter-inline-ad', ['ad' => $inlineAd])
+                    @endif
+                @endif
+            @endforeach
+        </div>
+    @endif
 </div>
 
 <div class="chapter-team__info">
@@ -584,6 +621,16 @@ $(document).ready(function() {
 
 <style>
 #chapter-c { max-width:780px;margin:0 auto;padding:20px 16px;font-size:17px;line-height:1.9;color:var(--text-color) }
+/* Paywall chương trả phí */
+.chapter-paywall { text-align:center; max-width:780px; margin:0 auto 28px; padding:0 16px; }
+.chapter-paywall .paywall-note { color:var(--meta-color,#888); margin-bottom:12px; }
+.chapter-paywall .btn-primary { display:inline-block; background:#1f1f1f; color:#fff; border:none; padding:10px 24px; border-radius:6px; font-weight:600; cursor:pointer; text-decoration:none; }
+.chapter-paywall .btn-primary:hover { opacity:.9; }
+.chapter-paywall .btn[disabled] { opacity:.5; cursor:not-allowed; }
+.chapter-paywall .paywall-topup { margin-top:10px; font-size:13px; }
+.chapter-paywall #buy-msg { margin-top:10px; font-size:14px; }
+.chapter-paywall #buy-msg.error { color:#e3342f; }
+.chapter-paywall #buy-msg.success { color:#1f9d55; }
 #chapter-c p { margin: 0 0 var(--reader-p-margin, 1.25em); }
 /* Chế độ chọn đoạn để bookmark */
 .bookmark-ph-process #chapter-c p { cursor:pointer; }
@@ -650,5 +697,41 @@ $(document).ready(function() {
     background:#ffefef47;
 }
 </style>
+
+@auth
+{{-- Mua chương (paywall) --}}
+<script>
+(function () {
+    var btn = document.getElementById('btn-buy-chapter');
+    if (!btn) return;
+    var msg = document.getElementById('buy-msg');
+    var CSRF = window.CSRF_TOKEN || document.querySelector('meta[name="csrf-token"]')?.content;
+    btn.addEventListener('click', function () {
+        var orig = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = @json(__('messages.chapter.buy_processing'));
+        if (msg) { msg.className = ''; msg.textContent = ''; }
+        fetch(btn.dataset.url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
+        }).then(function (r) { return r.json(); }).then(function (d) {
+            if (d && d.success) {
+                if (msg) { msg.className = 'success'; msg.textContent = @json(__('messages.chapter.buy_success')); }
+                setTimeout(function () { window.location.href = d.redirect || window.location.href; }, 600);
+            } else {
+                if (msg) { msg.className = 'error'; msg.textContent = (d && d.error) || @json(__('messages.chapter.action_failed')); }
+                btn.disabled = false; btn.textContent = orig;
+            }
+        }).catch(function () {
+            if (msg) { msg.className = 'error'; msg.textContent = @json(__('messages.chapter.action_failed')); }
+            btn.disabled = false; btn.textContent = orig;
+        });
+    });
+})();
+</script>
+@endauth
+
+{{-- Quảng cáo "click bất kỳ đâu" (trang chương có layout riêng nên include trực tiếp) --}}
+@include('client.partials.ad-click-anywhere')
 </body>
 </html>

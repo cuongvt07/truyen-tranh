@@ -34,7 +34,7 @@
                     <select name="mode" class="form-control form-control-sm">
                         <option value="">Tất cả dạng</option>
                         @foreach(\App\Models\Ad::MODES as $val => $label)
-                            <option value="{{ $val }}" {{ ($filters['mode'] ?? '') === $val ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $val }}" {{ ($filters['mode'] ?? '') === $val ? 'selected' : '' }}>{{ __('messages.ads.modes.'.$val) }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -111,20 +111,20 @@
                                 @endif
                             </td>
                             <td>
-                                <span class="badge badge-info">{{ \App\Models\Ad::MODES[$ad->display_mode] ?? $ad->display_mode }}</span>
+                                <span class="badge badge-info">{{ __('messages.ads.modes.'.$ad->display_mode) }}</span>
                                 @if($ad->display_mode === 'banner' && $ad->placement)
-                                    <br><small class="text-muted">{{ \App\Models\Ad::PLACEMENTS[$ad->placement] ?? $ad->placement }}</small>
+                                    <br><small class="text-muted">{{ __('messages.ads.placements.'.$ad->placement) }}</small>
                                 @endif
                             </td>
                             <td>
                                 @forelse(($ad->pages ?? []) as $p)
-                                    <span class="badge badge-secondary">{{ \App\Models\Ad::PAGES[$p] ?? $p }}</span>
+                                    <span class="badge badge-secondary">{{ __('messages.ads.pages.'.$p) }}</span>
                                 @empty
                                     <span class="text-muted">—</span>
                                 @endforelse
                             </td>
                             <td>
-                                <small>{{ \App\Models\Ad::FREQUENCIES[$ad->frequency] ?? $ad->frequency }}</small>
+                                <small>{{ __('messages.ads.frequencies.'.$ad->frequency) }}</small>
                                 @if($ad->frequency === 'every_n_views')
                                     <br><small class="text-muted">({{ $ad->frequency_value }} lần)</small>
                                 @endif

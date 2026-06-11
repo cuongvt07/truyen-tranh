@@ -65,24 +65,11 @@
                 @error('name')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
 
-            <div class="row">
-                <div class="form-group col-md-6">
-                    <label>Ảnh quảng cáo (tải lên)</label>
-                    <input type="file" name="image_file" id="ad_image_file" 
-                           class="form-control-file @error('image_file') is-invalid @enderror" accept="image/*">
-                    @error('image_file')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                    <div class="mt-2">
-                        <img id="ad_image_preview" src="{{ $ad->image ?? '' }}" alt="" 
-                             style="max-height:90px;{{ $ad->image ? '' : 'display:none' }};border:1px solid #ddd;border-radius:4px">
-                    </div>
-                </div>
-                <div class="form-group col-md-6">
-                    <label>Hoặc URL ảnh ngoài</label>
-                    <input type="text" name="image_url" class="form-control @error('image_url') is-invalid @enderror" 
-                           value="{{ old('image_url', $ad->image_url) }}" placeholder="https://...">
-                    @error('image_url')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                    <small class="form-text text-muted">Nếu điền URL sẽ ưu tiên dùng URL thay cho ảnh tải lên</small>
-                </div>
+            <div class="form-group">
+                <x-admin.image-upload name="image_file" label="Ảnh quảng cáo" :height="90"
+                    :current="$ad->image ?? null"
+                    urlName="image_url" :urlValue="old('image_url', $ad->image_url)"
+                    hint="Có thể tải lên hoặc dán URL ảnh ngoài (URL được ưu tiên)." />
             </div>
 
             <div class="form-group">
@@ -101,7 +88,7 @@
                     <label>Dạng chạy <span class="text-danger">*</span></label>
                     <select name="display_mode" id="display_mode" class="form-control @error('display_mode') is-invalid @enderror">
                         @foreach(\App\Models\Ad::MODES as $val => $label)
-                            <option value="{{ $val }}" {{ old('display_mode', $ad->display_mode) === $val ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $val }}" {{ old('display_mode', $ad->display_mode) === $val ? 'selected' : '' }}>{{ __('messages.ads.modes.'.$val) }}</option>
                         @endforeach
                     </select>
                     @error('display_mode')<span class="invalid-feedback">{{ $message }}</span>@enderror
@@ -110,7 +97,7 @@
                     <label>Vị trí slot (cho banner)</label>
                     <select name="placement" class="form-control @error('placement') is-invalid @enderror">
                         @foreach(\App\Models\Ad::PLACEMENTS as $val => $label)
-                            <option value="{{ $val }}" {{ old('placement', $ad->placement) === $val ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $val }}" {{ old('placement', $ad->placement) === $val ? 'selected' : '' }}>{{ __('messages.ads.placements.'.$val) }}</option>
                         @endforeach
                     </select>
                     @error('placement')<span class="invalid-feedback">{{ $message }}</span>@enderror
@@ -124,7 +111,7 @@
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="pages[]" value="{{ $val }}"
                                    id="page_{{ $val }}" {{ in_array($val, $selectedPages) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="page_{{ $val }}">{{ $label }}</label>
+                            <label class="form-check-label" for="page_{{ $val }}">{{ __('messages.ads.pages.'.$val) }}</label>
                         </div>
                     @endforeach
                 </div>
@@ -141,7 +128,7 @@
                         <label>Tần suất hiển thị</label>
                         <select name="frequency" id="frequency" class="form-control @error('frequency') is-invalid @enderror">
                             @foreach(\App\Models\Ad::FREQUENCIES as $val => $label)
-                                <option value="{{ $val }}" {{ old('frequency', $ad->frequency) === $val ? 'selected' : '' }}>{{ $label }}</option>
+                                <option value="{{ $val }}" {{ old('frequency', $ad->frequency) === $val ? 'selected' : '' }}>{{ __('messages.ads.frequencies.'.$val) }}</option>
                             @endforeach
                         </select>
                         @error('frequency')<span class="invalid-feedback">{{ $message }}</span>@enderror
@@ -166,10 +153,11 @@
                         <label>Sau khi đã click</label>
                         <select name="after_click" id="after_click" class="form-control @error('after_click') is-invalid @enderror">
                             @foreach(\App\Models\Ad::AFTER_CLICKS as $val => $label)
-                                <option value="{{ $val }}" {{ old('after_click', $ad->after_click ?? 'none') === $val ? 'selected' : '' }}>{{ $label }}</option>
+                                <option value="{{ $val }}" {{ old('after_click', $ad->after_click ?? 'none') === $val ? 'selected' : '' }}>{{ __('messages.ads.after_clicks.'.$val) }}</option>
                             @endforeach
                         </select>
                         @error('after_click')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                        <small class="form-text text-muted">{{ __('messages.ads.repeat_hint') }}</small>
                     </div>
                     <div class="form-group col-md-3 cooldown-field">
                         <label>Chờ lại (giây)</label>
@@ -272,16 +260,13 @@
                                     <label>Link</label>
                                     <input type="text" name="items[{{ $index }}][link]" class="form-control" value="{{ $item['link'] ?? '' }}" placeholder="https://...">
                                 </div>
-                                <div class="form-group col-md-3">
-                                    <label>URL ảnh</label>
-                                    <input type="text" name="items[{{ $index }}][image_url]" class="form-control" value="{{ $item['image_url'] ?? '' }}" placeholder="https://...">
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label>Tải ảnh lên</label>
-                                    <input type="file" name="items[{{ $index }}][image_file]" class="form-control-file" accept="image/*">
-                                    @if(!empty($item['image']))
-                                        <img src="{{ $item['image'] }}" alt="" class="mt-2" style="width:80px;height:52px;object-fit:cover;border:1px solid #ddd;border-radius:4px">
-                                    @endif
+                                <div class="form-group col-md-6">
+                                    <label>Ảnh item</label>
+                                    <x-admin.image-upload name="items[{{ $index }}][image_file]"
+                                        urlName="items[{{ $index }}][image_url]"
+                                        removeName="items[{{ $index }}][image_remove]"
+                                        :current="$item['image'] ?? null" :height="52"
+                                        :urlValue="$item['image_url'] ?? ''" />
                                 </div>
                             </div>
                             <div class="d-flex align-items-center" style="gap:18px">
@@ -326,11 +311,12 @@
 
     function toggleByMode() {
         var mode = modeSelect.value;
-        ['banner', 'click_anywhere', 'popup', 'chapter'].forEach(function (m) {
-            document.querySelectorAll('.mode-' + m).forEach(function (el) {
-                el.style.display = (mode === m) ? '' : 'none';
+        // Hiện phần tử nếu nó có class của mode đang chọn (logic OR — tránh bị lượt sau ghi đè
+        // với phần tử mang nhiều class, vd "mode-popup mode-click_anywhere").
+        document.querySelectorAll('.mode-banner, .mode-popup, .mode-click_anywhere, .mode-chapter')
+            .forEach(function (el) {
+                el.style.display = el.classList.contains('mode-' + mode) ? '' : 'none';
             });
-        });
     }
     function toggleFreq() {
         var show = freqSelect.value === 'every_n_views';
@@ -392,8 +378,7 @@
                 '<div class="row">' +
                     '<div class="form-group col-md-3"><label>Tiêu đề</label><input type="text" name="items[' + index + '][title]" class="form-control" placeholder="Find Your Path"></div>' +
                     '<div class="form-group col-md-3"><label>Link</label><input type="text" name="items[' + index + '][link]" class="form-control" placeholder="https://..."></div>' +
-                    '<div class="form-group col-md-3"><label>URL ảnh</label><input type="text" name="items[' + index + '][image_url]" class="form-control" placeholder="https://..."></div>' +
-                    '<div class="form-group col-md-3"><label>Tải ảnh lên</label><input type="file" name="items[' + index + '][image_file]" class="form-control-file" accept="image/*"></div>' +
+                    '<div class="form-group col-md-6"><label>Ảnh item</label>' + window.buildImageUpload({ name: 'items[' + index + '][image_file]', urlName: 'items[' + index + '][image_url]', removeName: 'items[' + index + '][image_remove]', height: 52, id: 'imgup_aditem_' + index }) + '</div>' +
                 '</div>' +
                 '<div class="d-flex align-items-center" style="gap:18px">' +
                     '<div class="form-group mb-0" style="width:120px"><label>Thứ tự</label><input type="number" name="items[' + index + '][sort_order]" class="form-control" min="0" value="' + index + '"></div>' +
@@ -422,20 +407,6 @@
         });
     }
 
-    var fileInput = document.getElementById('ad_image_file');
-    var preview = document.getElementById('ad_image_preview');
-    if (fileInput) {
-        fileInput.addEventListener('change', function (e) {
-            if (e.target.files && e.target.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (ev) { 
-                    preview.src = ev.target.result; 
-                    preview.style.display = ''; 
-                };
-                reader.readAsDataURL(e.target.files[0]);
-            }
-        });
-    }
 })();
 </script>
 @endpush

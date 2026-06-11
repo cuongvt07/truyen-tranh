@@ -2,10 +2,9 @@
     $__adGroups = ads_for();
     $__banners  = ($__adGroups['banner'] ?? collect())->filter(fn ($a) => $a->image);
     $__popup    = ($__adGroups['popup'] ?? collect())->first(fn ($a) => $a->image || $a->link);
-    $__clickAd  = ($__adGroups['click_anywhere'] ?? collect())->first(fn ($a) => $a->link);
 @endphp
 
-@if($__banners->isNotEmpty() || $__popup || $__clickAd)
+@if($__banners->isNotEmpty() || $__popup)
 <style>
     .site-ad-banner{position:relative;display:inline-block;line-height:0}
     .site-ad-banner img{max-width:100%;height:auto;border-radius:4px}
@@ -59,13 +58,6 @@
         <div class="site-ad-popup-name">{{ $__popup->name }}</div>
     </div>
 </div>
-@endif
-
-{{-- Click bất kỳ đâu --}}
-@if($__clickAd)
-<script type="application/json" id="siteAdClickData">@php
-    $__clickData = ['id'=>$__clickAd->id,'link'=>$__clickAd->link,'frequency'=>$__clickAd->frequency,'frequency_value'=>$__clickAd->frequency_value,'after_click'=>$__clickAd->after_click,'cooldown'=>$__clickAd->cooldown_seconds];
-@endphp{{ json_encode($__clickData) }}</script>
 @endif
 
 <script>
@@ -147,28 +139,9 @@
             popup.addEventListener('click', function (e) { if (e.target === popup && !closeBtn.disabled) closePopup(); });
         }
     }
-
-    // ===== Click bất kỳ đâu =====
-    var clickEl = document.getElementById('siteAdClickData');
-    if (clickEl) {
-        try {
-            var cad = JSON.parse(clickEl.textContent);
-            if (cad.link && adAllowed(cad)) {
-                var fired = false;
-                function handler(e) {
-                    if (fired) return;
-                    // bỏ qua nếu click vào chính link/nút quảng cáo khác
-                    if (e.target.closest && e.target.closest('a, button')) { return; }
-                    fired = true;
-                    adMarkSeen(cad);
-                    markClicked(cad);   // link vừa chạy -> áp dụng chặn sau-click
-                    window.open(cad.link, '_blank', 'noopener');
-                    document.removeEventListener('click', handler, true);
-                }
-                document.addEventListener('click', handler, true);
-            }
-        } catch (err) {}
-    }
 })();
 </script>
 @endif
+
+{{-- Click bất kỳ đâu (partial tái dùng — chạy cả khi không có banner/popup) --}}
+@include('client.partials.ad-click-anywhere')

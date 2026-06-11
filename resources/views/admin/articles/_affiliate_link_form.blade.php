@@ -15,19 +15,10 @@
         </div>
 
         <div class="col-md-6">
-            <label>Ảnh Affiliate</label>
-            <input type="file"
-                   name="affiliate_links[{{ $index }}][image_file]"
-                   class="form-control-file"
-                   accept="image/*"
-                   onchange="previewImage(this, {{ $index }})">
-            <div class="mt-2">
-                <img id="affi-img-preview-{{ $index }}"
-                     src="{{ old("affiliate_links.$index.image", $affi['image'] ?? $affi->image ?? '/images/articles/default.jpg') }}"
-                     alt="Preview"
-                     class="img-thumbnail"
-                     width="120">
-            </div>
+            @php $affiImg = $affi['image'] ?? (is_object($affi) ? ($affi->image ?? null) : null); @endphp
+            <x-admin.image-upload name="affiliate_links[{{ $index }}][image_file]" label="Ảnh Affiliate"
+                removeName="affiliate_links[{{ $index }}][image_remove]" :height="120"
+                :current="($affiImg && $affiImg !== '/images/articles/default.jpg') ? $affiImg : null" />
         </div>
     </div>
 </div>

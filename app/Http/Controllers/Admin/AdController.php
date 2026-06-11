@@ -170,6 +170,8 @@ class AdController extends Controller
     {
         if ($request->hasFile('image_file')) {
             $data['image_path'] = $request->file('image_file')->store('ads', 'public');
+        } elseif ($request->input('image_file_remove') === '1') {
+            $data['image_path'] = null;
         }
 
         return $data;
@@ -208,6 +210,8 @@ class AdController extends Controller
 
             if ($uploadedFile) {
                 $payload['image_path'] = $uploadedFile->store('ads/items', 'public');
+            } elseif (($itemData['image_remove'] ?? '0') === '1') {
+                $payload['image_path'] = null;
             }
 
             $item = $itemId
