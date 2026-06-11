@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\HandlesImageUploads;
 use App\Http\Controllers\Controller;
 use App\Models\Character;
 use Illuminate\Http\Request;
 
 class CharacterController extends Controller
 {
+    use HandlesImageUploads;
+
     public function index(Request $request)
     {
         $query = Character::query()->with('user:id,username')->withCount('articles');
@@ -97,10 +100,7 @@ class CharacterController extends Controller
     private function upload(Request $r): ?string
     {
         if ($r->hasFile('photo')) {
-            $f = $r->file('photo');
-            $n = time() . '-' . preg_replace('/[^A-Za-z0-9.\-]/', '_', $f->getClientOriginalName());
-            $f->move(public_path('images/characters'), $n);
-            return '/images/characters/' . $n;
+            return $this->storePublicImage($r->file('photo'), 'images/characters');
         }
         return $r->filled('photo_url') ? $r->input('photo_url') : null;
     }

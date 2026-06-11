@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\ArticleStatus;
+use App\Http\Controllers\Concerns\HandlesImageUploads;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Article\StoreArticleRequest;
 use App\Http\Requests\Admin\Article\UpdateArticleRequest;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 class ArticleController extends Controller
 {
+    use HandlesImageUploads;
+
     /**
      * Display a listing of the resource.
      */
@@ -109,9 +112,7 @@ class ArticleController extends Controller
                 // Nếu có file
                 if (isset($linkData['image_file']) && $request->file("affiliate_links.$index.image_file")) {
                     $file = $request->file("affiliate_links.$index.image_file");
-                    $fileName = time() . '-' . $file->getClientOriginalName();
-                    $file->move(public_path('images/articles/affiliates'), $fileName);
-                    $affiliateLink->image_path = '/images/articles/affiliates/' . $fileName;
+                    $affiliateLink->image_path = $this->storePublicImage($file, 'images/articles/affiliates');
                 } else {
                     $affiliateLink->image_path = '/images/articles/default.jpg';
                 }
@@ -180,9 +181,7 @@ class ArticleController extends Controller
 
                 if (isset($linkData['image_file']) && $request->file("affiliate_links.$index.image_file")) {
                     $file = $request->file("affiliate_links.$index.image_file");
-                    $fileName = time() . '-' . $file->getClientOriginalName();
-                    $file->move(public_path('images/articles/affiliates'), $fileName);
-                    $affiliateLink->image_path = '/images/articles/affiliates/' . $fileName;
+                    $affiliateLink->image_path = $this->storePublicImage($file, 'images/articles/affiliates');
                 } else {
                     $affiliateLink->image_path = '/images/articles/default.jpg';
                 }
@@ -301,10 +300,7 @@ class ArticleController extends Controller
         array $validateData
     ): array {
         if ($request->hasFile('cover_image')) {
-            $image = $request->file('cover_image');
-            $imageName = time().'-'.$image->getClientOriginalName();
-            $image->move(public_path('images/articles'), $imageName);
-            $validateData['cover_image'] = '/images/articles/'.$imageName;
+            $validateData['cover_image'] = $this->storePublicImage($request->file('cover_image'), 'images/articles');
         } else {
             if ($validateData['cover_image_url']) {
                 $validateData['cover_image'] = $validateData['cover_image_url'];
@@ -337,10 +333,7 @@ class ArticleController extends Controller
     private function uploadAffiImage(UpdateArticleRequest $request, array $data): array
     {
         if ($request->hasFile('affi_image')) {
-            $image = $request->file('affi_image');
-            $imageName = time() . '-' . $image->getClientOriginalName();
-            $image->move(public_path('images/articles/affiliates'), $imageName);
-            $data['affi_image'] = '/images/articles/affiliates/' . $imageName;
+            $data['affi_image'] = $this->storePublicImage($request->file('affi_image'), 'images/articles/affiliates');
         } elseif (!empty($data['affi_image_url'])) {
             $data['affi_image'] = $data['affi_image_url'];
         } else {

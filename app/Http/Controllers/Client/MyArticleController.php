@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Enums\ArticleStatus;
+use App\Http\Controllers\Concerns\HandlesImageUploads;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Author;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Auth;
 
 class MyArticleController extends Controller
 {
+    use HandlesImageUploads;
+
     /** Lấy truyện của chính mình (bỏ qua scope duyệt để thấy cả PENDING). */
     private function ownArticle($id): Article
     {
@@ -194,10 +197,7 @@ class MyArticleController extends Controller
     private function resolveBackground(Request $request): ?string
     {
         if ($request->hasFile('background')) {
-            $img = $request->file('background');
-            $name = time() . '-bg-' . preg_replace('/[^A-Za-z0-9.\-]/', '_', $img->getClientOriginalName());
-            $img->move(public_path('images/articles'), $name);
-            return '/images/articles/' . $name;
+            return $this->storePublicImage($request->file('background'), 'images/articles');
         }
         return $request->filled('background_url') ? $request->input('background_url') : null;
     }
@@ -212,10 +212,7 @@ class MyArticleController extends Controller
     private function resolveCover(Request $request): ?string
     {
         if ($request->hasFile('cover_image')) {
-            $img = $request->file('cover_image');
-            $name = time() . '-' . preg_replace('/[^A-Za-z0-9.\-]/', '_', $img->getClientOriginalName());
-            $img->move(public_path('images/articles'), $name);
-            return '/images/articles/' . $name;
+            return $this->storePublicImage($request->file('cover_image'), 'images/articles');
         }
         if ($request->filled('cover_image_url')) {
             return $request->input('cover_image_url');

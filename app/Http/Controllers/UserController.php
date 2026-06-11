@@ -54,14 +54,14 @@ class UserController extends Controller
         if($request->hasfile('avatar')) {
             $image = $request->file('avatar');
             $imageName = $user->id . '.' . $image->extension();
-            $image->move(public_path('images/users'), $imageName);
-            $validatedData['avatar'] = '/images/users/' . $imageName;
+            $path = $image->storeAs('images/users', $imageName, 'public');
+            $validatedData['avatar'] = '/storage/' . $path;
         }
         if($request->hasfile('background')) {
             $bg = $request->file('background');
             $bgName = $user->id . '-bg.' . $bg->extension();
-            $bg->move(public_path('images/users'), $bgName);
-            $validatedData['background'] = '/images/users/' . $bgName;
+            $path = $bg->storeAs('images/users', $bgName, 'public');
+            $validatedData['background'] = '/storage/' . $path;
         }
         $request->user()->fill($validatedData);
         if ($request->user()->isDirty('email')) {

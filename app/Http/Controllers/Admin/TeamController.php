@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\HandlesImageUploads;
 use App\Http\Controllers\Controller;
 use App\Models\Team;
 use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
+    use HandlesImageUploads;
+
     public function index(Request $request)
     {
         $q = Team::query()->with('user:id,username');
@@ -83,10 +86,7 @@ class TeamController extends Controller
     private function upload(Request $r): ?string
     {
         if ($r->hasFile('photo')) {
-            $f = $r->file('photo');
-            $n = time() . '-' . preg_replace('/[^A-Za-z0-9.\-]/', '_', $f->getClientOriginalName());
-            $f->move(public_path('images/teams'), $n);
-            return '/images/teams/' . $n;
+            return $this->storePublicImage($r->file('photo'), 'images/teams');
         }
         return $r->filled('photo_url') ? $r->input('photo_url') : null;
     }
