@@ -67,8 +67,14 @@
     @php
         $rawContent = trim((string) $chapter->content);
         // Bỏ thẻ <script> để chống XSS, vẫn giữ thẻ định dạng.
-        $rawContent = preg_replace('#<script\b[^>]*>.*?</script>#is', '', $rawContent);
-        $isHtmlContent = strip_tags($rawContent) !== $rawContent;
+        $rawContent = preg_replace('#<script\b[^>]*>.*?</script>#is', '', $rawContent) ?? $rawContent;
+        // CHỈ coi là HTML khi có THẺ HTML THẬT (CKEditor). Tránh nhầm text thường chứa
+        // ký tự "<" (vd "a < b", "1<2", "<<<", "<Tên>") thành HTML rồi render raw —
+        // trình duyệt sẽ nuốt phần sau dấu "<" khiến trang ngoài trống dù admin có data.
+        $isHtmlContent = (bool) preg_match(
+            '#<(?:p|br|div|h[1-6]|ul|ol|li|blockquote|strong|em|b|i|u|a|img|figure|figcaption|span|table|tr|td|th|thead|tbody|hr|pre|code|sub|sup|mark)\b[^>]*>#i',
+            $rawContent
+        );
         if ($isHtmlContent) {
             // Nội dung HTML (CKEditor): GIỮ NGUYÊN thẻ; tách block sau mỗi </p> để chèn quảng cáo / cắt teaser.
             $chapterBlocks = preg_split('/(?<=<\/p>)/i', $rawContent, -1, PREG_SPLIT_NO_EMPTY) ?: [$rawContent];
