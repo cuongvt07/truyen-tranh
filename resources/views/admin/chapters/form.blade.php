@@ -87,7 +87,9 @@
         ImageCaption,
         ImageStyle,
         Alignment,
-        List
+        List,
+        SourceEditing,
+        GeneralHtmlSupport
     } from 'ckeditor5';
     
     // Custom Upload Adapter - chỉ để preview local
@@ -180,7 +182,9 @@
                 ImageCaption,
                 ImageStyle,
                 Alignment,
-                List
+                List,
+                SourceEditing,
+                GeneralHtmlSupport
             ],
             toolbar: [
                 'undo', 'redo', '|',
@@ -189,7 +193,8 @@
                 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
                 'alignment', '|',
                 'bulletedList', 'numberedList', '|',
-                'imageUpload'
+                'imageUpload', '|',
+                'sourceEditing'
             ],
             image: {
                 toolbar: [
@@ -211,6 +216,13 @@
             },
             alignment: {
                 options: ['left', 'center', 'right', 'justify']
+            },
+            // GeneralHtmlSupport: giữ nguyên thẻ/thuộc tính khi gõ ở chế độ mã HTML
+            // (không bị editor cắt bỏ). Nội dung độc vẫn được lọc lại ở server khi lưu.
+            htmlSupport: {
+                allow: [
+                    { name: /.*/, attributes: true, classes: true, styles: true }
+                ]
             },
             extraPlugins: [uploadAdapterPlugin],
         })
