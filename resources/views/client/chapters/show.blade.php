@@ -415,6 +415,34 @@ document.addEventListener('keydown', function(e) {
             return false;
         }
     });
+
+    // (1) Chặn copy / cut / kéo nội dung chương (selection đã bị tắt bằng CSS .chapter-text).
+    var reader = document.getElementById('chapter-c');
+    if (reader) {
+        ['copy', 'cut', 'selectstart', 'dragstart'].forEach(function(ev) {
+            reader.addEventListener(ev, function(e) { e.preventDefault(); return false; });
+        });
+        reader.querySelectorAll('img').forEach(function(img) {
+            img.addEventListener('dragstart', function(e) { e.preventDefault(); });
+        });
+    }
+})();
+
+// (2) Cảnh báo Console — chống self-XSS / social-engineering (kẻ xấu dụ dán code lạ vào đây).
+(function() {
+    try {
+        var s = 'font-size:22px;font-weight:bold;color:#e3342f';
+        console.log('%c⚠ DỪNG LẠI!', s);
+        console.log('%cĐây là tính năng dành cho lập trình viên. Nếu có ai bảo bạn dán/gõ gì đó vào đây để "mở khoá", "nhận credit" hay "hack" — đó là LỪA ĐẢO và có thể chiếm tài khoản của bạn.', 'font-size:14px;color:#555');
+    } catch (_) {}
+})();
+
+// (3) Bẫy debugger — gây khó chịu khi mở DevTools để soi/sửa logic. Khi DevTools đóng,
+// câu lệnh debugger gần như không tốn gì. Lách được nhưng làm nản người nghịch.
+(function() {
+    setInterval(function() {
+        try { (function() { debugger; })(); } catch (_) {}
+    }, 1500);
 })();
 
 // ===== Cài đặt đọc: Themes / Font Size / Line Height / Indent (client-side) =====
