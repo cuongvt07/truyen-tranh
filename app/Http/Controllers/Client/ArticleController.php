@@ -32,6 +32,13 @@ class ArticleController extends Controller
             ->take(self::CHAPTERS_PER_PAGE)
             ->get();
         $latestChapters = $article->chapters()->orderByDesc('number')->take(10)->get();
+        // Chương hẹn giờ (chưa tới giờ đăng) — hiện "Coming soon" trên tab chương, không đọc được.
+        $upcomingChapters = $article->chapters()
+            ->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class)
+            ->whereNotNull('published_at')
+            ->where('published_at', '>', now())
+            ->orderByDesc('number')
+            ->get();
         $comments = $article->getNewestCommentsPaginate();
         $displayChapterIds = $latestChapters->pluck('id')
             ->merge($chapters->pluck('id'))
@@ -107,6 +114,7 @@ class ArticleController extends Controller
         return view('client.articles.show', [
             'article' => $article,
             'chapters' => $chapters,
+            'upcomingChapters' => $upcomingChapters,
             'chapterPages' => $chapterPages,
             'latestChapters' => $latestChapters,
             'unlockedChapterIds' => $unlockedChapterIds,

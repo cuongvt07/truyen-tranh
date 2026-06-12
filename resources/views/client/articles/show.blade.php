@@ -256,6 +256,19 @@
                 </div>
 
                 <div id="all-chapters-list" class="chapters">
+                    {{-- Chương hẹn giờ: hiện "Coming soon" để bạn đọc biết sắp ra, KHÔNG bấm đọc được. --}}
+                    @foreach(($upcomingChapters ?? collect()) as $upcoming)
+                        <div class="chapter chapter--coming-soon" aria-disabled="true">
+                            <div class="title">
+                                {{ __('messages.article.chapter') }} {{ $upcoming->number }} - <span>{{ $upcoming->title }}</span>
+                            </div>
+                            <div class="chapter-info">
+                                <span class="cost coming-soon-badge"><i class="fa fa-clock"></i> Coming soon</span>
+                                <span class="date">{{ optional($upcoming->published_at)->format('d.m.Y H:i') }}</span>
+                            </div>
+                        </div>
+                    @endforeach
+
                     @include('client.articles.partials.chapter-list-items', [
                         'chapters' => $chapters,
                         'article' => $article,
@@ -415,6 +428,17 @@
 
 @push('styles')
 <style>
+/* Chương hẹn giờ (Coming soon) trên tab chương: hiển thị nhưng không bấm đọc được */
+.chapters .chapter--coming-soon{
+    cursor:default;
+    opacity:.72;
+    pointer-events:none;
+    background:repeating-linear-gradient(45deg,rgba(0,0,0,.015),rgba(0,0,0,.015) 8px,transparent 8px,transparent 16px);
+}
+.chapters .chapter--coming-soon .title span{font-style:italic;}
+.coming-soon-badge{
+    background:#f0ad4e;color:#fff;border-radius:4px;padding:1px 8px;font-size:12px;font-weight:600;white-space:nowrap;
+}
 .article-detail-flex .swp-single{
     display:flex;
     flex-direction:column;
