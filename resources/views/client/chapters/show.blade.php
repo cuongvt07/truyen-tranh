@@ -701,6 +701,29 @@ $(document).ready(function() {
    — rule đó (vốn để chapteree8b.js cũ hiện nội dung) khiến chương MIỄN PHÍ bị ẩn trắng.
    id selector thắng specificity nên content luôn hiện cho cả chương free lẫn chương khóa. */
 #chapter-c { display:block!important; max-width:780px;margin:0 auto;padding:20px 16px;font-size:17px;line-height:1.9;color:var(--text-color) }
+
+/* === Ảnh trong nội dung: tái hiện canh lề / resize của CKEditor 5 trên trang đọc ===
+   (Trang đọc không nạp CSS của CKEditor nên các class image-style-* không có tác dụng,
+    khiến ảnh luôn lệch trái. Các rule dưới map đúng class CKEditor sinh ra.) */
+#chapter-c figure.image { display:table; clear:both; margin:1em auto; max-width:100%; }
+#chapter-c figure.image > img { display:block; width:100%; height:auto; margin:0 auto; }
+#chapter-c figure.image > figcaption { display:table-caption; caption-side:bottom; text-align:center; font-size:.85em; color:var(--meta-color,#888); padding-top:6px; }
+/* Ảnh đã kéo resize: width nằm ở inline style trên figure */
+#chapter-c figure.image.image_resized { max-width:100%; }
+#chapter-c figure.image.image_resized > img { width:100%; }
+/* Canh giữa */
+#chapter-c .image-style-align-center { margin-left:auto; margin-right:auto; }
+/* Canh trái + chữ chạy quanh */
+#chapter-c .image-style-align-left,
+#chapter-c .image-style-block-align-left { float:left; margin:.5em 1.5em 1em 0; }
+/* Canh phải + chữ chạy quanh */
+#chapter-c .image-style-align-right,
+#chapter-c .image-style-block-align-right,
+#chapter-c .image-style-side { float:right; margin:.5em 0 1em 1.5em; }
+/* Ảnh inline */
+#chapter-c .image-inline { display:inline-block; max-width:100%; }
+#chapter-c img.image_resized { height:auto; }
+
 /* Paywall chương trả phí */
 .chapter-paywall { text-align:center; max-width:780px; margin:0 auto 28px; padding:0 16px; }
 .chapter-paywall .paywall-note { color:var(--meta-color,#888); margin-bottom:12px; }
