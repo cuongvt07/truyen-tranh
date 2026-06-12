@@ -32,9 +32,9 @@ class ArticleController extends Controller
             // else currentUser is Poster
             $articles = $currentUser->articles()->withoutGlobalScope(\App\Scopes\ApprovedArticleScope::class);
         }
-        // Eager load để tránh N+1 (authors, genres) + đếm chương
+        // Eager load để tránh N+1 (authors, genres) + đếm chương (tính cả chương hẹn giờ).
         $articles->with(['authors:id,name', 'genres:id,name', 'user:id,name'])
-                 ->withCount('chapters');
+                 ->withCount(['chapters' => fn ($q) => $q->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class)]);
 
         if ($search = trim((string) $request->input('search'))) {
             $articles->where('title', 'like', '%' . $search . '%');

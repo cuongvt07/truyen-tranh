@@ -72,6 +72,11 @@
                                             <td>{{ $chapter->number_text }}</td>
                                             <td>
                                                 <a href="{{ route('articles.chapters.show', [$article, $chapter->number]) }}">{{ $chapter->title }}</a>
+                                                @if($chapter->isScheduled())
+                                                    <span class="badge badge-warning" title="Ẩn khỏi bạn đọc tới giờ này">
+                                                        <i class="fas fa-clock"></i> Lên lịch: {{ $chapter->published_at->format('d/m/Y H:i') }}
+                                                    </span>
+                                                @endif
                                             </td>
                                             <td>{{ $chapter->view_text }}</td>
                                             <td title="{{ $chapter->created_at }}">{{ $chapter->created_at_text }}</td>

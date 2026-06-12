@@ -47,6 +47,17 @@
                     @endif
                 </small>
             </div>
+
+            <div class="frow">
+                <label>Lịch đăng <span class="meta-color" style="font-weight:400">(delay publish)</span></label>
+                <input type="text" name="published_at" value="{{ old('published_at') }}"
+                       placeholder="Để trống = đăng ngay.  VD: 2026-06-15 08:00">
+                @error('published_at')<small style="color:#e3342f;font-size:12px">{{ $message }}</small>@enderror
+                <small class="meta-color" style="font-size:12px">
+                    Để trống = đăng ngay. Nhập thời điểm tương lai để hẹn giờ (ẩn khỏi bạn đọc tới giờ đó).
+                    Định dạng <code>YYYY-MM-DD HH:MM</code> hoặc <code>DD/MM/YYYY HH:MM</code> — copy-paste từ Excel được.
+                </small>
+            </div>
             <div style="display:flex;gap:10px">
                 <button type="submit" class="btn btn-primary">{{ __('messages.myarticle.post_chapter') }}</button>
                 <a href="{{ route('my-articles.index') }}" class="btn btn-invincible">{{ __('messages.myarticle.back') }}</a>

@@ -2,16 +2,71 @@
 
 namespace App\Models;
 
+use App\Scopes\PublishedChapterScope;
 use App\Support\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Chapter extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'content', 'number', 'article_id', 'credit_cost'];
+    protected $fillable = ['title', 'content', 'number', 'article_id', 'credit_cost', 'published_at'];
     protected $perPage = 50;
+
+    protected $casts = [
+        'published_at' => 'datetime',
+    ];
+
+    /**
+     * Route-model-binding bỏ qua PublishedChapterScope để ADMIN bind được chương hẹn giờ.
+     * An toàn vì chỉ route admin bind {chapter}; client đọc chương qua {number} thô
+     * (đi qua $article->chapters() nên vẫn bị scope ẩn). KHÔNG thêm route public bind Chapter.
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return static::withoutGlobalScope(PublishedChapterScope::class)
+            ->where($field ?? $this->getRouteKeyName(), $value)
+            ->first();
+    }
+
+    /** Chương đang hẹn giờ (chưa tới giờ đăng). */
+    public function isScheduled(): bool
+    {
+        return $this->published_at !== null && $this->published_at->isFuture();
+    }
+
+    /**
+     * Parse chuỗi ngày/giờ người dùng nhập (có thể copy-paste từ Excel) thành Carbon.
+     * Hỗ trợ nhiều định dạng phổ biến; trả null nếu rỗng/không parse được.
+     */
+    public static function parsePublishedAt(?string $text): ?Carbon
+    {
+        $text = trim((string) $text);
+        if ($text === '') {
+            return null;
+        }
+        $formats = ['Y-m-d H:i:s', 'Y-m-d H:i', 'Y-m-d', 'd/m/Y H:i:s', 'd/m/Y H:i', 'd/m/Y', 'd-m-Y H:i', 'd-m-Y'];
+        foreach ($formats as $f) {
+            try {
+                $dt = Carbon::createFromFormat($f, $text);
+                if ($dt !== false) {
+                    if (! str_contains($f, 'H')) {
+                        $dt->startOfDay();
+                    }
+                    return $dt;
+                }
+            } catch (\Throwable $e) {
+                // thử format tiếp theo
+            }
+        }
+        try {
+            return Carbon::parse($text);
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
 
     /**
      * BẢO MẬT (chống stored XSS): làm sạch HTML nội dung chương tại 1 điểm duy nhất
@@ -26,6 +81,9 @@ class Chapter extends Model
 
     protected static function booted(): void
     {
+        // Ẩn chương hẹn giờ khỏi public (admin/poster opt-out bằng withoutGlobalScope).
+        static::addGlobalScope(new PublishedChapterScope());
+
         // Làm mới sitemap khi chương thêm/sửa/xoá; bỏ qua khi chỉ tăng lượt xem.
         static::saved(function (self $chapter) {
             $ignore = ['view', 'updated_at'];

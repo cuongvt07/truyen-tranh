@@ -51,6 +51,26 @@
                 Để trống để dùng mặc định đó.
             </small>
         </div>
+
+        <hr>
+        <div class="form-group{{ $errors->has('published_at') ? ' has-error' : '' }}">
+            <label for="published_at"><i class="fas fa-clock text-muted mr-1"></i> Lịch đăng (delay publish)</label>
+            @php
+                $pubVal = old('published_at', isset($chapter->published_at) && $chapter->published_at ? $chapter->published_at->format('Y-m-d H:i') : '');
+            @endphp
+            <input type="text" name="published_at" id="published_at"
+                   class="form-control{{ $errors->has('published_at') ? ' is-invalid' : '' }}"
+                   value="{{ $pubVal }}"
+                   placeholder="Để trống = đăng ngay.  VD: 2026-06-15 08:00">
+            @if ($errors->has('published_at'))
+                <div class="invalid-feedback">{{ $errors->first('published_at') }}</div>
+            @endif
+            <small class="form-text text-muted">
+                Để trống = đăng ngay. Nhập thời điểm tương lai để hẹn giờ — chương sẽ <strong>ẩn khỏi bạn đọc</strong> tới đúng giờ đó.
+                Định dạng <code>YYYY-MM-DD HH:MM</code> (vd <code>2026-06-15 08:00</code>) hoặc <code>DD/MM/YYYY HH:MM</code>.
+                Có thể copy-paste cột ngày từ Excel.
+            </small>
+        </div>
     </div>
     <div class="box-footer mt20">
         <button type="submit" class="btn btn-primary">{{ __('Xác nhận') }}</button>

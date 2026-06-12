@@ -17,9 +17,10 @@ class ChapterController extends Controller
      */
     public function allIndex(Request $request)
     {
+        $noScope = fn ($q) => $q->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class);
         $query = Article::withoutGlobalScope(\App\Scopes\ApprovedArticleScope::class)
-            ->withCount('chapters')
-            ->withMax('chapters', 'created_at');
+            ->withCount(['chapters' => $noScope])
+            ->withMax(['chapters' => $noScope], 'created_at');
 
         if ($s = trim((string) $request->get('q'))) {
             $query->where('title', 'like', "%$s%");
@@ -44,7 +45,9 @@ class ChapterController extends Controller
      */
     public function index(Request $request, Article $article)
     {
-        $chapters = $article->chapters()->orderByDesc("number");
+        $chapters = $article->chapters()
+            ->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class)
+            ->orderByDesc("number");
         if ($request->filled('search')) {
             $searchText = $request->input('search');
             $chapters->where('title', 'like', '%'.$searchText.'%');
@@ -71,12 +74,11 @@ class ChapterController extends Controller
     public function create(Article $article)
     {
         $chapter = new Chapter();
-        if ($article->chapters->count() == 0) {
-            $newestChapterNumber = 1;
-        } else {
-            $newestChapterNumber = $article->chapters->max('number') + 1;
-        }
-        $chapter->number = $newestChapterNumber;
+        // Tính cả chương hẹn giờ để không trùng số.
+        $maxNumber = $article->chapters()
+            ->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class)
+            ->max('number');
+        $chapter->number = $maxNumber ? $maxNumber + 1 : 1;
         return view('admin.chapters.create', [
             'article' => $article,
             'chapter' => $chapter,
@@ -91,6 +93,8 @@ class ChapterController extends Controller
         $request->validated();
         $validateData = $request->all();
         $validateData['article_id'] = $article->id;
+        // Lịch đăng: parse chuỗi text (có thể paste từ Excel) -> datetime; rỗng = đăng ngay.
+        $validateData['published_at'] = Chapter::parsePublishedAt($request->input('published_at'));
         $chapter = Chapter::create($validateData);
         $article->setUpdatedAt(now());
         $article->save();
@@ -127,6 +131,8 @@ class ChapterController extends Controller
     ) {
         $request->validated();
         $validateData = $request->all();
+        // Lịch đăng: parse text -> datetime; ô rỗng = đăng ngay (published_at = null).
+        $validateData['published_at'] = Chapter::parsePublishedAt($request->input('published_at'));
         $chapter->update($validateData);
         return redirect()->route('admin.articles.show_chapters', $article->id)
             ->with('success', 'Sửa thông tin chương thành công!');

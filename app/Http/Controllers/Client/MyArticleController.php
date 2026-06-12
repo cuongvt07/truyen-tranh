@@ -117,7 +117,8 @@ class MyArticleController extends Controller
         $article = $this->ownArticle($id);
         $article->genres()->detach();
         $article->authors()->detach();
-        $article->chapters()->delete();
+        // Xoá CẢ chương hẹn giờ (không để sót do global scope).
+        $article->chapters()->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class)->delete();
         $article->delete();
 
         return redirect()->route('my-articles.index')->with('success', 'Đã xoá truyện.');
@@ -127,7 +128,9 @@ class MyArticleController extends Controller
     public function createChapter($id)
     {
         $article = $this->ownArticle($id);
-        $nextNumber = (int) $article->chapters()->max('number') + 1;
+        $nextNumber = (int) $article->chapters()
+            ->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class)
+            ->max('number') + 1;
         return view('client.my-articles.chapter-form', compact('article', 'nextNumber'));
     }
 
@@ -140,6 +143,11 @@ class MyArticleController extends Controller
             'title'       => ['required', 'string', 'max:255'],
             'content'     => ['required', 'string'],
             'credit_cost' => ['nullable', 'integer', 'min:0'],
+            'published_at' => ['nullable', 'string', function ($attr, $value, $fail) {
+                if (trim((string) $value) !== '' && Chapter::parsePublishedAt($value) === null) {
+                    $fail('Định dạng lịch đăng không hợp lệ. Dùng YYYY-MM-DD HH:MM (vd 2026-06-15 08:00).');
+                }
+            }],
         ], [], ['number' => 'số chương', 'title' => 'tiêu đề', 'content' => 'nội dung']);
 
         Chapter::create([
@@ -148,6 +156,7 @@ class MyArticleController extends Controller
             'title'       => $data['title'],
             'content'     => $data['content'],
             'credit_cost' => $data['credit_cost'] !== '' ? ($data['credit_cost'] ?? null) : null,
+            'published_at' => Chapter::parsePublishedAt($request->input('published_at')),
         ]);
         $article->touch();
 
