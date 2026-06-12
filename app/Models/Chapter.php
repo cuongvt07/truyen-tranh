@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +12,17 @@ class Chapter extends Model
 
     protected $fillable = ['title', 'content', 'number', 'article_id', 'credit_cost'];
     protected $perPage = 50;
+
+    /**
+     * BẢO MẬT (chống stored XSS): làm sạch HTML nội dung chương tại 1 điểm duy nhất
+     * cho MỌI đường lưu (admin ChapterController, MyArticleController của poster, seed...).
+     * Poster là nguồn bán-tin-cậy nên không được để mã JS độc chạy trên trình duyệt
+     * người đọc/admin. Xem App\Support\HtmlSanitizer.
+     */
+    public function setContentAttribute($value): void
+    {
+        $this->attributes['content'] = HtmlSanitizer::clean($value);
+    }
 
     protected static function booted(): void
     {

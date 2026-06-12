@@ -89,10 +89,10 @@
     @endphp
 
     @if($isChapterLocked)
-        {{-- Chương trả phí: hiện 1/2 nội dung (theo số ký tự), ẩn 1/2 còn lại — KHÔNG render ra DOM (chống bypass).
-             Chỉ đếm nội dung chương ($chapter->content), không tính khối cấu hình footer. --}}
+        {{-- Chương trả phí: chỉ hiện ~10% nội dung (theo số ký tự), 90% còn lại KHÔNG render ra DOM
+             nên view-source cũng không lộ. Chỉ đếm nội dung chương ($chapter->content), bỏ khối footer. --}}
         @php
-            $teaserLimit = max(1, (int) ceil(mb_strlen(trim(strip_tags($rawContent))) * 0.5));
+            $teaserLimit = max(1, (int) ceil(mb_strlen(trim(strip_tags($rawContent))) * 0.1));
             $teaserHtml = '';
             $teaserAcc = 0;
             foreach ($chapterBlocks as $block) {
