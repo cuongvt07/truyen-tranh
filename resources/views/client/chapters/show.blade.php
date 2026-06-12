@@ -83,15 +83,26 @@
     @endphp
 
     @if($isChapterLocked)
-        {{-- Chương trả phí: chỉ hiện teaser mờ dần, không tải hết nội dung ra DOM --}}
+        {{-- Chương trả phí: teaser ~25% (tối đa 700 ký tự); phần còn lại KHÔNG render ra DOM (chống bypass) --}}
         @php
-            $previewCount = min(15, max(3, (int) floor(count($chapterBlocks) * 0.2)));
-            $previewBlocks = array_slice($chapterBlocks, 0, $previewCount);
+            $teaserLimit = min(700, max(1, (int) ceil(mb_strlen(trim(strip_tags($rawContent))) * 0.25)));
+            $teaserHtml = '';
+            $teaserAcc = 0;
+            foreach ($chapterBlocks as $block) {
+                if ($teaserAcc >= $teaserLimit) break;
+                $plainLen = mb_strlen(trim(strip_tags($block)));
+                if ($teaserAcc + $plainLen <= $teaserLimit) {
+                    $teaserHtml .= $isHtmlContent ? $block : '<p>'.nl2br(e($block)).'</p>';
+                    $teaserAcc += $plainLen;
+                } else {
+                    $snippet = mb_substr(trim(strip_tags($block)), 0, max(1, $teaserLimit - $teaserAcc));
+                    $teaserHtml .= '<p>'.nl2br(e($snippet)).'…</p>';
+                    break;
+                }
+            }
         @endphp
         <div class="chapter-text chapter-text__limit" id="chapter-c">
-            @foreach($previewBlocks as $block)
-                @if($isHtmlContent){!! $block !!}@else<p>{!! nl2br(e($block)) !!}</p>@endif
-            @endforeach
+            {!! $teaserHtml !!}
         </div>
 
         {{-- Paywall --}}
