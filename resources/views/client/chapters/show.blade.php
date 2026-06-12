@@ -65,20 +65,32 @@
         <h2>{{ __('messages.chapter.chapter') }} {{ $chapter->number }}: {{ $chapter->title }}</h2>
     </div>
     @php
-        $chapterParagraphs = preg_split('/(?:\r\n|\r|\n){2,}/', trim((string) $chapter->content)) ?: [];
+        $rawContent = trim((string) $chapter->content);
+        // Bỏ thẻ <script> để chống XSS, vẫn giữ thẻ định dạng.
+        $rawContent = preg_replace('#<script\b[^>]*>.*?</script>#is', '', $rawContent);
+        $isHtmlContent = strip_tags($rawContent) !== $rawContent;
+        if ($isHtmlContent) {
+            // Nội dung HTML (CKEditor): GIỮ NGUYÊN thẻ; tách block sau mỗi </p> để chèn quảng cáo / cắt teaser.
+            $chapterBlocks = preg_split('/(?<=<\/p>)/i', $rawContent, -1, PREG_SPLIT_NO_EMPTY) ?: [$rawContent];
+        } else {
+            // Plain text: tách đoạn theo dòng trống.
+            $chapterBlocks = array_values(array_filter(
+                preg_split('/(?:\r\n|\r|\n){2,}/', $rawContent) ?: [],
+                fn ($p) => trim($p) !== ''
+            ));
+        }
         $isChapterLocked = $isLocked ?? false;
     @endphp
 
     @if($isChapterLocked)
         {{-- Chương trả phí: chỉ hiện teaser mờ dần, không tải hết nội dung ra DOM --}}
         @php
-            $nonEmpty = array_values(array_filter($chapterParagraphs, fn ($p) => trim($p) !== ''));
-            $previewCount = min(15, max(3, (int) floor(count($nonEmpty) * 0.2)));
-            $previewParagraphs = array_slice($nonEmpty, 0, $previewCount);
+            $previewCount = min(15, max(3, (int) floor(count($chapterBlocks) * 0.2)));
+            $previewBlocks = array_slice($chapterBlocks, 0, $previewCount);
         @endphp
         <div class="chapter-text chapter-text__limit" id="chapter-c">
-            @foreach($previewParagraphs as $paragraph)
-                <p>{!! nl2br(e($paragraph)) !!}</p>
+            @foreach($previewBlocks as $block)
+                @if($isHtmlContent){!! $block !!}@else<p>{!! nl2br(e($block)) !!}</p>@endif
             @endforeach
         </div>
 
@@ -109,25 +121,23 @@
                 $inlineAdSlot = 0;
             @endphp
 
-            @foreach($chapterParagraphs as $paragraphIndex => $paragraph)
-                @if(trim($paragraph) !== '')
-                    <p>{!! nl2br(e($paragraph)) !!}</p>
+            @foreach($chapterBlocks as $blockIndex => $block)
+                @if($isHtmlContent){!! $block !!}@else<p>{!! nl2br(e($block)) !!}</p>@endif
 
+                @php
+                    $blockNumber = $blockIndex + 1;
+                    $shouldShowInlineAd = $inlineAds->isNotEmpty()
+                        && $inlineAdSlot < $inlineAds->count()
+                        && $blockNumber >= $firstInlineAdAfter
+                        && (($blockNumber - $firstInlineAdAfter) % $inlineAdEvery === 0);
+                @endphp
+
+                @if($shouldShowInlineAd)
                     @php
-                        $paragraphNumber = $paragraphIndex + 1;
-                        $shouldShowInlineAd = $inlineAds->isNotEmpty()
-                            && $inlineAdSlot < $inlineAds->count()
-                            && $paragraphNumber >= $firstInlineAdAfter
-                            && (($paragraphNumber - $firstInlineAdAfter) % $inlineAdEvery === 0);
+                        $inlineAd = $inlineAds[$inlineAdSlot];
+                        $inlineAdSlot++;
                     @endphp
-
-                    @if($shouldShowInlineAd)
-                        @php
-                            $inlineAd = $inlineAds[$inlineAdSlot];
-                            $inlineAdSlot++;
-                        @endphp
-                        @include('client.partials.chapter-inline-ad', ['ad' => $inlineAd])
-                    @endif
+                    @include('client.partials.chapter-inline-ad', ['ad' => $inlineAd])
                 @endif
             @endforeach
         </div>
