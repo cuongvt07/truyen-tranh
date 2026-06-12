@@ -50,7 +50,13 @@ class UserController extends Controller
     {
         $request->validated();
         $user = $request->user();
-        $validatedData = $request->all();
+        // BẢO MẬT: KHÔNG dùng $request->all() — 'role' và 'points' nằm trong $fillable,
+        // nếu fill thẳng thì user thường chỉ cần POST thêm role=1 (ADMIN) hoặc points=999999
+        // là leo quyền / tự cộng credit, bỏ qua toàn bộ kiểm tra ở JS/UI.
+        // Chỉ nhận đúng các field hồ sơ được phép sửa.
+        $validatedData = $request->only([
+            'name', 'username', 'email', 'gender', 'date_of_birth', 'description',
+        ]);
         if($request->hasfile('avatar')) {
             $image = $request->file('avatar');
             $imageName = $user->id . '.' . $image->extension();

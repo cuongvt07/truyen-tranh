@@ -22,11 +22,16 @@ class User extends Model implements AuthenticatableContract,
 {
     use HasFactory, Authenticatable, Notifiable, CanResetPassword, MustVerifyEmail;
 
+    // BẢO MẬT: 'role' và 'points' CỐ Ý không nằm trong $fillable để không thể
+    // bị mass-assignment (vd POST role=2 / points=999999 qua bất kỳ form nào).
+    // Các nơi hợp pháp set chúng bằng gán tường minh ($user->role = ...) hoặc
+    // increment/decrement — đều bỏ qua $fillable nên vẫn hoạt động. Đăng ký /
+    // đăng nhập Google dựa vào DEFAULT của cột (role=0, points=0).
     protected $fillable
         = [
             'username', 'name', 'email', 'google_id', 'password', 'avatar', 'background', 'description',
             'address', 'email_verified_at',
-            'role', 'date_of_birth', 'gender', 'remember_token', 'points'
+            'date_of_birth', 'gender', 'remember_token',
         ];
 
     public function getIsAdminAttribute(): bool
