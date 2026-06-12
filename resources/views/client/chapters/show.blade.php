@@ -396,6 +396,27 @@ document.addEventListener('keydown', function(e) {
     if (e.key === 'ArrowRight' || e.key === 'd') { @if($nextUrl) window.location='{{ $nextUrl }}'; @endif }
 });
 
+// Rào cản sao chép: chặn Ctrl+U (view-source), Ctrl+S, F12, Ctrl+Shift+I/J/C, chuột phải.
+// LƯU Ý: chỉ ngăn người dùng phổ thông — không phải bảo mật thật (vẫn lách được bằng
+// view-source:, tắt JS, curl...). Bảo vệ thật là render 10% nội dung server-side ở trên.
+(function() {
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+    document.addEventListener('keydown', function(e) {
+        var k = (e.key || '').toLowerCase();
+        var ctrl = e.ctrlKey || e.metaKey;
+        if (
+            k === 'f12' ||
+            (ctrl && k === 'u') ||                 // view source
+            (ctrl && k === 's') ||                 // save page
+            (ctrl && e.shiftKey && (k === 'i' || k === 'j' || k === 'c'))  // devtools
+        ) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    });
+})();
+
 // ===== Cài đặt đọc: Themes / Font Size / Line Height / Indent (client-side) =====
 (function() {
     const reader = document.getElementById('chapter-c');

@@ -71,17 +71,21 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('collections', \App\Http\Controllers\Client\CollectionController::class)->except(['create', 'show'])->parameters(['collections' => 'id']);
     // articles
     //      articles - comments
+    // throttle: chống spam comment / vote / report
     Route::post('/articles/{article}/comments',
         [CommentController::class, 'store'])
+        ->middleware('throttle:15,1')
         ->name('articles.comments.store');
     Route::delete('/articles/{article}/comments/{comment}',
         [CommentController::class, 'destroy'])
         ->name('articles.comments.destroy');
     Route::post('/comments/{comment}/vote',
         [CommentController::class, 'vote'])
+        ->middleware('throttle:40,1')
         ->name('comments.vote');
     Route::post('/comments/{comment}/report',
         [CommentController::class, 'report'])
+        ->middleware('throttle:10,1')
         ->name('comments.report');
     //      articles - bookmarks
     Route::post('/articles/{article}/bookmarks',
