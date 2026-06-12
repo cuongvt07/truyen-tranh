@@ -86,6 +86,7 @@
         ImageToolbar,
         ImageCaption,
         ImageStyle,
+        ImageResize,
         Alignment,
         List,
         SourceEditing,
@@ -176,11 +177,12 @@
                 Italic, 
                 Font, 
                 Heading, 
-                Image, 
+                Image,
                 ImageUpload,
-                ImageToolbar, 
+                ImageToolbar,
                 ImageCaption,
                 ImageStyle,
+                ImageResize,
                 Alignment,
                 List,
                 SourceEditing,
@@ -197,14 +199,22 @@
                 'sourceEditing'
             ],
             image: {
+                // Thanh công cụ nổi khi click vào ảnh: canh lề + kéo đổi kích thước.
                 toolbar: [
-                    'imageTextAlternative', 
-                    'imageStyle:full', 
-                    'imageStyle:side', 
-                    'imageStyle:alignLeft', 
-                    'imageStyle:alignCenter', 
-                    'imageStyle:alignRight'
-                ]
+                    'imageTextAlternative', 'toggleImageCaption', '|',
+                    'imageStyle:inline',
+                    'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|',
+                    'imageStyle:alignBlockLeft', 'imageStyle:alignBlockRight', '|',
+                    'resizeImage'
+                ],
+                // Cho phép nhập % size tuỳ ý + vài mốc nhanh.
+                resizeOptions: [
+                    { name: 'resizeImage:original', value: null, label: 'Gốc' },
+                    { name: 'resizeImage:25', value: '25', label: '25%' },
+                    { name: 'resizeImage:50', value: '50', label: '50%' },
+                    { name: 'resizeImage:75', value: '75', label: '75%' }
+                ],
+                resizeUnit: '%'
             },
             heading: {
                 options: [

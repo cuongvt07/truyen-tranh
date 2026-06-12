@@ -33,11 +33,22 @@ class HtmlSanitizer
 
     /** Thuộc tính cho phép theo từng thẻ ('*' = áp cho mọi thẻ). */
     private const ALLOWED_ATTRS = [
-        '*'   => ['class'],
-        'a'   => ['href', 'title', 'target', 'rel'],
-        'img' => ['src', 'alt', 'title', 'width', 'height'],
-        'td'  => ['colspan', 'rowspan'],
-        'th'  => ['colspan', 'rowspan'],
+        '*'      => ['class'],
+        'a'      => ['href', 'title', 'target', 'rel'],
+        'img'    => ['src', 'alt', 'title', 'width', 'height', 'style'],
+        'figure' => ['style'],
+        'p'      => ['style'],
+        'span'   => ['style'],
+        'div'    => ['style'],
+        'table'  => ['style'],
+        'td'     => ['colspan', 'rowspan', 'style'],
+        'th'     => ['colspan', 'rowspan', 'style'],
+    ];
+
+    /** Thuộc tính CSS an toàn được giữ lại trong style (canh lề, đổi kích thước ảnh...). */
+    private const ALLOWED_STYLE_PROPS = [
+        'width', 'height', 'max-width', 'min-width', 'aspect-ratio',
+        'text-align', 'float', 'margin', 'margin-left', 'margin-right', 'margin-top', 'margin-bottom',
     ];
 
     public static function clean(?string $html): ?string
@@ -131,6 +142,16 @@ class HtmlSanitizer
                 $el->removeAttribute($attr->nodeName);
                 continue;
             }
+            // Lọc style: chỉ giữ thuộc tính CSS an toàn (canh lề, kích thước ảnh).
+            if ($name === 'style') {
+                $clean = self::sanitizeStyle($attr->nodeValue);
+                if ($clean === '') {
+                    $el->removeAttribute($attr->nodeName);
+                } else {
+                    $el->setAttribute('style', $clean);
+                }
+                continue;
+            }
         }
 
         // Ép link mở tab mới phải an toàn (chống tabnabbing).
@@ -138,6 +159,32 @@ class HtmlSanitizer
             $el->setAttribute('target', '_blank');
             $el->setAttribute('rel', 'noopener noreferrer nofollow');
         }
+    }
+
+    private static function sanitizeStyle(string $css): string
+    {
+        $out = [];
+        foreach (explode(';', $css) as $decl) {
+            if (trim($decl) === '') {
+                continue;
+            }
+            $parts = explode(':', $decl, 2);
+            if (count($parts) !== 2) {
+                continue;
+            }
+            $prop = strtolower(trim($parts[0]));
+            $val = trim($parts[1]);
+            if (!in_array($prop, self::ALLOWED_STYLE_PROPS, true)) {
+                continue;
+            }
+            // Chặn giá trị nguy hiểm (url(), expression(), javascript:, @import).
+            if (preg_match('/url\s*\(|expression|javascript:|@import|&#/i', $val)) {
+                continue;
+            }
+            $out[] = $prop . ': ' . $val;
+        }
+
+        return implode('; ', $out);
     }
 
     private static function isDangerousUrl(string $url): bool
