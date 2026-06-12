@@ -3,7 +3,7 @@
     <div class="box-body">
         <div class="form-group required">
             <label for="number">Thứ tự chương</label>
-            <input type="number" name="number" id="number" value="{{ old('number', $chapter->number ?? '') }}"
+            <input type="number" name="number" id="number" min="1" step="1" value="{{ old('number', $chapter->number ?? '') }}"
                    class="form-control{{ $errors->has('number') ? ' is-invalid' : '' }}">
             @if ($errors->has('number'))
                 <div class="invalid-feedback">{{ $errors->first('number') }}</div>

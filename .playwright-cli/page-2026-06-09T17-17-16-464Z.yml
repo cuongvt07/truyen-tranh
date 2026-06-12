@@ -1,0 +1,78 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - text: 
+      - link "Truyen Tranh" [ref=e5] [cursor=pointer]:
+        - /url: http://localhost:8080
+        - img "Truyen Tranh" [ref=e6]
+      - navigation [ref=e7]:
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link " Home" [ref=e10] [cursor=pointer]:
+              - /url: /
+              - generic [ref=e11]: 
+              - text: Home
+          - listitem [ref=e12]:
+            - generic [ref=e13] [cursor=pointer]:
+              - generic [ref=e14]: 
+              - text: Browse
+              - generic [ref=e15]: 
+          - listitem [ref=e16]:
+            - link " Search" [ref=e17] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e18]: 
+              - text: Search
+          - listitem [ref=e19]:
+            - link "Forum" [ref=e20] [cursor=pointer]:
+              - /url: /forum
+          - listitem [ref=e21]:
+            - link "FAQ" [ref=e22] [cursor=pointer]:
+              - /url: /faq
+      - generic [ref=e23]:
+        - link "Login" [ref=e24] [cursor=pointer]:
+          - /url: http://localhost:8080/login
+        - link "Sign Up" [ref=e25] [cursor=pointer]:
+          - /url: http://localhost:8080/register
+        - generic "Language" [ref=e26] [cursor=pointer]:
+          - text: 🇬🇧
+          - generic [ref=e27]: 
+  - generic [ref=e28]:
+    - generic [ref=e29]:
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - heading "Đăng nhập" [level=2] [ref=e33]
+          - generic [ref=e34]:
+            - generic [ref=e35]:
+              - generic [ref=e37]: 
+              - textbox "Email hoặc tên đăng nhập" [active] [ref=e38]
+            - generic [ref=e39]:
+              - generic [ref=e41]: 
+              - textbox "Mật khẩu" [ref=e42]
+            - generic [ref=e43]:
+              - link "Quên mật khẩu?" [ref=e44] [cursor=pointer]:
+                - /url: http://localhost:8080/forgot-password
+              - button "Đăng nhập" [ref=e45] [cursor=pointer]
+          - separator [ref=e46]
+          - link " Google" [ref=e48] [cursor=pointer]:
+            - /url: http://localhost:8080/auth/google/redirect
+            - generic [ref=e49]: 
+            - text: Google
+        - generic [ref=e50]:
+          - text: Chưa có tài khoản?
+          - link "Đăng ký" [ref=e51] [cursor=pointer]:
+            - /url: http://localhost:8080/register
+      - contentinfo [ref=e52]:
+        - generic [ref=e53]:
+          - link "Feedback" [ref=e54] [cursor=pointer]:
+            - /url: /feedback
+          - link "Terms of Use" [ref=e55] [cursor=pointer]:
+            - /url: /terms
+          - link "DMCA" [ref=e56] [cursor=pointer]:
+            - /url: /dmca
+          - link "Rules" [ref=e57] [cursor=pointer]:
+            - /url: /rules
+          - link "FAQ" [ref=e58] [cursor=pointer]:
+            - /url: /faq
+        - separator [ref=e59]
+        - text: © 2026 Truyen Tranh
+    - text:      

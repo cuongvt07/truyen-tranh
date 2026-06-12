@@ -14,6 +14,8 @@ class UpdateChapterRequest extends ChapterBaseRequest
             'title' => 'required',
             'number' => [
                 'required',
+                'integer',
+                'min:1',
                 Rule::unique(Chapter::class)->ignore($id)
                     ->where('article_id', $this->route('article')->id),
             ],
