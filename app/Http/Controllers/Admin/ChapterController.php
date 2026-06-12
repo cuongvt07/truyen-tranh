@@ -12,25 +12,31 @@ use Illuminate\Http\Request;
 class ChapterController extends Controller
 {
     /**
-     * Danh sách chương toàn cục (mọi truyện) — có lọc theo truyện + tìm.
+     * Trang "Chương": list THEO TRUYỆN (mỗi truyện 1 dòng + số chương),
+     * bấm "Chi tiết" để vào danh sách chương của truyện đó.
      */
     public function allIndex(Request $request)
     {
-        $query = Chapter::query()->with('article:id,title');
+        $query = Article::withoutGlobalScope(\App\Scopes\ApprovedArticleScope::class)
+            ->withCount('chapters')
+            ->withMax('chapters', 'created_at');
 
-        if ($articleId = $request->get('article_id')) {
-            $query->where('article_id', (int) $articleId);
-        }
         if ($s = trim((string) $request->get('q'))) {
             $query->where('title', 'like', "%$s%");
         }
 
-        $chapters = $query->orderByDesc('id')
-            ->paginate($request->get('per_page', 20))->withQueryString();
-        $total = Chapter::count();
-        $articles = Article::orderBy('title')->limit(500)->get(['id', 'title']);
+        $perPageOptions = [20, 50, 100, 200];
+        $perPage = (int) $request->get('per_page', 20);
+        if (! in_array($perPage, $perPageOptions, true)) {
+            $perPage = 20;
+        }
 
-        return view('admin.chapters.all', compact('chapters', 'total', 'articles'));
+        $articles = $query->orderByDesc('chapters_count')
+            ->orderByDesc('id')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return view('admin.chapters.all', compact('articles', 'perPage', 'perPageOptions'));
     }
 
     /**
@@ -39,15 +45,23 @@ class ChapterController extends Controller
     public function index(Request $request, Article $article)
     {
         $chapters = $article->chapters()->orderByDesc("number");
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $searchText = $request->input('search');
             $chapters->where('title', 'like', '%'.$searchText.'%');
         }
 
-        $chapters = $chapters->paginate();
+        $perPageOptions = [20, 50, 100, 200];
+        $perPage = (int) $request->get('per_page', 20);
+        if (! in_array($perPage, $perPageOptions, true)) {
+            $perPage = 20;
+        }
+
+        $chapters = $chapters->paginate($perPage)->withQueryString();
         return view('admin.chapters.index', [
             'article' => $article,
             'chapters' => $chapters,
+            'perPage' => $perPage,
+            'perPageOptions' => $perPageOptions,
         ]);
     }
 

@@ -20,11 +20,27 @@
                         </div>
                     </div>
 
-                    <div class="search">
+                    <h5 class="mt-2 mb-2"><i class="fas fa-list-ol text-muted mr-1"></i> {{ $article->title }}</h5>
+                    <div class="search d-flex flex-wrap align-items-center justify-content-between" style="gap:8px">
                         <form id="searchForm" action="{{ route('admin.articles.show_chapters', $article->id) }}"
-                              method="GET">
+                              method="GET" class="form-inline" style="gap:6px">
+                            <input type="hidden" name="per_page" value="{{ $perPage }}">
                             <input type="search" id="searchInput" class="form-control form-control-sm"
-                                   placeholder="Tìm kiếm theo tên chương" name="search">
+                                   placeholder="Tìm theo tên chương" name="search" value="{{ request('search') }}">
+                            <button class="btn btn-sm btn-outline-primary"><i class="fa fa-search"></i></button>
+                            @if(request('search'))
+                                <a href="{{ route('admin.articles.show_chapters', $article->id) }}" class="btn btn-sm btn-outline-secondary">Bỏ lọc</a>
+                            @endif
+                        </form>
+                        <form method="GET" action="{{ route('admin.articles.show_chapters', $article->id) }}"
+                              class="form-inline" style="gap:6px">
+                            @if(request('search'))<input type="hidden" name="search" value="{{ request('search') }}">@endif
+                            <span class="small text-muted">Tổng {{ number_format($chapters->total()) }} chương · Hiển thị</span>
+                            <select name="per_page" class="form-control form-control-sm" style="width:auto" onchange="this.form.submit()">
+                                @foreach($perPageOptions as $opt)
+                                    <option value="{{ $opt }}" {{ $perPage == $opt ? 'selected' : '' }}>{{ $opt }}/trang</option>
+                                @endforeach
+                            </select>
                         </form>
                     </div>
                 </div>

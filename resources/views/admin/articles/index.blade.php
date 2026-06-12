@@ -98,6 +98,7 @@
                                 <a class="dropdown-item" href="{{ route('articles.show', $article) }}" target="_blank"><i class="fas fa-eye mr-2 text-muted"></i> Xem</a>
                                 <a class="dropdown-item" href="{{ route('admin.articles.edit', $article->id) }}"><i class="fas fa-edit mr-2 text-primary"></i> Sửa</a>
                                 <a class="dropdown-item" href="{{ route('admin.articles.create_chapter', $article->id) }}"><i class="fas fa-plus mr-2 text-info"></i> Thêm chương</a>
+                                <a class="dropdown-item" href="{{ route('admin.articles.show_chapters', $article->id) }}"><i class="fas fa-list-ol mr-2 text-secondary"></i> Danh sách chương</a>
                                 @if($currentUser->is_admin)
                                     <div class="dropdown-divider"></div>
                                     @if($article->status == ArticleStatus::PENDING->value)

@@ -1,54 +1,58 @@
 @extends('layout.admin')
-@section('template_title', 'Tất cả chương')
+@section('template_title', 'Chương (theo truyện)')
 
 @section('content')
 <div class="content"><div class="container-fluid">
     @includeWhen(session('success'), 'admin.partials.flash')
 
-    <div class="card card-outline card-primary mb-3"><div class="card-body py-2">
-        <form method="GET" class="form-row align-items-center">
-            <div class="col-md-4 mb-2"><div class="input-group input-group-sm">
-                <input type="text" name="q" class="form-control" placeholder="Tìm theo tên chương..." value="{{ request('q') }}">
-                <div class="input-group-append"><button class="btn btn-primary"><i class="fas fa-search"></i></button></div>
-            </div></div>
-            <div class="col-md-4 mb-2">
-                <select name="article_id" class="form-control form-control-sm" onchange="this.form.submit()">
-                    <option value="">— Tất cả truyện —</option>
-                    @foreach($articles as $a)
-                        <option value="{{ $a->id }}" @selected(request('article_id')==$a->id)>{{ \Illuminate\Support\Str::limit($a->title, 50) }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-2 mb-2"><a href="{{ route('admin.chapters.all') }}" class="btn btn-sm btn-outline-secondary btn-block"><i class="fas fa-times"></i> Xoá lọc</a></div>
+    {{-- Thanh tìm + chọn số item/trang --}}
+    <div class="card card-outline card-primary mb-3"><div class="card-body py-2 d-flex flex-wrap align-items-center justify-content-between" style="gap:10px">
+        <form method="GET" class="form-inline" style="gap:6px">
+            <input type="hidden" name="per_page" value="{{ $perPage }}">
+            <input type="text" name="q" class="form-control form-control-sm" placeholder="Tìm theo tên truyện..." value="{{ request('q') }}" style="min-width:240px">
+            <button class="btn btn-sm btn-primary"><i class="fas fa-search"></i></button>
+            @if(request('q'))
+                <a href="{{ route('admin.chapters.all') }}" class="btn btn-sm btn-outline-secondary"><i class="fas fa-times"></i> Xoá lọc</a>
+            @endif
+        </form>
+        <form method="GET" class="form-inline" style="gap:6px">
+            @if(request('q'))<input type="hidden" name="q" value="{{ request('q') }}">@endif
+            <span class="small text-muted">Hiển thị</span>
+            <select name="per_page" class="form-control form-control-sm" style="width:auto" onchange="this.form.submit()">
+                @foreach($perPageOptions as $opt)
+                    <option value="{{ $opt }}" {{ $perPage == $opt ? 'selected' : '' }}>{{ $opt }}/trang</option>
+                @endforeach
+            </select>
         </form>
     </div></div>
 
-    <div class="card"><div class="card-body p-0">
-        @forelse($chapters as $ch)
-        @if($loop->first)<table class="table table-hover mb-0"><thead><tr>
-            <th width="80">Chương</th><th>Tên chương</th><th>Truyện</th><th width="90">Lượt xem</th><th width="110">Ngày</th><th width="120" class="text-center">Thao tác</th>
+    <div class="card"><div class="card-body p-0 table-responsive">
+        @forelse($articles as $article)
+        @if($loop->first)<table class="table table-hover mb-0 align-middle"><thead><tr>
+            <th width="60">#</th>
+            <th>Truyện</th>
+            <th width="120" class="text-center">Số chương</th>
+            <th width="140">Chương mới nhất</th>
+            <th width="220" class="text-center">Thao tác</th>
         </tr></thead><tbody>@endif
             <tr>
-                <td><span class="badge badge-secondary">#{{ $ch->number }}</span></td>
-                <td class="font-weight-500">{{ \Illuminate\Support\Str::limit($ch->title, 60) }}</td>
-                <td class="text-muted small">{{ \Illuminate\Support\Str::limit(optional($ch->article)->title, 40) ?? '—' }}</td>
-                <td>{{ number_format($ch->view) }}</td>
-                <td class="text-muted small">{{ optional($ch->created_at)->format('d/m/Y') }}</td>
+                <td class="text-muted">{{ $article->id }}</td>
+                <td>
+                    <div class="font-weight-500">{{ \Illuminate\Support\Str::limit($article->title, 70) }}</div>
+                </td>
+                <td class="text-center"><span class="badge badge-info badge-pill">{{ number_format($article->chapters_count) }}</span></td>
+                <td class="text-muted small">{{ $article->chapters_max_created_at ? \Illuminate\Support\Carbon::parse($article->chapters_max_created_at)->format('d/m/Y') : '—' }}</td>
                 <td class="text-center">
-                    @if($ch->article)
-                    <div class="btn-group btn-group-sm">
-                        <a href="{{ route('articles.chapters.show', [$ch->article_id, $ch->number]) }}" target="_blank" class="btn btn-outline-secondary" title="Xem"><i class="fas fa-eye"></i></a>
-                        <a href="{{ route('admin.articles.edit_chapter', [$ch->article_id, $ch->id]) }}" class="btn btn-outline-primary" title="Sửa"><i class="fas fa-edit"></i></a>
-                    </div>
-                    @endif
+                    <a href="{{ route('admin.articles.show_chapters', $article->id) }}" class="btn btn-sm btn-primary"><i class="fas fa-list-ol"></i> Chi tiết</a>
+                    <a href="{{ route('admin.articles.create_chapter', $article->id) }}" class="btn btn-sm btn-outline-info"><i class="fas fa-plus"></i> Thêm</a>
                 </td>
             </tr>
             @if($loop->last)</tbody></table>@endif
         @empty
-            <div class="text-center py-5"><i class="fas fa-inbox fa-3x text-muted mb-3"></i><h5 class="text-muted">Chưa có chương nào</h5></div>
+            <div class="text-center py-5"><i class="fas fa-inbox fa-3x text-muted mb-3"></i><h5 class="text-muted">Không có truyện nào</h5></div>
         @endforelse
     </div>
-    @if($chapters->hasPages())<div class="card-footer">{{ $chapters->withQueryString()->links() }}</div>@endif
+    @if($articles->hasPages())<div class="card-footer">{{ $articles->links() }}</div>@endif
     </div>
 </div></div>
 @endsection
