@@ -648,7 +648,10 @@ $(document).ready(function() {
 </script>
 
 <style>
-#chapter-c { max-width:780px;margin:0 auto;padding:20px 16px;font-size:17px;line-height:1.9;color:var(--text-color) }
+/* Ghi đè rule legacy ".chapter-text:not(.chapter-text__limit){display:none}" trong chapteree8b.css
+   — rule đó (vốn để chapteree8b.js cũ hiện nội dung) khiến chương MIỄN PHÍ bị ẩn trắng.
+   id selector thắng specificity nên content luôn hiện cho cả chương free lẫn chương khóa. */
+#chapter-c { display:block!important; max-width:780px;margin:0 auto;padding:20px 16px;font-size:17px;line-height:1.9;color:var(--text-color) }
 /* Paywall chương trả phí */
 .chapter-paywall { text-align:center; max-width:780px; margin:0 auto 28px; padding:0 16px; }
 .chapter-paywall .paywall-note { color:var(--meta-color,#888); margin-bottom:12px; }
