@@ -66,9 +66,13 @@ class GoogleAuthController extends Controller
                 'email_verified_at' => now(),
             ]);
 
-            // Thưởng 30 xu cho tài khoản MỚI đăng ký bằng Google (đăng ký thường không có).
+            // Thưởng xu cho tài khoản MỚI đăng ký bằng Google (đăng ký thường không có).
+            // Số xu cấu hình ở admin settings 'google_signup_bonus' (mặc định 30, 0 = tắt).
             // points không nằm trong $fillable nên set tường minh ở đây.
-            $user->increment('points', 30);
+            $bonus = max(0, (int) setting('google_signup_bonus', 30));
+            if ($bonus > 0) {
+                $user->increment('points', $bonus);
+            }
         }
 
         Auth::login($user, true);

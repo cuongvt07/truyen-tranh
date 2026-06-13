@@ -75,6 +75,21 @@
             </div>
         </div>
 
+        <!-- KHỐI THƯỞNG ĐĂNG KÝ -->
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                🎁 THƯỞNG ĐĂNG KÝ
+            </div>
+            <div class="card-body">
+                <div class="form-group mb-0" style="max-width:320px">
+                    <label>Xu tặng khi đăng ký bằng Google</label>
+                    <input type="number" name="google_signup_bonus" min="0" class="form-control"
+                           value="{{ $settings['google_signup_bonus'] ?? 30 }}">
+                    <small class="form-text text-muted">Số xu cộng cho tài khoản MỚI đăng ký bằng Google. Đăng ký thường không được tặng. Đặt 0 để tắt.</small>
+                </div>
+            </div>
+        </div>
+
         <!-- KHỐI NGÂN HÀNG -->
         <div class="row">
             <!-- Ngân hàng 1 -->
