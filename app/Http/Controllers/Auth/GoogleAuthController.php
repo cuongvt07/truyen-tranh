@@ -65,6 +65,10 @@ class GoogleAuthController extends Controller
                 'role'        => 0,
                 'email_verified_at' => now(),
             ]);
+
+            // Thưởng 30 xu cho tài khoản MỚI đăng ký bằng Google (đăng ký thường không có).
+            // points không nằm trong $fillable nên set tường minh ở đây.
+            $user->increment('points', 30);
         }
 
         Auth::login($user, true);

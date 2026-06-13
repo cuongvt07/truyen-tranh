@@ -337,8 +337,10 @@
             ])
 
             <div class="block appreciate">
-                <div class="text"><i class="fa fa-star"></i> {{ number_format($article->rating ?? 0, 1) }}/5</div>
-                <span>({{ number_format($article->rating_count ?? 0) }})</span>
+                @if(($article->rating_count ?? 0) > 0)
+                    <div class="text"><i class="fa fa-star"></i> {{ number_format($article->rating ?? 0, 1) }}/5</div>
+                    <span>({{ number_format($article->rating_count ?? 0) }})</span>
+                @endif
                 @auth<div class="your">{{ __('messages.article.rate') }}</div>@endauth
             </div>
 
@@ -478,6 +480,26 @@
     .article-detail-flex .main{margin-right:0!important;width:100%!important;max-width:100%!important}
     .article-detail-flex .second-information{width:100%!important;max-width:100%!important}
     .article-detail-flex .second-information .poster{width:210px;height:290px;max-height:none;margin:0 auto 13px}
+
+    /* Similar / Translation requests: bỏ slider -> lưới 2 cột, tên truyện ở dưới ảnh */
+    .article-detail-flex .swp-single .arrows{display:none!important}
+    .article-detail-flex .swp-single .swiper-container{overflow:visible!important}
+    .article-detail-flex .swp-single .swiper-wrapper{
+        display:grid!important;
+        grid-template-columns:repeat(2,1fr)!important;
+        gap:14px 12px!important;
+        transform:none!important;
+    }
+    .article-detail-flex .swp-single .swiper-slide{
+        width:auto!important;
+        margin:0!important;
+        height:auto!important;
+    }
+    .article-detail-flex .swp-single .swiper-slide .image{width:100%}
+    .article-detail-flex .swp-single .swiper-slide .manga-list__info .title{
+        white-space:normal;
+        display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+    }
 }
 
 /* ===== Comments (novelight style) ===== */
