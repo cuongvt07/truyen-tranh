@@ -72,7 +72,12 @@
                         <div class="d-flex align-items-center">
                             <img src="{{ novel_poster($article) }}" style="width:44px;height:60px;object-fit:cover;border-radius:4px;flex-shrink:0;margin-right:10px">
                             <div style="min-width:0">
-                                <a href="{{ route('articles.show', $article) }}" target="_blank" class="font-weight-600 d-block text-truncate" style="max-width:260px">{{ $article->title }}</a>
+                                <div class="d-flex align-items-center" style="gap:6px">
+                                    {{-- Bấm tên truyện = vào danh sách chương để sửa --}}
+                                    <a href="{{ route('admin.articles.show_chapters', $article->id) }}" class="font-weight-600 text-truncate" style="max-width:230px" title="Xem danh sách chương">{{ $article->title }}</a>
+                                    {{-- Icon mắt = mở trang truyện ngoài trang chủ --}}
+                                    <a href="{{ route('articles.show', $article) }}" target="_blank" class="text-muted" title="Xem ngoài trang chủ" style="flex-shrink:0"><i class="fas fa-eye"></i></a>
+                                </div>
                                 <small class="text-muted">
                                     @foreach($article->authors->take(2) as $a){{ $a->name }}@if(!$loop->last), @endif @endforeach
                                 </small>

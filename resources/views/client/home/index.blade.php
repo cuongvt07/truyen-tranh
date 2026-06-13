@@ -12,6 +12,19 @@
 
 @push('styles')
 <style>
+/* Card "Recently updated": badge NEW góc trên-trái + nhãn new cạnh ngày chương cuối */
+.recently .manga-line-item .poster{ position:relative; overflow:hidden; }
+.recently .manga-line-item .ribbon-new{
+    position:absolute; top:6px; left:6px; z-index:2;
+    background:#e3342f; color:#fff; font-size:10px; font-weight:700; line-height:1;
+    padding:3px 6px; border-radius:4px; letter-spacing:.5px;
+    box-shadow:0 1px 3px rgba(0,0,0,.35);
+}
+.recently .manga-line-item .last-chapter-date{ display:flex; align-items:center; gap:6px; }
+.recently .manga-line-item .badge-new-inline{
+    background:#e3342f; color:#fff; font-size:10px; font-weight:700; line-height:1;
+    padding:2px 5px; border-radius:3px; text-transform:uppercase;
+}
 /* Thể loại: slider 1 hàng (override grid) */
 .index-tags-swiper { display: block !important; }
 .index-tags-swiper .swiper-container { overflow: hidden; }
@@ -200,8 +213,16 @@
             <h2>{{ __('messages.home.recently') }}</h2>
             <div class="block recently">
                 @foreach($newUpdateArticles as $article)
+                    @php
+                        // Ngày chương mới nhất (đã đăng). Fallback updated_at nếu chưa có chương.
+                        $lastChapterAt = $article->chapters_max_created_at
+                            ? \Illuminate\Support\Carbon::parse($article->chapters_max_created_at)
+                            : $article->updated_at;
+                        $isNew = $lastChapterAt && $lastChapterAt->gt(now()->subDays(3));
+                    @endphp
                     <a href="{{ route('articles.show', $article) }}" class="manga-line-item">
                         <div class="poster image image-cover lazy-load-bg">
+                            @if($isNew)<span class="ribbon-new">NEW</span>@endif
                             <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                         </div>
                         <div class="info">
@@ -209,7 +230,10 @@
                             <div class="tag">
                                 @foreach($article->genres->take(2) as $g){{ $g->name }}@if(!$loop->last), @endif @endforeach
                             </div>
-                            <div>{{ optional($article->updated_at)->format('d.m.Y') }}</div>
+                            <div class="last-chapter-date">
+                                {{ $lastChapterAt ? $lastChapterAt->format('d.m.Y') : '—' }}
+                                @if($isNew)<span class="badge-new-inline">new</span>@endif
+                            </div>
                         </div>
                     </a>
                 @endforeach

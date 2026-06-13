@@ -16,7 +16,9 @@ class HomeController extends Controller
     public function index()
     {
         $hotArticles         = Article::getHotArticles()->with('genres')->take(16)->get();
-        $newUpdateArticles   = Article::getNewUpdateArticles()->with('genres')->take(30)->get();
+        $newUpdateArticles   = Article::getNewUpdateArticles()->with('genres')
+            ->withMax('chapters', 'created_at') // ngày chương mới nhất (đã đăng) -> chapters_max_created_at
+            ->take(30)->get();
         $completedArticles   = Article::getCompletedArticles()->take(12)->get();
         $randomArticles      = Article::inRandomOrder()->take(12)->get();   // Translation requests
         $lastComments        = DB::table('comments')
