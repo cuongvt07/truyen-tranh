@@ -123,7 +123,7 @@
             @else
                 <button class="btn-unlock" disabled>Không đủ credit</button>
                 <div class="topup-link">
-                    <a href="{{ route('client.paypoints') }}">Nạp thêm credit ngay →</a>
+                    <a href="{{ route('pages.pricing') }}">Nạp thêm credit ngay →</a>
                 </div>
             @endif
             <div id="unlock-msg"></div>

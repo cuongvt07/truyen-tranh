@@ -3,7 +3,7 @@
 
 @section('user_content')
 <div class="block">
-    <h2>{{ __('messages.account.account_info') }}</h2>
+    <h2 class="user-tab-title">{{ __('messages.account.account_info') }}</h2>
     <div class="info-row">
         <div class="label">Username</div>
         <div class="detail">{!! method_exists($user,'renderUserName') ? $user->renderUserName() : e($user->username) !!}</div>

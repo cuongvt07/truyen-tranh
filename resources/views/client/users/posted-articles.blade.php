@@ -2,12 +2,15 @@
 @section('template_title', __('messages.account.posted_heading'))
 
 @section('user_content')
-<h2>{{ __('messages.account.posted_heading') }}</h2>
+<h2 class="user-tab-title">{{ __('messages.account.posted_heading') }}</h2>
 
 @if($articles->isEmpty())
-    <div class="nothing">{{ __('messages.account.posted_empty') }}</div>
+    <div class="block"><div class="nothing" style="padding:40px 0;text-align:center;color:var(--meta-color)">
+        <i class="fa fa-book" style="font-size:32px;opacity:.4;display:block;margin-bottom:10px"></i>
+        {{ __('messages.account.posted_empty') }}
+    </div></div>
 @else
-    <div class="user-list-grid">
+    <div class="block"><div class="user-list-grid">
         @foreach($articles as $article)
             <div class="item">
                 <a href="{{ route('articles.show', $article) }}" class="item-link">
@@ -23,5 +26,6 @@
         @endforeach
     </div>
     <div style="margin-top:20px">{{ $articles->links() }}</div>
+    </div>
 @endif
 @endsection

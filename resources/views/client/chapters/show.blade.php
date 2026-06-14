@@ -47,7 +47,7 @@
         <span class="btn header-btn disabled"><i class="fa fa-angle-left"></i></span>
     @endif
 
-    <div class="btn header-btn" id="table-of-contents-btn">
+    <div class="btn header-btn open-close" id="table-of-contents-btn" p-target="all-chapters">
         <span>{{ __('messages.chapter.chapter') }} {{ $chapter->number }}</span>
         <span>{{ __('messages.chapter.table_of_contents') }}</span>
     </div>
@@ -123,7 +123,7 @@
                     </button>
                 @else
                     <button type="button" class="btn" disabled>{{ __('messages.chapter.not_enough_credit') }}</button>
-                    <div class="paywall-topup"><a href="{{ route('client.paypoints') }}">{{ __('messages.chapter.topup_now') }}</a></div>
+                    <div class="paywall-topup"><a href="{{ route('pages.pricing') }}">{{ __('messages.chapter.topup_now') }}</a></div>
                 @endif
                 <div id="buy-msg"></div>
             @else
@@ -268,19 +268,24 @@
     </section>
 </div>
 
-{{-- Table of contents panel --}}
-<div class="chapter-panel" id="all-chapters" style="display:none">
-    <div class="chapter-settings__header">
-        <span>{{ __('messages.chapter.chapter_list') }}</span>
-        <button class="btn btn-invincible open-close" p-target="all-chapters"><i class="fa fa-close"></i></button>
-    </div>
-    <div class="chapter-list">
-        @foreach($articleChapters as $ch)
-            <a href="{{ route('articles.chapters.show', [$article, $ch->number]) }}"
-               class="chapter {{ $ch->number == $chapter->number ? 'active' : '' }}">
-                {{ __('messages.chapter.chapter') }} {{ $ch->number }}: {{ $ch->title }}
-            </a>
-        @endforeach
+{{-- Table of contents panel (cùng cấu trúc overlay với panel cài đặt để nằm bên phải + full màn trên mobile) --}}
+<div id="all-chapters" class="fullscreen hide">
+    <div class="chapter-panel">
+        <div class="chapter-settings__header">
+            <div class="title">{{ __('messages.chapter.chapter_list') }}</div>
+            <button class="btn btn-invincible open-close" p-target="all-chapters"><i class="fa fa-close"></i></button>
+        </div>
+        <div class="chapter-list chapters">
+            @include('client.articles.partials.chapter-list-items', [
+                'chapters' => $articleChapters,
+                'article' => $article,
+                'unlockedChapterIds' => $unlockedChapterIds,
+                'hasActiveVip' => $hasActiveVip,
+                'currentChapterId' => $chapter->id,
+                'showPoster' => true,
+                'compactTitle' => true,
+            ])
+        </div>
     </div>
 </div>
 
@@ -504,10 +509,9 @@ document.addEventListener('keydown', function(e) {
     });
 })();
 
-// Table of contents button
-document.getElementById('table-of-contents-btn')?.addEventListener('click', function() {
-    const panel = document.getElementById('all-chapters');
-    if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+// Click nền tối để đóng panel danh sách chương (đi qua nút X để mainee8b mở khoá cuộn)
+document.getElementById('all-chapters')?.addEventListener('click', function(e) {
+    if (e.target === this) this.querySelector('.open-close')?.click();
 });
 
 // Ẩn header khi cuộn xuống (giữ lại hành vi từ chapteree8b.js)
@@ -799,6 +803,45 @@ $(document).ready(function() {
     margin:-10px -15px -10px 10px;
     background:#ffefef47;
 }
+/* === Danh sách chương trong panel mục lục ===
+   Trang đọc KHÔNG nạp singleee8b.css (vốn style cho tab chương ở trang chi tiết),
+   nên tái tạo các rule cần thiết tại đây để layout/icon hiển thị đầy đủ giống bên đó.
+   Ghi đè rule ".chapter-list .chapter{display:block}" trong chapteree8b.css. */
+#all-chapters .chapter-list .chapter {
+    display:flex;
+    flex-direction:column;       /* 2 dòng: trên = số chương, dưới = thông tin */
+    align-items:flex-start;
+    gap:4px;
+    padding:8px 6px;
+    border-radius:3px;
+    border-bottom:1px solid var(--border, #c2c2c2);
+    text-decoration:none;
+}
+#all-chapters .chapter-list .chapter .title {
+    color:var(--text-color);
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:1;
+    overflow:hidden;
+    min-width:0;
+}
+#all-chapters .chapter-list .chapter .title span { color:var(--meta-color, #888); }
+#all-chapters .chapter-list .chapter-info {
+    flex-shrink:0;
+    font-size:13px;
+    color:var(--meta-color, #888);
+    white-space:nowrap;
+}
+#all-chapters .chapter-list .chapter-info .cost,
+#all-chapters .chapter-list .chapter-info .author,
+#all-chapters .chapter-list .chapter-info .poster { margin-right:10px; }
+#all-chapters .chapter-list .chapter-info .cost.paid {
+    display:inline-flex; align-items:center; justify-content:center;
+    min-width:38px; padding:2px 7px; border-radius:4px;
+    background:#1f9d55; color:#fff; font-size:12px; line-height:1.35;
+    text-transform:uppercase; font-weight:700;
+}
+#all-chapters .chapter-list .chapter.active { background-color:var(--character-item-active); }
 </style>
 
 @auth

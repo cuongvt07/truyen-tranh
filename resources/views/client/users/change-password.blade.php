@@ -3,7 +3,7 @@
 
 @section('user_content')
 <div class="block">
-    <h2>{{ __('messages.account.change_password') }}</h2>
+    <h2 class="user-tab-title">{{ __('messages.account.change_password') }}</h2>
 
     @if($message = session('status'))
         <div class="alert-success" style="background:#1e3a1e;border:1px solid #2e5e2e;padding:10px 14px;border-radius:6px;margin-bottom:14px;color:#9f9">{{ $message }}</div>

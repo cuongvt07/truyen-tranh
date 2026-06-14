@@ -34,7 +34,8 @@
             </div>
         </div>
 
-        {{-- Premium --}}
+        {{-- Premium (chỉ hiện khi có gói subscription thật) --}}
+        @if(!empty($premium))
         <div class="recommended-product block">
             <a href="{{ !empty($premium['id']) ? route('checkout.show', $premium['id']) : route('client.paypoints') }}" class="image image-cover lazy-load-bg">
                 <img class="lazy-image" loading="eager" src="{{ asset($premium['icon']) }}" alt="{{ $premium['name'] }}">
@@ -55,13 +56,15 @@
                 @endauth
             </div>
         </div>
+        @endif
     </div>
 
     {{-- Tất cả sản phẩm --}}
     <div class="section">
         <h2>{{ __('messages.pay.all_products') }}</h2>
         <div class="price-list">
-            {{-- Premium card --}}
+            {{-- Premium card (chỉ hiện khi có gói subscription thật) --}}
+            @if(!empty($premium))
             <div class="price-item block">
                 <div class="price_item__icon image image-cover lazy-load-bg">
                     <img class="lazy-image" loading="eager" src="{{ asset($premium['icon']) }}" alt="">
@@ -82,6 +85,7 @@
                     </div>
                 </div>
             </div>
+            @endif
 
             {{-- Coin packs --}}
             @foreach($coinPacks as $pack)

@@ -21,7 +21,7 @@
 </div>
 
 <div class="block premium-settings-stats" style="margin-top:16px">
-    <h2 style="margin-bottom:12px">Premium: <span style="color:{{ $vipDays > 0 ? '#4caf50' : 'var(--meta-color)' }}">{{ $vipDays > 0 ? __('messages.pay.active') : __('messages.pay.inactive') }}</span></h2>
+    <h2 class="user-tab-title" style="margin-bottom:12px">Premium: <span style="color:{{ $vipDays > 0 ? '#4caf50' : 'var(--meta-color)' }}">{{ $vipDays > 0 ? __('messages.pay.active') : __('messages.pay.inactive') }}</span></h2>
     <table class="trans-table">
         <tr><td>{{ __('messages.pay.days_remaining') }}</td><td>{{ $vipDays }}d</td></tr>
         <tr><td>{{ __('messages.pay.daily_reward') }}</td><td>{{ $vipDays > 0 ? __('messages.pay.yes') : __('messages.pay.no') }}</td></tr>
@@ -29,7 +29,7 @@
 </div>
 
 <div class="block" style="margin-top:16px;overflow-x:auto">
-    <h2 style="margin-bottom:12px">{{ __('messages.pay.transaction_history') }}</h2>
+    <h2 class="user-tab-title" style="margin-bottom:12px">{{ __('messages.pay.transaction_history') }}</h2>
     @if($deposits->isEmpty())
         <div class="nothing" style="padding:30px 0;text-align:center;color:var(--meta-color)">{{ __('messages.pay.no_transactions') }}</div>
     @else

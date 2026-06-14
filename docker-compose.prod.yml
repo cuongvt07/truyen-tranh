@@ -1,0 +1,64 @@
+# ============================================================================
+# PRODUCTION với LIVE code — update bằng `git pull`, KHỎI build lại image.
+#
+# Code (app/, resources/, public/, routes/, database/...) được bind-mount thẳng
+# từ thư mục git trên server -> sửa/pull là chạy luôn (opcache validate timestamps).
+# vendor & node_modules để ở named volume (đổ từ image lúc build lần đầu).
+#
+# Dùng -f TƯỜNG MINH nên docker-compose.override.yml (dev) KHÔNG bị nạp.
+#
+#   Lần đầu:  docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#   Update :  git pull && bash scripts/update.sh        (không build lại)
+#
+# Trên server tạo file ./.env (bind-mount nên Laravel đọc trực tiếp) với:
+#   APP_ENV=production  APP_DEBUG=false  APP_KEY=base64:...  APP_URL=https://...
+#   DB_HOST=... DB_DATABASE=... DB_USERNAME=... DB_PASSWORD=...
+#   REDIS_HOST=redis  CACHE_STORE=redis  SESSION_DRIVER=redis  QUEUE_CONNECTION=redis
+#   HTTP_PORT=80
+# ============================================================================
+services:
+  app:
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      RUN_MIGRATIONS: "true"      # tự chạy migrate --force khi khởi động
+      RUN_SEEDERS: "false"
+      RUN_CACHE_WARMUP: "false"   # code live -> KHÔNG cache config/view (để pull là hiện ngay)
+      OPCACHE_VALIDATE_TIMESTAMPS: "1"
+      OPCACHE_REVALIDATE_FREQ: "2"
+    volumes:
+      - ./:/var/www/html
+      - ./storage:/var/www/html/storage
+      - ./storage/app/public:/var/www/html/storage/app/public
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+      - app-vendor:/var/www/html/vendor
+      - app-node-modules:/var/www/html/node_modules
+
+  nginx:
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - ./public:/var/www/html/public:ro
+      - ./storage/app/public:/var/www/html/public/storage:ro
+
+  queue:
+    command: ["php", "artisan", "queue:work", "redis", "--sleep=3", "--tries=3", "--timeout=90"]
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      RUN_MIGRATIONS: "false"
+      RUN_SEEDERS: "false"
+      RUN_CACHE_WARMUP: "false"
+      OPCACHE_VALIDATE_TIMESTAMPS: "1"
+      OPCACHE_REVALIDATE_FREQ: "2"
+    volumes:
+      - ./:/var/www/html
+      - ./storage:/var/www/html/storage
+      - ./storage/app/public:/var/www/html/storage/app/public
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+      - app-vendor:/var/www/html/vendor
+      - app-node-modules:/var/www/html/node_modules
+
+volumes:
+  app-vendor:
+  app-node-modules:

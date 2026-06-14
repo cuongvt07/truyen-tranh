@@ -134,10 +134,21 @@ class ChapterController extends Controller
 
         $comments = $article->getNewestCommentsPaginate();
 
+        // Danh sách chương cho panel "mục lục" trong trang đọc — dùng chung partial với
+        // tab chương ở trang chi tiết truyện nên cần unlockedChapterIds + hasActiveVip.
+        $articleChapters = $article->chapters()->orderBy('number', 'desc')->get();
+        $unlockedChapterIds = Auth::check()
+            ? ChapterUnlock::where('user_id', Auth::id())
+                ->whereIn('chapter_id', $articleChapters->pluck('id'))
+                ->pluck('chapter_id')
+            : collect();
+
         return view('client.chapters.show', [
             'article'        => $article,
             'chapter'        => $chapter,
-            'articleChapters' => $article->chapters()->orderBy('number', 'desc')->get(),
+            'articleChapters' => $articleChapters,
+            'unlockedChapterIds' => $unlockedChapterIds,
+            'hasActiveVip'   => $hasActiveVip,
             'user'           => $article->user,
             'comments'       => $comments,
             'showPopup'      => $showPopup,

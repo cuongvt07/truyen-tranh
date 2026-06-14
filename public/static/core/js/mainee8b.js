@@ -258,6 +258,19 @@ class TippyMenu {
                 if (window.screen.width <= MobileWidth) {
                     this.background = document.createElement("div");
                     this.background.classList.add("fullscreen", "fullscreen-tippy");
+
+                    // Nút X đóng popup (thấy rõ trên mobile thay vì chỉ bấm nền)
+                    let closeBtn = document.createElement("button");
+                    closeBtn.type = "button";
+                    closeBtn.className = "fullscreen-tippy__close";
+                    closeBtn.setAttribute("aria-label", "Close");
+                    closeBtn.innerHTML = "&times;";
+                    closeBtn.addEventListener("click", function (e) {
+                        e.stopPropagation();
+                        instance.hide();
+                    });
+                    this.background.append(closeBtn);
+
                     document.body.append(this.background);
                     this.background.addEventListener("click", function (e) {
                         instance.hide();

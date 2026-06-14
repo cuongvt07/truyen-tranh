@@ -19,16 +19,18 @@ return [
 
     'supported' => [
         'en' => [
-            'name'     => 'English',
-            'flag'     => '🇬🇧',
-            'currency' => 'USD',
-            'locale'   => 'en_US',
+            'name'      => 'English',
+            'flag'      => '🇬🇧',
+            'flag_code' => 'gb', // ISO country cho flag-icon-css (emoji cờ không render trên Windows)
+            'currency'  => 'USD',
+            'locale'    => 'en_US',
         ],
         'vi' => [
-            'name'     => 'Tiếng Việt',
-            'flag'     => '🇻🇳',
-            'currency' => 'VND',
-            'locale'   => 'vi_VN',
+            'name'      => 'Tiếng Việt',
+            'flag'      => '🇻🇳',
+            'flag_code' => 'vn',
+            'currency'  => 'VND',
+            'locale'    => 'vi_VN',
         ],
         // 'th' => ['name' => 'ไทย', 'flag' => '🇹🇭', 'currency' => 'THB', 'locale' => 'th_TH'],
         // 'id' => ['name' => 'Indonesia', 'flag' => '🇮🇩', 'currency' => 'IDR', 'locale' => 'id_ID'],

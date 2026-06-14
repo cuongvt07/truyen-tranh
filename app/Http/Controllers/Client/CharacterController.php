@@ -35,6 +35,8 @@ class CharacterController extends Controller
         $data = $this->validateData($request);
         $data['user_id'] = Auth::id();
         $data['photo'] = $this->upload($request);
+        // 'type' là cột NOT NULL (default 0): ép int + default 0 để tránh null -> lỗi DB.
+        $data['type'] = (int) ($data['type'] ?? 0);
         Character::create($data);
         return redirect()->route('characters.index')->with('success', 'Thêm nhân vật thành công!');
     }
@@ -49,6 +51,8 @@ class CharacterController extends Controller
         $item = $this->own($id);
         $data = $this->validateData($request);
         if ($photo = $this->upload($request)) $data['photo'] = $photo;
+        // Chỉ đụng 'type' khi có gửi lên; ép int để không bao giờ ghi null (cột NOT NULL).
+        if (array_key_exists('type', $data)) $data['type'] = (int) ($data['type'] ?? 0);
         $item->update($data);
         return redirect()->route('characters.index')->with('success', 'Cập nhật nhân vật!');
     }

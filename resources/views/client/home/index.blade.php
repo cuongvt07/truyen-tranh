@@ -74,7 +74,7 @@
                                 <div class="poster image image-cover lazy-load-bg">
                                     <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                                 </div>
-                                <span>{{ $article->is_completed ? __('messages.ui.status_completed') : __('messages.ui.status_ongoing') }} • {{ number_format($article->rating ?? 0, 1) }}<i class="fa fa-star"></i></span>
+                                <span>{{ $article->is_completed ? __('messages.ui.status_completed') : __('messages.ui.status_ongoing') }}@if(($article->rating_count ?? 0) > 0) • {{ number_format($article->rating ?? 0, 1) }}<i class="fa fa-star"></i>@endif</span>
                                 <div class="title clamp clamp-2">{{ $article->title }}</div>
                             </a>
                         </div>
@@ -325,3 +325,4 @@
 
 </div>
 @endsection
+

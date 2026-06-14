@@ -364,30 +364,20 @@ HTML;
             'icon'      => $featuredPkg->icon ?? 'media/payments/1000.jpg',
         ] : ($coinPacks[0] ?? null);
 
-        $premiumPackages = getPremiumPackages();
-        $premium = !empty($premiumPackages) ? [
-            'name'  => $premiumPackages[0]['name'] ?? 'Thành viên Premium',
-            'desc'  => ($premiumPackages[0]['days'] ?? 30) . ' ngày',
-            'price' => number_format(($premiumPackages[0]['coins'] ?? 700), 0, ',', '.') . ' xu',
-            'icon'  => 'media/payments/1.webp',
-        ] : [
-            'name'  => 'Thành viên Premium',
-            'desc'  => '30 ngày',
-            'price' => '70.000đ',
-            'icon'  => 'media/payments/1.webp',
-        ];
-
+        // Premium CHỈ lấy từ gói subscription thật trong DB (có id -> link checkout đúng).
+        // Không cấu hình -> $premium = null -> view ẩn card (bỏ placeholder tiếng Việt + link sai).
         $subscription = $subscriptionPkgs->firstWhere('is_featured', true) ?? $subscriptionPkgs->first();
-        if ($subscription) {
-            $premium = [
-                'id'        => $subscription->id,
-                'name'      => $subscription->name,
-                'desc'      => $subscription->subscription_days . ' ngày, ẩn quảng cáo + ' . number_format($subscription->daily_credits) . ' credit/ngày',
-                'price'     => $subscription->display_price,
-                'price_usd' => (float) $subscription->price_usd,
-                'icon'      => $subscription->icon ?? 'media/payments/1.webp',
-            ];
-        }
+        $premium = $subscription ? [
+            'id'        => $subscription->id,
+            'name'      => $subscription->name,
+            'desc'      => __('messages.pay.premium_desc', [
+                'days'    => $subscription->subscription_days,
+                'credits' => number_format($subscription->daily_credits),
+            ]),
+            'price'     => $subscription->display_price,
+            'price_usd' => (float) $subscription->price_usd,
+            'icon'      => $subscription->icon ?? 'media/payments/1.webp',
+        ] : null;
 
         return view('client.pages.pricing', compact('coinPacks', 'premium', 'featured'));
     }

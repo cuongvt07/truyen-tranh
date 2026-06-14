@@ -8,12 +8,15 @@
     <div class="alert-success" style="background:#1e3a1e;border:1px solid #2e5e2e;padding:10px 14px;border-radius:6px;margin-bottom:14px;color:#9f9">{{ $message }}</div>
 @endif
 
-<h2>{{ __('messages.account.bookmarks_heading') }}</h2>
+<h2 class="user-tab-title">{{ __('messages.account.bookmarks_heading') }}</h2>
 
 @if($bookmarks->isEmpty())
-    <div class="nothing">{{ __('messages.account.bookmarks_empty') }}</div>
+    <div class="block"><div class="nothing" style="padding:40px 0;text-align:center;color:var(--meta-color)">
+        <i class="fa fa-bookmark" style="font-size:32px;opacity:.4;display:block;margin-bottom:10px"></i>
+        {{ __('messages.account.bookmarks_empty') }}
+    </div></div>
 @else
-    <div class="user-list-grid">
+    <div class="block"><div class="user-list-grid">
         @foreach($bookmarks as $bookmark)
             @if(!$bookmark->is_public && !$isMyAccount) @continue @endif
             @php $article = $bookmark->article; @endphp
@@ -40,5 +43,6 @@
         @endforeach
     </div>
     <div style="margin-top:20px">{{ $bookmarks->links() }}</div>
+    </div>
 @endif
 @endsection

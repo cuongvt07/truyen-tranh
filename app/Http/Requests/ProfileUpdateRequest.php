@@ -18,7 +18,8 @@ class ProfileUpdateRequest extends FormRequest
         $userId = $this->user()->id;
 
         return [
-            'name' => ['required', 'string', 'max:255'],
+            // 'name' (Full name) là tuỳ chọn — cột DB nullable, không bắt buộc trên form.
+            'name' => ['nullable', 'string', 'max:255'],
             // Sometimes: form có thể không gửi đủ field; nếu có thì phải hợp lệ + không trùng.
             'username' => ['sometimes', 'required', 'string', 'max:255', Rule::unique(User::class, 'username')->ignore($userId)],
             'email' => ['sometimes', 'required', 'string', 'email', 'max:255', Rule::unique(User::class, 'email')->ignore($userId)],

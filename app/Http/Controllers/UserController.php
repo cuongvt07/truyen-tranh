@@ -28,8 +28,33 @@ class UserController extends Controller
                 return redirect()->route('users.show', null);
             }
         }
-        return view('client.users.general', [
+
+        $isMine = $user->id === Auth::id();
+
+        // Tab "List": danh sách truyện đã thêm vào list, gom theo trạng thái.
+        // Xem hồ sơ người khác chỉ thấy bookmark công khai (is_public).
+        $bookmarksQuery = \App\Models\Bookmark::with('article')
+            ->where('user_id', $user->id);
+        if (! $isMine) {
+            $bookmarksQuery->where('is_public', true);
+        }
+        $bookmarks = $bookmarksQuery->orderByDesc('updated_at')->get()
+            ->filter(fn ($b) => $b->article !== null)
+            ->values();
+
+        // "Continue (N)": chương đọc gần nhất theo lịch sử; fallback chương mới nhất.
+        $continueMap = \App\Models\ReadingHistory::where('user_id', $user->id)
+            ->whereIn('article_id', $bookmarks->pluck('article_id'))
+            ->orderByDesc('read_at')
+            ->get()
+            ->unique('article_id')
+            ->mapWithKeys(fn ($h) => [$h->article_id => $h->chapter_number]);
+
+        return view('client.users.list', [
             'user' => $user,
+            'bookmarks' => $bookmarks,
+            'continueMap' => $continueMap,
+            'isMine' => $isMine,
         ]);
     }
 
@@ -57,17 +82,27 @@ class UserController extends Controller
         $validatedData = $request->only([
             'name', 'username', 'email', 'gender', 'date_of_birth', 'description',
         ]);
-        if($request->hasfile('avatar')) {
-            $image = $request->file('avatar');
-            $imageName = $user->id . '.' . $image->extension();
-            $path = $image->storeAs('images/users', $imageName, 'public');
-            $validatedData['avatar'] = '/storage/' . $path;
-        }
-        if($request->hasfile('background')) {
-            $bg = $request->file('background');
-            $bgName = $user->id . '-bg.' . $bg->extension();
-            $path = $bg->storeAs('images/users', $bgName, 'public');
-            $validatedData['background'] = '/storage/' . $path;
+        // Lưu ảnh trong try/catch: nếu ghi đĩa lỗi (quyền, hết chỗ, định dạng lạ) thì
+        // BÁO LỖI THÂN THIỆN thay vì để bung ra trang 500.
+        try {
+            if ($request->hasFile('avatar')) {
+                $image = $request->file('avatar');
+                $ext = $image->extension() ?: $image->getClientOriginalExtension() ?: 'jpg';
+                $path = $image->storeAs('images/users', $user->id . '.' . $ext, 'public');
+                // Thêm ?v=timestamp để trình duyệt không hiện ảnh cũ trong cache (cùng tên file).
+                $validatedData['avatar'] = '/storage/' . $path . '?v=' . now()->timestamp;
+            }
+            if ($request->hasFile('background')) {
+                $bg = $request->file('background');
+                $ext = $bg->extension() ?: $bg->getClientOriginalExtension() ?: 'jpg';
+                $path = $bg->storeAs('images/users', $user->id . '-bg.' . $ext, 'public');
+                $validatedData['background'] = '/storage/' . $path . '?v=' . now()->timestamp;
+            }
+        } catch (\Throwable $e) {
+            report($e);
+            return redirect()->route('users.change_info')
+                ->withErrors(['avatar' => __('messages.account.upload_failed')])
+                ->withInput();
         }
         $request->user()->fill($validatedData);
         if ($request->user()->isDirty('email')) {
@@ -137,13 +172,14 @@ class UserController extends Controller
         $collections = \App\Models\Collection::where('user_id', $user->id)
             ->when(!$isMine, fn ($q) => $q->where('is_private', false))
             ->withCount('articles')->orderByDesc('updated_at')->get();
-        return view('client.users.collections', compact('user', 'collections'));
+        return view('client.users.collections', compact('user', 'collections', 'isMine'));
     }
 
     public function teams(User $user): View
     {
+        $isMine = \Illuminate\Support\Facades\Auth::id() === $user->id;
         $teams = \App\Models\Team::where('user_id', $user->id)->orderByDesc('updated_at')->get();
-        return view('client.users.teams', compact('user', 'teams'));
+        return view('client.users.teams', compact('user', 'teams', 'isMine'));
     }
 
     public function favourites(User $user): View

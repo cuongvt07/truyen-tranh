@@ -58,10 +58,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=Roboto:wght@100;400;500&display=swap" rel="stylesheet">
 
+    @php
+        $assetVer = function ($p) { $f = public_path($p); return file_exists($f) ? filemtime($f) : '1.8.0'; };
+    @endphp
     <link rel="stylesheet" href="{{ asset('static/core/css/reset.css') }}">
     <link rel="stylesheet" href="{{ asset('static/core/css/swiper.bundle.css') }}">
-    <link rel="stylesheet" href="{{ asset('static/core/css/fontawesomeee8b.css') }}?ver=1.8.0">
-    <link rel="stylesheet" href="{{ asset('static/core/css/styleee8b.css') }}?ver=1.8.0">
+    <link rel="stylesheet" href="{{ asset('static/core/css/fontawesomeee8b.css') }}?ver={{ $assetVer('static/core/css/fontawesomeee8b.css') }}">
+    <link rel="stylesheet" href="{{ asset('static/core/css/styleee8b.css') }}?ver={{ $assetVer('static/core/css/styleee8b.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/flag-icon-css/css/flag-icons.min.css') }}">
     @yield('page_css')
     @stack('styles')
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -179,7 +183,12 @@
                 @if(config('locales.switchable', true))
                     @php $curLocale = app()->getLocale(); $locales = config('locales.supported', []); @endphp
                     <div class="header-btn header-lang tippy-lang" title="Language">
-                        {{ $locales[$curLocale]['flag'] ?? '🌐' }} <i class="fa fa-caret-down" style="font-size:11px"></i>
+                        @if(!empty($locales[$curLocale]['flag_code']))
+                            <span class="flag-icon flag-icon-{{ $locales[$curLocale]['flag_code'] }}"></span>
+                        @else
+                            🌐
+                        @endif
+                        <i class="fa fa-caret-down" style="font-size:11px"></i>
                     </div>
                 @endif
             </div>
@@ -238,8 +247,65 @@
                     <li><a href="{{ route('home.show_completed_articles') }}"><i class="fa fa-check-circle"></i> {{ __('messages.nav.completed') }}</a></li>
                 @endforelse
             </ul>
+
+            {{-- Cụm chức năng tài khoản (đưa từ header xuống cho mobile) — hardcode, không qua menu admin --}}
+            @auth
+                @php $mAuth = Auth::user(); $mAva = $mAuth->avatar ?: asset('static/account/images/no-ava.jpg'); @endphp
+                {{-- Cụm tài khoản dạng DROPDOWN: tap header để mở/đóng danh sách --}}
+                <div class="mobile-menu-account" id="mma-toggle" role="button" tabindex="0" aria-expanded="false">
+                    <div class="mma-ava"><img src="{{ $mAva }}" alt="{{ $mAuth->username }}"></div>
+                    <div class="mma-info">
+                        <span class="mma-name">{{ $mAuth->username }}</span>
+                        <a href="{{ route('users.transactions', Auth::id()) }}" class="mma-coins"><i class="fa fa-coins"></i> {{ number_format($mAuth->points ?? 0) }}</a>
+                    </div>
+                    <i class="fa fa-caret-down mma-caret"></i>
+                </div>
+                <div class="mma-collapse">
+                    <ul>
+                        <li><a href="{{ route('users.show') }}"><i class="fa fa-user"></i> {{ __('messages.ui.menu_profile') }}</a></li>
+                        <li><a href="{{ route('my-articles.index') }}"><i class="fa fa-book"></i> {{ __('messages.ui.menu_my_articles') }}</a></li>
+                        <li><a href="{{ route('users.notifications', Auth::id()) }}"><i class="fa fa-bell"></i> {{ __('messages.ui.menu_notifications') }}</a></li>
+                        <li><a href="{{ route('users.show_comments', Auth::id()) }}"><i class="fa fa-comment"></i> {{ __('messages.ui.menu_comments') }}</a></li>
+                        <li><a href="{{ route('users.show_bookmarks', Auth::id()) }}"><i class="fa fa-heart"></i> {{ __('messages.ui.menu_following') }}</a></li>
+                        <li><a href="{{ route('users.collections', Auth::id()) }}"><i class="fa fa-layer-group"></i> {{ __('messages.ui.menu_collections') }}</a></li>
+                        <li><a href="{{ route('users.teams', Auth::id()) }}"><i class="fa fa-user-friends"></i> {{ __('messages.ui.menu_teams') }}</a></li>
+                        <li><a href="{{ route('users.change_info') }}"><i class="fa fa-cog"></i> {{ __('messages.ui.menu_settings') }}</a></li>
+                    </ul>
+                    <div class="mobile-menu-label"><i class="fa fa-plus"></i> {{ __('messages.add.menu') }}</div>
+                    <ul>
+                        <li><a href="{{ route('my-articles.create') }}"><i class="fa fa-book"></i> {{ __('messages.add.book') }}</a></li>
+                        <li><a href="{{ route('characters.create') }}"><i class="fa fa-user-pen"></i> {{ __('messages.add.character') }}</a></li>
+                        <li><a href="{{ route('teams.create') }}"><i class="fa fa-user-friends"></i> {{ __('messages.add.team') }}</a></li>
+                        <li><a href="{{ route('collections.create') }}"><i class="fa fa-layer-group"></i> {{ __('messages.add.collection') }}</a></li>
+                    </ul>
+                </div>
+                {{-- Đăng xuất để RIÊNG ngoài dropdown, luôn hiện ở cuối --}}
+                <ul class="mobile-menu-logout">
+                    <li><a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-header').submit();"><i class="fa fa-sign-out"></i> {{ __('messages.ui.menu_logout') }}</a></li>
+                </ul>
+            @else
+                <ul>
+                    <li><a href="{{ route('login') }}"><i class="fa fa-sign-in"></i> {{ __('messages.auth.login') }}</a></li>
+                    <li><a href="{{ route('register') }}"><i class="fa fa-user-plus"></i> {{ __('messages.auth.register') }}</a></li>
+                </ul>
+            @endauth
         </nav>
     </div>
+    <script>
+    (function () {
+        var t = document.getElementById('mma-toggle');
+        if (!t) return;
+        function toggle(e) {
+            if (e.target.closest('.mma-coins')) return;   // chừa link xu vẫn bấm được
+            var open = t.classList.toggle('open');
+            t.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+        t.addEventListener('click', toggle);
+        t.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(e); }
+        });
+    })();
+    </script>
 
     {{-- Browse dropdown template used by tippy --}}
     <div class="templates-html">
@@ -274,7 +340,9 @@
         {{-- Language dropdown --}}
         <ul id="header-lang-list" class="header-sublist">
             @foreach(config('locales.supported', []) as $code => $loc)
-                <li><a href="{{ route('locale.switch', $code) }}">{{ $loc['flag'] }} {{ $loc['name'] }}</a></li>
+                <li><a href="{{ route('locale.switch', $code) }}">
+                    @if(!empty($loc['flag_code']))<span class="flag-icon flag-icon-{{ $loc['flag_code'] }}"></span> @endif{{ $loc['name'] }}
+                </a></li>
             @endforeach
         </ul>
 
@@ -334,8 +402,8 @@ window.addEventListener('load', forceLoadImages);
     window.CSRF_TOKEN = "{{ csrf_token() }}";
     window.DAILY_REWARD_CLAIMED = 0;
 </script>
-<script src="{{ asset('static/core/js/mainee8b.js') }}?ver=1.8.0"></script>
-<script src="{{ asset('static/core/js/site-effects.js') }}?ver=1.4"></script>
+<script src="{{ asset('static/core/js/mainee8b.js') }}?ver={{ $assetVer('static/core/js/mainee8b.js') }}"></script>
+<script src="{{ asset('static/core/js/site-effects.js') }}?ver={{ $assetVer('static/core/js/site-effects.js') }}"></script>
 @yield('page_js')
 @stack('scripts')
 @include('client.partials.ads')

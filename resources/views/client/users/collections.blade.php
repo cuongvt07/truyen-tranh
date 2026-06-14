@@ -3,7 +3,7 @@
 
 @section('user_content')
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-    <h2 style="margin:0">{{ __('messages.account.nav_collections') }}</h2>
+    <h2 class="user-tab-title" style="margin:0">{{ __('messages.account.nav_collections') }}</h2>
     @if($isMine ?? false)
         <a href="{{ route('collections.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ __('messages.account.create_collection') }}</a>
     @endif

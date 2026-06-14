@@ -3,12 +3,15 @@
 
 @section('user_content')
 
-<h2><i class="fa fa-history"></i> Reading History</h2>
+<h2 class="user-tab-title"><i class="fa fa-history"></i> Reading History</h2>
 
 @if($history->isEmpty())
-    <div class="nothing">No reading history yet.</div>
+    <div class="block"><div class="nothing" style="padding:40px 0;text-align:center;color:var(--meta-color)">
+        <i class="fa fa-history" style="font-size:32px;opacity:.4;display:block;margin-bottom:10px"></i>
+        No reading history yet.
+    </div></div>
 @else
-    <div class="user-list-grid">
+    <div class="block"><div class="user-list-grid">
         @foreach($history as $item)
             @php $article = $item->article; @endphp
             @if(!$article) @continue @endif
@@ -30,7 +33,7 @@
                 </div>
             </div>
         @endforeach
-    </div>
+    </div></div>
 @endif
 
 @endsection
