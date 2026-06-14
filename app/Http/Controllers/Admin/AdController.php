@@ -71,7 +71,7 @@ class AdController extends Controller
         $ad = Ad::create($data);
         $this->syncItems($request, $ad);
 
-        return redirect()->route('admin.ads.index')->with('success', 'Đã thêm quảng cáo.');
+        return redirect()->route('admin.ads.index')->with('success', __('messages.flash.ad.created'));
     }
 
     public function edit(Ad $ad)
@@ -88,21 +88,21 @@ class AdController extends Controller
         $ad->update($data);
         $this->syncItems($request, $ad);
 
-        return redirect()->route('admin.ads.index')->with('success', 'Đã cập nhật quảng cáo.');
+        return redirect()->route('admin.ads.index')->with('success', __('messages.flash.ad.updated'));
     }
 
     public function destroy(Ad $ad)
     {
         $ad->delete();
 
-        return redirect()->route('admin.ads.index')->with('success', 'Đã xoá quảng cáo.');
+        return redirect()->route('admin.ads.index')->with('success', __('messages.flash.ad.deleted'));
     }
 
     public function toggle(Ad $ad)
     {
         $ad->update(['is_active' => ! $ad->is_active]);
 
-        return redirect()->route('admin.ads.index')->with('success', 'Đã đổi trạng thái quảng cáo.');
+        return redirect()->route('admin.ads.index')->with('success', __('messages.flash.ad.status_changed'));
     }
 
     private function validateData(Request $request): array

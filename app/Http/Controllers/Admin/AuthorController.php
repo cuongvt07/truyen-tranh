@@ -68,7 +68,7 @@ class AuthorController extends Controller
         $request->validated();
         $author = Author::create($request->all());
         return redirect()->route('admin.authors.index')
-            ->with('success', 'Tạo tác giả thành công!');
+            ->with('success', __('messages.flash.author.created'));
     }
 
     /**
@@ -95,7 +95,7 @@ class AuthorController extends Controller
         $request->validated();
         $author->update($request->all());
         return redirect()->route('admin.authors.index')
-            ->with('success', 'Cập nhật thông tin tác giả thành công!');
+            ->with('success', __('messages.flash.author.updated'));
     }
 
     /**
@@ -105,6 +105,6 @@ class AuthorController extends Controller
     {
         $author->delete();
         return redirect()->route('admin.authors.index')
-            ->with('success', 'Xoá tác giả thành công!');
+            ->with('success', __('messages.flash.author.deleted'));
     }
 }

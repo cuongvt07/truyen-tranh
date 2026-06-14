@@ -38,7 +38,7 @@ class CharacterController extends Controller
         // 'type' là cột NOT NULL (default 0): ép int + default 0 để tránh null -> lỗi DB.
         $data['type'] = (int) ($data['type'] ?? 0);
         Character::create($data);
-        return redirect()->route('characters.index')->with('success', 'Thêm nhân vật thành công!');
+        return redirect()->route('characters.index')->with('success', __('messages.flash.character.created'));
     }
 
     public function edit($id)
@@ -54,13 +54,13 @@ class CharacterController extends Controller
         // Chỉ đụng 'type' khi có gửi lên; ép int để không bao giờ ghi null (cột NOT NULL).
         if (array_key_exists('type', $data)) $data['type'] = (int) ($data['type'] ?? 0);
         $item->update($data);
-        return redirect()->route('characters.index')->with('success', 'Cập nhật nhân vật!');
+        return redirect()->route('characters.index')->with('success', __('messages.flash.character.updated'));
     }
 
     public function destroy($id)
     {
         $this->own($id)->delete();
-        return redirect()->route('characters.index')->with('success', 'Đã xoá nhân vật.');
+        return redirect()->route('characters.index')->with('success', __('messages.flash.character.deleted'));
     }
 
     private function validateData(Request $r): array

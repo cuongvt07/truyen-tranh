@@ -24,6 +24,6 @@ class PasswordController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return back()->with('status', 'Đổi mật khẩu thành công!');
+        return back()->with('status', __('messages.flash.password_changed'));
     }
 }

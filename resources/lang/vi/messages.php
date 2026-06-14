@@ -1,6 +1,31 @@
 <?php
 
 return [
+    'flash' => [
+        'profile_updated'  => 'Cập nhật thông tin tài khoản thành công!',
+        'password_changed' => 'Đổi mật khẩu thành công!',
+        'settings_saved'   => 'Cập nhật thành công!',
+        'seo_saved'        => 'Đã lưu cài đặt SEO.',
+        'payment_saved'    => 'Đã lưu cấu hình thanh toán.',
+        'collection'     => ['created' => 'Tạo bộ sưu tập thành công!', 'updated' => 'Cập nhật bộ sưu tập!', 'deleted' => 'Đã xoá bộ sưu tập.'],
+        'team'           => ['created' => 'Tạo nhóm dịch thành công!', 'updated' => 'Cập nhật nhóm dịch!', 'deleted' => 'Đã xoá nhóm dịch.'],
+        'character'      => ['created' => 'Thêm nhân vật thành công!', 'updated' => 'Cập nhật nhân vật!', 'deleted' => 'Đã xoá nhân vật.'],
+        'story'          => ['submitted' => 'Đăng truyện thành công! Truyện đang chờ admin duyệt trước khi hiển thị công khai.', 'updated' => 'Cập nhật truyện thành công!', 'deleted' => 'Đã xoá truyện.', 'chapter_added' => 'Thêm chương thành công!'],
+        'author'         => ['created' => 'Tạo tác giả thành công!', 'updated' => 'Cập nhật thông tin tác giả thành công!', 'deleted' => 'Xoá tác giả thành công!'],
+        'article'        => ['created' => 'Tạo truyện thành công!', 'updated' => 'Sửa thông tin truyện thành công!', 'deleted' => 'Xoá truyện thành công!'],
+        'chapter'        => ['created' => 'Thêm chương mới thành công!', 'updated' => 'Sửa thông tin chương thành công!', 'deleted' => 'Xoá chương thành công!'],
+        'ad'             => ['created' => 'Đã thêm quảng cáo.', 'updated' => 'Đã cập nhật quảng cáo.', 'deleted' => 'Đã xoá quảng cáo.', 'status_changed' => 'Đã đổi trạng thái quảng cáo.'],
+        'genre'          => ['created' => 'Tạo mới thể loại thành công!', 'updated' => 'Cập nhật thông tin thể loại thành công!', 'deleted' => 'Xoá thể loại thành công!'],
+        'credit_package' => ['created' => 'Thêm gói thành công!', 'updated' => 'Cập nhật gói thành công!', 'deleted' => 'Đã xóa gói!'],
+        'static_page'    => ['created' => 'Đã tạo trang.', 'updated' => 'Đã cập nhật trang.', 'deleted' => 'Đã xoá trang.'],
+        'tag'            => ['created' => 'Đã thêm tag.', 'updated' => 'Đã cập nhật tag.', 'deleted' => 'Đã xoá tag.', 'merged' => 'Đã gộp :count tag vào «:name».'],
+        'comment'        => ['deleted' => 'Đã xoá bình luận.', 'bulk_deleted' => 'Đã xoá :count bình luận.', 'report_resolved' => 'Đã đánh dấu xử lý báo cáo của bình luận.'],
+        'chapter_report' => ['resolved' => 'Đã đánh dấu xử lý báo cáo.', 'deleted' => 'Đã xoá báo cáo.'],
+        'forum'          => ['post_approved' => 'Đã duyệt bài viết.', 'post_rejected' => 'Đã từ chối bài viết.', 'post_deleted' => 'Đã xoá bài viết.'],
+        'vip'            => ['granted' => 'Đã cấp VIP thành công!', 'revoked' => 'Đã thu hồi VIP!'],
+        'user'           => ['created' => 'Tạo người dùng thành công!', 'updated' => 'Cập nhật người dùng thành công!', 'role_updated' => 'Cập nhật vai trò thành công!', 'banned' => 'Cấm tài khoản thành công!', 'ban_updated' => 'Sửa lệnh cấm thành công!', 'unbanned' => 'Bỏ cấm thành công!'],
+        'transaction'    => ['status_updated' => 'Cập nhật trạng thái thành công!'],
+    ],
     'nav' => [
         'home'      => 'Trang chủ',
         'browse'    => 'Thể loại',

@@ -72,7 +72,7 @@ class MyArticleController extends Controller
         $this->syncTags($article, $request->input('tags'));
         $article->characters()->sync($request->input('characters', []));
 
-        return redirect()->route('my-articles.index')->with('success', 'Đăng truyện thành công! Truyện đang chờ admin duyệt trước khi hiển thị công khai.');
+        return redirect()->route('my-articles.index')->with('success', __('messages.flash.story.submitted'));
     }
 
     /** Form sửa. */
@@ -108,7 +108,7 @@ class MyArticleController extends Controller
         $this->syncTags($article, $request->input('tags'));
         $article->characters()->sync($request->input('characters', []));
 
-        return redirect()->route('my-articles.index')->with('success', 'Cập nhật truyện thành công!');
+        return redirect()->route('my-articles.index')->with('success', __('messages.flash.story.updated'));
     }
 
     /** Xoá. */
@@ -121,7 +121,7 @@ class MyArticleController extends Controller
         $article->chapters()->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class)->delete();
         $article->delete();
 
-        return redirect()->route('my-articles.index')->with('success', 'Đã xoá truyện.');
+        return redirect()->route('my-articles.index')->with('success', __('messages.flash.story.deleted'));
     }
 
     /** Form thêm chương. */
@@ -160,7 +160,7 @@ class MyArticleController extends Controller
         ]);
         $article->touch();
 
-        return redirect()->route('my-articles.index')->with('success', 'Thêm chương thành công!');
+        return redirect()->route('my-articles.index')->with('success', __('messages.flash.story.chapter_added'));
     }
 
     /* ---------- helpers ---------- */

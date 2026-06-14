@@ -82,7 +82,7 @@ class StaticPageController extends Controller
     {
         StaticPage::create($this->validatedData($request));
 
-        return redirect()->route('admin.static-pages.index')->with('success', 'Đã tạo trang.');
+        return redirect()->route('admin.static-pages.index')->with('success', __('messages.flash.static_page.created'));
     }
 
     public function edit(StaticPage $staticPage)
@@ -97,14 +97,14 @@ class StaticPageController extends Controller
     {
         $staticPage->update($this->validatedData($request, $staticPage->id));
 
-        return redirect()->route('admin.static-pages.index')->with('success', 'Đã cập nhật trang.');
+        return redirect()->route('admin.static-pages.index')->with('success', __('messages.flash.static_page.updated'));
     }
 
     public function destroy(StaticPage $staticPage)
     {
         $staticPage->delete();
 
-        return redirect()->route('admin.static-pages.index')->with('success', 'Đã xoá trang.');
+        return redirect()->route('admin.static-pages.index')->with('success', __('messages.flash.static_page.deleted'));
     }
 
     private function validatedData(Request $request, ?int $ignoreId = null): array

@@ -1,7 +1,33 @@
 <?php
 
 return array (
-  'nav' => 
+  'flash' =>
+  array (
+    'profile_updated' => 'Account information updated successfully!',
+    'password_changed' => 'Password changed successfully!',
+    'settings_saved' => 'Saved successfully!',
+    'seo_saved' => 'SEO settings saved.',
+    'payment_saved' => 'Payment settings saved.',
+    'collection' => array ( 'created' => 'Collection created successfully!', 'updated' => 'Collection updated.', 'deleted' => 'Collection deleted.' ),
+    'team' => array ( 'created' => 'Team created successfully!', 'updated' => 'Team updated.', 'deleted' => 'Team deleted.' ),
+    'character' => array ( 'created' => 'Character added successfully!', 'updated' => 'Character updated.', 'deleted' => 'Character deleted.' ),
+    'story' => array ( 'submitted' => 'Story submitted! It is pending admin approval before going public.', 'updated' => 'Story updated successfully!', 'deleted' => 'Story deleted.', 'chapter_added' => 'Chapter added successfully!' ),
+    'author' => array ( 'created' => 'Author created successfully!', 'updated' => 'Author updated successfully!', 'deleted' => 'Author deleted successfully!' ),
+    'article' => array ( 'created' => 'Story created successfully!', 'updated' => 'Story updated successfully!', 'deleted' => 'Story deleted successfully!' ),
+    'chapter' => array ( 'created' => 'Chapter added successfully!', 'updated' => 'Chapter updated successfully!', 'deleted' => 'Chapter deleted successfully!' ),
+    'ad' => array ( 'created' => 'Ad added.', 'updated' => 'Ad updated.', 'deleted' => 'Ad deleted.', 'status_changed' => 'Ad status changed.' ),
+    'genre' => array ( 'created' => 'Genre created successfully!', 'updated' => 'Genre updated successfully!', 'deleted' => 'Genre deleted successfully!' ),
+    'credit_package' => array ( 'created' => 'Package added successfully!', 'updated' => 'Package updated successfully!', 'deleted' => 'Package deleted!' ),
+    'static_page' => array ( 'created' => 'Page created.', 'updated' => 'Page updated.', 'deleted' => 'Page deleted.' ),
+    'tag' => array ( 'created' => 'Tag added.', 'updated' => 'Tag updated.', 'deleted' => 'Tag deleted.', 'merged' => 'Merged :count tag(s) into «:name».' ),
+    'comment' => array ( 'deleted' => 'Comment deleted.', 'bulk_deleted' => 'Deleted :count comment(s).', 'report_resolved' => 'Comment report marked as resolved.' ),
+    'chapter_report' => array ( 'resolved' => 'Report marked as resolved.', 'deleted' => 'Report deleted.' ),
+    'forum' => array ( 'post_approved' => 'Post approved.', 'post_rejected' => 'Post rejected.', 'post_deleted' => 'Post deleted.' ),
+    'vip' => array ( 'granted' => 'VIP granted successfully!', 'revoked' => 'VIP revoked!' ),
+    'user' => array ( 'created' => 'User created successfully!', 'updated' => 'User updated successfully!', 'role_updated' => 'Role updated successfully!', 'banned' => 'User banned successfully!', 'ban_updated' => 'Ban updated successfully!', 'unbanned' => 'User unbanned successfully!' ),
+    'transaction' => array ( 'status_updated' => 'Status updated successfully!' ),
+  ),
+  'nav' =>
   array (
     'home' => 'Home',
     'browse' => 'Browse',

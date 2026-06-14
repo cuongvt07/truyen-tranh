@@ -36,7 +36,7 @@ class TeamController extends Controller
         $data['user_id'] = Auth::id();
         $data['photo'] = $this->upload($request);
         Team::create($data);
-        return redirect()->route('teams.index')->with('success', 'Tạo nhóm dịch thành công!');
+        return redirect()->route('teams.index')->with('success', __('messages.flash.team.created'));
     }
 
     public function edit($id)
@@ -50,13 +50,13 @@ class TeamController extends Controller
         $data = $this->validateData($request);
         if ($photo = $this->upload($request)) $data['photo'] = $photo;
         $item->update($data);
-        return redirect()->route('teams.index')->with('success', 'Cập nhật nhóm dịch!');
+        return redirect()->route('teams.index')->with('success', __('messages.flash.team.updated'));
     }
 
     public function destroy($id)
     {
         $this->own($id)->delete();
-        return redirect()->route('teams.index')->with('success', 'Đã xoá nhóm dịch.');
+        return redirect()->route('teams.index')->with('success', __('messages.flash.team.deleted'));
     }
 
     private function validateData(Request $r): array

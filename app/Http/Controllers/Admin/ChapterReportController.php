@@ -34,13 +34,13 @@ class ChapterReportController extends Controller
     {
         $report->update(['resolved' => true]);
 
-        return back()->with('success', 'Đã đánh dấu xử lý báo cáo.');
+        return back()->with('success', __('messages.flash.chapter_report.resolved'));
     }
 
     public function destroy(ChapterReport $report)
     {
         $report->delete();
 
-        return back()->with('success', 'Đã xoá báo cáo.');
+        return back()->with('success', __('messages.flash.chapter_report.deleted'));
     }
 }

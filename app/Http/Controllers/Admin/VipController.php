@@ -67,13 +67,13 @@ class VipController extends Controller
         ]);
 
         return redirect()->route('admin.vips.index')
-            ->with('success', 'Đã cấp VIP thành công!');
+            ->with('success', __('messages.flash.vip.granted'));
     }
 
     public function destroy(UserVip $vip)
     {
         $vip->delete();
         return redirect()->route('admin.vips.index')
-            ->with('success', 'Đã thu hồi VIP!');
+            ->with('success', __('messages.flash.vip.revoked'));
     }
 }

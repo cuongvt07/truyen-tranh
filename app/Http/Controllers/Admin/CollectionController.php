@@ -58,7 +58,7 @@ class CollectionController extends Controller
         $data = $this->validateData($request);
         $c = Collection::create($data);
         $c->articles()->sync($request->input('books', []));
-        return redirect()->route('admin.collections.index')->with('success', 'Đã tạo bộ sưu tập!');
+        return redirect()->route('admin.collections.index')->with('success', __('messages.flash.collection.created'));
     }
 
     public function edit(Collection $collection)
@@ -73,14 +73,14 @@ class CollectionController extends Controller
     {
         $collection->update($this->validateData($request));
         $collection->articles()->sync($request->input('books', []));
-        return redirect()->route('admin.collections.index')->with('success', 'Đã cập nhật bộ sưu tập!');
+        return redirect()->route('admin.collections.index')->with('success', __('messages.flash.collection.updated'));
     }
 
     public function destroy(Collection $collection)
     {
         $collection->articles()->detach();
         $collection->delete();
-        return redirect()->route('admin.collections.index')->with('success', 'Đã xoá bộ sưu tập.');
+        return redirect()->route('admin.collections.index')->with('success', __('messages.flash.collection.deleted'));
     }
 
     private function validateData(Request $r): array

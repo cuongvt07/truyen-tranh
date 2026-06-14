@@ -149,7 +149,7 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Tạo người dùng thành công!');
+            ->with('success', __('messages.flash.user.created'));
     }
 
     /**
@@ -188,7 +188,7 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Cập nhật người dùng thành công!');
+            ->with('success', __('messages.flash.user.updated'));
     }
 
     /**
@@ -210,7 +210,7 @@ class UserController extends Controller
         $user->role = $data['role'];
         $user->save();
 
-        return redirect()->route('admin.users.index')->with('success', 'Cập nhật vai trò thành công!');
+        return redirect()->route('admin.users.index')->with('success', __('messages.flash.user.role_updated'));
     }
 
     public function createBan(User $user)
@@ -232,7 +232,7 @@ class UserController extends Controller
         $user->setShouldReLogin(true);
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Cấm tài khoản thành công!');
+            ->with('success', __('messages.flash.user.banned'));
     }
 
     public function editBan(User $user)
@@ -254,7 +254,7 @@ class UserController extends Controller
         $user->setShouldReLogin(true);
 
         return redirect()->route('admin.users.banned')
-            ->with('success', 'Sửa lệnh cấm thành công!');
+            ->with('success', __('messages.flash.user.ban_updated'));
     }
 
     public function unban(User $user)
@@ -266,6 +266,6 @@ class UserController extends Controller
         $user->setShouldReLogin(true);
 
         return redirect()->route('admin.users.banned')
-            ->with('success', 'Bỏ cấm thành công!');
+            ->with('success', __('messages.flash.user.unbanned'));
     }
 }

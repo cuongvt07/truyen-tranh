@@ -66,6 +66,6 @@ class TransactionController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Cập nhật trạng thái thành công!');
+        return redirect()->back()->with('success', __('messages.flash.transaction.status_updated'));
     }
 }

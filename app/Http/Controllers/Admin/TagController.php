@@ -25,21 +25,21 @@ class TagController extends Controller
     {
         $data = $request->validate(['name' => ['required', 'string', 'max:255', 'unique:tags,name']], [], ['name' => 'tên tag']);
         Tag::create($data);
-        return back()->with('success', 'Đã thêm tag.');
+        return back()->with('success', __('messages.flash.tag.created'));
     }
 
     public function update(Request $request, Tag $tag)
     {
         $data = $request->validate(['name' => ['required', 'string', 'max:255', 'unique:tags,name,' . $tag->id]], [], ['name' => 'tên tag']);
         $tag->update($data);
-        return back()->with('success', 'Đã cập nhật tag.');
+        return back()->with('success', __('messages.flash.tag.updated'));
     }
 
     public function destroy(Tag $tag)
     {
         $tag->articles()->detach();
         $tag->delete();
-        return back()->with('success', 'Đã xoá tag.');
+        return back()->with('success', __('messages.flash.tag.deleted'));
     }
 
     /** Gộp nhiều tag vào 1 tag đích. */
@@ -59,6 +59,6 @@ class TagController extends Controller
             $src->articles()->detach();
             $src->delete();
         }
-        return back()->with('success', 'Đã gộp ' . $sources->count() . ' tag vào «' . $target->name . '».');
+        return back()->with('success', __('messages.flash.tag.merged', ['count' => $sources->count(), 'name' => $target->name]));
     }
 }

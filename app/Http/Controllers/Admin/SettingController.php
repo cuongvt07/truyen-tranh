@@ -82,7 +82,7 @@ class SettingController extends Controller
             }
         }
 
-        return redirect()->route('admin.settings.index')->with('success', 'Cập nhật thành công!');
+        return redirect()->route('admin.settings.index')->with('success', __('messages.flash.settings_saved'));
     }
 
 }

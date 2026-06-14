@@ -44,7 +44,7 @@ class CreditPackageController extends Controller
         CreditPackage::create($data);
 
         return redirect()->route('admin.credit-packages.index')
-            ->with('success', 'Thêm gói thành công!');
+            ->with('success', __('messages.flash.credit_package.created'));
     }
 
     public function edit(CreditPackage $creditPackage)
@@ -77,7 +77,7 @@ class CreditPackageController extends Controller
         $creditPackage->update($data);
 
         return redirect()->route('admin.credit-packages.index')
-            ->with('success', 'Cập nhật gói thành công!');
+            ->with('success', __('messages.flash.credit_package.updated'));
     }
 
     private function normalizePackageBenefits(array &$data): void
@@ -96,6 +96,6 @@ class CreditPackageController extends Controller
     {
         $creditPackage->delete();
         return redirect()->route('admin.credit-packages.index')
-            ->with('success', 'Đã xóa gói!');
+            ->with('success', __('messages.flash.credit_package.deleted'));
     }
 }

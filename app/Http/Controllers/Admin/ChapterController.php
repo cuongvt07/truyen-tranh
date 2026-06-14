@@ -99,7 +99,7 @@ class ChapterController extends Controller
         $article->setUpdatedAt(now());
         $article->save();
         return redirect()->route('admin.articles.show_chapters', $article->id)
-            ->with('success', 'Thêm chương mới thành công!');
+            ->with('success', __('messages.flash.chapter.created'));
     }
 
     /**
@@ -135,7 +135,7 @@ class ChapterController extends Controller
         $validateData['published_at'] = Chapter::parsePublishedAt($request->input('published_at'));
         $chapter->update($validateData);
         return redirect()->route('admin.articles.show_chapters', $article->id)
-            ->with('success', 'Sửa thông tin chương thành công!');
+            ->with('success', __('messages.flash.chapter.updated'));
     }
 
     /**
@@ -145,6 +145,6 @@ class ChapterController extends Controller
     {
         $chapter->delete();
         return redirect()->route('admin.articles.show_chapters', $article->id)
-            ->with('success', 'Xoá chương thành công!');
+            ->with('success', __('messages.flash.chapter.deleted'));
     }
 }

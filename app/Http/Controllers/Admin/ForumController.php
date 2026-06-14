@@ -51,7 +51,7 @@ class ForumController extends Controller
 
         $post->update(['status' => StaticPage::STATUS_APPROVED, 'is_active' => true]);
 
-        return back()->with('success', 'Đã duyệt bài viết.');
+        return back()->with('success', __('messages.flash.forum.post_approved'));
     }
 
     // PATCH admin/forum/posts/{post}/reject
@@ -61,7 +61,7 @@ class ForumController extends Controller
 
         $post->update(['status' => StaticPage::STATUS_REJECTED, 'is_active' => false]);
 
-        return back()->with('success', 'Đã từ chối bài viết.');
+        return back()->with('success', __('messages.flash.forum.post_rejected'));
     }
 
     // DELETE admin/forum/posts/{post}
@@ -71,7 +71,7 @@ class ForumController extends Controller
 
         $post->delete();
 
-        return back()->with('success', 'Đã xoá bài viết.');
+        return back()->with('success', __('messages.flash.forum.post_deleted'));
     }
 
     // -------------------------------------------- Static page comment moderate
@@ -99,7 +99,7 @@ class ForumController extends Controller
     {
         $comment->delete();
 
-        return back()->with('success', 'Đã xoá bình luận.');
+        return back()->with('success', __('messages.flash.comment.deleted'));
     }
 
     // POST admin/forum/comments/bulk-destroy
@@ -111,6 +111,6 @@ class ForumController extends Controller
             StaticPageComment::whereIn('id', $ids)->delete();
         }
 
-        return back()->with('success', 'Đã xoá ' . count($ids) . ' bình luận.');
+        return back()->with('success', __('messages.flash.comment.bulk_deleted', ['count' => count($ids)]));
     }
 }

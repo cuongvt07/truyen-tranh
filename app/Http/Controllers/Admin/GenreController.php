@@ -64,7 +64,7 @@ class GenreController extends Controller
         $request->validated();
         $genre = Genre::create($request->all());
         Slug::ensureFor($genre, 'genre', $request->input('slug') ?: $genre->name);
-        return redirect()->route('admin.genres.index')->with('success', 'Tạo mới thể loại thành công!');
+        return redirect()->route('admin.genres.index')->with('success', __('messages.flash.genre.created'));
     }
 
     /**
@@ -92,7 +92,7 @@ class GenreController extends Controller
         $request->validated();
         $genre->update($request->all());
         Slug::ensureFor($genre, 'genre', $request->input('slug') ?: $genre->name);
-        return redirect()->route('admin.genres.index')->with('success', 'Cập nhật thông tin thể loại thành công!');
+        return redirect()->route('admin.genres.index')->with('success', __('messages.flash.genre.updated'));
     }
 
     /**
@@ -101,6 +101,6 @@ class GenreController extends Controller
     public function destroy(Genre $genre)
     {
         $genre->delete();
-        return redirect()->route('admin.genres.index')->with('success', 'Xoá thể loại thành công!');
+        return redirect()->route('admin.genres.index')->with('success', __('messages.flash.genre.deleted'));
     }
 }

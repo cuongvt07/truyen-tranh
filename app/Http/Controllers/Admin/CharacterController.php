@@ -60,7 +60,7 @@ class CharacterController extends Controller
         $data = $this->validateData($request);
         $data['photo'] = $this->upload($request);
         Character::create($data);
-        return redirect()->route('admin.characters.index')->with('success', 'Đã thêm nhân vật!');
+        return redirect()->route('admin.characters.index')->with('success', __('messages.flash.character.created'));
     }
 
     public function edit(Character $character)
@@ -77,14 +77,14 @@ class CharacterController extends Controller
             $data['photo'] = null;
         }
         $character->update($data);
-        return redirect()->route('admin.characters.index')->with('success', 'Đã cập nhật nhân vật!');
+        return redirect()->route('admin.characters.index')->with('success', __('messages.flash.character.updated'));
     }
 
     public function destroy(Character $character)
     {
         $character->articles()->detach();
         $character->delete();
-        return redirect()->route('admin.characters.index')->with('success', 'Đã xoá nhân vật.');
+        return redirect()->route('admin.characters.index')->with('success', __('messages.flash.character.deleted'));
     }
 
     private function validateData(Request $r): array

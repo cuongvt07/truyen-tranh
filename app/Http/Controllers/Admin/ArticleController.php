@@ -121,7 +121,7 @@ class ArticleController extends Controller
             }
         }
 
-        return redirect()->route('admin.articles.index')->with('success', 'Tạo truyện thành công!');
+        return redirect()->route('admin.articles.index')->with('success', __('messages.flash.article.created'));
     }
 
     /**
@@ -190,7 +190,7 @@ class ArticleController extends Controller
             }
         }
 
-        return redirect()->route('admin.articles.index')->with('success', 'Sửa thông tin truyện thành công!');
+        return redirect()->route('admin.articles.index')->with('success', __('messages.flash.article.updated'));
     }
 
 
@@ -201,7 +201,7 @@ class ArticleController extends Controller
     {
         $article->delete();
         return redirect()->route('admin.articles.index')
-            ->with('success', 'Xoá truyện thành công!');
+            ->with('success', __('messages.flash.article.deleted'));
     }
 
     public function updateStatus(

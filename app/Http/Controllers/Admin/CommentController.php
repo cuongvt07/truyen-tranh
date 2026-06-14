@@ -43,7 +43,7 @@ class CommentController extends Controller
     public function resolveReports(Comment $comment)
     {
         $comment->reports()->update(['resolved' => true]);
-        return back()->with('success', 'Đã đánh dấu xử lý báo cáo của bình luận.');
+        return back()->with('success', __('messages.flash.comment.report_resolved'));
     }
 
     public function index(Request $request)
@@ -68,7 +68,7 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         $comment->delete();
-        return back()->with('success', 'Đã xoá bình luận.');
+        return back()->with('success', __('messages.flash.comment.deleted'));
     }
 
     public function bulkDestroy(Request $request)
@@ -77,6 +77,6 @@ class CommentController extends Controller
         if (!empty($ids)) {
             Comment::whereIn('id', $ids)->delete();
         }
-        return back()->with('success', 'Đã xoá ' . count($ids) . ' bình luận.');
+        return back()->with('success', __('messages.flash.comment.bulk_deleted', ['count' => count($ids)]));
     }
 }

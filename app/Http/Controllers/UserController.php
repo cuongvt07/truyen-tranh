@@ -112,7 +112,7 @@ class UserController extends Controller
         $request->user()->save();
 
         return redirect()->route('users.change_info')
-            ->with('status', 'Cập nhật thông tin tài khoản thành công!');
+            ->with('status', __('messages.flash.profile_updated'));
     }
 
     public function changeInfo(Request $request): View

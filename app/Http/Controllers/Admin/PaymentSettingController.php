@@ -72,6 +72,6 @@ class PaymentSettingController extends Controller
             'ip'      => $request->ip(),
         ]);
 
-        return back()->with('success', 'Đã lưu cấu hình thanh toán.');
+        return back()->with('success', __('messages.flash.payment_saved'));
     }
 }

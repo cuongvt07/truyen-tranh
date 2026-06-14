@@ -29,6 +29,6 @@ class SeoController extends Controller
                 ['value' => (string) $request->input($k, ''), 'updated_at' => now()]
             );
         }
-        return back()->with('success', 'Đã lưu cài đặt SEO.');
+        return back()->with('success', __('messages.flash.seo_saved'));
     }
 }

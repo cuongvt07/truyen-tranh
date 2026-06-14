@@ -51,6 +51,6 @@ class StaticPageCommentController extends Controller
 
         $comment->delete();
 
-        return back()->with('success', 'Đã xoá bình luận.');
+        return back()->with('success', __('messages.flash.comment.deleted'));
     }
 }
