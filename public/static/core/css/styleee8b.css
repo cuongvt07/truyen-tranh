@@ -18,6 +18,11 @@
     --input-border-color: #d7d7d7;
     --input-background-color: #fff;
 
+    /* Định nghĩa --bg / --border (trước đây KHÔNG có -> nhiều form fallback về màu tối #131320,
+       gây "input đen" trên nền sáng). Đặt sáng ở đây để fix TẤT CẢ form 1 lần & chống tái diễn. */
+    --bg: #fff;
+    --border: #d7d7d7;
+
     --scrollbar-bg-color: var(--body-color);
     --scrollbar-el-color: #b3b3b3;
 

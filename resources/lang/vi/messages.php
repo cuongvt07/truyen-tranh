@@ -453,7 +453,7 @@ return [
         'posted_by' => 'Đăng bởi',
         'follow' => 'Theo dõi',
         'previous_chapter' => 'Chương trước',
-        'next_chapter' => 'Chương tiếp',
+        'next_chapter' => 'Chương sau',
         'comments' => 'Bình luận',
         'write_comment_placeholder' => 'Viết bình luận...',
         'send' => 'Gửi',
