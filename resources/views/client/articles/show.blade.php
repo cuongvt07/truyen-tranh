@@ -118,40 +118,34 @@
                     </div>
                 </section>
 
-                {{-- Similar — khối dọc --}}
+                {{-- Similar — lưới 2 cột kiểu Popular --}}
                 @if(($suggestedArticles ?? collect())->count())
                 <section class="manga-list section">
                     <h2 class="section-title"><span>{{ __('messages.article.similar') }}</span></h2>
-                    <div class="vlist">
+                    <div class="manga-grid">
                         @foreach($suggestedArticles as $s)
-                            <a href="{{ route('articles.show', $s) }}" class="vlist-item">
-                                <div class="vlist-poster image image-cover lazy-load-bg">
+                            <a href="{{ route('articles.show', $s) }}" class="manga-item">
+                                <div class="poster image image-cover lazy-load-bg">
                                     <img class="lazy-image" loading="eager" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
                                 </div>
-                                <div class="vlist-info">
-                                    <div class="vlist-title clamp clamp-2">{{ $s->title }}</div>
-                                    <div class="meta-color">{{ $s->is_completed ? __('messages.common.completed') : __('messages.common.ongoing') }}</div>
-                                </div>
+                                <div class="title clamp clamp-2">{{ $s->title }}</div>
                             </a>
                         @endforeach
                     </div>
                 </section>
                 @endif
 
-                {{-- Đề xuất dịch (Translation requests) — khối dọc --}}
+                {{-- Đề xuất dịch (Translation requests) — lưới 2 cột kiểu Popular --}}
                 @if(($translationRequests ?? collect())->count())
                 <section class="manga-list section">
                     <h2 class="section-title"><span>{{ __('messages.article.translation_requests') }}</span></h2>
-                    <div class="vlist">
+                    <div class="manga-grid">
                         @foreach($translationRequests as $s)
-                            <a href="{{ route('articles.show', $s) }}" class="vlist-item">
-                                <div class="vlist-poster image image-cover lazy-load-bg">
+                            <a href="{{ route('articles.show', $s) }}" class="manga-item">
+                                <div class="poster image image-cover lazy-load-bg">
                                     <img class="lazy-image" loading="eager" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
                                 </div>
-                                <div class="vlist-info">
-                                    <div class="vlist-title clamp clamp-2">{{ $s->title }}</div>
-                                    <div class="meta-color">{{ $s->is_completed ? __('messages.common.completed') : __('messages.common.ongoing') }}</div>
-                                </div>
+                                <div class="title clamp clamp-2">{{ $s->title }}</div>
                             </a>
                         @endforeach
                     </div>
@@ -560,15 +554,11 @@ li.comment:last-child{border-bottom:none}
 .comment-report-box h4{margin:0 0 6px}
 .comment-report-box .form-control{width:100%;margin:12px 0;padding:10px;border:1px solid var(--border,#d9dee7);border-radius:8px;background:var(--bg-input,#fff);color:inherit}
 .comment-report-box .report-actions{display:flex;justify-content:flex-end;gap:10px}
-/* Khối dọc cho Similar / Translation requests (thay swiper ngang) */
-.vlist{display:flex;flex-direction:column;gap:10px}
-.vlist-item{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text-color);padding:6px;border-radius:6px;transition:background .15s}
-.vlist-item:hover{background:var(--bg-soft,#f2f4f7)}
-.vlist-poster{width:52px;height:72px;border-radius:5px;overflow:hidden;flex-shrink:0}
-.vlist-poster img{width:100%;height:100%;object-fit:cover}
-.vlist-info{min-width:0}
-.vlist-title{font-weight:600;font-size:14px;line-height:1.3}
-.vlist-info .meta-color{font-size:12px;margin-top:3px}
+/* Similar / Translation requests — lưới 2 cột kiểu Popular */
+.article-detail-flex .manga-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.article-detail-flex .manga-grid .manga-item{margin:0;width:auto;display:block}
+.article-detail-flex .manga-grid .poster{height:130px;margin-bottom:5px}
+.article-detail-flex .manga-grid .title{font-size:12px;line-height:1.3;font-weight:500}
 </style>
 @endpush
 

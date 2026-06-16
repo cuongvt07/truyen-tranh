@@ -17,11 +17,9 @@
             <a href="{{ !empty($featured['id']) ? route('checkout.show', $featured['id']) : route('client.paypoints') }}" class="image image-cover lazy-load-bg">
                 <img class="lazy-image" loading="eager" src="{{ asset($featured['icon']) }}" alt="{{ $featured['name'] }}">
             </a>
-            <div class="recommended-product__info">
-                <div class="recommended-product__info-title">
-                    <h2 class="price_item__title block-title">{{ $featured['name'] }}</h2>
-                    <div class="recommended-coupons"><i class="fa fa-coins" style="color:#f0c040"></i> {{ number_format($featured['coins']) }} {{ coin_name() }}</div>
-                </div>
+            <h2 class="price_item__title block-title">{{ $featured['name'] }}</h2>
+            <div class="recommended-product__desc-row">
+                <div class="recommended-coupons"><i class="fa fa-coins" style="color:#f0c040"></i> {{ number_format($featured['coins']) }} {{ coin_name() }}</div>
                 @auth
                     @if(!empty($featured['id']))
                         <a href="{{ route('checkout.show', $featured['id']) }}" class="btn btn-primary">{{ $featured['price'] }}</a>
@@ -40,10 +38,12 @@
             <a href="{{ !empty($premium['id']) ? route('checkout.show', $premium['id']) : route('client.paypoints') }}" class="image image-cover lazy-load-bg">
                 <img class="lazy-image" loading="eager" src="{{ asset($premium['icon']) }}" alt="{{ $premium['name'] }}">
             </a>
-            <div class="recommended-product__info">
-                <div class="recommended-product__info-title">
-                    <h2 class="price_item__title block-title">{{ $premium['name'] }}</h2>
-                    <div class="recommended-coupons"><i class="fa fa-crown" style="color:#f0c040"></i> {{ $premium['desc'] }}</div>
+            <h2 class="price_item__title block-title">{{ $premium['name'] }}</h2>
+            <div class="recommended-product__desc-row">
+                <div class="recommended-coupons">
+                    @foreach(explode(' · ', $premium['desc']) as $line)
+                        <div><i class="fa fa-check-circle" style="color:#1f9d55"></i> {{ $line }}</div>
+                    @endforeach
                 </div>
                 @auth
                     @if(!empty($premium['id']))

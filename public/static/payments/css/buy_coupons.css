@@ -44,25 +44,23 @@
 }
 .recommended-product .image {
     display: block;
-    max-height: 220px;        /* thu nhỏ icon/ảnh để chừa chỗ cho subtitle nhiều dòng */
+    max-height: 160px;
     height: auto;
     margin-bottom: 10px;
 }
-.recommended-product .image img { max-height: 220px; object-fit: contain; }
-.recommended-product__info {
+.recommended-product .image img { max-height: 160px; object-fit: contain; }
+.recommended-product .price_item__title { margin-bottom: 8px; }
+.recommended-product__desc-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap;
+    gap: 20px;
 }
-.recommended-product__info-title { min-width: 0; flex: 1; }
+.recommended-product__desc-row .recommended-coupons { flex: 1; min-width: 0; }
+.recommended-product__desc-row .btn { flex-shrink: 0; min-width: 120px; }
 .recommended-product .recommended-coupons {
-    font-size: 13px; line-height: 1.5; color: var(--meta-color, #888);
-    white-space: normal;       /* cho phép subtitle xuống dòng (nhiều lợi ích) */
-}
-.recommended-product__info .btn {
-    min-width: 120px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--meta-color, #888);
 }
 @media only screen and (max-width: 900px) {
     .huge-recomendations {
