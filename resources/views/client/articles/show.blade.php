@@ -120,12 +120,12 @@
 
                 {{-- Similar — swiper 4 per view + arrows --}}
                 @if(($suggestedArticles ?? collect())->count())
-                <section class="manga-list section swp-single swp-4">
+                <section class="manga-list section swp swp-single swp-4">
                     <h2 class="section-title">
                         <span>{{ __('messages.article.similar') }}</span>
                         <div class="arrows">
-                            <div class="swiper-left"><i class="fa fa-chevron-left"></i></div>
-                            <div class="swiper-right"><i class="fa fa-chevron-right"></i></div>
+                            <div class="btn btn-invincible swiper-left"><i class="fa fa-chevron-left"></i></div>
+                            <div class="btn btn-invincible swiper-right"><i class="fa fa-chevron-right"></i></div>
                         </div>
                     </h2>
                     <div class="swiper-container">
@@ -147,12 +147,12 @@
 
                 {{-- Đề xuất dịch (Translation requests) — swiper 4 per view + arrows --}}
                 @if(($translationRequests ?? collect())->count())
-                <section class="manga-list section swp-single swp-4">
+                <section class="manga-list section swp swp-single swp-4">
                     <h2 class="section-title">
                         <span>{{ __('messages.article.translation_requests') }}</span>
                         <div class="arrows">
-                            <div class="swiper-left"><i class="fa fa-chevron-left"></i></div>
-                            <div class="swiper-right"><i class="fa fa-chevron-right"></i></div>
+                            <div class="btn btn-invincible swiper-left"><i class="fa fa-chevron-left"></i></div>
+                            <div class="btn btn-invincible swiper-right"><i class="fa fa-chevron-right"></i></div>
                         </div>
                     </h2>
                     <div class="swiper-container">
@@ -576,7 +576,8 @@ li.comment:last-child{border-bottom:none}
 .comment-report-box .report-actions{display:flex;justify-content:flex-end;gap:10px}
 /* Similar / Translation requests — swiper 4 per view */
 .swp-4 .poster{height:200px;margin-bottom:6px}
-.swp-4 .manga-item{display:block}
+.swp-4 .manga-item{display:block;color:var(--text-color)}
+.swp-4 .manga-item:visited{color:var(--text-color)}
 .swp-4 .title{font-size:13px;line-height:1.3;font-weight:500}
 </style>
 @endpush
