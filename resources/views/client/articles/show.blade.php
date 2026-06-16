@@ -576,7 +576,7 @@ li.comment:last-child{border-bottom:none}
 .comment-report-box .report-actions{display:flex;justify-content:flex-end;gap:10px}
 /* Similar / Translation requests — swiper 4 per view */
 .swp-4 .poster{height:200px;margin-bottom:6px}
-.swp-4 .manga-item{display:block;color:var(--text-color)}
+.swp-4 .manga-item{display:block;color:var(--text-color);text-decoration:none}
 .swp-4 .manga-item:visited{color:var(--text-color)}
 .swp-4 .title{font-size:13px;line-height:1.3;font-weight:500}
 </style>
