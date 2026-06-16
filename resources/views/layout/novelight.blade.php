@@ -136,8 +136,13 @@
         <div class="header__inner">
             <div id="header-mobile-btn" class="header-btn open-close" p-target="fullscreen-mobile-menu"
                  p-target-class="active" p-event="burgerMenuOpenClose"><i class="fa fa-bars"></i></div>
+            @php $siteName = setting('site_name') ?: config('app.name'); @endphp
             <a href="{{ route('home.index') }}" class="logo">
-                <img src="{{ asset('static/core/images/logo.png') }}" alt="{{ config('app.name') }}">
+                @if(setting('logo_file'))
+                    <img src="{{ asset('storage/' . setting('logo_file')) }}" alt="{{ $siteName }}">
+                @else
+                    <img src="{{ asset('static/core/images/logo.png') }}" alt="{{ $siteName }}">
+                @endif
             </a>
             <nav class="header-nav">
                 <ul>
