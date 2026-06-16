@@ -5,12 +5,13 @@
                 <span class="sr-only">Show Menu</span><span class="icon-bar"></span><span class="icon-bar"></span><span
                     class="icon-bar"></span>
             </button>
+            @php $siteName = setting('site_name') ?: config('app.name', 'Laravel'); @endphp
             <h1>
-                <a class="header-logo" href="/" title="{{ config('app.name', 'Laravel') }}">
+                <a class="header-logo" href="/" title="{{ $siteName }}">
                     @if(setting('logo_file'))
-                        <img src="{{ asset('storage/' . setting('logo_file')) }}" alt="{{ config('app.name', 'Laravel') }}" style="max-height:50px;">
+                        <img src="{{ asset('storage/' . setting('logo_file')) }}" alt="{{ $siteName }}" style="max-height:50px;">
                     @else
-                        {{ config('app.name', 'Laravel') }}
+                        {{ $siteName }}
                     @endif
                 </a>
             </h1>
