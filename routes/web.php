@@ -270,6 +270,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('vips', [\App\Http\Controllers\Admin\VipController::class, 'index'])->name('vips.index');
             Route::get('vips/create', [\App\Http\Controllers\Admin\VipController::class, 'create'])->name('vips.create');
             Route::post('vips', [\App\Http\Controllers\Admin\VipController::class, 'store'])->name('vips.store');
+            Route::get('vips/{vip}', [\App\Http\Controllers\Admin\VipController::class, 'show'])->name('vips.show');
+            Route::get('vips/{vip}/edit', [\App\Http\Controllers\Admin\VipController::class, 'edit'])->name('vips.edit');
+            Route::put('vips/{vip}', [\App\Http\Controllers\Admin\VipController::class, 'update'])->name('vips.update');
             Route::delete('vips/{vip}', [\App\Http\Controllers\Admin\VipController::class, 'destroy'])->name('vips.destroy');
             // Cấu hình thanh toán (chỉ super-admin — chứa secret PayPal)
             Route::middleware('check_role:'.UserRole::ADMIN->value)->group(function () {

@@ -23,7 +23,7 @@ return array (
     'comment' => array ( 'deleted' => 'Comment deleted.', 'bulk_deleted' => 'Deleted :count comment(s).', 'report_resolved' => 'Comment report marked as resolved.' ),
     'chapter_report' => array ( 'resolved' => 'Report marked as resolved.', 'deleted' => 'Report deleted.' ),
     'forum' => array ( 'post_approved' => 'Post approved.', 'post_rejected' => 'Post rejected.', 'post_deleted' => 'Post deleted.' ),
-    'vip' => array ( 'granted' => 'VIP granted successfully!', 'revoked' => 'VIP revoked!' ),
+    'vip' => array ( 'granted' => 'VIP granted successfully!', 'revoked' => 'VIP revoked!', 'updated' => 'VIP updated successfully!' ),
     'user' => array ( 'created' => 'User created successfully!', 'updated' => 'User updated successfully!', 'role_updated' => 'Role updated successfully!', 'banned' => 'User banned successfully!', 'ban_updated' => 'Ban updated successfully!', 'unbanned' => 'User unbanned successfully!' ),
     'transaction' => array ( 'status_updated' => 'Status updated successfully!' ),
   ),
