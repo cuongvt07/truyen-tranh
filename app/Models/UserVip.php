@@ -17,10 +17,10 @@ class UserVip extends Model
         'end_at',
     ];
 
-    protected $dates = [
-        'start_at',
-        'end_at',
-        'last_daily_credit_at',
+    protected $casts = [
+        'start_at'             => 'datetime',
+        'end_at'               => 'datetime',
+        'last_daily_credit_at' => 'datetime',
     ];
 
     public function user()
