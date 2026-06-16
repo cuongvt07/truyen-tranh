@@ -23,28 +23,16 @@
 
         {{-- Avatar --}}
         <div class="form-row">
-            <label class="form-label">{{ __('messages.account.avatar') }}</label>
-            <div class="img-upload">
-                <div class="img-preview" style="border-radius:50%">
-                    <img src="{{ $user->avatar ?: asset('static/account/images/no-ava.jpg') }}" alt="">
-                </div>
-                <input type="file" name="avatar" accept="image/jpeg,image/png,image/gif,image/webp" data-max-mb="4">
-            </div>
-            <div class="upload-hint">JPG, PNG, GIF, WebP · {{ __('messages.account.upload_max', ['size' => '4MB']) }}</div>
-            <div class="upload-error" hidden></div>
+            <x-image-upload name="avatar" :label="__('messages.account.avatar')" :max-mb="4" circle
+                :current="$user->avatar ?: asset('static/account/images/no-ava.jpg')"
+                :hint="'JPG, PNG, GIF, WebP · '.__('messages.account.upload_max', ['size' => '4MB'])" />
         </div>
 
         {{-- Background --}}
         <div class="form-row">
-            <label class="form-label">{{ __('messages.account.background') }}</label>
-            <div class="img-upload">
-                <div class="img-preview wide">
-                    <img src="{{ $user->background ?: ($user->avatar ?: asset('static/core/images/no_cover.webp')) }}" alt="">
-                </div>
-                <input type="file" name="background" accept="image/jpeg,image/png,image/gif,image/webp" data-max-mb="8">
-            </div>
-            <div class="upload-hint">JPG, PNG, GIF, WebP · {{ __('messages.account.upload_max', ['size' => '8MB']) }}</div>
-            <div class="upload-error" hidden></div>
+            <x-image-upload name="background" :label="__('messages.account.background')" :max-mb="8" :height="100"
+                :current="$user->background ?: null"
+                :hint="'JPG, PNG, GIF, WebP · '.__('messages.account.upload_max', ['size' => '8MB'])" />
         </div>
 
         <div class="form-row">
@@ -91,69 +79,6 @@
     background:var(--input-background-color,#fff); color:var(--text-color,#272727); font-size:14px;
 }
 .settings-form input::placeholder, .settings-form textarea::placeholder { color:var(--meta-color,#999); }
-.settings-form .img-upload { display:flex; align-items:center; gap:14px; }
-.settings-form .img-preview { width:80px; height:80px; overflow:hidden; border:1px solid var(--border,#2a2a3e); border-radius:8px; flex-shrink:0; }
-.settings-form .img-preview.wide { width:160px; height:80px; }
-.settings-form .img-preview img { width:100%; height:100%; object-fit:cover; }
-.settings-form .upload-hint { font-size:12px; color:var(--meta-color,#999); margin-top:6px; }
-.settings-form .upload-error { font-size:13px; color:#e3342f; margin-top:6px; font-weight:500; }
 .list-names .btn { text-decoration:none; }
 </style>
-
-<script>
-(function () {
-    var form = document.querySelector('.settings-form');
-    if (!form) return;
-    var ALLOWED = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    var MSG_TYPE = @json(__('messages.account.upload_invalid_type'));
-    var MSG_SIZE = @json(__('messages.account.upload_too_large'));
-
-    form.querySelectorAll('input[type=file]').forEach(function (input) {
-        var row = input.closest('.form-row');
-        var errBox = row.querySelector('.upload-error');
-        var previewImg = row.querySelector('.img-preview img');
-        var maxBytes = (parseFloat(input.getAttribute('data-max-mb')) || 4) * 1024 * 1024;
-
-        function showError(msg) {
-            errBox.textContent = msg;
-            errBox.hidden = false;
-            input.value = '';            // bỏ file sai để không submit
-            input.setAttribute('data-invalid', '1');
-        }
-        function clearError() {
-            errBox.hidden = true;
-            input.removeAttribute('data-invalid');
-        }
-
-        input.addEventListener('change', function () {
-            clearError();
-            var file = input.files && input.files[0];
-            if (!file) return;
-            // Kiểm tra ĐỊNH DẠNG (báo luôn)
-            if (ALLOWED.indexOf(file.type) === -1) {
-                showError(MSG_TYPE);
-                return;
-            }
-            // Kiểm tra DUNG LƯỢNG (báo luôn)
-            if (file.size > maxBytes) {
-                var mb = (file.size / 1024 / 1024).toFixed(1);
-                var limit = (maxBytes / 1024 / 1024);
-                showError(MSG_SIZE.replace(':size', mb + 'MB').replace(':max', limit + 'MB'));
-                return;
-            }
-            // Hợp lệ -> xem trước ngay
-            if (previewImg) previewImg.src = URL.createObjectURL(file);
-        });
-    });
-
-    // Chặn submit nếu còn file không hợp lệ
-    form.addEventListener('submit', function (e) {
-        var bad = form.querySelector('input[type=file][data-invalid="1"]');
-        if (bad) {
-            e.preventDefault();
-            bad.focus();
-        }
-    });
-})();
-</script>
 @endsection

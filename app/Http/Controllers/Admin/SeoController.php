@@ -18,6 +18,14 @@ class SeoController extends Controller
     /** Lưu cài đặt SEO. */
     public function updateSettings(Request $request)
     {
+        // Ảnh OG: upload từ máy được ưu tiên hơn URL gõ tay.
+        $request->validate(['default_og_image_file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:4096']);
+        if ($request->hasFile('default_og_image_file')) {
+            $request->merge([
+                'default_og_image' => 'storage/' . $request->file('default_og_image_file')->store('images/seo', 'public'),
+            ]);
+        }
+
         $keys = [
             'site_name', 'title_separator', 'default_description', 'default_keywords', 'default_og_image',
             'og_locale', 'facebook_page_url', 'facebook_app_id', 'twitter_username',

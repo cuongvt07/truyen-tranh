@@ -20,7 +20,10 @@ class HomeController extends Controller
             ->withMax('chapters', 'created_at') // ngày chương mới nhất (đã đăng) -> chapters_max_created_at
             ->take(30)->get();
         $completedArticles   = Article::getCompletedArticles()->take(12)->get();
-        $randomArticles      = Article::inRandomOrder()->take(12)->get();   // Translation requests
+        // "Translation requests": truyện do USER tự gửi (/dang-truyen) đã được admin DUYỆT
+        // (ApprovedArticleScope tự lọc status=APPROVED), mới nhất.
+        $userSubmittedArticles = Article::where('is_user_submitted', true)
+            ->latest('id')->take(12)->get();
         $lastComments        = DB::table('comments')
                                  ->join('users', 'users.id', '=', 'comments.user_id')
                                  ->join('articles', 'articles.id', '=', 'comments.article_id')
@@ -62,7 +65,7 @@ class HomeController extends Controller
             'hotArticles'       => $hotArticles,
             'newUpdateArticles' => $newUpdateArticles,
             'completedArticles' => $completedArticles,
-            'randomArticles'    => $randomArticles,
+            'userSubmittedArticles' => $userSubmittedArticles,
             'lastComments'      => $lastComments,
             'readingHistory'    => $readingHistory,
             'lastCollections'   => $lastCollections,

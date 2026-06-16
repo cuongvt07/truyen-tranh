@@ -53,9 +53,14 @@ class ClientLayoutServiceProvider extends ServiceProvider
                 }
             }
 
+            $unreadNotifCount = ($isUserLoggedIn && $currentUser)
+                ? $currentUser->unreadNotifications()->count()
+                : 0;
+
             $view->with('genres', $genres)
                 ->with('currentUser', $currentUser)
                 ->with('isUserLoggedIn', $isUserLoggedIn)
+                ->with('unreadNotifCount', $unreadNotifCount)
                 ->with('activeVipDays', $activeVipDays);
         });
     }

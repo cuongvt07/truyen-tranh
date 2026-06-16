@@ -40,31 +40,8 @@
                 <textarea name="description" rows="5">{{ old('description', $article->description) }}</textarea>
             </div>
 
-            <div class="frow-2">
-                <div class="frow">
-                    <label>{{ __('messages.myarticle.cover_image_upload') }}</label>
-                    <input type="file" name="cover_image" accept="image/*">
-                </div>
-                <div class="frow">
-                    <label>{{ __('messages.myarticle.cover_image_url') }}</label>
-                    <input type="text" name="cover_image_url" placeholder="https://..." value="{{ old('cover_image_url') }}">
-                </div>
-            </div>
-
-            @if($article->exists && $article->cover_image)
-                <div class="frow"><img src="{{ novel_poster($article) }}" style="width:90px;border-radius:6px"></div>
-            @endif
-
-            <div class="frow-2">
-                <div class="frow">
-                    <label>{{ __('messages.myarticle.background_upload') }}</label>
-                    <input type="file" name="background" accept="image/*">
-                </div>
-                <div class="frow">
-                    <label>{{ __('messages.myarticle.background_url') }}</label>
-                    <input type="text" name="background_url" placeholder="https://..." value="{{ old('background_url') }}">
-                </div>
-            </div>
+            {{-- Truyện do user gửi = chỉ TEXT (yêu cầu dịch). Không cho upload ảnh bìa/nền;
+                 admin sẽ thêm ảnh khi nhận dịch. User chỉ up được avatar ở trang hồ sơ. --}}
 
             <div class="frow-2">
                 <div class="frow">

@@ -98,6 +98,7 @@ class ChapterController extends Controller
         $chapter = Chapter::create($validateData);
         $article->setUpdatedAt(now());
         $article->save();
+        $chapter->dispatchNewChapterNotification(); // báo người theo dõi (bỏ qua nếu hẹn giờ)
         return redirect()->route('admin.articles.show_chapters', $article->id)
             ->with('success', __('messages.flash.chapter.created'));
     }

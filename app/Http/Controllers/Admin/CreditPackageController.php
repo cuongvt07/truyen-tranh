@@ -30,10 +30,17 @@ class CreditPackageController extends Controller
             'price_usd'     => 'nullable|numeric|min:0',
             'price_display' => 'nullable|string|max:50',
             'icon'          => 'nullable|string|max:500',
+            'icon_file'     => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:4096',
             'is_featured'   => 'boolean',
             'sort_order'    => 'integer|min:0',
             'is_active'     => 'boolean',
         ]);
+
+        // Upload từ máy được ưu tiên hơn đường dẫn gõ tay.
+        if ($request->hasFile('icon_file')) {
+            $data['icon'] = 'storage/' . $request->file('icon_file')->store('images/payments', 'public');
+        }
+        unset($data['icon_file']);
 
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_active']   = $request->boolean('is_active');
@@ -63,10 +70,17 @@ class CreditPackageController extends Controller
             'price_usd'     => 'nullable|numeric|min:0',
             'price_display' => 'nullable|string|max:50',
             'icon'          => 'nullable|string|max:500',
+            'icon_file'     => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:4096',
             'is_featured'   => 'boolean',
             'sort_order'    => 'integer|min:0',
             'is_active'     => 'boolean',
         ]);
+
+        // Upload từ máy được ưu tiên hơn đường dẫn gõ tay.
+        if ($request->hasFile('icon_file')) {
+            $data['icon'] = 'storage/' . $request->file('icon_file')->store('images/payments', 'public');
+        }
+        unset($data['icon_file']);
 
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_active']   = $request->boolean('is_active');

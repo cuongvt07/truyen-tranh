@@ -8,7 +8,10 @@
     ];
 
     $activeStatus = $currentListStatus ?? (($hasStartedReading ?? false) ? 'reading' : null);
-    $buttonText = $activeStatus ? ($statuses[$activeStatus] ?? __('messages.article.reading')) : __('messages.article.add_to_list');
+    // Truyện user gửi / chưa có chương -> nhãn "I want this" (xanh nhẹ) thay cho "Add to list".
+    $wantThis = $wantThisMode ?? false;
+    $defaultLabel = $wantThis ? __('messages.article.want_this') : __('messages.article.add_to_list');
+    $buttonText = $activeStatus ? ($statuses[$activeStatus] ?? __('messages.article.reading')) : $defaultLabel;
 @endphp
 
 @once
@@ -90,16 +93,26 @@
 }
 .tippy-box[data-theme~="light"]:has(.add-to-list__content) .tippy-content { padding: 0; }
 .tippy-box[data-theme~="light"]:has(.add-to-list__content) .tippy-arrow { display: none; }
+
+/* "I want this" — truyện user gửi / chưa có chương: nút xanh nhẹ + số người quan tâm */
+.btn-add-to-list.want-this { background: #e7f3ff; color: #0a6ebd; border: 1px solid #b6dcff; }
+.btn-add-to-list.want-this .btn-list { background: #d3e9ff; color: #0a6ebd; }
+.btn-add-to-list.want-this:hover { background: #d3e9ff; }
+.want-this-count { margin-top: 6px; font-size: 13px; color: var(--meta-color, #888); text-align: center; }
+.want-this-count .fa-heart { color: #ff6b81; margin-right: 4px; }
 </style>
 @endonce
 
 @auth
     <div class="add-to-list-wrap">
-        <button type="button" class="btn btn-add-to-list" aria-expanded="{{ $activeStatus ? 'true' : 'false' }}">
+        <button type="button" class="btn btn-add-to-list {{ $wantThis && !$activeStatus ? 'want-this' : '' }}" aria-expanded="{{ $activeStatus ? 'true' : 'false' }}">
             <span></span>
             <span class="text-add-to-list">{{ $buttonText }}</span>
             <span class="btn-list"><i class="fa fa-list"></i></span>
         </button>
+        @if($wantThis && isset($interestCount))
+            <div class="want-this-count"><i class="fa fa-heart"></i> {{ __('messages.article.interested_count', ['count' => number_format($interestCount)]) }}</div>
+        @endif
 
         <div class="tinny-content__inner add-to-list__content">
             @foreach($statuses as $status => $label)
@@ -124,9 +137,12 @@
         </div>
     </div>
 @else
-    <a href="{{ route('login') }}" class="btn btn-add-to-list" aria-expanded="false">
+    <a href="{{ route('login') }}" class="btn btn-add-to-list {{ $wantThis ? 'want-this' : '' }}" aria-expanded="false">
         <span></span>
-        <span class="text-add-to-list">{{ __('messages.article.add_to_list') }}</span>
+        <span class="text-add-to-list">{{ $defaultLabel }}</span>
         <span class="btn-list"><i class="fa fa-list"></i></span>
     </a>
+    @if($wantThis && isset($interestCount))
+        <div class="want-this-count"><i class="fa fa-heart"></i> {{ __('messages.article.interested_count', ['count' => number_format($interestCount)]) }}</div>
+    @endif
 @endauth

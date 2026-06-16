@@ -17,6 +17,7 @@ class Chapter extends Model
 
     protected $casts = [
         'published_at' => 'datetime',
+        'notified_at' => 'datetime',
     ];
 
     /**
@@ -35,6 +36,32 @@ class Chapter extends Model
     public function isScheduled(): bool
     {
         return $this->published_at !== null && $this->published_at->isFuture();
+    }
+
+    /**
+     * Gửi thông báo cho những người đã add truyện vào list (bookmark / quan tâm).
+     * - Đăng ngay  -> "chương mới N".
+     * - Hẹn giờ    -> "chương N sắp ra (ngày X)".
+     * Idempotent: chỉ gửi 1 lần (đánh dấu notified_at) -> khỏi cần cron/scheduler.
+     */
+    public function dispatchNewChapterNotification(): void
+    {
+        if ($this->notified_at !== null) {
+            return;
+        }
+
+        $authorId = \App\Models\Article::withoutGlobalScopes()->where('id', $this->article_id)->value('user_id');
+        $userIds = \App\Models\Bookmark::where('article_id', $this->article_id)
+            ->pluck('user_id')->unique()
+            ->reject(fn ($id) => $id === $authorId)   // không tự báo tác giả
+            ->values();
+
+        if ($userIds->isNotEmpty()) {
+            $users = \App\Models\User::whereIn('id', $userIds)->get();
+            \Illuminate\Support\Facades\Notification::send($users, new \App\Notifications\NewChapterNotification($this));
+        }
+
+        $this->forceFill(['notified_at' => now()])->saveQuietly();
     }
 
     /**

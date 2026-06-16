@@ -17,9 +17,11 @@
                     <option value="2" {{ old('type',$item->type)==2?'selected':'' }}>{{ __('messages.community.character_other') }}</option>
                 </select>
             </div>
-            <div class="frow"><label>{{ __('messages.community.photo_upload') }}</label><input type="file" name="photo" accept="image/*"></div>
-            <div class="frow"><label>{{ __('messages.community.photo_url') }}</label><input type="text" name="photo_url" placeholder="https://..."></div>
-            @if($item->exists && $item->photo)<div class="frow"><img src="{{ $item->photo }}" style="width:80px;border-radius:50%"></div>@endif
+            <div class="frow">
+                <x-image-upload name="photo" :label="__('messages.community.photo_upload')"
+                    url-name="photo_url" :url-value="old('photo_url')"
+                    :current="$item->photo ?: null" circle />
+            </div>
             <div class="frow"><label>{{ __('messages.community.description') }}</label><textarea name="description" rows="5">{{ old('description', $item->description) }}</textarea></div>
             <div style="display:flex;gap:10px"><button type="submit" class="btn btn-primary">{{ $mode === 'create' ? __('messages.community.add') : __('messages.community.save') }}</button><a href="{{ route('characters.index') }}" class="btn btn-invincible">{{ __('messages.community.cancel') }}</a></div>
         </form>

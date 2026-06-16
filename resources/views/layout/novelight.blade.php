@@ -163,7 +163,10 @@
                     <div id="add-item-btn" class="header-btn header-add"><i class="fa fa-plus"></i></div>
 
                     {{-- Chuông thông báo --}}
-                    <a href="#" class="header-btn header-bell"><i class="fa fa-bell"></i></a>
+                    <a href="{{ route('users.notifications', Auth::id()) }}" class="header-btn header-bell" title="{{ __('messages.account.nav_notifications') }}">
+                        <i class="fa fa-bell"></i>
+                        @if(($unreadNotifCount ?? 0) > 0)<span class="alert"></span>@endif
+                    </a>
 
                     {{-- Số xu --}}
                     <a href="{{ route('users.transactions', Auth::id()) }}" class="header-btn header-coins">

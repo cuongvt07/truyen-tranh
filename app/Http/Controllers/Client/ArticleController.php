@@ -111,8 +111,17 @@ class ArticleController extends Controller
                 ->get();
         }
 
+        // "Quan tâm / I want this": truyện do user gửi HOẶC chưa có chương -> nút add-to-list
+        // đổi nhãn 'I want this'. Số quan tâm = số người đã add vào list (bookmark).
+        $chaptersCount = $article->chapters()->count();
+        $interestCount = $article->bookmarks()->count();
+        $wantThisMode  = (bool) $article->is_user_submitted || $chaptersCount === 0;
+
         return view('client.articles.show', [
             'article' => $article,
+            'chaptersCount' => $chaptersCount,
+            'interestCount' => $interestCount,
+            'wantThisMode' => $wantThisMode,
             'chapters' => $chapters,
             'upcomingChapters' => $upcomingChapters,
             'chapterPages' => $chapterPages,

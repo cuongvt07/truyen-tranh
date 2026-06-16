@@ -10,9 +10,11 @@
         <form method="post" action="{{ $action }}" enctype="multipart/form-data" class="story-form">
             @csrf @if($mode === 'edit') @method('patch') @endif
             <div class="frow"><label>{{ __('messages.community.team_name') }} <span style="color:#e84040">*</span></label><input type="text" name="name" value="{{ old('name', $item->name) }}" required></div>
-            <div class="frow"><label>{{ __('messages.community.team_photo_upload') }}</label><input type="file" name="photo" accept="image/*"></div>
-            <div class="frow"><label>{{ __('messages.community.photo_url') }}</label><input type="text" name="photo_url" placeholder="https://..."></div>
-            @if($item->exists && $item->photo)<div class="frow"><img src="{{ $item->photo }}" style="width:80px;border-radius:8px"></div>@endif
+            <div class="frow">
+                <x-image-upload name="photo" :label="__('messages.community.team_photo_upload')"
+                    url-name="photo_url" :url-value="old('photo_url')"
+                    :current="$item->photo ?: null" />
+            </div>
             <div class="frow"><label>{{ __('messages.community.description') }}</label><textarea name="description" rows="4">{{ old('description', $item->description) }}</textarea></div>
             <div class="frow"><label>Website</label><input type="text" name="site" value="{{ old('site', $item->site) }}" placeholder="https://..."></div>
             <div class="frow"><label>{{ __('messages.community.donation_text') }}</label><input type="text" name="donation_text" value="{{ old('donation_text', $item->donation_text) }}"></div>

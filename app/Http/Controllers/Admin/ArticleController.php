@@ -34,7 +34,10 @@ class ArticleController extends Controller
         }
         // Eager load để tránh N+1 (authors, genres) + đếm chương (tính cả chương hẹn giờ).
         $articles->with(['authors:id,name', 'genres:id,name', 'user:id,name'])
-                 ->withCount(['chapters' => fn ($q) => $q->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class)]);
+                 ->withCount([
+                     'chapters' => fn ($q) => $q->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class),
+                     'bookmarks', // số người "Quan tâm" (add to list) -> ưu tiên dịch
+                 ]);
 
         if ($search = trim((string) $request->input('search'))) {
             $articles->where('title', 'like', '%' . $search . '%');
@@ -44,6 +47,12 @@ class ArticleController extends Controller
         }
         if ($request->filled('completed')) {
             $articles->where('is_completed', (int) $request->input('completed'));
+        }
+        // Nguồn: truyện do user tự gửi vs admin tạo
+        if ($request->input('source') === 'user') {
+            $articles->where('is_user_submitted', true);
+        } elseif ($request->input('source') === 'admin') {
+            $articles->where('is_user_submitted', false);
         }
 
         $sort = $request->input('sort', 'newest');
@@ -56,6 +65,9 @@ class ArticleController extends Controller
                 break;
             case 'title':
                 $articles->orderBy('title');
+                break;
+            case 'interest':
+                $articles->orderByDesc('bookmarks_count');
                 break;
             default:
                 $articles->orderByDesc('id');

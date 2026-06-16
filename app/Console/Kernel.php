@@ -13,6 +13,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('subscriptions:grant-daily-credits')->everyFifteenMinutes();
+        // Báo "chương mới" cho chương hẹn giờ vừa tới giờ đăng (chương đăng ngay đã báo lúc tạo).
+        $schedule->command('notifications:new-chapters')->everyFiveMinutes();
     }
 
     /**

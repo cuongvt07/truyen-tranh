@@ -334,6 +334,8 @@
                 'article' => $article,
                 'hasStartedReading' => $hasStartedReading,
                 'currentListStatus' => $currentListStatus,
+                'wantThisMode' => $wantThisMode,
+                'interestCount' => $interestCount,
             ])
 
             <div class="block appreciate">

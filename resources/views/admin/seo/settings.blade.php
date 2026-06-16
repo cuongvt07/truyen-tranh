@@ -7,7 +7,7 @@
 <div class="content"><div class="container-fluid">
     @includeWhen(session('success'), 'admin.partials.flash')
 
-    <form method="post" action="{{ route('admin.seo.update') }}">
+    <form method="post" action="{{ route('admin.seo.update') }}" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-md-6">
@@ -18,7 +18,12 @@
                         <div class="form-group"><label>Dấu phân cách title</label><input type="text" name="title_separator" class="form-control" value="{{ $s('title_separator') }}" placeholder=" · "></div>
                         <div class="form-group"><label>Mô tả mặc định</label><textarea name="default_description" class="form-control" rows="2" maxlength="160">{{ $s('default_description') }}</textarea><small class="text-muted">Tối ưu 130–155 ký tự</small></div>
                         <div class="form-group"><label>Từ khoá mặc định</label><input type="text" name="default_keywords" class="form-control" value="{{ $s('default_keywords') }}"></div>
-                        <div class="form-group mb-0"><label>Ảnh OG mặc định (1200×630)</label><input type="text" name="default_og_image" class="form-control" value="{{ $s('default_og_image') }}"></div>
+                        <div class="form-group mb-0">
+                            <x-admin.image-upload name="default_og_image_file" label="Ảnh OG mặc định (1200×630)" :height="80"
+                                :current="$s('default_og_image') ? (\Illuminate\Support\Str::startsWith($s('default_og_image'), 'http') ? $s('default_og_image') : asset($s('default_og_image'))) : null"
+                                urlName="default_og_image" :urlValue="$s('default_og_image')"
+                                hint="Tải ảnh từ máy hoặc dán URL. Upload sẽ được ưu tiên." />
+                        </div>
                     </div>
                 </div>
 

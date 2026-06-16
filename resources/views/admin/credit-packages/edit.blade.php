@@ -13,7 +13,7 @@
                 </h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.credit-packages.update', $creditPackage->id) }}" method="POST">
+                <form action="{{ route('admin.credit-packages.update', $creditPackage->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf 
                     @method('PUT')
                     @include('admin.credit-packages._form', ['pkg' => $creditPackage])

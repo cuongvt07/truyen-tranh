@@ -59,6 +59,7 @@ class MyArticleController extends Controller
         $article = new Article();
         $article->fill($data);
         $article->user_id = Auth::id();
+        $article->is_user_submitted = true;                // truyện do user tự gửi (để lọc home + admin)
         $article->status  = ArticleStatus::PENDING->value; // chờ admin duyệt trước khi public
         $article->cover_image = $this->resolveCover($request);
         $article->save();
@@ -150,7 +151,7 @@ class MyArticleController extends Controller
             }],
         ], [], ['number' => 'số chương', 'title' => 'tiêu đề', 'content' => 'nội dung']);
 
-        Chapter::create([
+        $chapter = Chapter::create([
             'article_id'  => $article->id,
             'number'      => $data['number'],
             'title'       => $data['title'],
@@ -159,6 +160,7 @@ class MyArticleController extends Controller
             'published_at' => Chapter::parsePublishedAt($request->input('published_at')),
         ]);
         $article->touch();
+        $chapter->dispatchNewChapterNotification(); // báo người theo dõi (bỏ qua nếu hẹn giờ)
 
         return redirect()->route('my-articles.index')->with('success', __('messages.flash.story.chapter_added'));
     }

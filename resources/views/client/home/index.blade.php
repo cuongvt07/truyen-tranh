@@ -127,13 +127,14 @@
         </div>
     </div>
 
-    {{-- 3. TRANSLATION REQUESTS SWIPER (dùng random articles) --}}
+    {{-- 3. TRANSLATION REQUESTS — truyện do user gửi, đã admin duyệt --}}
+    @if($userSubmittedArticles->isNotEmpty())
     <div class="section">
         <h2>{{ __('messages.home.translate_req') }}</h2>
         <div class="block translation-requests">
             <div class="swiper-container">
                 <div class="swiper-wrapper">
-                    @foreach($randomArticles as $article)
+                    @foreach($userSubmittedArticles as $article)
                         <div class="swiper-slide">
                             <a href="{{ route('articles.show', $article) }}" class="manga-item">
                                 <div class="poster image image-cover lazy-load-bg">
@@ -147,6 +148,7 @@
             </div>
         </div>
     </div>
+    @endif
 
     {{-- 4. I'M READING --}}
     <section class="section">

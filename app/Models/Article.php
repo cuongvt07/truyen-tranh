@@ -31,7 +31,7 @@ class Article extends Model
         'novel_type', 'is_adult', 'year_of_release', 'country',
         'is_completed', 'rating', 'rating_count',
         'similar_article_ids', 'translation_request_article_ids',
-        'related_genre_ids', 'view',
+        'related_genre_ids', 'view', 'is_user_submitted',
         'credit_start_chapter', 'credit_per_chapter',
     ];
 
@@ -39,6 +39,7 @@ class Article extends Model
         'similar_article_ids' => 'array',
         'translation_request_article_ids' => 'array',
         'related_genre_ids' => 'array',
+        'is_user_submitted' => 'boolean',
     ];
 
     protected static function booted(): void

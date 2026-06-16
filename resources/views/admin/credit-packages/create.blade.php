@@ -13,7 +13,7 @@
                 </h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.credit-packages.store') }}" method="POST">
+                <form action="{{ route('admin.credit-packages.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @include('admin.credit-packages._form')
                     

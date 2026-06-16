@@ -163,7 +163,13 @@ class UserController extends Controller
 
     public function notifications(User $user): View
     {
-        return view('client.users.notifications', ['user' => $user]);
+        $isMine = Auth::id() === $user->id;
+        $notifications = $user->notifications()->paginate(20);
+        // Xem tab của chính mình -> đánh dấu đã đọc (cập nhật badge chuông).
+        if ($isMine) {
+            $user->unreadNotifications()->update(['read_at' => now()]);
+        }
+        return view('client.users.notifications', compact('user', 'notifications', 'isMine'));
     }
 
     public function collections(User $user): View

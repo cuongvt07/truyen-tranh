@@ -57,15 +57,10 @@
     </div>
 
     <div class="col-md-4 mb-3">
-        <label class="form-label">Icon path</label>
-        <input type="text" name="icon" class="form-control"
-               value="{{ old('icon', $pkg?->icon) }}" placeholder="media/payments/500.jpg">
-        <small class="text-muted">Relative path from public/</small>
-        @if($pkg?->icon)
-            <div class="mt-1">
-                <img src="{{ asset($pkg->icon) }}" alt="preview" height="60" style="border-radius:6px;">
-            </div>
-        @endif
+        <x-admin.image-upload name="icon_file" label="Icon" :height="80"
+            :current="$pkg?->icon ? asset($pkg->icon) : null"
+            urlName="icon" :urlValue="old('icon', $pkg?->icon)"
+            hint="Tải ảnh từ máy, hoặc dán đường dẫn (vd media/payments/500.jpg). Upload sẽ được ưu tiên." />
     </div>
 
     <div class="col-md-2 mb-3">

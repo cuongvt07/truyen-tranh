@@ -33,10 +33,18 @@
                 </select>
             </div>
             <div class="col-md-2 mb-2">
+                <select name="source" class="form-control form-control-sm" onchange="this.form.submit()">
+                    <option value="">Nguồn</option>
+                    <option value="user" @selected(request('source')==='user')>User gửi</option>
+                    <option value="admin" @selected(request('source')==='admin')>Admin tạo</option>
+                </select>
+            </div>
+            <div class="col-md-2 mb-2">
                 <select name="sort" class="form-control form-control-sm" onchange="this.form.submit()">
                     <option value="newest" @selected(request('sort')==='newest')>Mới nhất</option>
                     <option value="updated" @selected(request('sort')==='updated')>Cập nhật</option>
                     <option value="views" @selected(request('sort')==='views')>Lượt xem</option>
+                    <option value="interest" @selected(request('sort')==='interest')>Nhiều quan tâm</option>
                     <option value="title" @selected(request('sort')==='title')>Tên A-Z</option>
                 </select>
             </div>
@@ -60,6 +68,7 @@
                     <th>Thể loại</th>
                     <th width="80" class="text-center">Chương</th>
                     <th width="90" class="text-center">Lượt xem</th>
+                    <th width="90" class="text-center">Quan tâm</th>
                     <th width="150">Trạng thái</th>
                     <th width="100">Cập nhật</th>
                     <th width="70" class="text-center">Thao tác</th>
@@ -81,6 +90,9 @@
                                 <small class="text-muted">
                                     @foreach($article->authors->take(2) as $a){{ $a->name }}@if(!$loop->last), @endif @endforeach
                                 </small>
+                                @if($article->is_user_submitted)
+                                    <div><span class="badge badge-info badge-pill" title="Truyện do user gửi"><i class="fas fa-user mr-1"></i>{{ optional($article->user)->name ?? 'User' }}</span></div>
+                                @endif
                             </div>
                         </div>
                     </td>
@@ -90,6 +102,7 @@
                     </td>
                     <td class="text-center"><a href="{{ route('admin.articles.show_chapters', $article->id) }}">{{ $article->chapters_count }}</a></td>
                     <td class="text-center">{{ number_format($article->view) }}</td>
+                    <td class="text-center"><span class="badge badge-{{ $article->bookmarks_count > 0 ? 'danger' : 'light' }} badge-pill"><i class="fas fa-heart"></i> {{ number_format($article->bookmarks_count) }}</span></td>
                     <td>
                         @php $st = [0=>['Chờ duyệt','warning'],1=>['Đã duyệt','success'],2=>['Đã ẩn','secondary']][$article->status] ?? ['?','secondary']; @endphp
                         <span class="badge badge-{{ $st[1] }} badge-pill">{{ $st[0] }}</span>
@@ -109,6 +122,8 @@
                                     @if($article->status == ArticleStatus::PENDING->value)
                                         <form action="{{ route('admin.articles.change_status', [$article->id, ArticleStatus::APPROVED]) }}" method="POST">@csrf @method('PATCH')
                                             <button class="dropdown-item text-success"><i class="fas fa-check mr-2"></i> Duyệt bài</button></form>
+                                        <form action="{{ route('admin.articles.change_status', [$article->id, ArticleStatus::HIDDEN]) }}" method="POST">@csrf @method('PATCH')
+                                            <button class="dropdown-item text-danger"><i class="fas fa-times mr-2"></i> Từ chối</button></form>
                                     @elseif($article->status == ArticleStatus::HIDDEN->value)
                                         <form action="{{ route('admin.articles.change_status', [$article->id, ArticleStatus::APPROVED]) }}" method="POST">@csrf @method('PATCH')
                                             <button class="dropdown-item text-warning"><i class="fas fa-eye mr-2"></i> Hiện bài</button></form>
