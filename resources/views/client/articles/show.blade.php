@@ -118,36 +118,56 @@
                     </div>
                 </section>
 
-                {{-- Similar — lưới 2 cột kiểu Popular --}}
+                {{-- Similar — swiper 4 per view + arrows --}}
                 @if(($suggestedArticles ?? collect())->count())
-                <section class="manga-list section">
-                    <h2 class="section-title"><span>{{ __('messages.article.similar') }}</span></h2>
-                    <div class="manga-grid">
-                        @foreach($suggestedArticles as $s)
-                            <a href="{{ route('articles.show', $s) }}" class="manga-item">
-                                <div class="poster image image-cover lazy-load-bg">
-                                    <img class="lazy-image" loading="eager" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
+                <section class="manga-list section swp-single swp-4">
+                    <h2 class="section-title">
+                        <span>{{ __('messages.article.similar') }}</span>
+                        <div class="arrows">
+                            <div class="swiper-left"><i class="fa fa-chevron-left"></i></div>
+                            <div class="swiper-right"><i class="fa fa-chevron-right"></i></div>
+                        </div>
+                    </h2>
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                            @foreach($suggestedArticles as $s)
+                                <div class="swiper-slide">
+                                    <a href="{{ route('articles.show', $s) }}" class="manga-item">
+                                        <div class="poster image image-cover lazy-load-bg">
+                                            <img class="lazy-image" loading="eager" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
+                                        </div>
+                                        <div class="title clamp clamp-2">{{ $s->title }}</div>
+                                    </a>
                                 </div>
-                                <div class="title clamp clamp-2">{{ $s->title }}</div>
-                            </a>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
                 </section>
                 @endif
 
-                {{-- Đề xuất dịch (Translation requests) — lưới 2 cột kiểu Popular --}}
+                {{-- Đề xuất dịch (Translation requests) — swiper 4 per view + arrows --}}
                 @if(($translationRequests ?? collect())->count())
-                <section class="manga-list section">
-                    <h2 class="section-title"><span>{{ __('messages.article.translation_requests') }}</span></h2>
-                    <div class="manga-grid">
-                        @foreach($translationRequests as $s)
-                            <a href="{{ route('articles.show', $s) }}" class="manga-item">
-                                <div class="poster image image-cover lazy-load-bg">
-                                    <img class="lazy-image" loading="eager" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
+                <section class="manga-list section swp-single swp-4">
+                    <h2 class="section-title">
+                        <span>{{ __('messages.article.translation_requests') }}</span>
+                        <div class="arrows">
+                            <div class="swiper-left"><i class="fa fa-chevron-left"></i></div>
+                            <div class="swiper-right"><i class="fa fa-chevron-right"></i></div>
+                        </div>
+                    </h2>
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                            @foreach($translationRequests as $s)
+                                <div class="swiper-slide">
+                                    <a href="{{ route('articles.show', $s) }}" class="manga-item">
+                                        <div class="poster image image-cover lazy-load-bg">
+                                            <img class="lazy-image" loading="eager" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
+                                        </div>
+                                        <div class="title clamp clamp-2">{{ $s->title }}</div>
+                                    </a>
                                 </div>
-                                <div class="title clamp clamp-2">{{ $s->title }}</div>
-                            </a>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
                 </section>
                 @endif
@@ -554,11 +574,10 @@ li.comment:last-child{border-bottom:none}
 .comment-report-box h4{margin:0 0 6px}
 .comment-report-box .form-control{width:100%;margin:12px 0;padding:10px;border:1px solid var(--border,#d9dee7);border-radius:8px;background:var(--bg-input,#fff);color:inherit}
 .comment-report-box .report-actions{display:flex;justify-content:flex-end;gap:10px}
-/* Similar / Translation requests — lưới 2 cột kiểu Popular */
-.article-detail-flex .manga-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.article-detail-flex .manga-grid .manga-item{margin:0;width:auto;display:block}
-.article-detail-flex .manga-grid .poster{height:130px;margin-bottom:5px}
-.article-detail-flex .manga-grid .title{font-size:12px;line-height:1.3;font-weight:500}
+/* Similar / Translation requests — swiper 4 per view */
+.swp-4 .poster{height:200px;margin-bottom:6px}
+.swp-4 .manga-item{display:block}
+.swp-4 .title{font-size:13px;line-height:1.3;font-weight:500}
 </style>
 @endpush
 
@@ -798,5 +817,15 @@ li.comment:last-child{border-bottom:none}
     });
 
 })(jQuery);
+</script>
+<script>
+document.querySelectorAll('.swp-4 .swiper-container').forEach(function(el){
+    var section = el.closest('.swp-4');
+    new Swiper(el, {
+        slidesPerView: 2, spaceBetween: 10, loop: false,
+        navigation: { nextEl: section.querySelector('.swiper-right'), prevEl: section.querySelector('.swiper-left') },
+        breakpoints: { 768: { slidesPerView: 4, spaceBetween: 12 }, 480: { slidesPerView: 3 } }
+    });
+});
 </script>
 @endpush
