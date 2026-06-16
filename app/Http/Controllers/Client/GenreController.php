@@ -14,7 +14,6 @@ class GenreController extends Controller
             return redirect()->route('genres.show', $genre, 301);
         }
 
-        // Redirect to catalog with pre-selected genre
-        return redirect()->route('catalog.index', ['genres' => [$genre->id]]);
+        return redirect()->to(route('catalog.index') . '?genre=' . $genre->id);
     }
 }

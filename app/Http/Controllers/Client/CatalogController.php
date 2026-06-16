@@ -18,8 +18,11 @@ class CatalogController extends Controller
             $query->where('title', 'like', '%' . $search . '%');
         }
 
-        // Lọc theo thể loại (nhiều)
+        // Lọc theo thể loại (nhiều); ?genre=3 là alias đơn cho ?genres[]=3
         $selectedGenres = array_filter((array) $request->get('genres', []));
+        if (empty($selectedGenres) && $request->filled('genre')) {
+            $selectedGenres = [(int) $request->get('genre')];
+        }
         if (!empty($selectedGenres)) {
             $query->whereHas('genres', function ($q) use ($selectedGenres) {
                 $q->whereIn('genres.id', $selectedGenres);
