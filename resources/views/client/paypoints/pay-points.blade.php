@@ -7,7 +7,7 @@
     <header class="header-manga" style="margin-bottom:10px">
         <div class="container">
             <h1><i class="fa fa-credit-card"></i> {{ __('messages.pay.deposit_to_account') }}</h1>
-            @auth<p class="meta-color" style="font-size:14px;margin-top:4px">{{ __('messages.pay.current_balance') }} <strong style="color:var(--primary)">{{ number_format(auth()->user()->points ?? 0) }}</strong> {{ __('messages.pay.coins') }}</p>@endauth
+            @auth<p class="meta-color" style="font-size:14px;margin-top:4px">{{ __('messages.pay.current_balance') }} <strong style="color:var(--primary)">{{ number_format(auth()->user()->points ?? 0) }}</strong> {{ coin_name() }}</p>@endauth
         </div>
     </header>
 
@@ -375,7 +375,7 @@ function showVipConfirmPopup(packageId, coins) {
 
     const message = @json(__('messages.pay.confirm_buy_title')) + '\n'
         + @json(__('messages.pay.label_package')) + ' ' + selectedPackage.name + '\n'
-        + @json(__('messages.pay.label_price')) + ' ' + selectedPackage.coins + ' ' + @json(__('messages.pay.coins')) + '\n'
+        + @json(__('messages.pay.label_price')) + ' ' + selectedPackage.coins + ' ' + @json(coin_name()) + '\n'
         + @json(__('messages.pay.label_vip_days')) + ' ' + selectedPackage.days;
 
     document.getElementById('vipConfirmMessage').innerText = message;

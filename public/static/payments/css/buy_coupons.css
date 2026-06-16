@@ -44,14 +44,22 @@
 }
 .recommended-product .image {
     display: block;
-    max-height: 320px;
-    height: calc(100% - 62px);
+    max-height: 220px;        /* thu nhỏ icon/ảnh để chừa chỗ cho subtitle nhiều dòng */
+    height: auto;
     margin-bottom: 10px;
 }
+.recommended-product .image img { max-height: 220px; object-fit: contain; }
 .recommended-product__info {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.recommended-product__info-title { min-width: 0; flex: 1; }
+.recommended-product .recommended-coupons {
+    font-size: 13px; line-height: 1.5; color: var(--meta-color, #888);
+    white-space: normal;       /* cho phép subtitle xuống dòng (nhiều lợi ích) */
 }
 .recommended-product__info .btn {
     min-width: 120px;

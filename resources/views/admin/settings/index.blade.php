@@ -81,12 +81,32 @@
                 🎁 THƯỞNG ĐĂNG KÝ
             </div>
             <div class="card-body">
-                <div class="form-group mb-0" style="max-width:320px">
+                <div class="form-group" style="max-width:320px">
                     <label>Xu tặng khi đăng ký bằng Google</label>
                     <input type="number" name="google_signup_bonus" min="0" class="form-control"
                            value="{{ $settings['google_signup_bonus'] ?? 30 }}">
                     <small class="form-text text-muted">Số xu cộng cho tài khoản MỚI đăng ký bằng Google. Đăng ký thường không được tặng. Đặt 0 để tắt.</small>
                 </div>
+
+                <hr>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label>Tên "xu" hiển thị (EN)</label>
+                        <input type="text" name="coin_name_en" class="form-control" placeholder="coins"
+                               value="{{ $settings['coin_name_en'] ?? '' }}">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Tên "xu" hiển thị (VI)</label>
+                        <input type="text" name="coin_name_vi" class="form-control" placeholder="xu"
+                               value="{{ $settings['coin_name_vi'] ?? '' }}">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Số ký tự xem thử (chương khoá)</label>
+                        <input type="number" name="chapter_teaser_chars" min="50" max="2000" class="form-control"
+                               value="{{ $settings['chapter_teaser_chars'] ?? 350 }}">
+                    </div>
+                </div>
+                <small class="form-text text-muted">Tên "xu" tuỳ biến theo ngôn ngữ (vd LuneCoin / xu). Trống = dùng mặc định. Số ký tự xem thử: chương khoá chỉ hiện bấy nhiêu chữ.</small>
             </div>
         </div>
 

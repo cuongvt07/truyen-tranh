@@ -371,8 +371,10 @@ HTML;
             'id'        => $subscription->id,
             'name'      => $subscription->name,
             'desc'      => __('messages.pay.premium_desc', [
-                'days'    => $subscription->subscription_days,
-                'credits' => number_format($subscription->daily_credits),
+                'days'  => $subscription->subscription_days,
+                'coins' => number_format($subscription->coins),
+                'daily' => number_format($subscription->daily_credits),
+                'coin'  => coin_name(),
             ]),
             'price'     => $subscription->display_price,
             'price_usd' => (float) $subscription->price_usd,

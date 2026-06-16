@@ -20,7 +20,7 @@
             <div class="recommended-product__info">
                 <div class="recommended-product__info-title">
                     <h2 class="price_item__title block-title">{{ $featured['name'] }}</h2>
-                    <div class="recommended-coupons"><i class="fa fa-coins" style="color:#f0c040"></i> {{ number_format($featured['coins']) }} {{ __('messages.pay.coins') }}</div>
+                    <div class="recommended-coupons"><i class="fa fa-coins" style="color:#f0c040"></i> {{ number_format($featured['coins']) }} {{ coin_name() }}</div>
                 </div>
                 @auth
                     @if(!empty($featured['id']))
@@ -96,7 +96,7 @@
                     <div class="price-item__info">
                         <h2 class="price_item__title block-title">{{ $pack['name'] }}</h2>
                         <div class="price-item__cost-info">
-                            <div class="price-item__cost"><span>{{ number_format($pack['coins']) }} {{ __('messages.pay.coins') }}</span><br>{{ $pack['price'] }}</div>
+                            <div class="price-item__cost"><span>{{ number_format($pack['coins']) }} {{ coin_name() }}</span><br>{{ $pack['price'] }}</div>
                             @auth
                                 @if(!empty($pack['id']))
                                     <a href="{{ route('checkout.show', $pack['id']) }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>

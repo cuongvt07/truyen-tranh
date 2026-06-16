@@ -118,55 +118,43 @@
                     </div>
                 </section>
 
-                {{-- Similar --}}
+                {{-- Similar — khối dọc --}}
                 @if(($suggestedArticles ?? collect())->count())
-                <section class="manga-list section swp swp-single">
-                    <h2 class="section-title">
-                        <span>{{ __('messages.article.similar') }}</span>
-                        <div class="arrows">
-                            <div class="btn btn-invincible swiper-left">&lt;</div>
-                            <div class="btn btn-invincible swiper-right">&gt;</div>
-                        </div>
-                    </h2>
-                    <div class="swiper-container"><div class="swiper-wrapper">
+                <section class="manga-list section">
+                    <h2 class="section-title"><span>{{ __('messages.article.similar') }}</span></h2>
+                    <div class="vlist">
                         @foreach($suggestedArticles as $s)
-                            <a href="{{ route('articles.show', $s) }}" class="swiper-slide manga-list-item">
-                                <div class="image image-cover lazy-load-bg">
+                            <a href="{{ route('articles.show', $s) }}" class="vlist-item">
+                                <div class="vlist-poster image image-cover lazy-load-bg">
                                     <img class="lazy-image" loading="eager" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
                                 </div>
-                                <div class="manga-list__info">
-                                    <div class="title">{{ $s->title }}</div>
+                                <div class="vlist-info">
+                                    <div class="vlist-title clamp clamp-2">{{ $s->title }}</div>
                                     <div class="meta-color">{{ $s->is_completed ? __('messages.common.completed') : __('messages.common.ongoing') }}</div>
                                 </div>
                             </a>
                         @endforeach
-                    </div></div>
+                    </div>
                 </section>
                 @endif
 
-                {{-- Đề xuất dịch (Translation requests) --}}
+                {{-- Đề xuất dịch (Translation requests) — khối dọc --}}
                 @if(($translationRequests ?? collect())->count())
-                <section class="manga-list section swp swp-single">
-                    <h2 class="section-title">
-                        <span>{{ __('messages.article.translation_requests') }}</span>
-                        <div class="arrows">
-                            <div class="btn btn-invincible swiper-left">&lt;</div>
-                            <div class="btn btn-invincible swiper-right">&gt;</div>
-                        </div>
-                    </h2>
-                    <div class="swiper-container"><div class="swiper-wrapper">
+                <section class="manga-list section">
+                    <h2 class="section-title"><span>{{ __('messages.article.translation_requests') }}</span></h2>
+                    <div class="vlist">
                         @foreach($translationRequests as $s)
-                            <a href="{{ route('articles.show', $s) }}" class="swiper-slide manga-list-item">
-                                <div class="image image-cover lazy-load-bg">
+                            <a href="{{ route('articles.show', $s) }}" class="vlist-item">
+                                <div class="vlist-poster image image-cover lazy-load-bg">
                                     <img class="lazy-image" loading="eager" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
                                 </div>
-                                <div class="manga-list__info">
-                                    <div class="title">{{ $s->title }}</div>
+                                <div class="vlist-info">
+                                    <div class="vlist-title clamp clamp-2">{{ $s->title }}</div>
                                     <div class="meta-color">{{ $s->is_completed ? __('messages.common.completed') : __('messages.common.ongoing') }}</div>
                                 </div>
                             </a>
                         @endforeach
-                    </div></div>
+                    </div>
                 </section>
                 @endif
 
@@ -572,6 +560,15 @@ li.comment:last-child{border-bottom:none}
 .comment-report-box h4{margin:0 0 6px}
 .comment-report-box .form-control{width:100%;margin:12px 0;padding:10px;border:1px solid var(--border,#d9dee7);border-radius:8px;background:var(--bg-input,#fff);color:inherit}
 .comment-report-box .report-actions{display:flex;justify-content:flex-end;gap:10px}
+/* Khối dọc cho Similar / Translation requests (thay swiper ngang) */
+.vlist{display:flex;flex-direction:column;gap:10px}
+.vlist-item{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text-color);padding:6px;border-radius:6px;transition:background .15s}
+.vlist-item:hover{background:var(--bg-soft,#f2f4f7)}
+.vlist-poster{width:52px;height:72px;border-radius:5px;overflow:hidden;flex-shrink:0}
+.vlist-poster img{width:100%;height:100%;object-fit:cover}
+.vlist-info{min-width:0}
+.vlist-title{font-weight:600;font-size:14px;line-height:1.3}
+.vlist-info .meta-color{font-size:12px;margin-top:3px}
 </style>
 @endpush
 

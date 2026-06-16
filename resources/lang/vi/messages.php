@@ -239,6 +239,7 @@ return [
         'store' => 'Cửa hàng',
         'all_products' => 'Tất cả sản phẩm',
         'buy' => 'Mua',
+        'premium_desc' => '+:days ngày ẩn QC · +:coins :coin · +:daily :coin/ngày',
         'coins_and_transactions' => 'Xu & Giao dịch',
         'balance' => 'Số dư:',
         'topup_coins' => 'Nạp xu',

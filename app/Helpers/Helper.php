@@ -58,6 +58,18 @@ if (!function_exists('setting')) {
     }
 }
 
+if (!function_exists('coin_name')) {
+    /**
+     * Tên đơn vị "xu" hiển thị toàn site — admin cấu hình được THEO NGÔN NGỮ
+     * (setting coin_name_en / coin_name_vi...). Trống -> fallback nhãn dịch mặc định.
+     */
+    function coin_name(): string
+    {
+        $name = setting('coin_name_' . app()->getLocale());
+        return ($name !== null && $name !== '') ? $name : __('messages.pay.coins');
+    }
+}
+
 /**
  * Lấy danh sách gói ưu đãi premium.
  *

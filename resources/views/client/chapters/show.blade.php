@@ -92,7 +92,9 @@
         {{-- Chương trả phí: chỉ hiện ~10% nội dung (theo số ký tự), 90% còn lại KHÔNG render ra DOM
              nên view-source cũng không lộ. Chỉ đếm nội dung chương ($chapter->content), bỏ khối footer. --}}
         @php
-            $teaserLimit = max(1, (int) ceil(mb_strlen(trim(strip_tags($rawContent))) * 0.1));
+            // Teaser chương khoá: chỉ hiện ~350 ký tự (đủ "nếm" nội dung, không đọc chùa được nhiều).
+            $teaserMax = (int) (setting('chapter_teaser_chars') ?: 350);
+            $teaserLimit = max(50, min($teaserMax, (int) ceil(mb_strlen(trim(strip_tags($rawContent))) * 0.1)));
             $teaserHtml = '';
             $teaserAcc = 0;
             foreach ($chapterBlocks as $block) {

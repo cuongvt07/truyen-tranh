@@ -263,7 +263,7 @@ return array (
     'store' => 'Store',
     'all_products' => 'All products',
     'buy' => 'Buy',
-    'premium_desc' => ':days days · ad-free + :credits credits/day',
+    'premium_desc' => '+:days days ad-free · +:coins :coin · +:daily :coin/day',
     'coins_and_transactions' => 'Coins & Transactions',
     'balance' => 'Balance:',
     'topup_coins' => 'Top up coins',

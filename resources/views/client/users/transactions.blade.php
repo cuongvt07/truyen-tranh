@@ -8,7 +8,7 @@
 @endphp
 
 <div class="block">
-    <h1 class="page-title" style="margin-bottom:16px">{{ __('messages.pay.balance') }} {{ number_format($balance) }} {{ __('messages.pay.coins') }}</h1>
+    <h1 class="page-title" style="margin-bottom:16px">{{ __('messages.pay.balance') }} {{ number_format($balance) }} {{ coin_name() }}</h1>
     @auth
     @if(auth()->id() === $user->id)
         <div class="btn-group-inline" style="margin-top:8px">
