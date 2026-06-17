@@ -211,7 +211,7 @@
                     {{-- ===== QUẢN LÝ NỘI DUNG ===== --}}
                     @if($currentUser->is_poster || $currentUser->is_admin)
                         @php
-                            $openContent = request()->routeIs('admin.articles.*','admin.chapters.*','admin.characters.*','admin.teams.*','admin.collections.*','admin.authors.*','admin.genres.*','admin.tags.*','admin.comments.*','admin.comment_reports.*','admin.chapter_reports.*');
+                            $openContent = request()->routeIs('admin.articles.*','admin.chapters.*','admin.characters.*','admin.teams.*','admin.collections.*','admin.authors.*','admin.genres.*','admin.countries.*','admin.tags.*','admin.comments.*','admin.comment_reports.*','admin.chapter_reports.*');
                             $pendingArticles = $navPendingArticles ?? 0;
                             $openReports = $navOpenReports ?? 0;
                         @endphp
@@ -256,6 +256,11 @@
                                 <li class="nav-item">
                                     <a href="{{ route('admin.genres.index') }}" class="nav-link {{ set_active('admin.genres.*') }}">
                                         <i class="nav-icon fa-solid fa-bars"></i><p>Thể loại</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.countries.index') }}" class="nav-link {{ set_active('admin.countries.*') }}">
+                                        <i class="nav-icon fa-solid fa-flag"></i><p>Quốc gia</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
