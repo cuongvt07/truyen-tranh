@@ -84,11 +84,13 @@ class HomeController extends Controller
 
     public function showNewUpdateArticles()
     {
-        $newUpdateArticles = Article::getNewUpdateArticles()->paginate();
+        $newUpdateArticles = Article::getNewUpdateArticles()
+            ->whereHas('chapters', fn($q) => $q->where('created_at', '>=', now()->subDays(3)))
+            ->paginate();
         return view('client.articles.index', [
             'articles' => $newUpdateArticles,
-            'title' => 'Truyện mới cập nhật',
-            'description' => 'Danh sách truyện chữ được cập nhật (vừa ra mắt, thêm chương mới, sửa nội dung,..) gần đây.',
+            'title' => 'Recently Updated',
+            'description' => 'Stories with new chapters released in the last 3 days.',
         ]);
     }
 

@@ -67,10 +67,9 @@
                     <label>{{ __('messages.myarticle.country') }}</label>
                     <select name="country">
                         <option value="">—</option>
-                        <option value="1" {{ old('country', $article->country)==1?'selected':'' }}>{{ __('messages.myarticle.country_china') }}</option>
-                        <option value="2" {{ old('country', $article->country)==2?'selected':'' }}>{{ __('messages.myarticle.country_japan') }}</option>
-                        <option value="3" {{ old('country', $article->country)==3?'selected':'' }}>{{ __('messages.myarticle.country_korea') }}</option>
-                        <option value="6" {{ old('country', $article->country)==6?'selected':'' }}>{{ __('messages.myarticle.country_other') }}</option>
+                        @foreach($countries as $c)
+                            <option value="{{ $c->id }}" {{ old('country', $article->country)==$c->id?'selected':'' }}>{{ $c->display_name }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="frow">
@@ -121,29 +120,6 @@
                     <input type="checkbox" name="is_adult" value="1" {{ old('is_adult', $article->is_adult) ? 'checked' : '' }}>
                     {{ __('messages.myarticle.adult_content') }}
                 </label>
-            </div>
-
-            {{-- Credit / paywall settings --}}
-            <hr style="border-color:var(--border,#333);margin:20px 0">
-            <div style="margin-bottom:10px">
-                <strong>Cài đặt mở khoá bằng Credit</strong>
-                <span class="meta-color" style="font-size:13px;margin-left:6px">(tuỳ chọn)</span>
-            </div>
-            <div class="frow-2">
-                <div class="frow">
-                    <label>Thu credit từ chương số</label>
-                    <input type="number" name="credit_start_chapter" min="1"
-                           value="{{ old('credit_start_chapter', $article->credit_start_chapter) }}"
-                           placeholder="Để trống = miễn phí toàn bộ">
-                    <small class="meta-color" style="font-size:12px">Ví dụ: 16 → chương 1–15 miễn phí</small>
-                </div>
-                <div class="frow">
-                    <label>Credit mỗi chương (mặc định)</label>
-                    <input type="number" name="credit_per_chapter" min="0"
-                           value="{{ old('credit_per_chapter', $article->credit_per_chapter ?? 0) }}"
-                           placeholder="0">
-                    <small class="meta-color" style="font-size:12px">Có thể ghi đè riêng từng chương</small>
-                </div>
             </div>
 
             <div style="display:flex;gap:10px;margin-top:8px">

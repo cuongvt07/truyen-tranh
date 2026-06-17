@@ -87,44 +87,78 @@
                         </div>
                     </div>
 
-                    <div class="option">
-                        <div class="filter-name">{{ __('messages.catalog.status') }}</div>
-                        <div class="text-input checkbox-input select">
-                            <div class="text-input__wrapper">
-                                <select name="status">
-                                    <option value="">{{ __('messages.catalog.all') }}</option>
-                                    <option value="0" {{ ($filters['status'] ?? '')==='0' ? 'selected':'' }}>{{ __('messages.catalog.status_ongoing') }}</option>
-                                    <option value="1" {{ ($filters['status'] ?? '')==='1' ? 'selected':'' }}>{{ __('messages.catalog.status_completed') }}</option>
-                                </select>
+                    <div class="expand">
+                        <div class="filter-name name open-close" p-target="status-content" nolock>
+                            {{ __('messages.catalog.status') }} <i class="fa fa-angle-down"></i>
+                        </div>
+                        <div id="status-content" class="expand-content">
+                            <div class="checkbox">
+                                @php $curStatus = $filters['status'] ?? ''; @endphp
+                                <div>
+                                    <label>
+                                        <input type="radio" name="status" value="" {{ $curStatus==='' ? 'checked':'' }}>
+                                        {{ __('messages.catalog.all') }}
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="radio" name="status" value="0" {{ $curStatus==='0' ? 'checked':'' }}>
+                                        {{ __('messages.catalog.status_ongoing') }}
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="radio" name="status" value="1" {{ $curStatus==='1' ? 'checked':'' }}>
+                                        {{ __('messages.catalog.status_completed') }}
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="option">
-                        <div class="filter-name">{{ __('messages.catalog.type') }}</div>
-                        <div class="text-input checkbox-input select">
-                            <div class="text-input__wrapper">
-                                <select name="type">
-                                    <option value="">{{ __('messages.catalog.all') }}</option>
-                                    <option value="0" {{ ($filters['type'] ?? '')==='0' ? 'selected':'' }}>Web Novel</option>
-                                    <option value="1" {{ ($filters['type'] ?? '')==='1' ? 'selected':'' }}>Light Novel</option>
-                                    <option value="2" {{ ($filters['type'] ?? '')==='2' ? 'selected':'' }}>{{ __('messages.catalog.type_published') }}</option>
-                                </select>
+                    <div class="expand">
+                        <div class="filter-name name open-close" p-target="type-content" nolock>
+                            {{ __('messages.catalog.type') }} <i class="fa fa-angle-down"></i>
+                        </div>
+                        <div id="type-content" class="expand-content">
+                            <div class="checkbox">
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="types[]" value="0" {{ in_array('0', $selectedTypes ?? []) ? 'checked':'' }}>
+                                        Web Novel
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="types[]" value="1" {{ in_array('1', $selectedTypes ?? []) ? 'checked':'' }}>
+                                        Light Novel
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="types[]" value="2" {{ in_array('2', $selectedTypes ?? []) ? 'checked':'' }}>
+                                        {{ __('messages.catalog.type_published') }}
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="option">
-                        <div class="filter-name">{{ __('messages.catalog.country') }}</div>
-                        <div class="text-input checkbox-input select">
-                            <div class="text-input__wrapper">
-                                <select name="country">
-                                    <option value="">{{ __('messages.catalog.all') }}</option>
-                                    <option value="1" {{ ($filters['country'] ?? '')==='1' ? 'selected':'' }}>{{ __('messages.catalog.country_china') }}</option>
-                                    <option value="2" {{ ($filters['country'] ?? '')==='2' ? 'selected':'' }}>{{ __('messages.catalog.country_japan') }}</option>
-                                    <option value="3" {{ ($filters['country'] ?? '')==='3' ? 'selected':'' }}>{{ __('messages.catalog.country_korea') }}</option>
-                                    <option value="6" {{ ($filters['country'] ?? '')==='6' ? 'selected':'' }}>{{ __('messages.catalog.country_other') }}</option>
-                                </select>
+                    <div class="expand">
+                        <div class="filter-name name open-close" p-target="country-content" nolock>
+                            {{ __('messages.catalog.country') }} <i class="fa fa-angle-down"></i>
+                        </div>
+                        <div id="country-content" class="expand-content">
+                            <div class="checkbox">
+                                @foreach($countries as $c)
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="countries[]" value="{{ $c->id }}"
+                                               {{ in_array((string)$c->id, $selectedCountries ?? []) ? 'checked':'' }}>
+                                        {{ $c->display_name }}
+                                    </label>
+                                </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>

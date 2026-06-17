@@ -53,21 +53,21 @@ Route::middleware(['auth'])->group(function () {
         [BuyPackageVipController::class, 'buyVip'])->name('vip.buy');
 
     // Đăng & quản lý truyện của user (scoped own, giao diện novelight)
-    Route::get('/dang-truyen', [\App\Http\Controllers\Client\MyArticleController::class, 'create'])->name('my-articles.create');
-    Route::post('/dang-truyen', [\App\Http\Controllers\Client\MyArticleController::class, 'store'])->name('my-articles.store');
-    Route::get('/truyen-cua-toi', [\App\Http\Controllers\Client\MyArticleController::class, 'index'])->name('my-articles.index');
-    Route::get('/truyen-cua-toi/{article}/sua', [\App\Http\Controllers\Client\MyArticleController::class, 'edit'])->name('my-articles.edit');
-    Route::patch('/truyen-cua-toi/{article}', [\App\Http\Controllers\Client\MyArticleController::class, 'update'])->name('my-articles.update');
-    Route::delete('/truyen-cua-toi/{article}', [\App\Http\Controllers\Client\MyArticleController::class, 'destroy'])->name('my-articles.destroy');
-    Route::get('/truyen-cua-toi/{article}/them-chuong', [\App\Http\Controllers\Client\MyArticleController::class, 'createChapter'])->name('my-articles.create_chapter');
-    Route::post('/truyen-cua-toi/{article}/them-chuong', [\App\Http\Controllers\Client\MyArticleController::class, 'storeChapter'])->name('my-articles.store_chapter');
+    Route::get('/upload', [\App\Http\Controllers\Client\MyArticleController::class, 'create'])->name('my-articles.create');
+    Route::post('/upload', [\App\Http\Controllers\Client\MyArticleController::class, 'store'])->name('my-articles.store');
+    Route::get('/my-books', [\App\Http\Controllers\Client\MyArticleController::class, 'index'])->name('my-articles.index');
+    Route::get('/my-books/{article}/edit', [\App\Http\Controllers\Client\MyArticleController::class, 'edit'])->name('my-articles.edit');
+    Route::patch('/my-books/{article}', [\App\Http\Controllers\Client\MyArticleController::class, 'update'])->name('my-articles.update');
+    Route::delete('/my-books/{article}', [\App\Http\Controllers\Client\MyArticleController::class, 'destroy'])->name('my-articles.destroy');
+    Route::get('/my-books/{article}/add-chapter', [\App\Http\Controllers\Client\MyArticleController::class, 'createChapter'])->name('my-articles.create_chapter');
+    Route::post('/my-books/{article}/add-chapter', [\App\Http\Controllers\Client\MyArticleController::class, 'storeChapter'])->name('my-articles.store_chapter');
 
     // Nhân vật / Nhóm dịch / Bộ sưu tập (community, scoped owner)
-    Route::get('/nhan-vat/them', [\App\Http\Controllers\Client\CharacterController::class, 'create'])->name('characters.create');
+    Route::get('/characters/create', [\App\Http\Controllers\Client\CharacterController::class, 'create'])->name('characters.create');
     Route::resource('characters', \App\Http\Controllers\Client\CharacterController::class)->except(['create', 'show'])->parameters(['characters' => 'id']);
-    Route::get('/nhom-dich/them', [\App\Http\Controllers\Client\TeamController::class, 'create'])->name('teams.create');
+    Route::get('/teams/create', [\App\Http\Controllers\Client\TeamController::class, 'create'])->name('teams.create');
     Route::resource('teams', \App\Http\Controllers\Client\TeamController::class)->except(['create', 'show'])->parameters(['teams' => 'id']);
-    Route::get('/bo-suu-tap/them', [\App\Http\Controllers\Client\CollectionController::class, 'create'])->name('collections.create');
+    Route::get('/collections/create', [\App\Http\Controllers\Client\CollectionController::class, 'create'])->name('collections.create');
     Route::resource('collections', \App\Http\Controllers\Client\CollectionController::class)->except(['create', 'show'])->parameters(['collections' => 'id']);
     // articles
     //      articles - comments
@@ -118,6 +118,8 @@ Route::middleware(['auth'])->group(function () {
                     Route::resource('authors', AuthorController::class);
                     // genres
                     Route::resource('genres', GenreController::class);
+                    // countries
+                    Route::resource('countries', \App\Http\Controllers\Admin\CountryController::class)->except('show', 'create', 'edit');
                     // menus (WordPress-style: kéo-thả 1 trang, cha-con dropdown)
                     Route::get('menus', [MenuController::class, 'index'])->name('menus.index');
                     Route::post('menus/{menu}/items', [MenuController::class, 'storeItem'])->name('menus.items.store');
@@ -310,13 +312,13 @@ Route::get('/',
 Route::get('/search',
     [HomeController::class, 'search'])
     ->name('home.search');
-Route::get('/doc-nhieu-nhat',
+Route::get('/most-read',
     [HomeController::class, 'showHotArticles'])
     ->name('home.show_hot_articles');
-Route::get('/moi-cap-nhat',
+Route::get('/latest-updates',
     [HomeController::class, 'showNewUpdateArticles'])
     ->name('home.show_new_update_articles');
-Route::get('/da-hoan-thanh',
+Route::get('/completed',
     [HomeController::class, 'showCompletedArticles'])
     ->name('home.show_completed_articles');
 // catalog (lọc truyện)

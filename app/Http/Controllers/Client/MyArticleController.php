@@ -9,6 +9,7 @@ use App\Models\Article;
 use App\Models\Author;
 use App\Models\Chapter;
 use App\Models\Character;
+use App\Models\Country;
 use App\Models\Genre;
 use App\Models\Tag;
 use App\Scopes\ApprovedArticleScope;
@@ -43,10 +44,11 @@ class MyArticleController extends Controller
     public function create()
     {
         return view('client.my-articles.form', [
-            'article' => new Article(),
-            'genres'  => Genre::orderBy('name')->get(),
+            'article'      => new Article(),
+            'genres'       => Genre::orderBy('name')->get(),
+            'countries'    => Country::orderBy('sort_order')->get(),
             'myCharacters' => Character::where('user_id', Auth::id())->orderBy('name')->get(),
-            'mode'    => 'create',
+            'mode'         => 'create',
         ]);
     }
 
@@ -81,10 +83,11 @@ class MyArticleController extends Controller
     {
         $article = $this->ownArticle($id);
         return view('client.my-articles.form', [
-            'article' => $article,
-            'genres'  => Genre::orderBy('name')->get(),
+            'article'      => $article,
+            'genres'       => Genre::orderBy('name')->get(),
+            'countries'    => Country::orderBy('sort_order')->get(),
             'myCharacters' => Character::where('user_id', Auth::id())->orderBy('name')->get(),
-            'mode'    => 'edit',
+            'mode'         => 'edit',
         ]);
     }
 

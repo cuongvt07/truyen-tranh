@@ -34,8 +34,8 @@ Disallow: /register
 Disallow: /search
 Disallow: /api/
 Disallow: /users/
-Disallow: /dang-truyen
-Disallow: /truyen-cua-toi
+Disallow: /upload
+Disallow: /my-books/
 
 Allow: /images/
 Allow: /static/

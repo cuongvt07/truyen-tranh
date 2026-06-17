@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Models\Country;
 use App\Models\Genre;
 use Illuminate\Http\Request;
 
@@ -29,19 +30,25 @@ class CatalogController extends Controller
             });
         }
 
-        // Trạng thái
+        // Trạng thái (single: 0=ongoing, 1=completed)
         if ($request->filled('status')) {
             $query->where('is_completed', (int) $request->get('status'));
         }
 
-        // Loại truyện
-        if ($request->filled('type')) {
-            $query->where('novel_type', (int) $request->get('type'));
+        // Loại truyện (checkbox array: types[])
+        $selectedTypes = array_filter((array) $request->get('types', []), fn($v) => $v !== '');
+        if (!empty($selectedTypes)) {
+            $query->whereIn('novel_type', array_map('intval', $selectedTypes));
         }
 
-        // Quốc gia
-        if ($request->filled('country')) {
-            $query->where('country', (int) $request->get('country'));
+        // Quốc gia (checkbox array: countries[])
+        $selectedCountries = array_filter((array) $request->get('countries', []), fn($v) => $v !== '');
+        // alias đơn ?country=X
+        if (empty($selectedCountries) && $request->filled('country')) {
+            $selectedCountries = [(int) $request->get('country')];
+        }
+        if (!empty($selectedCountries)) {
+            $query->whereIn('country', array_map('intval', $selectedCountries));
         }
 
         // Sắp xếp
@@ -55,8 +62,9 @@ class CatalogController extends Controller
             default:                 $query->orderByDesc('updated_at'); break;
         }
 
-        $articles = $query->paginate(30)->withQueryString();
-        $genres   = Genre::orderBy('name')->get();
+        $articles  = $query->paginate(30)->withQueryString();
+        $genres    = Genre::orderBy('name')->get();
+        $countries = Country::orderBy('sort_order')->get();
 
         // Get selected genre name if only one genre is selected
         $selectedGenreName = null;
@@ -67,9 +75,12 @@ class CatalogController extends Controller
         return view('client.catalog.index', [
             'articles'          => $articles,
             'genres'            => $genres,
+            'countries'         => $countries,
             'selectedGenres'    => $selectedGenres,
+            'selectedTypes'     => array_map('strval', $selectedTypes),
+            'selectedCountries' => array_map('strval', $selectedCountries),
             'selectedGenreName' => $selectedGenreName,
-            'filters'           => $request->only(['search', 'status', 'type', 'country', 'ordering']),
+            'filters'           => $request->only(['search', 'status', 'types', 'countries', 'ordering']),
         ]);
     }
 

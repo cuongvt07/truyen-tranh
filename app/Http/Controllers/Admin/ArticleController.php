@@ -10,6 +10,7 @@ use App\Http\Requests\Admin\Article\UpdateArticleRequest;
 use App\Http\Requests\Article\ChangeStatusRequest;
 use App\Models\Article;
 use App\Models\Author;
+use App\Models\Country;
 use App\Models\Genre;
 use App\Models\Slug;
 use Illuminate\Http\Request;
@@ -86,11 +87,13 @@ class ArticleController extends Controller
         $article = new Article();
         $authors = Author::all();
         $genres = Genre::all();
+        $countries = Country::orderBy('sort_order')->get();
         $articleOptions = Article::orderBy('title')->get(['id', 'title']);
         return view('admin.articles.create', [
             'article' => $article,
             'authors' => $authors,
             'genres' => $genres,
+            'countries' => $countries,
             'articleOptions' => $articleOptions,
             'selectedGenres' => array(),
             'selectedAuthors' => array(),
@@ -152,6 +155,7 @@ class ArticleController extends Controller
         $article->load('slug');
         $authors = Author::all();
         $genres = Genre::all();
+        $countries = Country::orderBy('sort_order')->get();
         $articleOptions = Article::where('id', '!=', $article->id)->orderBy('title')->get(['id', 'title']);
         $selectedGenres = $article->genres->pluck('id')->toArray();
         $selectedAuthors = $article->authors->pluck('id')->toArray();
@@ -159,6 +163,7 @@ class ArticleController extends Controller
             'article' => $article,
             'authors' => $authors,
             'genres' => $genres,
+            'countries' => $countries,
             'articleOptions' => $articleOptions,
             'selectedGenres' => $selectedGenres,
             'selectedAuthors' => $selectedAuthors,

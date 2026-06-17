@@ -50,10 +50,9 @@
                 <label for="country">Quốc gia</label>
                 <select name="country" id="country" class="form-control">
                     <option value="">—</option>
-                    <option value="1" {{ old('country', $article->country)==1?'selected':'' }}>Trung Quốc</option>
-                    <option value="2" {{ old('country', $article->country)==2?'selected':'' }}>Nhật Bản</option>
-                    <option value="3" {{ old('country', $article->country)==3?'selected':'' }}>Hàn Quốc</option>
-                    <option value="6" {{ old('country', $article->country)==6?'selected':'' }}>Khác</option>
+                    @foreach($countries ?? [] as $c)
+                        <option value="{{ $c->id }}" {{ old('country', $article->country)==$c->id?'selected':'' }}>{{ $c->name }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="form-group col-md-4">
