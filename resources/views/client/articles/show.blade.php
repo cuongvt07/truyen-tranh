@@ -118,6 +118,21 @@
                     </div>
                 </section>
 
+                {{-- Teams --}}
+                @if($article->team_id && $article->team)
+                <section class="section translators">
+                    <h2>{{ __('messages.article.teams') }}</h2>
+                    <div class="items">
+                        <a href="{{ route('teams.show', $article->team->id) }}" class="translator">
+                            <div class="image image-cover">
+                                <img loading="lazy" src="{{ $article->team->photo ?: asset('static/core/images/no_cover.webp') }}" alt="{{ $article->team->name }}">
+                            </div>
+                            <div class="name">{{ $article->team->name }}</div>
+                        </a>
+                    </div>
+                </section>
+                @endif
+
                 {{-- Similar — swiper 4 per view + arrows --}}
                 @if(($suggestedArticles ?? collect())->count())
                 <section class="manga-list section swp swp-single swp-4">

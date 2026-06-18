@@ -344,6 +344,9 @@ class ArticleController extends Controller
         if (isset($data['credit_per_chapter']) && $data['credit_per_chapter'] === '') {
             $data['credit_per_chapter'] = 0;
         }
+        if (isset($data['team_id']) && $data['team_id'] === '') {
+            $data['team_id'] = null;
+        }
         return $data;
     }
 

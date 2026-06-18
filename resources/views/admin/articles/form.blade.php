@@ -173,6 +173,23 @@
         </div>
         {{-- Credit / paywall settings --}}
         <hr>
+        <h5>Nhóm dịch</h5>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="team_id">Gán cho nhóm dịch</label>
+                <select name="team_id" id="team_id" class="form-control">
+                    <option value="">— Không có —</option>
+                    @foreach(\App\Models\Team::orderBy('name')->get(['id','name']) as $team)
+                        <option value="{{ $team->id }}" {{ old('team_id', $article->team_id) == $team->id ? 'selected' : '' }}>
+                            {{ $team->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <small class="form-text text-muted">Nhóm dịch phụ trách truyện này.</small>
+            </div>
+        </div>
+
+        <hr>
         <h5>Cài đặt mở khoá bằng Credit</h5>
         <div class="row">
             <div class="form-group col-md-6">

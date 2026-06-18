@@ -23,6 +23,7 @@ class ArticleController extends Controller
             return redirect()->route('articles.show', $article, 301);
         }
 
+        $article->loadMissing('team');
         $article->increaseViewCount();
 
         $chapterNumbers = $article->chapters()->orderByDesc('number')->pluck('number');

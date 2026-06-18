@@ -160,6 +160,7 @@ return [
         'no_chapters'          => 'Chưa có chương nào.',
         'no_comments'          => 'Chưa có bình luận nào.',
         'similar'              => 'Similar',
+        'teams'                => 'Teams:',
         'same_author'          => 'Cùng tác giả',
         'you_may_like'         => 'Có thể bạn thích',
         'translation_requests' => 'Đề xuất dịch',

@@ -66,6 +66,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/characters/create', [\App\Http\Controllers\Client\CharacterController::class, 'create'])->name('characters.create');
     Route::resource('characters', \App\Http\Controllers\Client\CharacterController::class)->except(['create', 'show'])->parameters(['characters' => 'id']);
     Route::get('/teams/create', [\App\Http\Controllers\Client\TeamController::class, 'create'])->name('teams.create');
+    Route::get('/teams/{team}', [\App\Http\Controllers\Client\TeamController::class, 'show'])->name('teams.show');
+    Route::get('/teams/{team}/dashboard', [\App\Http\Controllers\Client\TeamController::class, 'dashboard'])->name('teams.dashboard');
+    Route::get('/teams/{id}/members/manage', [\App\Http\Controllers\Client\TeamController::class, 'manageMembers'])->name('teams.members.manage');
+    Route::post('/teams/{team}/join', [\App\Http\Controllers\Client\TeamController::class, 'joinRequest'])->name('teams.join');
+    Route::post('/teams/{id}/members', [\App\Http\Controllers\Client\TeamController::class, 'requestMember'])->name('teams.members.request');
+    Route::patch('/teams/{id}/members/{member}', [\App\Http\Controllers\Client\TeamController::class, 'updateMember'])->name('teams.members.update');
+    Route::delete('/teams/{id}/members/{member}', [\App\Http\Controllers\Client\TeamController::class, 'removeMember'])->name('teams.members.remove');
     Route::resource('teams', \App\Http\Controllers\Client\TeamController::class)->except(['create', 'show'])->parameters(['teams' => 'id']);
     Route::get('/collections/create', [\App\Http\Controllers\Client\CollectionController::class, 'create'])->name('collections.create');
     Route::resource('collections', \App\Http\Controllers\Client\CollectionController::class)->except(['create', 'show'])->parameters(['collections' => 'id']);
@@ -206,6 +213,12 @@ Route::middleware(['auth'])->group(function () {
 
             // Module cộng đồng (admin/poster quản lý toàn bộ)
             Route::resource('characters', \App\Http\Controllers\Admin\CharacterController::class)->except('show');
+            Route::get('teams/pending', [\App\Http\Controllers\Admin\TeamController::class, 'pendingRequests'])->name('teams.pending');
+            Route::get('teams/{team}/members', [\App\Http\Controllers\Admin\TeamController::class, 'members'])->name('teams.members');
+            Route::post('teams/{team}/members', [\App\Http\Controllers\Admin\TeamController::class, 'addMember'])->name('teams.members.add');
+            Route::post('teams/{team}/members/{member}/approve', [\App\Http\Controllers\Admin\TeamController::class, 'approveMember'])->name('teams.members.approve');
+            Route::post('teams/{team}/members/{member}/reject', [\App\Http\Controllers\Admin\TeamController::class, 'rejectMember'])->name('teams.members.reject');
+            Route::delete('teams/{team}/members/{member}', [\App\Http\Controllers\Admin\TeamController::class, 'removeMember'])->name('teams.members.remove');
             Route::resource('teams', \App\Http\Controllers\Admin\TeamController::class)->except('show');
             Route::resource('collections', \App\Http\Controllers\Admin\CollectionController::class)->except('show');
 

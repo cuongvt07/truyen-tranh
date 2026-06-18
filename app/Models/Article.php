@@ -25,7 +25,7 @@ class Article extends Model
     }
 
     protected $fillable = [
-        'title', 'alt_title', 'illustrator', 'description', 'user_id',
+        'title', 'alt_title', 'illustrator', 'description', 'user_id', 'team_id',
         'cover_image', 'background_image',
         'affi_link', 'affi_image',
         'novel_type', 'is_adult', 'year_of_release', 'country',
@@ -116,6 +116,11 @@ class Article extends Model
     protected function getUpdatedAtTextAttribute()
     {
         return $this->updated_at->diffForHumans();
+    }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo

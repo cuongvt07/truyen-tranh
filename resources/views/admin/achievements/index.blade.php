@@ -52,13 +52,6 @@
             <div class="row">
                 <div class="col-md-2">
                     <div class="form-group">
-                        <label class="small font-weight-bold">Key <span class="text-danger">*</span></label>
-                        <input type="text" name="key" value="{{ old('key') }}" class="form-control form-control-sm" placeholder="vd: chapters_10" required>
-                        <small class="text-muted">Duy nhất, không dấu</small>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
                         <label class="small font-weight-bold">Tên (VI) <span class="text-danger">*</span></label>
                         <input type="text" name="name" value="{{ old('name') }}" class="form-control form-control-sm" required>
                     </div>
@@ -250,6 +243,7 @@ function achToggleEdit(id) {
     row.style.display  = show ? 'none' : '';
     edit.style.display = show ? '' : 'none';
 }
+
 // Mở create form nếu có lỗi validation
 @if($errors->isNotEmpty())
 document.getElementById('ach-create-body').classList.remove('d-none');

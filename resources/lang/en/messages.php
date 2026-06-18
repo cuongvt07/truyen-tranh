@@ -171,6 +171,7 @@ return array (
     'no_chapters' => 'No chapters yet.',
     'no_comments' => 'No comments yet.',
     'similar' => 'Similar',
+    'teams' => 'Teams:',
     'same_author' => 'By the same author',
     'you_may_like' => 'You may also like',
     'translation_requests' => 'Translation requests',

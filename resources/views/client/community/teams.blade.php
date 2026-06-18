@@ -10,18 +10,27 @@
         </div>
     </header>
     @if(session('success'))<div style="background:#1e3a1e;border:1px solid #2e5e2e;padding:10px 14px;border-radius:6px;margin-bottom:14px;color:#9f9">{{ session('success') }}</div>@endif
+    @if(session('error'))<div style="background:#3a1010;border:1px solid #7a2020;padding:10px 14px;border-radius:6px;margin-bottom:14px;color:#f88">{{ session('error') }}</div>@endif
 
     <div class="block" style="padding:16px">
         @forelse($items as $t)
             <div class="my-story">
                 <div class="my-story__poster"><img src="{{ $t->photo ?: asset('static/core/images/no_cover.webp') }}" alt=""></div>
                 <div class="my-story__info">
-                    <div class="my-story__title">{{ $t->name }}</div>
-                    @if($t->site)<div class="meta-color" style="font-size:13px"><i class="fa fa-link"></i> {{ $t->site }}</div>@endif
+                    <div class="my-story__title">
+                        <a href="{{ route('teams.show', $t->id) }}" style="color:inherit">{{ $t->name }}</a>
+                    </div>
+                    <div style="font-size:12px;color:var(--meta-color);margin-top:3px">
+                        <i class="fa fa-users"></i> {{ $t->approved_members_count }} thành viên
+                        @if($t->site) &nbsp;·&nbsp; <i class="fa fa-link"></i> {{ \Str::limit($t->site, 30) }} @endif
+                    </div>
                 </div>
                 <div class="my-story__actions">
-                    <a href="{{ route('teams.edit', $t->id) }}" class="btn btn-invincible"><i class="fa fa-edit"></i></a>
-                    <form method="post" action="{{ route('teams.destroy', $t->id) }}" onsubmit="return confirm('{{ __('messages.community.delete_team_confirm') }}')" style="display:inline">@csrf @method('delete')<button class="btn btn-invincible" style="color:#e84040"><i class="fa fa-trash"></i></button></form>
+                    <a href="{{ route('teams.edit', $t->id) }}" class="btn btn-invincible" title="Quản lý nhóm"><i class="fa fa-cog"></i></a>
+                    <form method="post" action="{{ route('teams.destroy', $t->id) }}" onsubmit="return confirm('{{ __('messages.community.delete_team_confirm') }}')" style="display:inline">
+                        @csrf @method('delete')
+                        <button class="btn btn-invincible" style="color:#e84040"><i class="fa fa-trash"></i></button>
+                    </form>
                 </div>
             </div>
         @empty

@@ -18,4 +18,34 @@ class Team extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function members()
+    {
+        return $this->hasMany(TeamMember::class);
+    }
+
+    public function approvedMembers()
+    {
+        return $this->hasMany(TeamMember::class)->where('status', 'approved');
+    }
+
+    public function pendingMembers()
+    {
+        return $this->hasMany(TeamMember::class)->where('status', 'pending');
+    }
+
+    public function articles()
+    {
+        return $this->hasMany(Article::class);
+    }
+
+    public function isLeader(int $userId): bool
+    {
+        return $this->user_id === $userId;
+    }
+
+    public function hasMember(int $userId): bool
+    {
+        return $this->approvedMembers()->where('user_id', $userId)->exists();
+    }
 }

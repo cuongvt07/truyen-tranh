@@ -21,7 +21,6 @@ class AchievementController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'key'            => 'required|string|max:100|unique:achievements,key',
             'name'           => 'required|string|max:100',
             'name_en'        => 'nullable|string|max:100',
             'description'    => 'nullable|string|max:500',
@@ -33,8 +32,24 @@ class AchievementController extends Controller
             'sort_order'     => 'required|integer|min:0',
         ]);
 
+        $data['key'] = $this->generateUniqueKey($data['name']);
+
         Achievement::create($data);
         return back()->with('success', 'Đã tạo thành tích mới.');
+    }
+
+    private function generateUniqueKey(string $name): string
+    {
+        $base = \Illuminate\Support\Str::slug($name, '_');
+        if (!$base) {
+            $base = 'achievement_' . time();
+        }
+        $key = $base;
+        $i   = 2;
+        while (Achievement::where('key', $key)->exists()) {
+            $key = $base . '_' . $i++;
+        }
+        return $key;
     }
 
     public function update(Request $request, Achievement $achievement)
