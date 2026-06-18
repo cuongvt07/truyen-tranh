@@ -83,7 +83,7 @@
                     @php $profileUrl = optional($m->user)->id ? route('users.show.profile', $m->user) : '#'; @endphp
                     <a href="{{ $profileUrl }}" class="team-member">
                         <span class="team-member-avatar">
-                            <img src="{{ optional($m->user)->photo ?: asset('static/core/images/no_cover.webp') }}" alt="">
+                            <img src="{{ optional($m->user)->avatar ?: asset('static/core/images/no_cover.webp') }}" alt="">
                         </span>
                         <span>
                             <span class="team-member-name">{{ optional($m->user)->username ?? '?' }}</span>

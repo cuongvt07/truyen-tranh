@@ -35,7 +35,7 @@ class TeamController extends Controller
     {
         $team->load([
             'user:id,name,username',
-            'approvedMembers.user:id,name,username,photo',
+            'approvedMembers.user:id,name,username,avatar',
         ]);
 
         $articles = \App\Models\Article::withoutGlobalScopes()
@@ -61,7 +61,7 @@ class TeamController extends Controller
     {
         abort_unless(Auth::check() && ($team->isLeader(Auth::id()) || $team->hasMember(Auth::id())), 403);
 
-        $team->load('approvedMembers.user:id,name,username,photo');
+        $team->load('approvedMembers.user:id,name,username,avatar');
 
         $totalArticles  = \App\Models\Article::withoutGlobalScopes()->where('team_id', $team->id)->count();
         $totalChapters  = \App\Models\Chapter::query()
@@ -75,7 +75,7 @@ class TeamController extends Controller
     public function manageMembers($id)
     {
         $team = $this->own($id);
-        $team->load(['members.user:id,name,username,photo', 'members.requester:id,name,username']);
+        $team->load(['members.user:id,name,username,avatar', 'members.requester:id,name,username']);
         return view('client.community.team-members', compact('team'));
     }
 
@@ -124,7 +124,7 @@ class TeamController extends Controller
     {
         $item = $this->own($id);
         $item->load([
-            'members.user:id,name,username,photo',
+            'members.user:id,name,username,avatar',
             'members.requester:id,name,username',
         ]);
         return view('client.community.team-form', ['item' => $item, 'mode' => 'edit']);
