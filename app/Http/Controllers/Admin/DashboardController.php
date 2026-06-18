@@ -11,6 +11,7 @@ use App\Models\ChapterUnlock;
 use App\Models\Character;
 use App\Models\Collection;
 use App\Models\Comment;
+use App\Models\ChapterReport;
 use App\Models\CommentReport;
 use App\Models\Deposit;
 use App\Models\Genre;
@@ -42,9 +43,10 @@ class DashboardController extends Controller
         $base = fn () => Article::withoutGlobalScope(ApprovedArticleScope::class);
 
         return [
-            'pendingArticles' => $base()->where('status', ArticleStatus::PENDING->value)->count(),
-            'openReports'     => CommentReport::where('resolved', false)->count(),
-            'hiddenArticles'  => $base()->where('status', ArticleStatus::HIDDEN->value)->count(),
+            'pendingArticles'     => $base()->where('status', ArticleStatus::PENDING->value)->count(),
+            'openReports'         => CommentReport::where('resolved', false)->count(),
+            'openChapterReports'  => ChapterReport::where('resolved', false)->count(),
+            'hiddenArticles'      => $base()->where('status', ArticleStatus::HIDDEN->value)->count(),
 
             'articleCount' => $base()->count(),
             'chapterCount' => Chapter::count(),

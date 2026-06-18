@@ -110,6 +110,13 @@
                             <span class="info-box-number">{{ number_format($openReports) }}</span>
                         </div>
                     </a>
+                    <a href="{{ route('admin.chapter_reports.index') }}" class="info-box mb-0">
+                        <span class="info-box-icon bg-warning"><i class="fas fa-exclamation-triangle"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Báo lỗi chương</span>
+                            <span class="info-box-number">{{ number_format($openChapterReports) }}</span>
+                        </div>
+                    </a>
                     <a href="{{ route('admin.articles.index', ['status' => 2]) }}" class="info-box mb-0">
                         <span class="info-box-icon bg-secondary"><i class="fas fa-eye-slash"></i></span>
                         <div class="info-box-content">

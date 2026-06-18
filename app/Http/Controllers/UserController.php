@@ -6,6 +6,7 @@ use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Article;
 use App\Models\BannedUser;
 use App\Models\User;
+use App\Services\AchievementService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -195,7 +196,11 @@ class UserController extends Controller
 
     public function achievements(User $user): View
     {
-        return view('client.users.achievements', ['user' => $user]);
+        // Sync trước khi render để mở khoá achievements mới
+        AchievementService::sync($user);
+        $achievementData = AchievementService::forUser($user);
+
+        return view('client.users.achievements', array_merge(['user' => $user], $achievementData));
     }
 
     public function suggestions(User $user): View

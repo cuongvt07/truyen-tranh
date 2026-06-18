@@ -225,4 +225,20 @@ class User extends Model implements AuthenticatableContract,
         $this->save();
     }
 
+    public function readingHistories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Models\ReadingHistory::class, 'user_id', 'id');
+    }
+
+    public function deposits(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Models\Deposit::class, 'user_id', 'id');
+    }
+
+    public function achievements(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(\App\Models\Achievement::class, 'user_achievements')
+            ->withPivot('unlocked_at');
+    }
+
 }

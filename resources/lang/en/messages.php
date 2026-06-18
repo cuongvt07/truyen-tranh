@@ -108,6 +108,7 @@ return array (
   'home' => 
   array (
     'popular' => 'Popular',
+    'new_updated' => 'New Updated',
     'new_releases' => 'New Releases',
     'recently' => 'Recently updated',
     'reading' => 'Reading',

@@ -84,7 +84,31 @@
         </div>
     </section>
 
-    {{-- 2. INDEX-TAGS (genres) --}}
+    {{-- 2. NEW UPDATED --}}
+    @if($newUpdateArticles->isNotEmpty())
+    <section class="section">
+        <h2>{{ __('messages.home.new_updated') }}</h2>
+        <div class="block popular">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    @foreach($newUpdateArticles->take(16) as $article)
+                        <div class="swiper-slide">
+                            <a href="{{ route('articles.show', $article) }}" class="manga-item">
+                                <div class="poster image image-cover lazy-load-bg">
+                                    <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
+                                </div>
+                                <span>{{ $article->is_completed ? __('messages.ui.status_completed') : __('messages.ui.status_ongoing') }}@if(($article->rating_count ?? 0) > 0) • {{ number_format($article->rating ?? 0, 1) }}<i class="fa fa-star"></i>@endif</span>
+                                <div class="title clamp clamp-2">{{ $article->title }}</div>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+    @endif
+
+    {{-- 3. INDEX-TAGS (genres) --}}
     @php
         // Map tên thể loại -> ảnh fix cứng (bổ sung sau khi có ảnh thật)
         $genreImgMap = [
@@ -127,7 +151,7 @@
         </div>
     </div>
 
-    {{-- 3. TRANSLATION REQUESTS — truyện do user gửi, đã admin duyệt --}}
+    {{-- 4. TRANSLATION REQUESTS — truyện do user gửi, đã admin duyệt --}}
     @if($userSubmittedArticles->isNotEmpty())
     <div class="section">
         <h2>{{ __('messages.home.translate_req') }}</h2>

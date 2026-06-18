@@ -58,30 +58,21 @@
     if (!frequencyAllowed()) return;
     markSeen();
 
-    // Mở tab bằng anchor click — đáng tin cậy hơn window.open(..,'noopener') (ít bị popup-blocker chặn)
     function openAd(url) {
-        var a = document.createElement('a');
-        a.href = url;
-        a.target = '_blank';
-        a.rel = 'noopener nofollow';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        window.open(url, '_blank', 'noopener,noreferrer');
     }
 
-    var firedOnce = false; // chỉ dùng cho mode 'none' (1 lần / trang)
+    var firedOnce = false;
     function handler(e) {
         if (cad.after_click === 'none' && firedOnce) return;
-        // Cooldown / stop_session: kiểm MỖI click → qua đủ interval mới bắn lại
         if (!afterClickAllows()) return;
-        // bỏ qua khi click vào phần tử tương tác (link/nút/ô nhập...) để không cướp hành vi gốc
-        if (e.target.closest && e.target.closest('a, button, input, select, textarea, label, [role="button"]')) return;
+        // Bỏ qua click vào ô nhập liệu/form — vẫn fire khi click link/nút để mở ad song song
+        if (e.target.closest && e.target.closest('input, select, textarea')) return;
 
-        markClicked();          // đặt mốc cooldown mới → lần lặp kế tiếp cách 'cooldown' giây
+        markClicked();
         openAd(cad.link);
         firedOnce = true;
 
-        // 'none' = 1 lần/trang; 'cooldown'/'stop_session' giữ listener để còn lặp lại
         if (cad.after_click === 'none') document.removeEventListener('click', handler, true);
     }
     document.addEventListener('click', handler, true);

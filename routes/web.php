@@ -120,6 +120,11 @@ Route::middleware(['auth'])->group(function () {
                     Route::resource('genres', GenreController::class);
                     // countries
                     Route::resource('countries', \App\Http\Controllers\Admin\CountryController::class)->except('show', 'create', 'edit');
+                    // achievements
+                    Route::get('achievements', [\App\Http\Controllers\Admin\AchievementController::class, 'index'])->name('achievements.index');
+                    Route::put('achievements/{achievement}', [\App\Http\Controllers\Admin\AchievementController::class, 'update'])->name('achievements.update');
+                    Route::delete('achievements/{achievement}', [\App\Http\Controllers\Admin\AchievementController::class, 'destroy'])->name('achievements.destroy');
+                    Route::get('achievements/{achievement}/users', [\App\Http\Controllers\Admin\AchievementController::class, 'users'])->name('achievements.users');
                     // menus (WordPress-style: kéo-thả 1 trang, cha-con dropdown)
                     Route::get('menus', [MenuController::class, 'index'])->name('menus.index');
                     Route::post('menus/{menu}/items', [MenuController::class, 'storeItem'])->name('menus.items.store');
@@ -222,6 +227,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('comment-reports/{comment}/resolve', [\App\Http\Controllers\Admin\CommentController::class, 'resolveReports'])->name('comment_reports.resolve');
             // Báo cáo lỗi chương
             Route::get('chapter-reports', [\App\Http\Controllers\Admin\ChapterReportController::class, 'index'])->name('chapter_reports.index');
+            Route::post('chapter-reports/resolve-chapter', [\App\Http\Controllers\Admin\ChapterReportController::class, 'resolveChapter'])->name('chapter_reports.resolve_chapter');
             Route::post('chapter-reports/{report}/resolve', [\App\Http\Controllers\Admin\ChapterReportController::class, 'resolve'])->name('chapter_reports.resolve');
             Route::delete('chapter-reports/{report}', [\App\Http\Controllers\Admin\ChapterReportController::class, 'destroy'])->name('chapter_reports.destroy');
 

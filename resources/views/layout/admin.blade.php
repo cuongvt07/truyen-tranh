@@ -115,6 +115,11 @@
                         <i class="fas fa-flag mr-2 text-danger"></i> Báo cáo bình luận
                         <span class="float-right badge badge-danger badge-pill">{{ $navOpenReports }}</span>
                     </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('admin.chapter_reports.index') }}" class="dropdown-item">
+                        <i class="fas fa-exclamation-triangle mr-2 text-warning"></i> Báo lỗi chương
+                        <span class="float-right badge badge-warning badge-pill">{{ $navOpenChapterReports ?? 0 }}</span>
+                    </a>
                 </div>
             </li>
             @endif
@@ -211,7 +216,7 @@
                     {{-- ===== QUẢN LÝ NỘI DUNG ===== --}}
                     @if($currentUser->is_poster || $currentUser->is_admin)
                         @php
-                            $openContent = request()->routeIs('admin.articles.*','admin.chapters.*','admin.characters.*','admin.teams.*','admin.collections.*','admin.authors.*','admin.genres.*','admin.countries.*','admin.tags.*','admin.comments.*','admin.comment_reports.*','admin.chapter_reports.*');
+                            $openContent = request()->routeIs('admin.articles.*','admin.chapters.*','admin.characters.*','admin.teams.*','admin.collections.*','admin.authors.*','admin.genres.*','admin.countries.*','admin.achievements.*','admin.tags.*','admin.comments.*','admin.comment_reports.*','admin.chapter_reports.*');
                             $pendingArticles = $navPendingArticles ?? 0;
                             $openReports = $navOpenReports ?? 0;
                         @endphp
@@ -261,6 +266,11 @@
                                 <li class="nav-item">
                                     <a href="{{ route('admin.countries.index') }}" class="nav-link {{ set_active('admin.countries.*') }}">
                                         <i class="nav-icon fa-solid fa-flag"></i><p>Quốc gia</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.achievements.index') }}" class="nav-link {{ set_active('admin.achievements.*') }}">
+                                        <i class="nav-icon fa-solid fa-award"></i><p>Thành tích</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">

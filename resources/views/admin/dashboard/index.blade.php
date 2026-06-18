@@ -7,7 +7,7 @@
     {{-- ===== CẦN XỬ LÝ ===== --}}
     <div class="mb-2"><h5 class="text-muted"><i class="fas fa-bell text-danger mr-1"></i> Cần xử lý</h5></div>
     <div class="row">
-        <div class="col-lg-4 col-6">
+        <div class="col-lg-3 col-6">
             <div class="small-box {{ $pendingArticles ? 'bg-warning' : 'bg-light' }}">
                 <div class="inner">
                     <h3>{{ number_format($pendingArticles) }}</h3>
@@ -17,17 +17,27 @@
                 <a href="{{ route('admin.articles.index', ['status' => 0]) }}" class="small-box-footer">Duyệt ngay <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
-        <div class="col-lg-4 col-6">
+        <div class="col-lg-3 col-6">
             <div class="small-box {{ $openReports ? 'bg-danger' : 'bg-light' }}">
                 <div class="inner">
                     <h3>{{ number_format($openReports) }}</h3>
-                    <p>Báo cáo bình luận chưa xử lý</p>
+                    <p>Báo cáo bình luận</p>
                 </div>
                 <div class="icon"><i class="fas fa-flag"></i></div>
                 <a href="{{ route('admin.comment_reports.index') }}" class="small-box-footer">Xem báo cáo <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
-        <div class="col-lg-4 col-6">
+        <div class="col-lg-3 col-6">
+            <div class="small-box {{ $openChapterReports ? 'bg-info' : 'bg-light' }}">
+                <div class="inner">
+                    <h3>{{ number_format($openChapterReports) }}</h3>
+                    <p>Báo lỗi chương</p>
+                </div>
+                <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <a href="{{ route('admin.chapter_reports.index') }}" class="small-box-footer">Xem báo cáo <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
             <div class="small-box {{ $hiddenArticles ? 'bg-secondary' : 'bg-light' }}">
                 <div class="inner">
                     <h3>{{ number_format($hiddenArticles) }}</h3>

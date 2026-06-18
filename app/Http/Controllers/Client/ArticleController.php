@@ -93,11 +93,12 @@ class ArticleController extends Controller
             $suggestedArticles = $this->defaultSimilarArticles($article, $firstAuthor, $genreIds, 10);
         }
 
-        // Translation requests: latest articles when no manual config is set.
+        // Translation requests: user-submitted articles like homepage, when no manual config is set.
         $translationRequests = $this->configuredArticles($article->translation_request_article_ids, $article->id, 10);
         if ($translationRequests->isEmpty()) {
-            $translationRequests = Article::where('id', '!=', $article->id)
-                ->latest()
+            $translationRequests = Article::where('is_user_submitted', true)
+                ->where('id', '!=', $article->id)
+                ->latest('id')
                 ->limit(10)
                 ->get();
         }
