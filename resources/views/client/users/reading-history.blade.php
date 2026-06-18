@@ -1,14 +1,14 @@
 @extends('client.users.profile')
-@section('template_title', 'Reading History - ' . $user->username)
+@section('template_title', __('messages.account.reading_history_title', ['name' => $user->username]))
 
 @section('user_content')
 
-<h2 class="user-tab-title"><i class="fa fa-history"></i> Reading History</h2>
+<h2 class="user-tab-title"><i class="fa fa-history"></i> {{ __('messages.account.nav_reading_history') }}</h2>
 
 @if($history->isEmpty())
     <div class="block"><div class="nothing" style="padding:40px 0;text-align:center;color:var(--meta-color)">
         <i class="fa fa-history" style="font-size:32px;opacity:.4;display:block;margin-bottom:10px"></i>
-        No reading history yet.
+        {{ __('messages.account.reading_history_empty') }}
     </div></div>
 @else
     <div class="block"><div class="user-list-grid">
@@ -25,7 +25,7 @@
                 @if($item->chapter)
                     <a href="{{ route('articles.chapters.show', [$article, $item->chapter_number]) }}"
                        class="continue" style="font-size:12px;color:var(--meta-color)">
-                        <i class="fa fa-book-open"></i> Chapter {{ $item->chapter_number }}
+                        <i class="fa fa-book-open"></i> {{ __('messages.account.chapter_number', ['number' => $item->chapter_number]) }}
                     </a>
                 @endif
                 <div style="font-size:11px;color:var(--meta-color);margin-top:4px">

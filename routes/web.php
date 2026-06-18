@@ -122,6 +122,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::resource('countries', \App\Http\Controllers\Admin\CountryController::class)->except('show', 'create', 'edit');
                     // achievements
                     Route::get('achievements', [\App\Http\Controllers\Admin\AchievementController::class, 'index'])->name('achievements.index');
+                    Route::post('achievements', [\App\Http\Controllers\Admin\AchievementController::class, 'store'])->name('achievements.store');
                     Route::put('achievements/{achievement}', [\App\Http\Controllers\Admin\AchievementController::class, 'update'])->name('achievements.update');
                     Route::delete('achievements/{achievement}', [\App\Http\Controllers\Admin\AchievementController::class, 'destroy'])->name('achievements.destroy');
                     Route::get('achievements/{achievement}/users', [\App\Http\Controllers\Admin\AchievementController::class, 'users'])->name('achievements.users');

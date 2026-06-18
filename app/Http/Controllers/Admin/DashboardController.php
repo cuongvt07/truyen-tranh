@@ -43,10 +43,13 @@ class DashboardController extends Controller
         $base = fn () => Article::withoutGlobalScope(ApprovedArticleScope::class);
 
         return [
-            'pendingArticles'     => $base()->where('status', ArticleStatus::PENDING->value)->count(),
-            'openReports'         => CommentReport::where('resolved', false)->count(),
-            'openChapterReports'  => ChapterReport::where('resolved', false)->count(),
-            'hiddenArticles'      => $base()->where('status', ArticleStatus::HIDDEN->value)->count(),
+            'pendingArticles'          => $base()->where('status', ArticleStatus::PENDING->value)->count(),
+            'approvedArticles'         => $base()->where('status', ArticleStatus::APPROVED->value)->count(),
+            'openReports'              => CommentReport::where('resolved', false)->count(),
+            'resolvedReports'          => CommentReport::where('resolved', true)->count(),
+            'openChapterReports'       => ChapterReport::where('resolved', false)->count(),
+            'resolvedChapterReports'   => ChapterReport::where('resolved', true)->count(),
+            'hiddenArticles'           => $base()->where('status', ArticleStatus::HIDDEN->value)->count(),
 
             'articleCount' => $base()->count(),
             'chapterCount' => Chapter::count(),

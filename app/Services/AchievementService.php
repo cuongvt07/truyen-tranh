@@ -3,6 +3,10 @@
 namespace App\Services;
 
 use App\Models\Achievement;
+use App\Models\ChapterLike;
+use App\Models\CommentVote;
+use App\Models\ForumComment;
+use App\Models\ForumPost;
 use App\Models\User;
 use App\Models\UserAchievement;
 
@@ -11,12 +15,26 @@ class AchievementService
     /** Metrics cần tính cho user. */
     public static function metrics(User $user): array
     {
+        $uid = $user->id;
         return [
-            'chapters_read'   => $user->readingHistories()->count(),
-            'comments_posted' => $user->comments()->count(),
-            'bookmarks'       => $user->bookmarks()->count(),
-            'deposit_count'   => $user->deposits()->where('status', 'completed')->count(),
-            'deposit_total'   => (int) $user->deposits()->where('status', 'completed')->sum('amount'),
+            // Đọc
+            'chapters_read'      => $user->readingHistories()->count(),
+            'articles_read'      => $user->readingHistories()->distinct('article_id')->count('article_id'),
+            // Tương tác
+            'comments_posted'    => $user->comments()->count(),
+            'chapter_likes'      => ChapterLike::where('user_id', $uid)->count(),
+            'comment_votes'      => CommentVote::where('user_id', $uid)->count(),
+            // Chương mở khoá
+            'chapters_unlocked'  => $user->chapterUnlocks()->count(),
+            'credits_spent'      => (int) $user->chapterUnlocks()->sum('credits_spent'),
+            // Theo dõi
+            'bookmarks'          => $user->bookmarks()->count(),
+            // Diễn đàn
+            'forum_posts'        => ForumPost::where('user_id', $uid)->where('status', 'approved')->count(),
+            'forum_comments'     => ForumComment::where('user_id', $uid)->count(),
+            // Nạp tiền
+            'deposit_count'      => $user->deposits()->where('status', 'completed')->count(),
+            'deposit_total'      => (int) $user->deposits()->where('status', 'completed')->sum('amount'),
         ];
     }
 

@@ -107,63 +107,131 @@ class AdController extends Controller
 
     private function validateData(Request $request): array
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:160',
-            'image_url' => 'nullable|string|max:500',
-            'image_file' => 'nullable|image|max:32768',
-            'link' => 'nullable|string|max:500',
-            'display_mode' => 'required|in:' . implode(',', array_keys(Ad::MODES)),
-            'placement' => 'nullable|in:' . implode(',', array_keys(Ad::PLACEMENTS)),
-            'pages' => 'nullable|array',
-            'pages.*' => 'in:' . implode(',', array_keys(Ad::PAGES)),
-            'frequency' => 'required|in:' . implode(',', array_keys(Ad::FREQUENCIES)),
-            'frequency_value' => 'nullable|integer|min:1|max:9999',
-            'delay_seconds' => 'nullable|integer|min:0|max:600',
-            'after_click' => 'required|in:' . implode(',', array_keys(Ad::AFTER_CLICKS)),
-            'cooldown_seconds' => 'nullable|integer|min:0|max:86400',
-            'chapter_start' => 'nullable|integer|min:1|max:9999',
-            'chapter_interval' => 'nullable|integer|min:1|max:9999',
-            'chapter_inline_count' => 'nullable|integer|min:1|max:20',
-            'chapter_inline_first_after' => 'nullable|integer|min:1|max:200',
-            'chapter_inline_every' => 'nullable|integer|min:1|max:200',
-            'priority' => 'nullable|integer|min:0|max:9999',
-            'start_at' => 'nullable|date',
-            'end_at' => 'nullable|date|after_or_equal:start_at',
-            'items' => 'nullable|array',
-            'items.*.id' => 'nullable|integer|exists:ad_items,id',
-            'items.*.title' => 'nullable|string|max:160',
-            'items.*.image_url' => 'nullable|string|max:500',
-            'items.*.image_file' => 'nullable|image|max:32768',
-            'items.*.link' => 'nullable|string|max:500',
-            'items.*.sort_order' => 'nullable|integer|min:0|max:9999',
-            'items.*.is_active' => 'nullable|boolean',
-            'items.*.delete' => 'nullable|boolean',
-        ]);
+        $mode = $request->input('display_mode');
 
-        return [
-            'name' => $validated['name'],
-            'image_url' => $validated['image_url'] ?? null,
-            'link' => $validated['link'] ?? null,
-            'display_mode' => $validated['display_mode'],
-            'placement' => $validated['display_mode'] === 'banner' ? ($validated['placement'] ?? 'top') : null,
-            'pages' => $validated['pages'] ?? ['all'],
-            'frequency' => $validated['frequency'],
-            'frequency_value' => $validated['frequency_value'] ?? 1,
-            'delay_seconds' => $validated['delay_seconds'] ?? 0,
-            'after_click' => $validated['after_click'],
-            'cooldown_seconds' => $validated['cooldown_seconds'] ?? 0,
-            'chapter_start' => 1,
-            'chapter_interval' => 1,
-            'chapter_inline_count' => $validated['chapter_inline_count'] ?? 1,
-            'chapter_inline_first_after' => 4,
-            'chapter_inline_every' => 8,
-            'hide_for_vip' => $request->boolean('hide_for_vip'),
-            'require_click' => $request->boolean('require_click'),
-            'priority' => $validated['priority'] ?? 0,
-            'is_active' => $request->boolean('is_active'),
-            'start_at' => $validated['start_at'] ?? null,
-            'end_at' => $validated['end_at'] ?? null,
+        $rules = [
+            'name'         => 'required|string|max:160',
+            'display_mode' => 'required|in:' . implode(',', array_keys(Ad::MODES)),
+            'pages'        => 'nullable|array',
+            'pages.*'      => 'in:' . implode(',', array_keys(Ad::PAGES)),
+            'priority'     => 'nullable|integer|min:0|max:9999',
+            'start_at'     => 'nullable|date',
+            'end_at'       => 'nullable|date|after_or_equal:start_at',
         ];
+
+        // Fields tuỳ theo loại
+        if (in_array($mode, ['banner', 'popup'])) {
+            $rules['image_url']  = 'nullable|string|max:500';
+            $rules['image_file'] = 'nullable|image|max:32768';
+            $rules['link']       = 'nullable|string|max:500';
+        }
+        if ($mode === 'banner') {
+            $rules['placement'] = 'nullable|in:' . implode(',', array_keys(Ad::PLACEMENTS));
+        }
+        if ($mode === 'click_anywhere') {
+            $rules['link'] = 'required|string|max:500';
+        }
+        if (in_array($mode, ['popup', 'click_anywhere'])) {
+            $rules['frequency']       = 'required|in:' . implode(',', array_keys(Ad::FREQUENCIES));
+            $rules['frequency_value'] = 'nullable|integer|min:1|max:9999';
+            $rules['after_click']     = 'required|in:' . implode(',', array_keys(Ad::AFTER_CLICKS));
+            $rules['cooldown_seconds']= 'nullable|integer|min:0|max:86400';
+        }
+        if ($mode === 'popup') {
+            $rules['delay_seconds'] = 'nullable|integer|min:0|max:600';
+        }
+        if ($mode === 'chapter') {
+            $rules['chapter_inline_count'] = 'nullable|integer|min:1|max:20';
+            $rules['items']            = 'nullable|array';
+            $rules['items.*.id']       = 'nullable|integer|exists:ad_items,id';
+            $rules['items.*.title']    = 'nullable|string|max:160';
+            $rules['items.*.image_url']= 'nullable|string|max:500';
+            $rules['items.*.image_file']= 'nullable|image|max:32768';
+            $rules['items.*.link']     = 'nullable|string|max:500';
+            $rules['items.*.sort_order']= 'nullable|integer|min:0|max:9999';
+            $rules['items.*.is_active']= 'nullable|boolean';
+            $rules['items.*.delete']   = 'nullable|boolean';
+        }
+
+        $v = $request->validate($rules);
+
+        // Build payload theo từng loại
+        $data = [
+            'name'         => $v['name'],
+            'display_mode' => $mode,
+            'pages'        => $v['pages'] ?? ['all'],
+            'priority'     => $v['priority'] ?? 0,
+            'is_active'    => $request->boolean('is_active'),
+            'hide_for_vip' => $request->boolean('hide_for_vip'),
+            'start_at'     => $v['start_at'] ?? null,
+            'end_at'       => $v['end_at'] ?? null,
+            // Nullify fields irrelevant to this mode
+            'placement'          => null,
+            'image_url'          => null,
+            'link'               => null,
+            'frequency'          => null,
+            'frequency_value'    => null,
+            'delay_seconds'      => null,
+            'after_click'        => null,
+            'cooldown_seconds'   => null,
+            'require_click'      => false,
+            'chapter_inline_count' => null,
+        ];
+
+        match ($mode) {
+            'banner' => array_merge($data, [
+                'image_url'  => $v['image_url'] ?? null,
+                'link'       => $v['link'] ?? null,
+                'placement'  => $v['placement'] ?? 'top',
+            ]),
+            'click_anywhere' => array_merge($data, [
+                'link'             => $v['link'],
+                'frequency'        => $v['frequency'] ?? 'once_session',
+                'frequency_value'  => $v['frequency_value'] ?? 1,
+                'after_click'      => $v['after_click'] ?? 'stop_session',
+                'cooldown_seconds' => $v['cooldown_seconds'] ?? 0,
+            ]),
+            'popup' => array_merge($data, [
+                'image_url'        => $v['image_url'] ?? null,
+                'link'             => $v['link'] ?? null,
+                'delay_seconds'    => $v['delay_seconds'] ?? 5,
+                'frequency'        => $v['frequency'] ?? 'once_session',
+                'frequency_value'  => $v['frequency_value'] ?? 1,
+                'after_click'      => $v['after_click'] ?? 'none',
+                'cooldown_seconds' => $v['cooldown_seconds'] ?? 0,
+            ]),
+            'chapter' => array_merge($data, [
+                'require_click'      => $request->boolean('require_click'),
+                'chapter_inline_count' => $v['chapter_inline_count'] ?? 1,
+            ]),
+            default => [],
+        };
+
+        // match() returns value; assign properly per mode
+        if ($mode === 'banner') {
+            $data['image_url'] = $v['image_url'] ?? null;
+            $data['link']      = $v['link'] ?? null;
+            $data['placement'] = $v['placement'] ?? 'top';
+        } elseif ($mode === 'click_anywhere') {
+            $data['link']             = $v['link'];
+            $data['frequency']        = $v['frequency'] ?? 'once_session';
+            $data['frequency_value']  = $v['frequency_value'] ?? 1;
+            $data['after_click']      = $v['after_click'] ?? 'stop_session';
+            $data['cooldown_seconds'] = $v['cooldown_seconds'] ?? 0;
+        } elseif ($mode === 'popup') {
+            $data['image_url']        = $v['image_url'] ?? null;
+            $data['link']             = $v['link'] ?? null;
+            $data['delay_seconds']    = $v['delay_seconds'] ?? 5;
+            $data['frequency']        = $v['frequency'] ?? 'once_session';
+            $data['frequency_value']  = $v['frequency_value'] ?? 1;
+            $data['after_click']      = $v['after_click'] ?? 'none';
+            $data['cooldown_seconds'] = $v['cooldown_seconds'] ?? 0;
+        } elseif ($mode === 'chapter') {
+            $data['require_click']        = $request->boolean('require_click');
+            $data['chapter_inline_count'] = $v['chapter_inline_count'] ?? 1;
+        }
+
+        return $data;
     }
 
     private function handleImage(Request $request, array $data): array

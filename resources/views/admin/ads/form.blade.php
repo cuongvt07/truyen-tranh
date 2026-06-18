@@ -1,413 +1,534 @@
 @extends('layout.admin')
+@section('template_title', $ad->exists ? 'Chỉnh sửa: ' . $ad->name : 'Thêm quảng cáo mới')
 
-@section('template_title', $ad->exists ? 'Chỉnh sửa Quảng cáo: ' . $ad->name : 'Thêm mới Quảng cáo')
+@push('styles')
+<style>
+/* ===== TYPE PICKER ===== */
+.ad-type-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px }
+.ad-type-card  { cursor:pointer; border:2px solid #dee2e6; border-radius:10px; padding:16px 12px;
+                 text-align:center; transition:all .15s; background:#fff; position:relative }
+.ad-type-card:hover { border-color:#adb5bd; background:#f8f9fa }
+.ad-type-card.active { border-color:#007bff; background:#e8f0fe }
+.ad-type-card .ad-type-icon { font-size:28px; margin-bottom:8px; display:block }
+.ad-type-card .ad-type-name { font-weight:600; font-size:13px }
+.ad-type-card .ad-type-hint { font-size:11px; color:#888; margin-top:4px; line-height:1.4 }
+.ad-type-card input[type=radio] { position:absolute; opacity:0; width:0; height:0 }
+.ad-type-card .check-mark { position:absolute; top:8px; right:8px; width:18px; height:18px;
+    border-radius:50%; border:2px solid #dee2e6; background:#fff; display:flex; align-items:center; justify-content:center }
+.ad-type-card.active .check-mark { background:#007bff; border-color:#007bff; color:#fff }
+.ad-type-card.active .check-mark::after { content:'✓'; font-size:11px; font-weight:700 }
+
+/* ===== SECTION PANELS ===== */
+.ad-panel { display:none }
+.ad-panel.active { display:block }
+
+/* ===== ITEMS LIST ===== */
+.ad-item-row { background:#f8f9fa; border-radius:8px; padding:14px; margin-bottom:10px; border:1px solid #e9ecef }
+.ad-item-row .drag-handle { cursor:grab; color:#aaa; margin-right:8px }
+
+@media(max-width:768px) {
+    .ad-type-cards { grid-template-columns:repeat(2,1fr) }
+}
+</style>
+@endpush
 
 @section('content')
 @php
-    $isEdit = $ad->exists;
-    $selectedPages = old('pages', $ad->pages ?? ['all']);
-    $itemRows = old('items');
+    $isEdit      = $ad->exists;
+    $mode        = old('display_mode', $ad->display_mode ?? 'banner');
+    $selPages    = old('pages', $ad->pages ?? ['all']);
+    $itemRows    = old('items');
     if ($itemRows === null) {
-        $itemRows = $ad->items->map(fn ($item) => [
-            'id' => $item->id,
-            'title' => $item->title,
-            'image_url' => $item->image_url,
-            'link' => $item->link,
-            'sort_order' => $item->sort_order,
-            'is_active' => $item->is_active,
-            'image' => $item->image,
+        $itemRows = $ad->items->map(fn($i) => [
+            'id'        => $i->id,
+            'title'     => $i->title,
+            'image_url' => $i->image_url,
+            'link'      => $i->link,
+            'sort_order'=> $i->sort_order,
+            'is_active' => $i->is_active,
+            'image'     => $i->image,
         ])->values()->all();
     }
     if (empty($itemRows)) {
-        $itemRows = [['title' => '', 'image_url' => '', 'link' => '', 'sort_order' => 0, 'is_active' => true, 'image' => null]];
+        $itemRows = [['id'=>null,'title'=>'','image_url'=>'','link'=>'','sort_order'=>0,'is_active'=>true,'image'=>null]];
     }
+
+    $typeInfo = [
+        'banner'         => ['icon'=>'📌', 'name'=>'Banner cố định',    'hint'=>'Hiện ảnh cố định ở vị trí chỉ định (đầu trang, sidebar…)'],
+        'click_anywhere' => ['icon'=>'👆', 'name'=>'Click bất kỳ đâu', 'hint'=>'Mở link khi user click bất kỳ vị trí nào trên trang'],
+        'popup'          => ['icon'=>'🖼️', 'name'=>'Popup / Overlay',  'hint'=>'Hiện ảnh che màn hình, có đếm ngược đóng'],
+        'chapter'        => ['icon'=>'📖', 'name'=>'Trong chapter',     'hint'=>'Chèn ảnh quảng cáo xen kẽ nội dung khi đọc truyện'],
+    ];
 @endphp
 
-<style>
-.mode-chapter .form-group:has(input[name="chapter_start"]),
-.mode-chapter .form-group:has(input[name="chapter_interval"]),
-.mode-chapter .form-group:has(input[name="chapter_inline_first_after"]),
-.mode-chapter .form-group:has(input[name="chapter_inline_every"]) {
-    display: none;
-}
-.mode-chapter:has(input[name="chapter_start"]) > small.form-text {
-    display: none;
-}
-</style>
+<form method="POST" action="{{ $isEdit ? route('admin.ads.update', $ad) : route('admin.ads.store') }}" enctype="multipart/form-data" id="adForm">
+    @csrf
+    @if($isEdit) @method('PUT') @endif
 
-<div class="card">
-    <div class="card-header">
-        <h3 class="card-title">{{ $isEdit ? 'Chỉnh sửa Quảng cáo' : 'Thêm mới Quảng cáo' }}</h3>
+    {{-- Errors --}}
+    @if($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show">
+        <strong>Có lỗi:</strong>
+        <ul class="mb-0 mt-1">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
-    <form method="POST" action="{{ $isEdit ? route('admin.ads.update', $ad) : route('admin.ads.store') }}" enctype="multipart/form-data">
-        @csrf
-        @if($isEdit) @method('PUT') @endif
+    @endif
 
+    {{-- ===== 1. CHỌN LOẠI ===== --}}
+    <div class="card mb-3">
+        <div class="card-header"><h3 class="card-title mb-0"><i class="fas fa-th-large mr-1"></i> Loại quảng cáo</h3></div>
+        <div class="card-body pb-1">
+            <div class="ad-type-cards">
+                @foreach($typeInfo as $val => $info)
+                <label class="ad-type-card {{ $mode === $val ? 'active' : '' }}" data-mode="{{ $val }}">
+                    <input type="radio" name="display_mode" value="{{ $val }}" {{ $mode === $val ? 'checked' : '' }}>
+                    <div class="check-mark"></div>
+                    <span class="ad-type-icon">{{ $info['icon'] }}</span>
+                    <div class="ad-type-name">{{ $info['name'] }}</div>
+                    <div class="ad-type-hint">{{ $info['hint'] }}</div>
+                </label>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    {{-- ===== 2. THÔNG TIN CHUNG ===== --}}
+    <div class="card mb-3">
+        <div class="card-header"><h3 class="card-title mb-0"><i class="fas fa-info-circle mr-1"></i> Thông tin chung</h3></div>
         <div class="card-body">
-            @if($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show">
-                    <strong>Có lỗi xảy ra:</strong>
-                    <ul class="mb-0 mt-2">
-                        @foreach($errors->all() as $e)
-                            <li>{{ $e }}</li>
-                        @endforeach
-                    </ul>
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                </div>
-            @endif
-
-            {{-- Thông tin cơ bản --}}
-            <h5 class="mb-3"><i class="fas fa-info-circle"></i> Thông tin cơ bản</h5>
-            <div class="form-group">
-                <label>Tên quảng cáo <span class="text-danger">*</span></label>
-                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
-                       value="{{ old('name', $ad->name) }}" required placeholder="VD: Banner top trang chủ">
-                @error('name')<span class="invalid-feedback">{{ $message }}</span>@enderror
-            </div>
-
-            <div class="form-group">
-                <x-admin.image-upload name="image_file" label="Ảnh quảng cáo" :height="90"
-                    :current="$ad->image ?? null"
-                    urlName="image_url" :urlValue="old('image_url', $ad->image_url)"
-                    hint="Có thể tải lên hoặc dán URL ảnh ngoài (URL được ưu tiên)." />
-            </div>
-
-            <div class="form-group">
-                <label>Link đích khi click</label>
-                <input type="text" name="link" class="form-control @error('link') is-invalid @enderror" 
-                       value="{{ old('link', $ad->link) }}" placeholder="https://...">
-                @error('link')<span class="invalid-feedback">{{ $message }}</span>@enderror
-            </div>
-
-            <hr class="my-4">
-
-            {{-- Cách hiển thị --}}
-            <h5 class="mb-3"><i class="fas fa-desktop"></i> Cách hiển thị</h5>
             <div class="row">
-                <div class="form-group col-md-6">
-                    <label>Dạng chạy <span class="text-danger">*</span></label>
-                    <select name="display_mode" id="display_mode" class="form-control @error('display_mode') is-invalid @enderror">
-                        @foreach(\App\Models\Ad::MODES as $val => $label)
-                            <option value="{{ $val }}" {{ old('display_mode', $ad->display_mode) === $val ? 'selected' : '' }}>{{ __('messages.ads.modes.'.$val) }}</option>
-                        @endforeach
-                    </select>
-                    @error('display_mode')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label>Tên quảng cáo <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                               value="{{ old('name', $ad->name) }}" required placeholder="VD: Banner top trang chủ">
+                        @error('name')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                    </div>
                 </div>
-                <div class="form-group col-md-6 mode-banner">
-                    <label>Vị trí slot (cho banner)</label>
-                    <select name="placement" class="form-control @error('placement') is-invalid @enderror">
-                        @foreach(\App\Models\Ad::PLACEMENTS as $val => $label)
-                            <option value="{{ $val }}" {{ old('placement', $ad->placement) === $val ? 'selected' : '' }}>{{ __('messages.ads.placements.'.$val) }}</option>
-                        @endforeach
-                    </select>
-                    @error('placement')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Ưu tiên <small class="text-muted">(số nhỏ = trước)</small></label>
+                        <input type="number" name="priority" class="form-control" min="0"
+                               value="{{ old('priority', $ad->priority ?? 0) }}">
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <div class="form-group w-100">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_active" id="is_active"
+                                   value="1" {{ old('is_active', $ad->is_active ?? true) ? 'checked' : '' }}>
+                            <label class="form-check-label font-weight-bold" for="is_active">Đang bật</label>
+                        </div>
+                        <div class="form-check mt-1">
+                            <input class="form-check-input" type="checkbox" name="hide_for_vip" id="hide_for_vip"
+                                   value="1" {{ old('hide_for_vip', $ad->hide_for_vip ?? true) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="hide_for_vip">Ẩn với VIP</label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
+            {{-- Trang chạy --}}
+            <div class="form-group mb-2">
                 <label>Chèn ở các trang</label>
                 <div class="d-flex flex-wrap" style="gap:14px">
                     @foreach(\App\Models\Ad::PAGES as $val => $label)
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="pages[]" value="{{ $val }}"
-                                   id="page_{{ $val }}" {{ in_array($val, $selectedPages) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="page_{{ $val }}">{{ __('messages.ads.pages.'.$val) }}</label>
-                        </div>
-                    @endforeach
-                </div>
-                <small class="form-text text-muted">Chọn "Toàn site" để hiện ở mọi trang</small>
-            </div>
-
-            <hr class="my-4">
-
-            {{-- Tần suất (popup + click_anywhere) --}}
-            <div class="mode-popup mode-click_anywhere">
-                <h5 class="mb-3"><i class="fas fa-clock"></i> Tần suất lặp lại</h5>
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <label>Tần suất hiển thị</label>
-                        <select name="frequency" id="frequency" class="form-control @error('frequency') is-invalid @enderror">
-                            @foreach(\App\Models\Ad::FREQUENCIES as $val => $label)
-                                <option value="{{ $val }}" {{ old('frequency', $ad->frequency) === $val ? 'selected' : '' }}>{{ __('messages.ads.frequencies.'.$val) }}</option>
-                            @endforeach
-                        </select>
-                        @error('frequency')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                    </div>
-                    <div class="form-group col-md-3 freq-n">
-                        <label>Mỗi N lượt xem</label>
-                        <input type="number" name="frequency_value" class="form-control @error('frequency_value') is-invalid @enderror" 
-                               min="1" value="{{ old('frequency_value', $ad->frequency_value ?? 1) }}">
-                        @error('frequency_value')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                    </div>
-                    <div class="form-group col-md-3 mode-popup">
-                        <label>Đếm ngược đóng (giây)</label>
-                        <input type="number" name="delay_seconds" class="form-control @error('delay_seconds') is-invalid @enderror" 
-                               min="0" value="{{ old('delay_seconds', $ad->delay_seconds ?? 0) }}">
-                        @error('delay_seconds')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                        <small class="form-text text-muted">0 = cho đóng ngay</small>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <label>Sau khi đã click</label>
-                        <select name="after_click" id="after_click" class="form-control @error('after_click') is-invalid @enderror">
-                            @foreach(\App\Models\Ad::AFTER_CLICKS as $val => $label)
-                                <option value="{{ $val }}" {{ old('after_click', $ad->after_click ?? 'none') === $val ? 'selected' : '' }}>{{ __('messages.ads.after_clicks.'.$val) }}</option>
-                            @endforeach
-                        </select>
-                        @error('after_click')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                        <small class="form-text text-muted">{{ __('messages.ads.repeat_hint') }}</small>
-                    </div>
-                    <div class="form-group col-md-3 cooldown-field">
-                        <label>Chờ lại (giây)</label>
-                        <input type="number" name="cooldown_seconds" class="form-control @error('cooldown_seconds') is-invalid @enderror" 
-                               min="0" value="{{ old('cooldown_seconds', $ad->cooldown_seconds ?? 0) }}">
-                        @error('cooldown_seconds')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                        <small class="form-text text-muted">VD: 300 = 5 phút</small>
-                    </div>
-                </div>
-                <hr class="my-4">
-            </div>
-
-            {{-- Cấu hình chapter --}}
-            <div class="mode-chapter">
-                <h5 class="mb-3"><i class="fas fa-book-open"></i> Cấu hình khi đọc chapter</h5>
-                <div class="row">
-                    <div class="form-group col-md-3">
-                        <label>Hiện từ chương số</label>
-                        <input type="number" name="chapter_start" class="form-control @error('chapter_start') is-invalid @enderror" 
-                               min="1" value="{{ old('chapter_start', $ad->chapter_start ?? 2) }}">
-                        @error('chapter_start')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label>Mỗi N chương</label>
-                        <input type="number" name="chapter_interval" class="form-control @error('chapter_interval') is-invalid @enderror" 
-                               min="1" value="{{ old('chapter_interval', $ad->chapter_interval ?? 1) }}">
-                        @error('chapter_interval')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label>Số item chèn trong 1 trang</label>
-                        <input type="number" name="chapter_inline_count" class="form-control @error('chapter_inline_count') is-invalid @enderror"
-                               min="1" max="20" value="{{ old('chapter_inline_count', $ad->chapter_inline_count ?? 1) }}">
-                        @error('chapter_inline_count')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label>Sau đoạn thứ</label>
-                        <input type="number" name="chapter_inline_first_after" class="form-control @error('chapter_inline_first_after') is-invalid @enderror"
-                               min="1" max="200" value="{{ old('chapter_inline_first_after', $ad->chapter_inline_first_after ?? 4) }}">
-                        @error('chapter_inline_first_after')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label>Cách mỗi N đoạn</label>
-                        <input type="number" name="chapter_inline_every" class="form-control @error('chapter_inline_every') is-invalid @enderror"
-                               min="1" max="200" value="{{ old('chapter_inline_every', $ad->chapter_inline_every ?? 8) }}">
-                        @error('chapter_inline_every')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                    </div>
-                    <div class="form-group col-md-6 d-flex align-items-end" style="gap:20px">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="hide_for_vip" id="hide_for_vip" 
-                                   value="1" {{ old('hide_for_vip', $ad->hide_for_vip ?? true) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="hide_for_vip">Ẩn với user VIP</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="require_click" id="require_click" 
-                                   value="1" {{ old('require_click', $ad->require_click ?? false) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="require_click">Phải click mới đọc tiếp</label>
-                        </div>
-                    </div>
-                </div>
-                <small class="form-text text-muted">Điều kiện không hiển thị: user VIP (nếu bật), hoặc chương nhỏ hơn "Hiện từ chương số"</small>
-                <hr class="my-4">
-            </div>
-
-            {{-- Trạng thái --}}
-            <h5 class="mb-3"><i class="fas fa-cog"></i> Cấu hình khác</h5>
-            <div class="row">
-                <div class="form-group col-md-3">
-                    <label>Ưu tiên hiển thị</label>
-                    <input type="number" name="priority" class="form-control @error('priority') is-invalid @enderror" 
-                           min="0" value="{{ old('priority', $ad->priority ?? 0) }}">
-                    @error('priority')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                    <small class="form-text text-muted">Số nhỏ hiện trước</small>
-                </div>
-                <div class="form-group col-md-3 d-flex align-items-end">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="is_active" id="is_active" 
-                               value="1" {{ old('is_active', $ad->is_active ?? true) ? 'checked' : '' }}>
-                        <label class="form-check-label" for="is_active"><strong>Đang bật quảng cáo</strong></label>
+                        <input class="form-check-input" type="checkbox" name="pages[]" value="{{ $val }}"
+                               id="page_{{ $val }}" {{ in_array($val, $selPages) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="page_{{ $val }}">{{ __('messages.ads.pages.'.$val) }}</label>
                     </div>
-                </div>
-            </div>
-            <div class="mode-chapter">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0"><i class="fas fa-images"></i> Item quảng cáo chapter</h5>
-                    <button type="button" class="btn btn-sm btn-outline-primary" id="addAdItem">
-                        <i class="fas fa-plus"></i> Thêm item
-                    </button>
-                </div>
-                <div id="adItems" class="ad-items">
-                    @foreach($itemRows as $index => $item)
-                        <div class="ad-item border rounded p-3 mb-3" data-index="{{ $index }}">
-                            <input type="hidden" name="items[{{ $index }}][id]" value="{{ $item['id'] ?? '' }}">
-                            <input type="hidden" class="item-delete" name="items[{{ $index }}][delete]" value="0">
-                            <div class="row">
-                                <div class="form-group col-md-3">
-                                    <label>Tiêu đề</label>
-                                    <input type="text" name="items[{{ $index }}][title]" class="form-control" value="{{ $item['title'] ?? '' }}" placeholder="Find Your Path">
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label>Link</label>
-                                    <input type="text" name="items[{{ $index }}][link]" class="form-control" value="{{ $item['link'] ?? '' }}" placeholder="https://...">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label>Ảnh item</label>
-                                    <x-admin.image-upload name="items[{{ $index }}][image_file]"
-                                        urlName="items[{{ $index }}][image_url]"
-                                        removeName="items[{{ $index }}][image_remove]"
-                                        :current="$item['image'] ?? null" :height="52"
-                                        :urlValue="$item['image_url'] ?? ''" />
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center" style="gap:18px">
-                                <div class="form-group mb-0" style="width:120px">
-                                    <label>Thứ tự</label>
-                                    <input type="number" name="items[{{ $index }}][sort_order]" class="form-control" min="0" value="{{ $item['sort_order'] ?? $index }}">
-                                </div>
-                                <div class="form-check mt-4">
-                                    <input type="hidden" name="items[{{ $index }}][is_active]" value="0">
-                                    <input class="form-check-input" type="checkbox" name="items[{{ $index }}][is_active]" value="1"
-                                           id="item_active_{{ $index }}" {{ ($item['is_active'] ?? true) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="item_active_{{ $index }}">Đang bật</label>
-                                </div>
-                                <button type="button" class="btn btn-sm btn-outline-danger mt-4 removeAdItem">
-                                    <i class="fas fa-trash"></i> Xóa item
-                                </button>
-                            </div>
-                        </div>
                     @endforeach
                 </div>
-                <small class="form-text text-muted mb-4">Mỗi item gồm tiêu đề, ảnh và link. Khi đọc chapter, hệ thống sẽ random item và lấy đúng số lượng đã cấu hình.</small>
+                <small class="text-muted">Chọn "Toàn site" để hiện ở mọi nơi</small>
+            </div>
+
+            {{-- Lịch hẹn --}}
+            <div class="row mt-2">
+                <div class="col-md-3">
+                    <div class="form-group mb-0">
+                        <label>Bắt đầu</label>
+                        <input type="datetime-local" name="start_at" class="form-control"
+                               value="{{ old('start_at', $ad->start_at ? $ad->start_at->format('Y-m-d\TH:i') : '') }}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-0">
+                        <label>Kết thúc</label>
+                        <input type="datetime-local" name="end_at" class="form-control"
+                               value="{{ old('end_at', $ad->end_at ? $ad->end_at->format('Y-m-d\TH:i') : '') }}">
+                    </div>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <small class="text-muted pb-1">Để trống = không giới hạn thời gian</small>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="card-footer">
+    {{-- ===== PANEL: BANNER ===== --}}
+    <div class="ad-panel {{ $mode === 'banner' ? 'active' : '' }}" id="panel-banner">
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">📌 Cấu hình Banner cố định</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <x-admin.image-upload name="image_file" label="Ảnh banner" :height="100"
+                                :current="$ad->image ?? null"
+                                urlName="image_url" :urlValue="old('image_url', $ad->image_url)"
+                                hint="Upload hoặc dán URL ảnh ngoài (URL được ưu tiên)" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Link đích khi click</label>
+                            <input type="text" name="link" class="form-control" placeholder="https://..."
+                                   value="{{ old('link', $ad->link) }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Vị trí hiển thị <span class="text-danger">*</span></label>
+                            <select name="placement" class="form-control">
+                                @foreach(\App\Models\Ad::PLACEMENTS as $val => $label)
+                                <option value="{{ $val }}" {{ old('placement', $ad->placement ?? 'top') === $val ? 'selected' : '' }}>
+                                    {{ __('messages.ads.placements.'.$val) }}
+                                </option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted">Slot cố định trên layout trang</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ===== PANEL: CLICK ANYWHERE ===== --}}
+    <div class="ad-panel {{ $mode === 'click_anywhere' ? 'active' : '' }}" id="panel-click_anywhere">
+        <div class="card mb-3">
+            <div class="card-header bg-warning">
+                <h3 class="card-title mb-0">👆 Cấu hình Click bất kỳ đâu</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info py-2">
+                    <i class="fas fa-info-circle"></i>
+                    Khi user click bất kỳ đâu trên trang, hệ thống sẽ mở link đích trong tab mới. Navigation của user vẫn diễn ra bình thường.
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Link đích <span class="text-danger">*</span></label>
+                            <input type="text" name="link" class="form-control" placeholder="https://..."
+                                   value="{{ old('link', $ad->link) }}">
+                            <small class="text-muted">Tab mới sẽ mở link này khi user click</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Tần suất hiển thị</label>
+                            <select name="frequency" id="freq_click" class="form-control">
+                                @foreach(\App\Models\Ad::FREQUENCIES as $val => $label)
+                                <option value="{{ $val }}" {{ old('frequency', $ad->frequency ?? 'once_session') === $val ? 'selected' : '' }}>
+                                    {{ __('messages.ads.frequencies.'.$val) }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 freq-n-click">
+                        <div class="form-group">
+                            <label>Mỗi N lượt xem trang</label>
+                            <input type="number" name="frequency_value" class="form-control" min="1"
+                                   value="{{ old('frequency_value', $ad->frequency_value ?? 3) }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Sau khi đã click</label>
+                            <select name="after_click" id="after_click_click" class="form-control">
+                                @foreach(\App\Models\Ad::AFTER_CLICKS as $val => $label)
+                                <option value="{{ $val }}" {{ old('after_click', $ad->after_click ?? 'stop_session') === $val ? 'selected' : '' }}>
+                                    {{ __('messages.ads.after_clicks.'.$val) }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 cooldown-click">
+                        <div class="form-group">
+                            <label>Chờ lại (giây)</label>
+                            <input type="number" name="cooldown_seconds" class="form-control" min="0"
+                                   value="{{ old('cooldown_seconds', $ad->cooldown_seconds ?? 300) }}"
+                                   placeholder="VD: 300 = 5 phút">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ===== PANEL: POPUP ===== --}}
+    <div class="ad-panel {{ $mode === 'popup' ? 'active' : '' }}" id="panel-popup">
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h3 class="card-title mb-0">🖼️ Cấu hình Popup / Overlay</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="form-group">
+                            <x-admin.image-upload name="image_file" label="Ảnh popup" :height="120"
+                                :current="$ad->image ?? null"
+                                urlName="image_url" :urlValue="old('image_url', $ad->image_url)"
+                                hint="Ảnh sẽ hiện giữa màn hình, nền mờ phía sau" />
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Link đích khi click ảnh</label>
+                            <input type="text" name="link" class="form-control" placeholder="https://..."
+                                   value="{{ old('link', $ad->link) }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Đếm ngược đóng (giây)</label>
+                            <input type="number" name="delay_seconds" class="form-control" min="0"
+                                   value="{{ old('delay_seconds', $ad->delay_seconds ?? 5) }}"
+                                   placeholder="0 = đóng ngay không cần chờ">
+                            <small class="text-muted">User phải chờ hết thời gian mới có nút đóng</small>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Tần suất hiển thị</label>
+                            <select name="frequency" id="freq_popup" class="form-control">
+                                @foreach(\App\Models\Ad::FREQUENCIES as $val => $label)
+                                <option value="{{ $val }}" {{ old('frequency', $ad->frequency ?? 'once_session') === $val ? 'selected' : '' }}>
+                                    {{ __('messages.ads.frequencies.'.$val) }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 freq-n-popup">
+                        <div class="form-group">
+                            <label>Mỗi N lượt xem</label>
+                            <input type="number" name="frequency_value" class="form-control" min="1"
+                                   value="{{ old('frequency_value', $ad->frequency_value ?? 1) }}">
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Sau khi đã click</label>
+                            <select name="after_click" id="after_click_popup" class="form-control">
+                                @foreach(\App\Models\Ad::AFTER_CLICKS as $val => $label)
+                                <option value="{{ $val }}" {{ old('after_click', $ad->after_click ?? 'none') === $val ? 'selected' : '' }}>
+                                    {{ __('messages.ads.after_clicks.'.$val) }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 cooldown-popup">
+                        <div class="form-group">
+                            <label>Chờ lại (giây)</label>
+                            <input type="number" name="cooldown_seconds" class="form-control" min="0"
+                                   value="{{ old('cooldown_seconds', $ad->cooldown_seconds ?? 0) }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ===== PANEL: CHAPTER ===== --}}
+    <div class="ad-panel {{ $mode === 'chapter' ? 'active' : '' }}" id="panel-chapter">
+        <div class="card mb-3">
+            <div class="card-header bg-success text-white">
+                <h3 class="card-title mb-0">📖 Cấu hình quảng cáo trong Chapter</h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <div class="form-group mb-0">
+                            <label>Số ảnh chèn mỗi trang <span class="text-danger">*</span></label>
+                            <input type="number" name="chapter_inline_count" class="form-control" min="1" max="20"
+                                   value="{{ old('chapter_inline_count', $ad->chapter_inline_count ?? 1) }}">
+                            <small class="text-muted">Hệ thống random từ pool items bên dưới</small>
+                        </div>
+                    </div>
+                    <div class="col-md-5 d-flex align-items-end" style="gap:24px">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="require_click" id="require_click"
+                                   value="1" {{ old('require_click', $ad->require_click ?? false) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="require_click">
+                                <strong>Phải click quảng cáo mới đọc tiếp</strong>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+                {{-- Items pool --}}
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h5 class="mb-0">Pool ảnh quảng cáo</h5>
+                        <small class="text-muted">Hệ thống sẽ random trong pool này khi chèn vào chapter</small>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary btn-sm" id="addAdItem">
+                        <i class="fas fa-plus"></i> Thêm ảnh
+                    </button>
+                </div>
+                <div id="adItems">
+                    @foreach($itemRows as $index => $item)
+                    <div class="ad-item-row d-flex align-items-center" data-index="{{ $index }}" style="gap:12px">
+                        <input type="hidden" name="items[{{ $index }}][id]" value="{{ $item['id'] ?? '' }}">
+                        <input type="hidden" class="item-delete" name="items[{{ $index }}][delete]" value="0">
+                        <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
+                        <div style="flex:0 0 160px">
+                            <x-admin.image-upload name="items[{{ $index }}][image_file]"
+                                urlName="items[{{ $index }}][image_url]"
+                                removeName="items[{{ $index }}][image_remove]"
+                                :current="$item['image'] ?? null" :height="60"
+                                :urlValue="$item['image_url'] ?? ''" />
+                        </div>
+                        <div style="flex:1">
+                            <input type="text" name="items[{{ $index }}][title]" class="form-control form-control-sm mb-1"
+                                   placeholder="Tiêu đề (tuỳ chọn)" value="{{ $item['title'] ?? '' }}">
+                            <input type="text" name="items[{{ $index }}][link]" class="form-control form-control-sm"
+                                   placeholder="Link đích https://..." value="{{ $item['link'] ?? '' }}">
+                        </div>
+                        <div style="flex:0 0 80px">
+                            <label class="small mb-1">Thứ tự</label>
+                            <input type="number" name="items[{{ $index }}][sort_order]" class="form-control form-control-sm"
+                                   min="0" value="{{ $item['sort_order'] ?? $index }}">
+                        </div>
+                        <div>
+                            <div class="form-check mb-1">
+                                <input type="hidden" name="items[{{ $index }}][is_active]" value="0">
+                                <input class="form-check-input" type="checkbox" name="items[{{ $index }}][is_active]"
+                                       value="1" id="ia_{{ $index }}" {{ ($item['is_active'] ?? true) ? 'checked' : '' }}>
+                                <label class="form-check-label small" for="ia_{{ $index }}">Bật</label>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger removeAdItem">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Footer --}}
+    <div class="card">
+        <div class="card-body py-3 d-flex" style="gap:10px">
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> {{ $isEdit ? 'Cập nhật quảng cáo' : 'Lưu quảng cáo' }}
+                <i class="fas fa-save"></i> {{ $isEdit ? 'Cập nhật' : 'Lưu quảng cáo' }}
             </button>
             <a href="{{ route('admin.ads.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Quay lại
             </a>
         </div>
-    </form>
-</div>
+    </div>
+
+</form>
+@endsection
 
 @push('scripts')
 <script>
 (function () {
-    var modeSelect = document.getElementById('display_mode');
-    var freqSelect = document.getElementById('frequency');
-    var afterClickSelect = document.getElementById('after_click');
-
-    function toggleByMode() {
-        var mode = modeSelect.value;
-        // Hiện phần tử nếu nó có class của mode đang chọn (logic OR — tránh bị lượt sau ghi đè
-        // với phần tử mang nhiều class, vd "mode-popup mode-click_anywhere").
-        document.querySelectorAll('.mode-banner, .mode-popup, .mode-click_anywhere, .mode-chapter')
-            .forEach(function (el) {
-                el.style.display = el.classList.contains('mode-' + mode) ? '' : 'none';
-            });
-    }
-    function toggleFreq() {
-        var show = freqSelect.value === 'every_n_views';
-        document.querySelectorAll('.freq-n').forEach(function (el) {
-            el.style.display = show ? '' : 'none';
+    // ===== TYPE PICKER =====
+    var cards = document.querySelectorAll('.ad-type-card');
+    cards.forEach(function (card) {
+        card.addEventListener('click', function () {
+            var mode = card.dataset.mode;
+            card.querySelector('input[type=radio]').checked = true;
+            cards.forEach(function (c) { c.classList.remove('active') });
+            card.classList.add('active');
+            document.querySelectorAll('.ad-panel').forEach(function (p) { p.classList.remove('active') });
+            var panel = document.getElementById('panel-' + mode);
+            if (panel) panel.classList.add('active');
         });
-    }
-    function toggleCooldown() {
-        var show = afterClickSelect.value === 'cooldown';
-        document.querySelectorAll('.cooldown-field').forEach(function (el) {
-            el.style.display = show ? '' : 'none';
-        });
-    }
-    modeSelect.addEventListener('change', toggleByMode);
-    freqSelect.addEventListener('change', toggleFreq);
-    afterClickSelect.addEventListener('change', toggleCooldown);
-    toggleByMode();
-    toggleFreq();
-    toggleCooldown();
-
-    ['chapter_start', 'chapter_interval', 'chapter_inline_first_after', 'chapter_inline_every'].forEach(function (name) {
-        var field = document.querySelector('[name="' + name + '"]');
-        if (field && field.closest('.form-group')) {
-            field.closest('.form-group').style.display = 'none';
-        }
     });
-    var inlineCount = document.querySelector('[name="chapter_inline_count"]');
-    if (inlineCount && inlineCount.closest('.form-group')) {
-        var label = inlineCount.closest('.form-group').querySelector('label');
-        if (label) label.textContent = 'Số item chèn trong 1 trang';
-        if (!inlineCount.closest('.form-group').querySelector('.chapter-inline-help')) {
-            inlineCount.insertAdjacentHTML('afterend', '<small class="form-text text-muted chapter-inline-help">Áp dụng cho mọi chương. Hệ thống tự chọn vị trí chèn và random item theo số lượng này.</small>');
+
+    // ===== FREQ / COOLDOWN toggles for click_anywhere =====
+    function bindFreqToggle(selectId, nClass, cooldownClass, afterClickId) {
+        var sel = document.getElementById(selectId);
+        var ac  = document.getElementById(afterClickId);
+        if (!sel) return;
+        function doFreq() {
+            document.querySelectorAll('.' + nClass).forEach(function (el) {
+                el.style.display = sel.value === 'every_n_views' ? '' : 'none';
+            });
         }
+        function doCooldown() {
+            if (!ac) return;
+            document.querySelectorAll('.' + cooldownClass).forEach(function (el) {
+                el.style.display = ac.value === 'cooldown' ? '' : 'none';
+            });
+        }
+        sel.addEventListener('change', doFreq);
+        if (ac) ac.addEventListener('change', doCooldown);
+        doFreq(); doCooldown();
+    }
+    bindFreqToggle('freq_click',  'freq-n-click',  'cooldown-click',  'after_click_click');
+    bindFreqToggle('freq_popup',  'freq-n-popup',  'cooldown-popup',  'after_click_popup');
+
+    // ===== CHAPTER ITEMS =====
+    var adItems  = document.getElementById('adItems');
+    var addBtn   = document.getElementById('addAdItem');
+    var itemIdx  = adItems ? adItems.querySelectorAll('.ad-item-row').length : 0;
+
+    function buildItemRow(idx) {
+        return '<div class="ad-item-row d-flex align-items-center" data-index="' + idx + '" style="gap:12px">' +
+            '<input type="hidden" name="items[' + idx + '][id]" value="">' +
+            '<input type="hidden" class="item-delete" name="items[' + idx + '][delete]" value="0">' +
+            '<span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>' +
+            '<div style="flex:0 0 160px">' +
+                window.buildImageUpload({ name:'items['+idx+'][image_file]', urlName:'items['+idx+'][image_url]', removeName:'items['+idx+'][image_remove]', height:60, id:'imgup_item_'+idx }) +
+            '</div>' +
+            '<div style="flex:1">' +
+                '<input type="text" name="items['+idx+'][title]" class="form-control form-control-sm mb-1" placeholder="Tiêu đề (tuỳ chọn)">' +
+                '<input type="text" name="items['+idx+'][link]" class="form-control form-control-sm" placeholder="Link đích https://...">' +
+            '</div>' +
+            '<div style="flex:0 0 80px"><label class="small mb-1">Thứ tự</label>' +
+                '<input type="number" name="items['+idx+'][sort_order]" class="form-control form-control-sm" min="0" value="'+idx+'">' +
+            '</div>' +
+            '<div>' +
+                '<div class="form-check mb-1"><input type="hidden" name="items['+idx+'][is_active]" value="0">' +
+                '<input class="form-check-input" type="checkbox" name="items['+idx+'][is_active]" value="1" id="ia_'+idx+'" checked>' +
+                '<label class="form-check-label small" for="ia_'+idx+'">Bật</label></div>' +
+                '<button type="button" class="btn btn-sm btn-outline-danger removeAdItem"><i class="fas fa-trash"></i></button>' +
+            '</div></div>';
     }
 
-    // Preview ảnh upload
-    if (inlineCount && inlineCount.closest('.mode-chapter')) {
-        var chapterConfig = inlineCount.closest('.mode-chapter');
-        var chapterTitle = chapterConfig.querySelector('h5');
-        if (chapterTitle) chapterTitle.innerHTML = '<i class="fas fa-book-open"></i> Cấu hình khi đọc chapter';
-        Array.prototype.forEach.call(chapterConfig.children, function (child) {
-            if (child.tagName === 'SMALL') child.style.display = 'none';
+    if (addBtn && adItems) {
+        addBtn.addEventListener('click', function () {
+            adItems.insertAdjacentHTML('beforeend', buildItemRow(itemIdx++));
+        });
+        adItems.addEventListener('click', function (e) {
+            var btn = e.target.closest('.removeAdItem');
+            if (!btn) return;
+            var row = btn.closest('.ad-item-row');
+            var del = row.querySelector('.item-delete');
+            var id  = row.querySelector('input[name$="[id]"]');
+            if (id && id.value) { del.value = '1'; row.style.display = 'none'; }
+            else row.remove();
         });
     }
-    var hideVipLabel = document.querySelector('label[for="hide_for_vip"]');
-    if (hideVipLabel) hideVipLabel.textContent = 'Ẩn với user VIP';
-    var requireClickLabel = document.querySelector('label[for="require_click"]');
-    if (requireClickLabel) requireClickLabel.textContent = 'Phải click mới đọc tiếp';
 
-    var adItems = document.getElementById('adItems');
-    var addAdItem = document.getElementById('addAdItem');
-    var itemIndex = adItems ? adItems.querySelectorAll('.ad-item').length : 0;
-
-    function itemTemplate(index) {
-        return '' +
-            '<div class="ad-item border rounded p-3 mb-3" data-index="' + index + '">' +
-                '<input type="hidden" name="items[' + index + '][id]" value="">' +
-                '<input type="hidden" class="item-delete" name="items[' + index + '][delete]" value="0">' +
-                '<div class="row">' +
-                    '<div class="form-group col-md-3"><label>Tiêu đề</label><input type="text" name="items[' + index + '][title]" class="form-control" placeholder="Find Your Path"></div>' +
-                    '<div class="form-group col-md-3"><label>Link</label><input type="text" name="items[' + index + '][link]" class="form-control" placeholder="https://..."></div>' +
-                    '<div class="form-group col-md-6"><label>Ảnh item</label>' + window.buildImageUpload({ name: 'items[' + index + '][image_file]', urlName: 'items[' + index + '][image_url]', removeName: 'items[' + index + '][image_remove]', height: 52, id: 'imgup_aditem_' + index }) + '</div>' +
-                '</div>' +
-                '<div class="d-flex align-items-center" style="gap:18px">' +
-                    '<div class="form-group mb-0" style="width:120px"><label>Thứ tự</label><input type="number" name="items[' + index + '][sort_order]" class="form-control" min="0" value="' + index + '"></div>' +
-                    '<div class="form-check mt-4"><input type="hidden" name="items[' + index + '][is_active]" value="0"><input class="form-check-input" type="checkbox" name="items[' + index + '][is_active]" value="1" id="item_active_' + index + '" checked><label class="form-check-label" for="item_active_' + index + '">Đang bật</label></div>' +
-                    '<button type="button" class="btn btn-sm btn-outline-danger mt-4 removeAdItem"><i class="fas fa-trash"></i> Xóa item</button>' +
-                '</div>' +
-            '</div>';
-    }
-
-    if (addAdItem && adItems) {
-        addAdItem.addEventListener('click', function () {
-            adItems.insertAdjacentHTML('beforeend', itemTemplate(itemIndex++));
-        });
-        adItems.addEventListener('click', function (event) {
-            var button = event.target.closest('.removeAdItem');
-            if (!button) return;
-            var row = button.closest('.ad-item');
-            var deleteInput = row.querySelector('.item-delete');
-            var idInput = row.querySelector('input[name$="[id]"]');
-            if (idInput && idInput.value) {
-                deleteInput.value = '1';
-                row.style.display = 'none';
-            } else {
-                row.remove();
-            }
-        });
-    }
+    // ===== Prevent submitting disabled panel fields =====
+    // Fields inside inactive panels use name= — họ vẫn submit nhưng server-side chỉ dùng
+    // fields phù hợp với display_mode. Không cần disable.
 
 })();
 </script>
 @endpush
-@endsection

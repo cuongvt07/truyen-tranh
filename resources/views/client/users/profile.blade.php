@@ -56,7 +56,7 @@
                     <i class="fa fa-bookmark"></i> {{ __('messages.account.nav_bookmarks') }}
                 </a>
                 <a href="{{ route('users.reading_history', $user->id) }}" class="btn {{ request()->routeIs('users.reading_history') ? '' : 'btn-invincible' }}">
-                    <i class="fa fa-history"></i> Reading History
+                    <i class="fa fa-history"></i> {{ __('messages.account.nav_reading_history') }}
                 </a>
                 <a href="{{ route('users.show_comments', $user->id) }}" class="btn {{ request()->routeIs('users.show_comments') ? '' : 'btn-invincible' }}">
                     <i class="fa fa-comment"></i> {{ __('messages.account.nav_comments') }}

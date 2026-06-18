@@ -100,28 +100,44 @@
                         <span class="info-box-icon bg-warning"><i class="fas fa-hourglass-half"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Truyện chờ duyệt</span>
-                            <span class="info-box-number">{{ number_format($pendingArticles) }}</span>
+                            <span class="info-box-number">
+                                <span class="text-danger">{{ number_format($pendingArticles) }}</span>
+                                <small class="text-muted ml-2">/ <span class="text-success">{{ number_format($approvedArticles) }}</span></small>
+                            </span>
+                            <span class="progress-description"><small class="text-muted">Chưa xử lý / Đã duyệt</small></span>
                         </div>
                     </a>
                     <a href="{{ route('admin.comment_reports.index') }}" class="info-box mb-0">
                         <span class="info-box-icon bg-danger"><i class="fas fa-flag"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Báo cáo bình luận</span>
-                            <span class="info-box-number">{{ number_format($openReports) }}</span>
+                            <span class="info-box-number">
+                                <span class="text-danger">{{ number_format($openReports) }}</span>
+                                <small class="text-muted ml-2">/ <span class="text-success">{{ number_format($resolvedReports) }}</span></small>
+                            </span>
+                            <span class="progress-description"><small class="text-muted">Chưa xử lý / Đã xử lý</small></span>
                         </div>
                     </a>
                     <a href="{{ route('admin.chapter_reports.index') }}" class="info-box mb-0">
                         <span class="info-box-icon bg-warning"><i class="fas fa-exclamation-triangle"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Báo lỗi chương</span>
-                            <span class="info-box-number">{{ number_format($openChapterReports) }}</span>
+                            <span class="info-box-number">
+                                <span class="text-danger">{{ number_format($openChapterReports) }}</span>
+                                <small class="text-muted ml-2">/ <span class="text-success">{{ number_format($resolvedChapterReports) }}</span></small>
+                            </span>
+                            <span class="progress-description"><small class="text-muted">Chưa xử lý / Đã xử lý</small></span>
                         </div>
                     </a>
                     <a href="{{ route('admin.articles.index', ['status' => 2]) }}" class="info-box mb-0">
                         <span class="info-box-icon bg-secondary"><i class="fas fa-eye-slash"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Truyện đang ẩn</span>
-                            <span class="info-box-number">{{ number_format($hiddenArticles) }}</span>
+                            <span class="info-box-number">
+                                <span class="text-danger">{{ number_format($hiddenArticles) }}</span>
+                                <small class="text-muted ml-2">/ <span class="text-success">{{ number_format($approvedArticles) }}</span></small>
+                            </span>
+                            <span class="progress-description"><small class="text-muted">Đang ẩn / Đang hiện</small></span>
                         </div>
                     </a>
                 </div>

@@ -7,46 +7,80 @@
     {{-- ===== CẦN XỬ LÝ ===== --}}
     <div class="mb-2"><h5 class="text-muted"><i class="fas fa-bell text-danger mr-1"></i> Cần xử lý</h5></div>
     <div class="row">
-        <div class="col-lg-3 col-6">
-            <div class="small-box {{ $pendingArticles ? 'bg-warning' : 'bg-light' }}">
-                <div class="inner">
-                    <h3>{{ number_format($pendingArticles) }}</h3>
-                    <p>Truyện chờ duyệt</p>
+        @php
+        $needCards = [
+            [
+                'icon'  => 'fas fa-hourglass-half',
+                'color' => 'bg-warning',
+                'label' => 'Truyện chờ duyệt',
+                'open'  => $pendingArticles,
+                'done'  => $approvedArticles,
+                'url'   => route('admin.articles.index', ['status' => 0]),
+                'link'  => 'Duyệt ngay',
+            ],
+            [
+                'icon'  => 'fas fa-flag',
+                'color' => 'bg-danger',
+                'label' => 'Báo cáo bình luận',
+                'open'  => $openReports,
+                'done'  => $resolvedReports,
+                'url'   => route('admin.comment_reports.index'),
+                'link'  => 'Xem báo cáo',
+            ],
+            [
+                'icon'  => 'fas fa-exclamation-triangle',
+                'color' => 'bg-warning',
+                'label' => 'Báo lỗi chương',
+                'open'  => $openChapterReports,
+                'done'  => $resolvedChapterReports,
+                'url'   => route('admin.chapter_reports.index'),
+                'link'  => 'Xem báo cáo',
+            ],
+            [
+                'icon'  => 'fas fa-eye-slash',
+                'color' => 'bg-secondary',
+                'label' => 'Truyện đang ẩn',
+                'open'  => $hiddenArticles,
+                'done'  => $approvedArticles,
+                'url'   => route('admin.articles.index', ['status' => 2]),
+                'link'  => 'Xem',
+            ],
+        ];
+        @endphp
+
+        @foreach($needCards as $card)
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card shadow-sm h-100 mb-0" style="border-top:3px solid {{ $card['open'] ? '#dc3545' : '#6c757d' }}">
+                <div class="card-body pb-2">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="{{ $card['color'] }} rounded p-2 mr-2" style="line-height:1">
+                            <i class="{{ $card['icon'] }} text-white"></i>
+                        </span>
+                        <span class="font-weight-bold small text-uppercase text-muted">{{ $card['label'] }}</span>
+                    </div>
+                    <div class="d-flex align-items-stretch" style="gap:0">
+                        <div class="flex-fill text-center px-2 py-1" style="border-right:1px solid #f0f0f0">
+                            <div class="{{ $card['open'] ? 'text-danger' : 'text-muted' }} font-weight-bold" style="font-size:26px;line-height:1.1">
+                                {{ number_format($card['open']) }}
+                            </div>
+                            <div class="text-muted" style="font-size:11px;margin-top:3px">Chưa xử lý</div>
+                        </div>
+                        <div class="flex-fill text-center px-2 py-1">
+                            <div class="text-success font-weight-bold" style="font-size:26px;line-height:1.1">
+                                {{ number_format($card['done']) }}
+                            </div>
+                            <div class="text-muted" style="font-size:11px;margin-top:3px">Đã xử lý</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="icon"><i class="fas fa-hourglass-half"></i></div>
-                <a href="{{ route('admin.articles.index', ['status' => 0]) }}" class="small-box-footer">Duyệt ngay <i class="fas fa-arrow-circle-right"></i></a>
+                <div class="card-footer py-1 px-3" style="background:transparent">
+                    <a href="{{ $card['url'] }}" class="small text-muted">
+                        {{ $card['link'] }} <i class="fas fa-arrow-circle-right ml-1"></i>
+                    </a>
+                </div>
             </div>
         </div>
-        <div class="col-lg-3 col-6">
-            <div class="small-box {{ $openReports ? 'bg-danger' : 'bg-light' }}">
-                <div class="inner">
-                    <h3>{{ number_format($openReports) }}</h3>
-                    <p>Báo cáo bình luận</p>
-                </div>
-                <div class="icon"><i class="fas fa-flag"></i></div>
-                <a href="{{ route('admin.comment_reports.index') }}" class="small-box-footer">Xem báo cáo <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-        </div>
-        <div class="col-lg-3 col-6">
-            <div class="small-box {{ $openChapterReports ? 'bg-info' : 'bg-light' }}">
-                <div class="inner">
-                    <h3>{{ number_format($openChapterReports) }}</h3>
-                    <p>Báo lỗi chương</p>
-                </div>
-                <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
-                <a href="{{ route('admin.chapter_reports.index') }}" class="small-box-footer">Xem báo cáo <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-        </div>
-        <div class="col-lg-3 col-6">
-            <div class="small-box {{ $hiddenArticles ? 'bg-secondary' : 'bg-light' }}">
-                <div class="inner">
-                    <h3>{{ number_format($hiddenArticles) }}</h3>
-                    <p>Truyện đang bị ẩn</p>
-                </div>
-                <div class="icon"><i class="fas fa-eye-slash"></i></div>
-                <a href="{{ route('admin.articles.index', ['status' => 2]) }}" class="small-box-footer">Xem <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-        </div>
+        @endforeach
     </div>
 
     {{-- ===== TỔNG QUAN ===== --}}

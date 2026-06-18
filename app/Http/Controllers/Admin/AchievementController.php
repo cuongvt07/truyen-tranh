@@ -18,6 +18,25 @@ class AchievementController extends Controller
         return view('admin.achievements.index', compact('achievements'));
     }
 
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'key'            => 'required|string|max:100|unique:achievements,key',
+            'name'           => 'required|string|max:100',
+            'name_en'        => 'nullable|string|max:100',
+            'description'    => 'nullable|string|max:500',
+            'description_en' => 'nullable|string|max:500',
+            'category'       => 'required|in:reading,social,support',
+            'metric'         => 'required|in:chapters_read,articles_read,comments_posted,chapter_likes,comment_votes,chapters_unlocked,credits_spent,bookmarks,forum_posts,forum_comments,deposit_count,deposit_total',
+            'target'         => 'required|integer|min:1',
+            'reward_credits' => 'required|integer|min:0',
+            'sort_order'     => 'required|integer|min:0',
+        ]);
+
+        Achievement::create($data);
+        return back()->with('success', 'Đã tạo thành tích mới.');
+    }
+
     public function update(Request $request, Achievement $achievement)
     {
         $data = $request->validate([
