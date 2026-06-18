@@ -62,4 +62,9 @@ class Team extends Model
     {
         return $this->status === self::STATUS_APPROVED;
     }
+
+    public function isRejected(): bool
+    {
+        return $this->status === self::STATUS_REJECTED;
+    }
 }

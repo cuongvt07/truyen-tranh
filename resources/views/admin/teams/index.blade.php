@@ -7,7 +7,6 @@
         @includeWhen(session('success'), 'admin.partials.flash')
         @includeWhen(session('error'), 'admin.partials.flash-error')
 
-        {{-- Header --}}
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="mb-0">
                 <i class="fas fa-users text-primary"></i> Quản lý Nhóm dịch
@@ -15,7 +14,7 @@
             <div class="d-flex" style="gap:8px">
                 @if($pendingCount > 0)
                 <a href="{{ route('admin.teams.pending') }}" class="btn btn-warning">
-                    <i class="fas fa-clock"></i> Duyệt thành viên
+                    <i class="fas fa-clock"></i> Duyệt yêu cầu
                     <span class="badge badge-light ml-1">{{ $pendingCount }}</span>
                 </a>
                 @endif
@@ -25,24 +24,33 @@
             </div>
         </div>
 
-        {{-- Filter Bar --}}
         <div class="card card-outline card-primary mb-3">
             <div class="card-body py-2">
                 <form method="GET" class="form-row align-items-center">
                     <div class="col-md-4 mb-2">
                         <div class="input-group input-group-sm">
-                            <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-search"></i></span></div>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            </div>
                             <input type="text" name="q" class="form-control" placeholder="Tìm theo tên, mô tả..." value="{{ request('q') }}">
                         </div>
                     </div>
-                    <div class="col-md-3 mb-2">
+                    <div class="col-md-2 mb-2">
                         <select name="sort" class="form-control form-control-sm">
                             <option value="id_desc" {{ request('sort','id_desc')==='id_desc'?'selected':'' }}>Mới nhất</option>
                             <option value="id_asc"  {{ request('sort')==='id_asc'?'selected':'' }}>Cũ nhất</option>
                             <option value="name"    {{ request('sort')==='name'?'selected':'' }}>Tên A-Z</option>
                         </select>
                     </div>
-                    <div class="col-md-5 mb-2 text-right">
+                    <div class="col-md-2 mb-2">
+                        <select name="status" class="form-control form-control-sm">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="pending" {{ request('status')==='pending'?'selected':'' }}>Chờ duyệt</option>
+                            <option value="approved" {{ request('status')==='approved'?'selected':'' }}>Đã duyệt</option>
+                            <option value="rejected" {{ request('status')==='rejected'?'selected':'' }}>Từ chối</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-2 text-right">
                         <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-filter"></i> Lọc</button>
                         <a href="{{ route('admin.teams.index') }}" class="btn btn-sm btn-outline-secondary"><i class="fas fa-redo"></i> Đặt lại</a>
                     </div>
@@ -64,10 +72,11 @@
                                 <th width="50">ID</th>
                                 <th width="70" class="text-center">Ảnh</th>
                                 <th>Tên nhóm</th>
+                                <th width="120" class="text-center">Trạng thái</th>
                                 <th width="120" class="text-center">Thành viên</th>
                                 <th width="100" class="text-center">Truyện</th>
                                 <th width="130">Người tạo</th>
-                                <th width="150" class="text-center">Thao tác</th>
+                                <th width="190" class="text-center">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -87,6 +96,15 @@
                                 @endif
                             </td>
                             <td class="align-middle text-center">
+                                @if($item->isPending())
+                                    <span class="badge badge-warning"><i class="fas fa-clock"></i> Chờ duyệt</span>
+                                @elseif($item->isRejected())
+                                    <span class="badge badge-danger"><i class="fas fa-times"></i> Từ chối</span>
+                                @else
+                                    <span class="badge badge-success"><i class="fas fa-check"></i> Đã duyệt</span>
+                                @endif
+                            </td>
+                            <td class="align-middle text-center">
                                 <a href="{{ route('admin.teams.members', $item->id) }}" class="badge badge-info" style="font-size:12px">
                                     {{ $item->approved_members_count }} thành viên
                                     @if($item->pending_members_count > 0)
@@ -102,6 +120,21 @@
                             </td>
                             <td class="align-middle text-center">
                                 <div class="btn-group btn-group-sm">
+                                    @if($item->isPending())
+                                        <form method="POST" action="{{ route('admin.teams.approve', $item->id) }}" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline-success" title="Duyệt nhóm">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="{{ route('admin.teams.reject', $item->id) }}" class="d-inline"
+                                              onsubmit="return confirm('Từ chối nhóm «{{ $item->name }}»?')">
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline-warning" title="Từ chối nhóm">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </form>
+                                    @endif
                                     <a href="{{ route('admin.teams.members', $item->id) }}" class="btn btn-outline-info" title="Thành viên">
                                         <i class="fas fa-users"></i>
                                     </a>
@@ -110,7 +143,8 @@
                                     </a>
                                     <form method="POST" action="{{ route('admin.teams.destroy', $item->id) }}"
                                           class="form-delete d-inline" data-confirm="Xoá nhóm «{{ $item->name }}»?">
-                                        @csrf @method('DELETE')
+                                        @csrf
+                                        @method('DELETE')
                                         <button type="submit" class="btn btn-outline-danger" title="Xoá"><i class="fas fa-trash"></i></button>
                                     </form>
                                 </div>

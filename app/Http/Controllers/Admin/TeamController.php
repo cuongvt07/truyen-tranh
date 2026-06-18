@@ -24,6 +24,12 @@ class TeamController extends Controller
               ->orWhere('description', 'like', "%$s%");
         }
 
+        if ($status = $request->get('status')) {
+            if (in_array($status, [Team::STATUS_PENDING, Team::STATUS_APPROVED, Team::STATUS_REJECTED], true)) {
+                $q->where('status', $status);
+            }
+        }
+
         $sort = $request->get('sort', 'id_desc');
         match($sort) {
             'name'   => $q->orderBy('name'),

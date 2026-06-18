@@ -2,7 +2,8 @@
 @section('template_title', 'Edit members - ' . $team->name)
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('static/team/css/team.css') }}">
+@php $teamCssVer = file_exists(public_path('static/team/css/team.css')) ? filemtime(public_path('static/team/css/team.css')) : time(); @endphp
+<link rel="stylesheet" href="{{ asset('static/team/css/team.css') }}?v={{ $teamCssVer }}">
 @endpush
 
 @section('content')
