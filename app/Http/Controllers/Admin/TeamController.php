@@ -33,7 +33,8 @@ class TeamController extends Controller
 
         $items        = $q->paginate(30)->withQueryString();
         $total        = Team::count();
-        $pendingCount = TeamMember::where('status', 'pending')->count();
+        $pendingCount = Team::where('status', Team::STATUS_PENDING)->count()
+            + TeamMember::where('status', 'pending')->count();
 
         return view('admin.teams.index', compact('items', 'total', 'pendingCount'));
     }
@@ -41,12 +42,31 @@ class TeamController extends Controller
     /** Danh sách yêu cầu thêm thành viên đang chờ duyệt */
     public function pendingRequests()
     {
+        $teams = Team::with('user:id,name,username,email')
+            ->where('status', Team::STATUS_PENDING)
+            ->orderByDesc('created_at')
+            ->paginate(30, ['*'], 'teams_page');
+
         $members = TeamMember::with(['team', 'user:id,name,username,email', 'requester:id,name,username'])
             ->where('status', 'pending')
             ->orderByDesc('created_at')
-            ->paginate(30);
+            ->paginate(30, ['*'], 'members_page');
 
-        return view('admin.teams.pending', compact('members'));
+        return view('admin.teams.pending', compact('teams', 'members'));
+    }
+
+    public function approveTeam(Team $team)
+    {
+        $team->update(['status' => Team::STATUS_APPROVED]);
+
+        return back()->with('success', 'Đã duyệt nhóm.');
+    }
+
+    public function rejectTeam(Team $team)
+    {
+        $team->update(['status' => Team::STATUS_REJECTED]);
+
+        return back()->with('success', 'Đã từ chối nhóm.');
     }
 
     /** Trang quản lý thành viên của 1 nhóm */
@@ -134,6 +154,7 @@ class TeamController extends Controller
     {
         $data = $this->validateData($request);
         $data['photo'] = $this->upload($request);
+        $data['status'] = Team::STATUS_APPROVED;
 
         // Resolve leader từ username nếu nhập
         $leaderUser = null;
@@ -194,6 +215,7 @@ class TeamController extends Controller
             'site'          => ['nullable', 'string', 'max:255'],
             'donation_text' => ['nullable', 'string', 'max:255'],
             'donation_url'  => ['nullable', 'string', 'max:255'],
+            'status'        => ['nullable', 'in:pending,approved,rejected'],
             'photo'         => ['nullable', 'image', 'max:4096'],
         ], [], ['name' => 'tên nhóm']);
     }

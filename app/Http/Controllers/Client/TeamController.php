@@ -61,7 +61,7 @@ class TeamController extends Controller
     {
         abort_unless(Auth::check() && ($team->isLeader(Auth::id()) || $team->hasMember(Auth::id())), 403);
 
-        $team->load('approvedMembers');
+        $team->load('approvedMembers.user:id,name,username,photo');
 
         $totalArticles  = \App\Models\Article::withoutGlobalScopes()->where('team_id', $team->id)->count();
         $totalChapters  = \App\Models\Chapter::query()
@@ -102,6 +102,7 @@ class TeamController extends Controller
         $data = $this->validateData($request);
         $data['user_id'] = Auth::id();
         $data['photo'] = $this->upload($request);
+        $data['status'] = Team::STATUS_PENDING;
         $team = Team::create($data);
 
         // Tự thêm creator là leader
@@ -115,7 +116,8 @@ class TeamController extends Controller
             'approved_at' => now(),
         ]);
 
-        return redirect()->route('teams.index')->with('success', __('messages.flash.team.created'));
+        return redirect()->route('teams.show', $team->id)
+            ->with('success', 'The team is under review by administrators');
     }
 
     public function edit($id)

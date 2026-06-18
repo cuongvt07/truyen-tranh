@@ -214,6 +214,8 @@ Route::middleware(['auth'])->group(function () {
             // Module cộng đồng (admin/poster quản lý toàn bộ)
             Route::resource('characters', \App\Http\Controllers\Admin\CharacterController::class)->except('show');
             Route::get('teams/pending', [\App\Http\Controllers\Admin\TeamController::class, 'pendingRequests'])->name('teams.pending');
+            Route::post('teams/{team}/approve', [\App\Http\Controllers\Admin\TeamController::class, 'approveTeam'])->name('teams.approve');
+            Route::post('teams/{team}/reject', [\App\Http\Controllers\Admin\TeamController::class, 'rejectTeam'])->name('teams.reject');
             Route::get('teams/{team}/members', [\App\Http\Controllers\Admin\TeamController::class, 'members'])->name('teams.members');
             Route::post('teams/{team}/members', [\App\Http\Controllers\Admin\TeamController::class, 'addMember'])->name('teams.members.add');
             Route::post('teams/{team}/members/{member}/approve', [\App\Http\Controllers\Admin\TeamController::class, 'approveMember'])->name('teams.members.approve');

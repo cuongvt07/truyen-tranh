@@ -11,8 +11,12 @@ class Team extends Model
 
     protected $fillable = [
         'user_id', 'name', 'photo', 'description',
-        'site', 'donation_text', 'donation_url',
+        'site', 'donation_text', 'donation_url', 'status',
     ];
+
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_REJECTED = 'rejected';
 
     public function user()
     {
@@ -47,5 +51,15 @@ class Team extends Model
     public function hasMember(int $userId): bool
     {
         return $this->approvedMembers()->where('user_id', $userId)->exists();
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->status === self::STATUS_APPROVED;
     }
 }

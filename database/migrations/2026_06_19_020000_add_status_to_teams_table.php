@@ -1,0 +1,26 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('teams', function (Blueprint $table) {
+            if (!Schema::hasColumn('teams', 'status')) {
+                $table->string('status', 20)->default('approved')->after('donation_url');
+            }
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('teams', function (Blueprint $table) {
+            if (Schema::hasColumn('teams', 'status')) {
+                $table->dropColumn('status');
+            }
+        });
+    }
+};
