@@ -185,8 +185,28 @@ class UserController extends Controller
     public function teams(User $user): View
     {
         $isMine = \Illuminate\Support\Facades\Auth::id() === $user->id;
-        $teams = \App\Models\Team::where('user_id', $user->id)->orderByDesc('updated_at')->get();
-        return view('client.users.teams', compact('user', 'teams', 'isMine'));
+
+        // Team mà user là chủ sở hữu (leader)
+        $ownedTeams = \App\Models\Team::where('user_id', $user->id)
+            ->withCount('approvedMembers')
+            ->orderByDesc('updated_at')
+            ->get();
+
+        // Team mà user là approved member (không phải chủ)
+        $memberTeams = \App\Models\Team::whereHas('members', function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                  ->where('status', 'approved')
+                  ->where('role', '!=', 'leader');
+            })
+            ->where('user_id', '!=', $user->id)
+            ->with(['members' => function ($q) use ($user) {
+                $q->where('user_id', $user->id)->where('status', 'approved');
+            }])
+            ->withCount('approvedMembers')
+            ->orderByDesc('updated_at')
+            ->get();
+
+        return view('client.users.teams', compact('user', 'ownedTeams', 'memberTeams', 'isMine'));
     }
 
     public function favourites(User $user): View

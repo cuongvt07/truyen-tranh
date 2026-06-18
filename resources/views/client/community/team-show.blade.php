@@ -1,6 +1,11 @@
 @extends('layout.novelight')
 @section('template_title', $team->name . ' — Nhóm dịch')
 
+@push('styles')
+<link rel="stylesheet" href="{{ asset('static/character/css/character.css') }}">
+<link rel="stylesheet" href="{{ asset('static/team/css/team.css') }}">
+@endpush
+
 @section('content')
 <div class="container">
     <div class="block character-block">
@@ -19,17 +24,17 @@
                     <a href="{{ route('teams.dashboard', $team->id) }}" class="btn">
                         <i class="fa fa-tachometer-alt"></i> Dashboard
                     </a>
-                @elseif(!$isMember)
+                @elseif($isMember)
+                    <span class="btn btn-invincible" style="cursor:default;opacity:.7">
+                        <i class="fa fa-check"></i> Đã tham gia
+                    </span>
+                @else
                     <form method="POST" action="{{ route('teams.join', $team->id) }}">
                         @csrf
                         <button type="submit" class="btn btn-invincible">
                             <i class="fa fa-user-plus"></i> Xin gia nhập
                         </button>
                     </form>
-                @else
-                    <span class="btn btn-invincible" style="cursor:default;opacity:.7">
-                        <i class="fa fa-check"></i> Đã tham gia
-                    </span>
                 @endif
             @else
                 <a href="{{ route('login') }}" class="btn btn-invincible">
@@ -81,7 +86,7 @@
             </section>
             @endif
 
-            {{-- Recent books --}}
+            {{-- Recent books — grid 2 col: left = book thumb+title, right = chapter name --}}
             @if($articles->count())
             <section class="section last-chapters">
                 <h2>Truyện mới cập nhật</h2>
@@ -99,19 +104,21 @@
                                class="chapter-name">
                                 Chương {{ $art->chapters->first()->number }}
                             </a>
+                        @else
+                            <span class="chapter-name" style="color:var(--meta-color)">—</span>
                         @endif
                     @endforeach
                 </div>
             </section>
             @endif
 
-            {{-- Members --}}
+            {{-- Members — 4-col grid --}}
             @if($team->approvedMembers->count())
             <section class="section members">
                 <h2>Thành viên</h2>
                 <div class="members-list">
                     @foreach($team->approvedMembers->sortBy(fn($m) => array_search($m->role, ['leader','admin','editor','member'])) as $m)
-                    <a href="{{ route('users.profile', optional($m->user)->id ?? '#') }}" class="member">
+                    <a href="{{ route('users.profile', optional($m->user)->id ?? 0) }}" class="member">
                         <div class="profile-avatar image image-cover">
                             <img src="{{ optional($m->user)->photo ?: asset('static/core/images/no_cover.webp') }}"
                                  alt="" loading="lazy">
@@ -151,32 +158,13 @@
 <div id="join-toast" style="position:fixed;bottom:20px;right:20px;background:#1a3a1a;border:1px solid #2e5e2e;color:#9f9;padding:12px 18px;border-radius:8px;z-index:9999;max-width:320px">
     {{ session('success') }}
 </div>
-<script>setTimeout(()=>{ var t=document.getElementById('join-toast'); if(t) t.remove(); }, 4000);</script>
+<script>setTimeout(function(){ var t=document.getElementById('join-toast'); if(t) t.remove(); }, 4000);</script>
 @endif
 
 @if(session('error'))
 <div id="err-toast" style="position:fixed;bottom:20px;right:20px;background:#3a1010;border:1px solid #7a2020;color:#f88;padding:12px 18px;border-radius:8px;z-index:9999;max-width:320px">
     {{ session('error') }}
 </div>
-<script>setTimeout(()=>{ var t=document.getElementById('err-toast'); if(t) t.remove(); }, 5000);</script>
+<script>setTimeout(function(){ var t=document.getElementById('err-toast'); if(t) t.remove(); }, 5000);</script>
 @endif
-
-
-<style>
-.team-sites { display:flex; flex-direction:column; gap:8px; }
-.members-list { display:flex; flex-wrap:wrap; gap:10px; }
-.member { display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;
-          background:var(--card-bg,#13131f); border:1px solid var(--border,#2a2a3e);
-          border-radius:8px; padding:8px 12px; min-width:140px; }
-.member:hover { border-color:var(--primary,#6c5ce7); }
-.profile-avatar { width:36px; height:36px; border-radius:50%; overflow:hidden; flex-shrink:0; }
-.profile-avatar img { width:100%; height:100%; object-fit:cover; }
-.member-info .nickname { font-weight:600; font-size:13px; }
-.member-info .role { font-size:11px; color:var(--meta-color); margin-top:2px; }
-.last-chapters__list { display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:10px; }
-.last-chapters__list .item { text-decoration:none; color:inherit; }
-.last-chapters__list .item .image { border-radius:6px; overflow:hidden; aspect-ratio:2/3; }
-.last-chapters__list .item .title { font-size:12px; margin-top:4px; }
-.last-chapters__list .chapter-name { font-size:11px; color:var(--meta-color); display:block; }
-</style>
 @endsection
