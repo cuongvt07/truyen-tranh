@@ -21,6 +21,19 @@
                 @if($mode === 'edit') @method('PATCH') @endif
                 
                 <div class="card-body">
+                    {{-- Trưởng nhóm --}}
+                    @if($mode === 'create')
+                    <div class="form-group">
+                        <label><i class="fas fa-user-shield text-muted"></i> Trưởng nhóm (username)</label>
+                        <input type="text" name="leader_username"
+                               class="form-control @error('leader_username') is-invalid @enderror"
+                               value="{{ old('leader_username') }}"
+                               placeholder="Nhập username của trưởng nhóm">
+                        @error('leader_username')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                        <small class="form-text text-muted">User này sẽ là trưởng nhóm và sở hữu nhóm. Bỏ trống nếu chưa xác định.</small>
+                    </div>
+                    @endif
+
                     {{-- Tên nhóm --}}
                     <div class="form-group">
                         <label>

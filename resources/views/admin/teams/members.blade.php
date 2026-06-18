@@ -78,7 +78,7 @@
                                 @foreach($pending as $m)
                                 <tr>
                                     <td>
-                                        <strong>@{{ $m->user->username ?? '?' }}</strong>
+                                        <strong>{{ $m->user->username ?? '?' }}</strong>
                                         <div class="small text-muted">{{ $m->user->email ?? '' }}</div>
                                     </td>
                                     <td class="small text-muted">{{ optional($m->requester)->username ?? 'leader' }}</td>
@@ -135,7 +135,7 @@
                                 @foreach($approved->sortBy('role') as $m)
                                 <tr>
                                     <td>
-                                        <strong>@{{ $m->user->username ?? '?' }}</strong>
+                                        <strong>{{ $m->user->username ?? '?' }}</strong>
                                         <span class="small text-muted ml-1">{{ $m->user->email ?? '' }}</span>
                                     </td>
                                     <td>
@@ -150,7 +150,7 @@
                                     <td class="text-center">
                                         @if($m->role !== 'leader')
                                         <form method="POST" action="{{ route('admin.teams.members.remove', [$team->id, $m->id]) }}"
-                                              onsubmit="return confirm('Xoá @{{ $m->user->username ?? '' }} khỏi nhóm?')">
+                                              onsubmit="return confirm('Xoá {{ $m->user->username ?? '' }} khỏi nhóm?')">
                                             @csrf @method('DELETE')
                                             <button class="btn btn-xs btn-outline-danger"><i class="fas fa-user-minus"></i></button>
                                         </form>
@@ -179,7 +179,7 @@
                             <tbody>
                                 @foreach($rejected as $m)
                                 <tr class="text-muted">
-                                    <td class="small">@{{ $m->user->username ?? '?' }}</td>
+                                    <td class="small">{{ $m->user->username ?? '?' }}</td>
                                     <td class="small">{{ $m->note ?? '—' }}</td>
                                     <td class="small">{{ $m->updated_at->format('d/m/Y') }}</td>
                                 </tr>

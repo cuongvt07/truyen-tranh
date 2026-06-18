@@ -186,19 +186,22 @@ class UserController extends Controller
     {
         $isMine = \Illuminate\Support\Facades\Auth::id() === $user->id;
 
-        // Team mà user là chủ sở hữu (leader)
-        $ownedTeams = \App\Models\Team::where('user_id', $user->id)
+        // Team mà user là leader (dựa vào TeamMember, không phụ thuộc user_id trên bảng teams)
+        $ownedTeams = \App\Models\Team::whereHas('members', function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                  ->where('role', 'leader')
+                  ->where('status', 'approved');
+            })
             ->withCount('approvedMembers')
             ->orderByDesc('updated_at')
             ->get();
 
-        // Team mà user là approved member (không phải chủ)
+        // Team mà user là approved member (không phải leader)
         $memberTeams = \App\Models\Team::whereHas('members', function ($q) use ($user) {
                 $q->where('user_id', $user->id)
                   ->where('status', 'approved')
                   ->where('role', '!=', 'leader');
             })
-            ->where('user_id', '!=', $user->id)
             ->with(['members' => function ($q) use ($user) {
                 $q->where('user_id', $user->id)->where('status', 'approved');
             }])

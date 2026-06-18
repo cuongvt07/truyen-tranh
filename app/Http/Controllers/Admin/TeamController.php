@@ -134,13 +134,23 @@ class TeamController extends Controller
     {
         $data = $this->validateData($request);
         $data['photo'] = $this->upload($request);
+
+        // Resolve leader từ username nếu nhập
+        $leaderUser = null;
+        if ($request->filled('leader_username')) {
+            $leaderUser = User::where('username', trim($request->input('leader_username')))->first();
+            if (!$leaderUser) {
+                return back()->withInput()->withErrors(['leader_username' => 'Không tìm thấy username này.']);
+            }
+            $data['user_id'] = $leaderUser->id;
+        }
+
         $team = Team::create($data);
 
-        // Tự thêm creator là leader nếu có user_id
-        if ($team->user_id) {
+        if ($leaderUser) {
             TeamMember::create([
                 'team_id'     => $team->id,
-                'user_id'     => $team->user_id,
+                'user_id'     => $leaderUser->id,
                 'role'        => 'leader',
                 'status'      => 'approved',
                 'requested_by'=> Auth::id(),
