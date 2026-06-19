@@ -106,7 +106,7 @@ class ArticleController extends Controller
     public function store(StoreArticleRequest $request)
     {
         $request->validated();
-        $validateData = $request->all();
+        $validateData = $request->except(['user_id']);
         $validateData['user_id'] = Auth::id();
         $validateData = $this->normalizeDetailBlockSettings($request, $validateData);
         $validateData = $this->normalizeCreditFields($validateData);
@@ -152,6 +152,7 @@ class ArticleController extends Controller
      */
     public function edit(Article $article)
     {
+        $this->authorizeArticle($article);
         $article->load('slug');
         $authors = Author::all();
         $genres = Genre::all();
@@ -175,8 +176,10 @@ class ArticleController extends Controller
      */
     public function update(UpdateArticleRequest $request, Article $article)
     {
+        $this->authorizeArticle($article);
         $request->validated();
-        $data = $request->all();
+        // Ownership is derived from the authenticated user and must never be writable from the form.
+        $data = $request->except(['user_id']);
         $data = $this->normalizeDetailBlockSettings($request, $data, $article->id);
         $data = $this->normalizeCreditFields($data);
 
@@ -216,6 +219,7 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
+        $this->authorizeArticle($article);
         $article->delete();
         return redirect()->route('admin.articles.index')
             ->with('success', __('messages.flash.article.deleted'));
@@ -225,6 +229,7 @@ class ArticleController extends Controller
         Article $article,
         $status
     ) {
+        $this->authorizeArticle($article);
         if (!validateArticleStatus($status)) {
             return redirect()->route('admin.articles.index');
         }
@@ -244,6 +249,7 @@ class ArticleController extends Controller
 
     public function updateCompleteStatus(Article $article)
     {
+        $this->authorizeArticle($article);
         $article->is_completed = !$article->is_completed;
         $article->save();
         if ($article->is_completed) {
@@ -348,6 +354,12 @@ class ArticleController extends Controller
             $data['team_id'] = null;
         }
         return $data;
+    }
+
+    private function authorizeArticle(Article $article): void
+    {
+        $user = Auth::user();
+        abort_unless($user->is_admin || $article->user_id === $user->id, 403);
     }
 
     private function uploadAffiImage(UpdateArticleRequest $request, array $data): array

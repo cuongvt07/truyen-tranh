@@ -54,6 +54,7 @@ class CommentController extends Controller
 
     public function destroy(Article $article, Comment $comment)
     {
+        abort_unless($comment->article_id === $article->id, 404);
         abort_unless($comment->canBeDeletedBy(Auth::user()), 403);
 
         if ($comment->parent_id) {

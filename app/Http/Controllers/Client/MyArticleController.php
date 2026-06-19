@@ -15,6 +15,7 @@ use App\Models\Tag;
 use App\Scopes\ApprovedArticleScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class MyArticleController extends Controller
 {
@@ -196,7 +197,10 @@ class MyArticleController extends Controller
             'genres'          => ['nullable', 'array'],
             'genres.*'        => ['integer', 'exists:genres,id'],
             'characters'      => ['nullable', 'array'],
-            'characters.*'    => ['integer', 'exists:characters,id'],
+            'characters.*'    => [
+                'integer',
+                Rule::exists('characters', 'id')->where(fn ($query) => $query->where('user_id', Auth::id())),
+            ],
             'cover_image'     => ['nullable', 'image', 'max:4096'],
             'background'      => ['nullable', 'image', 'max:6144'],
             'author_name'         => ['nullable', 'string', 'max:255'],

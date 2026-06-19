@@ -44,12 +44,14 @@ class UserController extends Controller
             ->values();
 
         // "Continue (N)": chương đọc gần nhất theo lịch sử; fallback chương mới nhất.
-        $continueMap = \App\Models\ReadingHistory::where('user_id', $user->id)
-            ->whereIn('article_id', $bookmarks->pluck('article_id'))
-            ->orderByDesc('read_at')
-            ->get()
-            ->unique('article_id')
-            ->mapWithKeys(fn ($h) => [$h->article_id => $h->chapter_number]);
+        $continueMap = $isMine
+            ? \App\Models\ReadingHistory::where('user_id', $user->id)
+                ->whereIn('article_id', $bookmarks->pluck('article_id'))
+                ->orderByDesc('read_at')
+                ->get()
+                ->unique('article_id')
+                ->mapWithKeys(fn ($h) => [$h->article_id => $h->chapter_number])
+            : collect();
 
         return view('client.users.list', [
             'user' => $user,
@@ -134,7 +136,9 @@ class UserController extends Controller
 
     public function showBookmarks(User $user): View
     {
+        $isMine = Auth::id() === $user->id;
         $bookmarks = $user->bookmarks()
+            ->when(!$isMine, fn ($query) => $query->where('is_public', true))
             ->whereHas(lcfirst(class_basename(Article::class)))
             ->orderByDesc('updated_at')
             ->paginate();
@@ -164,7 +168,8 @@ class UserController extends Controller
 
     public function notifications(User $user): View
     {
-        $isMine = Auth::id() === $user->id;
+        $this->authorizePrivateProfile($user);
+        $isMine = true;
         $notifications = $user->notifications()->paginate(20);
         // Xem tab của chính mình -> đánh dấu đã đọc (cập nhật badge chuông).
         if ($isMine) {
@@ -220,7 +225,9 @@ class UserController extends Controller
     public function achievements(User $user): View
     {
         // Sync trước khi render để mở khoá achievements mới
-        AchievementService::sync($user);
+        if (Auth::id() === $user->id) {
+            AchievementService::sync($user);
+        }
         $achievementData = AchievementService::forUser($user);
 
         return view('client.users.achievements', array_merge(['user' => $user], $achievementData));
@@ -233,11 +240,13 @@ class UserController extends Controller
 
     public function banlist(User $user): View
     {
+        $this->authorizePrivateProfile($user);
         return view('client.users.banlist', ['user' => $user]);
     }
 
     public function readingHistory(User $user): View
     {
+        $this->authorizePrivateProfile($user);
         $history = \App\Models\ReadingHistory::where('user_id', $user->id)
             ->with(['article', 'chapter'])
             ->orderByDesc('read_at')
@@ -250,6 +259,7 @@ class UserController extends Controller
 
     public function transactions(User $user): View
     {
+        $this->authorizePrivateProfile($user);
         $deposits = \App\Models\Deposit::where('user_id', $user->id)
             ->orderByDesc('created_at')->paginate(15);
         return view('client.users.transactions', [
@@ -267,5 +277,10 @@ class UserController extends Controller
         return view('client.users.banned', [
             'bannedUser' => $bannedUser,
         ]);
+    }
+
+    private function authorizePrivateProfile(User $user): void
+    {
+        abort_unless(Auth::check() && Auth::id() === $user->id, 403);
     }
 }

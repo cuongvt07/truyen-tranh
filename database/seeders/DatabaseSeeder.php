@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Closure;
 use Illuminate\Database\Seeder;
@@ -24,6 +25,8 @@ class DatabaseSeeder extends Seeder
         $this->safeSeed('site settings', fn () => $this->seedSettings());
         $this->safeSeed('comic categories', fn () => $this->seedTaxonomyTables());
         $this->safeSeed('comic statuses', fn () => $this->seedStatusTables());
+        $this->safeSeed('menus', fn () => $this->call(MenuSeeder::class));
+        $this->safeSeed('credit packages', fn () => $this->call(CreditPackageSeeder::class));
     }
 
     private function seedRoles(): void
@@ -61,19 +64,19 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Administrator',
                 'email' => 'admin@example.com',
                 'username' => 'admin',
-                'role' => 'admin',
+                'role' => UserRole::ADMIN->value,
             ],
             [
                 'name' => 'Poster',
                 'email' => 'poster@example.com',
                 'username' => 'poster',
-                'role' => 'poster',
+                'role' => UserRole::POSTER->value,
             ],
             [
                 'name' => 'User',
                 'email' => 'user@example.com',
                 'username' => 'user',
-                'role' => 'user',
+                'role' => UserRole::USER->value,
             ],
         ];
 
@@ -84,6 +87,8 @@ class DatabaseSeeder extends Seeder
         $hasUsernameColumn = $this->hasColumn($table, 'username');
         $hasEmailVerifiedAtColumn = $this->hasColumn($table, 'email_verified_at');
         $hasIsAdminColumn = $this->hasColumn($table, 'is_admin');
+        $hasAvatarColumn = $this->hasColumn($table, 'avatar');
+        $hasDescriptionColumn = $this->hasColumn($table, 'description');
         $password = $this->seedPassword();
         $resetPasswords = filter_var(env('RESET_SEEDED_PASSWORDS', false), FILTER_VALIDATE_BOOL);
 
@@ -106,24 +111,32 @@ class DatabaseSeeder extends Seeder
                 $attributes['email_verified_at'] = now();
             }
 
+            if ($hasAvatarColumn && ! $user->exists) {
+                $attributes['avatar'] = '/images/users/default.jpg';
+            }
+
+            if ($hasDescriptionColumn && ! $user->exists) {
+                $attributes['description'] = '';
+            }
+
             if ($hasRoleColumn) {
                 $attributes['role'] = $account['role'];
             }
 
-            if ($hasRoleIdColumn && $roleId = $this->roleId($account['role'])) {
+            if ($hasRoleIdColumn && $roleId = $this->roleId($this->roleName($account['role']))) {
                 $attributes['role_id'] = $roleId;
             }
 
             if ($hasTypeColumn) {
-                $attributes['type'] = $account['role'];
+                $attributes['type'] = $this->roleName($account['role']);
             }
 
             if ($hasIsAdminColumn) {
-                $attributes['is_admin'] = $account['role'] === 'admin';
+                $attributes['is_admin'] = $account['role'] === UserRole::ADMIN->value;
             }
 
             $user->forceFill($attributes)->save();
-            $this->assignRole($user, $account['role']);
+            $this->assignRole($user, $this->roleName($account['role']));
         }
     }
 
@@ -142,6 +155,17 @@ class DatabaseSeeder extends Seeder
             }
 
             foreach ($settings as $key => $value) {
+                if ($this->hasColumn($table, 'meta_key')) {
+                    $this->upsertTable($table, ['meta_key' => $key], [
+                        'meta_key' => $key,
+                        'meta_value' => $value,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+                    continue;
+                }
+
                 if ($this->hasColumn($table, 'key')) {
                     $this->upsertTable($table, ['key' => $key], [
                         'key' => $key,
@@ -315,6 +339,15 @@ class DatabaseSeeder extends Seeder
     private function roles(): array
     {
         return ['admin', 'poster', 'user'];
+    }
+
+    private function roleName(int|string $role): string
+    {
+        return match ((int) $role) {
+            UserRole::ADMIN->value => 'admin',
+            UserRole::POSTER->value => 'poster',
+            default => 'user',
+        };
     }
 
     private function seedPassword(): string

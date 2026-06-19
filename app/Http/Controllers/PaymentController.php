@@ -4,15 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class PaymentController extends Controller
 {
     public function createDeposit(Request $request)
     {
-        $amount = $request->input('amount');
-        $userId = auth()->id();
+        $validated = $request->validate([
+            'amount' => ['required', 'integer', Rule::in([20000, 50000, 100000])],
+        ]);
+        $amount = (int) $validated['amount'];
+        $userId = (int) $request->user()->id;
 
-        $chargeId = 'WEB' . str_pad(rand(1, 99999), 5, '0', STR_PAD_LEFT);
+        do {
+            $chargeId = 'WEB' . Str::upper(Str::random(20));
+        } while (DB::table('deposits')->where('transaction_id', $chargeId)->exists());
 
         $depositId = DB::table('deposits')->insertGetId([
             'user_id' => $userId,
@@ -62,9 +69,14 @@ class PaymentController extends Controller
 
     public function checkTransactionStatus(Request $request)
     {
-        $chargeId = $request->input('charge_id');
+        $validated = $request->validate([
+            'charge_id' => ['required', 'string', 'max:64'],
+        ]);
 
-        $deposit = DB::table('deposits')->where('transaction_id', $chargeId)->first();
+        $deposit = DB::table('deposits')
+            ->where('transaction_id', $validated['charge_id'])
+            ->where('user_id', $request->user()->id)
+            ->first();
 
         if (!$deposit) {
             return response()->json(['status' => 'not_found'], 404);

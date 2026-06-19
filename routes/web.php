@@ -51,6 +51,9 @@ Route::middleware(['auth'])->group(function () {
         ->name('users.handle_banned');
     Route::post('/vip/buy',
         [BuyPackageVipController::class, 'buyVip'])->name('vip.buy');
+    Route::post('/generate-qr', [PaymentController::class, 'createDeposit'])->name('generate.qr');
+    Route::post('/transactions/check', [PaymentController::class, 'checkTransactionStatus'])
+        ->name('sepay.transactions.check');
 
     // Đăng & quản lý truyện của user (scoped own, giao diện novelight)
     Route::get('/upload', [\App\Http\Controllers\Client\MyArticleController::class, 'create'])->name('my-articles.create');
@@ -432,11 +435,9 @@ Route::get('/users/{user}/suggestions', [UserAuthController::class, 'suggestions
 Route::get('/users/{user}/banlist', [UserAuthController::class, 'banlist'])->name('users.banlist');
 Route::get('/users/{user}/history', [UserAuthController::class, 'readingHistory'])->name('users.reading_history');
 
-Route::post('/generate-qr', [PaymentController::class, 'createDeposit'])->name('generate.qr');
 Route::get('/paypoints', [PaymentController::class, 'showPaypoints'])
     ->name('client.paypoints')
     ->middleware('auth');
-Route::post('/transactions/check', [PaymentController::class, 'checkTransactionStatus'])->name('sepay.transactions.check');
 
 
 Route::post('/set-login-reason', function (\Illuminate\Http\Request $request) {

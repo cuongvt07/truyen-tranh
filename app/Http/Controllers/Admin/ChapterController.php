@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Chapter\UpdateChapterRequest;
 use App\Models\Article;
 use App\Models\Chapter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ChapterController extends Controller
 {
@@ -19,6 +20,7 @@ class ChapterController extends Controller
     {
         $noScope = fn ($q) => $q->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class);
         $query = Article::withoutGlobalScope(\App\Scopes\ApprovedArticleScope::class)
+            ->when(!Auth::user()->is_admin, fn ($query) => $query->where('user_id', Auth::id()))
             ->withCount(['chapters' => $noScope])
             ->withMax(['chapters' => $noScope], 'created_at');
 
@@ -45,6 +47,7 @@ class ChapterController extends Controller
      */
     public function index(Request $request, Article $article)
     {
+        $this->authorizeArticle($article);
         $chapters = $article->chapters()
             ->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class)
             ->orderByDesc("number");
@@ -73,6 +76,7 @@ class ChapterController extends Controller
      */
     public function create(Article $article)
     {
+        $this->authorizeArticle($article);
         $chapter = new Chapter();
         // Tính cả chương hẹn giờ để không trùng số.
         $maxNumber = $article->chapters()
@@ -90,8 +94,9 @@ class ChapterController extends Controller
      */
     public function store(StoreChapterRequest $request, Article $article)
     {
+        $this->authorizeArticle($article);
         $request->validated();
-        $validateData = $request->all();
+        $validateData = $request->except(['article_id']);
         $validateData['article_id'] = $article->id;
         // Lịch đăng: parse chuỗi text (có thể paste từ Excel) -> datetime; rỗng = đăng ngay.
         $validateData['published_at'] = Chapter::parsePublishedAt($request->input('published_at'));
@@ -116,6 +121,7 @@ class ChapterController extends Controller
      */
     public function edit(Article $article, Chapter $chapter)
     {
+        $this->authorizeNestedChapter($article, $chapter);
         return view('admin.chapters.edit', [
             'chapter' => $chapter,
             'article' => $article,
@@ -130,8 +136,10 @@ class ChapterController extends Controller
         Article $article,
         Chapter $chapter
     ) {
+        $this->authorizeNestedChapter($article, $chapter);
         $request->validated();
-        $validateData = $request->all();
+        // The parent article comes from the authorized URL, never from request payload.
+        $validateData = $request->except(['article_id']);
         // Lịch đăng: parse text -> datetime; ô rỗng = đăng ngay (published_at = null).
         $validateData['published_at'] = Chapter::parsePublishedAt($request->input('published_at'));
         $chapter->update($validateData);
@@ -144,8 +152,21 @@ class ChapterController extends Controller
      */
     public function destroy(Article $article, Chapter $chapter)
     {
+        $this->authorizeNestedChapter($article, $chapter);
         $chapter->delete();
         return redirect()->route('admin.articles.show_chapters', $article->id)
             ->with('success', __('messages.flash.chapter.deleted'));
+    }
+
+    private function authorizeArticle(Article $article): void
+    {
+        $user = Auth::user();
+        abort_unless($user->is_admin || $article->user_id === $user->id, 403);
+    }
+
+    private function authorizeNestedChapter(Article $article, Chapter $chapter): void
+    {
+        $this->authorizeArticle($article);
+        abort_unless($chapter->article_id === $article->id, 404);
     }
 }
