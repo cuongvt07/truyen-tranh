@@ -21,6 +21,8 @@ class StoreGenreRequest extends GenreBaseRequest
                 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
                 Rule::unique('slugs', 'slug')->where(fn ($query) => $query->where('type', 'genre')),
             ],
+            'description' => ['nullable', 'string', 'max:2000'],
+            'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ];
     }
 }

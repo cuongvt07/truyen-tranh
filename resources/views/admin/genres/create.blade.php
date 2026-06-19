@@ -7,7 +7,7 @@
     <div class="card-header">
         <h3 class="card-title">Thêm mới Thể loại</h3>
     </div>
-    <form action="{{ route('admin.genres.store') }}" method="POST">
+    <form action="{{ route('admin.genres.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="card-body">
             @include('admin.genres.form')

@@ -7,7 +7,7 @@
     <div class="card-header">
         <h3 class="card-title">Chỉnh sửa Thể loại</h3>
     </div>
-    <form action="{{ route('admin.genres.update', $genre->id) }}" method="POST">
+    <form action="{{ route('admin.genres.update', $genre->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PATCH')
         <div class="card-body">

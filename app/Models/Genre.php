@@ -10,7 +10,7 @@ class Genre extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'cover_image'];
 
     protected static function booted(): void
     {

@@ -27,6 +27,9 @@ class UpdateGenreRequest extends GenreBaseRequest
                     ->where(fn ($query) => $query->where('type', 'genre'))
                     ->ignore($slugId),
             ],
+            'description' => ['nullable', 'string', 'max:2000'],
+            'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'cover_image_remove' => ['nullable', 'boolean'],
         ];
     }
 }

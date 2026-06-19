@@ -29,6 +29,20 @@
     @enderror
 </div>
 
+{{-- Ảnh đại diện --}}
+<div class="form-group">
+    <x-admin.image-upload
+        name="cover_image"
+        label="Ảnh thể loại"
+        :height="120"
+        :current="$genre->cover_image ? asset($genre->cover_image) : null"
+        accept="image/jpeg,image/png,image/webp"
+        hint="Ảnh JPG, PNG hoặc WebP, tối đa 4 MB. Khuyến nghị dùng ảnh ngang." />
+    @error('cover_image')
+        <div class="text-danger small mt-1">{{ $message }}</div>
+    @enderror
+</div>
+
 {{-- Mô tả --}}
 <div class="form-group">
     <label for="description">Mô tả ngắn</label>
@@ -51,8 +65,6 @@
 
     if (!nameInput || !slugInput) return;
 
-    let manualSlug = slugInput.value.length > 0;
-
     function slugifyText(value) {
         return String(value || '')
             .normalize('NFD')
@@ -64,6 +76,9 @@
             .replace(/^-+|-+$/g, '')
             .replace(/-{2,}/g, '-');
     }
+
+    let manualSlug = slugInput.value.length > 0
+        && slugInput.value !== slugifyText(nameInput.value);
 
     function updatePreview() {
         if (preview) {
@@ -88,6 +103,7 @@
         slugInput.value = slugifyText(nameInput.value);
     }
     updatePreview();
+
 })();
 </script>
 @endpush

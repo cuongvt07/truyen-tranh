@@ -61,6 +61,7 @@
                 <thead>
                     <tr>
                         <th width="60">ID</th>
+                        <th width="90">Ảnh</th>
                         <th>Tên thể loại</th>
                         <th>Slug</th>
                         <th>Mô tả</th>
@@ -72,13 +73,18 @@
                     @forelse($genres as $genre)
                         <tr>
                             <td class="text-muted">{{ $genre->id }}</td>
+                            <td>
+                                <img src="{{ $genre->cover_image ? asset($genre->cover_image) : asset('static/core/images/no_cover.webp') }}"
+                                     alt="{{ $genre->name }}" class="img-thumbnail"
+                                     style="width: 64px; height: 44px; object-fit: cover;">
+                            </td>
                             <td><strong>{{ $genre->name }}</strong></td>
                             <td>
                                 <code class="text-muted small">{{ $genre->slug->slug ?? 'N/A' }}</code>
                             </td>
                             <td>{{ Str::limit($genre->description, 60) }}</td>
                             <td class="text-center">
-                                <span class="badge badge-info">{{ $genre->articles()->count() }}</span>
+                                <span class="badge badge-info">{{ $genre->articles_count }}</span>
                             </td>
                             <td class="text-center">
                                 <a href="{{ route('admin.genres.edit', $genre->id) }}" 
@@ -97,7 +103,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
+                            <td colspan="7" class="text-center text-muted py-4">
                                 <i class="fas fa-inbox fa-2x mb-2"></i>
                                 <p class="mb-0">Không tìm thấy thể loại nào</p>
                             </td>
