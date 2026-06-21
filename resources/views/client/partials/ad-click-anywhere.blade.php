@@ -5,6 +5,58 @@
 @endphp
 {{-- DEBUG: server-side diagnosis (remove after confirmed working) --}}
 <!-- [AD-CLICK] page_type={{ current_ad_page_type() ?? 'null' }} | is_vip={{ user_has_active_vip() ? '1' : '0' }} | click_anywhere_count={{ $__clickAdsGroup->count() }} | chosen_id={{ $__clickAd?->id ?? 'none' }} | chosen_link={{ $__clickAd?->link ?? 'none' }} | chosen_script={{ $__clickAd?->script_code ? 'yes' : 'no' }} -->
+<script>
+(function () {
+    if (window.__siteAdNewTabNormalizer) return;
+    window.__siteAdNewTabNormalizer = true;
+
+    var AD_SELECTORS = [
+        '.site-ad',
+        '.site-ad-popup-box',
+        '.site-ad-click-script',
+        '.chapter-inline-ad',
+        '.ad-popup-content .ad-banner'
+    ];
+    var AD_LINK_SELECTOR = AD_SELECTORS.map(function (selector) { return selector + ' a[href]'; }).join(',');
+    var AD_FORM_SELECTOR = AD_SELECTORS.map(function (selector) { return selector + ' form[action]'; }).join(',');
+
+    function normalizeAdLinks(root) {
+        var scope = root && root.querySelectorAll ? root : document;
+        if (scope.matches && scope.matches(AD_LINK_SELECTOR + ', ' + AD_FORM_SELECTOR)) {
+            if (scope.tagName === 'A') {
+                scope.setAttribute('target', '_blank');
+                var ownRel = (scope.getAttribute('rel') || '').split(/\s+/).filter(Boolean);
+                ['nofollow', 'noopener', 'noreferrer'].forEach(function (token) {
+                    if (ownRel.indexOf(token) === -1) ownRel.push(token);
+                });
+                scope.setAttribute('rel', ownRel.join(' '));
+            } else if (scope.tagName === 'FORM') {
+                scope.setAttribute('target', '_blank');
+            }
+        }
+        scope.querySelectorAll(AD_LINK_SELECTOR).forEach(function (a) {
+            a.setAttribute('target', '_blank');
+            var rel = (a.getAttribute('rel') || '').split(/\s+/).filter(Boolean);
+            ['nofollow', 'noopener', 'noreferrer'].forEach(function (token) {
+                if (rel.indexOf(token) === -1) rel.push(token);
+            });
+            a.setAttribute('rel', rel.join(' '));
+        });
+        scope.querySelectorAll(AD_FORM_SELECTOR).forEach(function (form) {
+            form.setAttribute('target', '_blank');
+        });
+    }
+
+    normalizeAdLinks(document);
+    new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+            mutation.addedNodes.forEach(function (node) {
+                if (node.nodeType === 1) normalizeAdLinks(node);
+            });
+        });
+    }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
 @if($__clickAd)
 @if($__clickAd->script_code)
 <div class="site-ad-click-script">{!! $__clickAd->script_code !!}</div>
