@@ -29,16 +29,21 @@
                         @if($article->status == \App\Enums\ArticleStatus::PENDING->value)
                             • <span style="color:#e0a020">{{ __('messages.myarticle.status_pending') }}</span>
                         @endif
+                        @if($article->team)
+                            • <i class="fa fa-user-friends"></i> {{ $article->team->name }}
+                        @endif
                         • <i class="fa fa-eye"></i> {{ number_format($article->view) }}
                     </div>
                 </div>
                 <div class="my-story__actions">
                     <a href="{{ route('my-articles.create_chapter', $article->id) }}" class="btn btn-invincible" title="{{ __('messages.myarticle.add_chapter') }}"><i class="fa fa-plus"></i> {{ __('messages.myarticle.chapter') }}</a>
                     <a href="{{ route('my-articles.edit', $article->id) }}" class="btn btn-invincible" title="{{ __('messages.myarticle.edit') }}"><i class="fa fa-edit"></i></a>
-                    <form method="post" action="{{ route('my-articles.destroy', $article->id) }}" onsubmit="return confirm('{{ __('messages.myarticle.delete_story_confirm') }}')" style="display:inline">
-                        @csrf @method('delete')
-                        <button type="submit" class="btn btn-invincible" title="{{ __('messages.myarticle.delete') }}" style="color:#e84040"><i class="fa fa-trash"></i></button>
-                    </form>
+                    @if($article->can_delete ?? false)
+                        <form method="post" action="{{ route('my-articles.destroy', $article->id) }}" onsubmit="return confirm('{{ __('messages.myarticle.delete_story_confirm') }}')" style="display:inline">
+                            @csrf @method('delete')
+                            <button type="submit" class="btn btn-invincible" title="{{ __('messages.myarticle.delete') }}" style="color:#e84040"><i class="fa fa-trash"></i></button>
+                        </form>
+                    @endif
                 </div>
             </div>
         @empty

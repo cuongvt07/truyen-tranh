@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin\Article;
 
 use App\Models\Article;
+use App\Models\Team;
 use Illuminate\Validation\Rule;
 
 class UpdateArticleRequest extends ArticleBaseRequest
@@ -36,6 +37,11 @@ class UpdateArticleRequest extends ArticleBaseRequest
             'view' => ['nullable', 'integer', 'min:0'],
             'credit_start_chapter' => ['nullable', 'integer', 'min:1'],
             'credit_per_chapter' => ['nullable', 'integer', 'min:0'],
+            'team_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('teams', 'id')->where(fn ($query) => $query->where('status', Team::STATUS_APPROVED)),
+            ],
         ];
     }
 }

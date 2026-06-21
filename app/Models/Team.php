@@ -45,7 +45,11 @@ class Team extends Model
 
     public function isLeader(int $userId): bool
     {
-        return $this->user_id === $userId;
+        return $this->user_id === $userId
+            || $this->approvedMembers()
+                ->where('user_id', $userId)
+                ->where('role', 'leader')
+                ->exists();
     }
 
     public function hasMember(int $userId): bool

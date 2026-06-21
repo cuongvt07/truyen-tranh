@@ -12,6 +12,7 @@ use App\Models\Character;
 use App\Models\Country;
 use App\Models\Genre;
 use App\Models\Tag;
+use App\Models\Team;
 use App\Scopes\ApprovedArticleScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,19 +25,32 @@ class MyArticleController extends Controller
     /** Lấy truyện của chính mình (bỏ qua scope duyệt để thấy cả PENDING). */
     private function ownArticle($id): Article
     {
-        $article = Article::withoutGlobalScope(ApprovedArticleScope::class)->findOrFail($id);
-        abort_unless($article->user_id === Auth::id(), 403, 'Bạn không có quyền với truyện này.');
+        $article = Article::withoutGlobalScope(ApprovedArticleScope::class)->with('team')->findOrFail($id);
+        abort_unless($this->canManageArticle($article), 403, 'You do not have permission to manage this story.');
         return $article;
     }
 
     /** Danh sách truyện của tôi. */
     public function index()
     {
+        $teamIds = $this->manageableTeamIds();
+
         $articles = Article::withoutGlobalScope(ApprovedArticleScope::class)
-            ->where('user_id', Auth::id())
+            ->where(function ($q) use ($teamIds) {
+                $q->where('user_id', Auth::id());
+
+                if ($teamIds->isNotEmpty()) {
+                    $q->orWhereIn('team_id', $teamIds);
+                }
+            })
+            ->with('team:id,name')
             ->withCount('chapters')
             ->orderByDesc('updated_at')
             ->paginate(20);
+
+        $articles->getCollection()->each(function (Article $article) {
+            $article->can_delete = $this->canDeleteArticle($article);
+        });
 
         return view('client.my-articles.index', compact('articles'));
     }
@@ -49,6 +63,7 @@ class MyArticleController extends Controller
             'genres'       => Genre::orderBy('name')->get(),
             'countries'    => Country::orderBy('sort_order')->get(),
             'myCharacters' => Character::where('user_id', Auth::id())->orderBy('name')->get(),
+            'myTeams'      => $this->selectableTeams(),
             'mode'         => 'create',
         ]);
     }
@@ -88,6 +103,7 @@ class MyArticleController extends Controller
             'genres'       => Genre::orderBy('name')->get(),
             'countries'    => Country::orderBy('sort_order')->get(),
             'myCharacters' => Character::where('user_id', Auth::id())->orderBy('name')->get(),
+            'myTeams'      => $this->selectableTeams($article->team_id),
             'mode'         => 'edit',
         ]);
     }
@@ -96,7 +112,7 @@ class MyArticleController extends Controller
     public function update(Request $request, $id)
     {
         $article = $this->ownArticle($id);
-        $data = $this->validateData($request);
+        $data = $this->validateData($request, $article);
         $data = $this->normalizeCreditFields($data);
 
         $article->fill($data);
@@ -120,6 +136,7 @@ class MyArticleController extends Controller
     public function destroy($id)
     {
         $article = $this->ownArticle($id);
+        abort_unless($this->canDeleteArticle($article), 403, 'You do not have permission to delete this story.');
         $article->genres()->detach();
         $article->authors()->detach();
         // Xoá CẢ chương hẹn giờ (không để sót do global scope).
@@ -179,11 +196,16 @@ class MyArticleController extends Controller
         if (array_key_exists('credit_per_chapter', $data) && $data['credit_per_chapter'] === '') {
             $data['credit_per_chapter'] = 0;
         }
+        if (array_key_exists('team_id', $data) && $data['team_id'] === '') {
+            $data['team_id'] = null;
+        }
         return $data;
     }
 
-    private function validateData(Request $request): array
+    private function validateData(Request $request, ?Article $article = null): array
     {
+        $allowedTeamIds = $this->selectableTeams($article?->team_id)->pluck('id')->all();
+
         return $request->validate([
             'title'           => ['required', 'string', 'max:255'],
             'alt_title'       => ['nullable', 'string', 'max:255'],
@@ -205,6 +227,13 @@ class MyArticleController extends Controller
             'background'      => ['nullable', 'image', 'max:6144'],
             'author_name'         => ['nullable', 'string', 'max:255'],
             'tags'                => ['nullable', 'string', 'max:1000'],
+            'team_id'             => [
+                'nullable',
+                'integer',
+                Rule::exists('teams', 'id')
+                    ->where(fn ($query) => $query->where('status', Team::STATUS_APPROVED)),
+                Rule::in($allowedTeamIds),
+            ],
             'credit_start_chapter' => ['nullable', 'integer', 'min:1'],
             'credit_per_chapter'   => ['nullable', 'integer', 'min:0'],
         ], [], [
@@ -246,5 +275,65 @@ class MyArticleController extends Controller
         }
         $author = Author::firstOrCreate(['name' => $name]);
         $article->authors()->sync([$author->id]);
+    }
+
+    private function manageableTeamIds(array $roles = ['leader', 'admin', 'editor'])
+    {
+        return Team::query()
+            ->where('status', Team::STATUS_APPROVED)
+            ->where(function ($q) use ($roles) {
+                $q->where('user_id', Auth::id())
+                    ->orWhereHas('members', function ($m) use ($roles) {
+                        $m->where('user_id', Auth::id())
+                            ->where('status', 'approved')
+                            ->whereIn('role', $roles);
+                    });
+            })
+            ->pluck('id');
+    }
+
+    private function selectableTeams(?int $includeTeamId = null)
+    {
+        $teamIds = $this->manageableTeamIds();
+
+        if ($teamIds->isEmpty() && !$includeTeamId) {
+            return collect();
+        }
+
+        return Team::query()
+            ->where('status', Team::STATUS_APPROVED)
+            ->where(function ($q) use ($teamIds, $includeTeamId) {
+                if ($teamIds->isNotEmpty()) {
+                    $q->whereIn('id', $teamIds);
+                }
+
+                if ($includeTeamId) {
+                    $teamIds->isNotEmpty()
+                        ? $q->orWhere('id', $includeTeamId)
+                        : $q->where('id', $includeTeamId);
+                }
+            })
+            ->orderBy('name')
+            ->get(['id', 'name']);
+    }
+
+    private function canManageArticle(Article $article): bool
+    {
+        if ($article->user_id === Auth::id()) {
+            return true;
+        }
+
+        return $article->team_id
+            && $this->manageableTeamIds()->contains((int) $article->team_id);
+    }
+
+    private function canDeleteArticle(Article $article): bool
+    {
+        if ($article->user_id === Auth::id()) {
+            return true;
+        }
+
+        return $article->team_id
+            && $this->manageableTeamIds(['leader', 'admin'])->contains((int) $article->team_id);
     }
 }

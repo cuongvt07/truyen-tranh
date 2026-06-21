@@ -32,8 +32,9 @@
                             <div class="form-group">
                                 <label class="small font-weight-bold">Vai trò</label>
                                 <select name="role" class="form-control form-control-sm">
-                                    <option value="member">Thành viên</option>
-                                    <option value="leader">Trưởng nhóm</option>
+                                    @foreach(\App\Models\TeamMember::ROLES as $role => $label)
+                                        <option value="{{ $role }}">{{ $label }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-success btn-sm btn-block">
@@ -139,11 +140,9 @@
                                         <span class="small text-muted ml-1">{{ $m->user->email ?? '' }}</span>
                                     </td>
                                     <td>
-                                        @if($m->role === 'leader')
-                                            <span class="badge badge-primary">Trưởng nhóm</span>
-                                        @else
-                                            <span class="badge badge-secondary">Thành viên</span>
-                                        @endif
+                                        <span class="badge {{ $m->role === 'leader' ? 'badge-primary' : 'badge-secondary' }}">
+                                            {{ $m->roleLabel() }}
+                                        </span>
                                     </td>
                                     <td class="small text-muted">{{ optional($m->approver)->username ?? 'system' }}</td>
                                     <td class="small text-muted">{{ optional($m->approved_at)->format('d/m/Y') ?? '—' }}</td>

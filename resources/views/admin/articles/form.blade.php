@@ -179,7 +179,7 @@
                 <label for="team_id">Gán cho nhóm dịch</label>
                 <select name="team_id" id="team_id" class="form-control">
                     <option value="">— Không có —</option>
-                    @foreach(\App\Models\Team::orderBy('name')->get(['id','name']) as $team)
+                    @foreach(\App\Models\Team::where('status', \App\Models\Team::STATUS_APPROVED)->orderBy('name')->get(['id','name']) as $team)
                         <option value="{{ $team->id }}" {{ old('team_id', $article->team_id) == $team->id ? 'selected' : '' }}>
                             {{ $team->name }}
                         </option>

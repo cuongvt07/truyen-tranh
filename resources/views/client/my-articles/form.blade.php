@@ -96,6 +96,20 @@
                 <input type="text" name="tags" value="{{ old('tags', $articleTags) }}" placeholder="{{ __('messages.myarticle.tags_placeholder') }}">
             </div>
 
+            @if(($myTeams ?? collect())->count())
+                <div class="frow">
+                    <label>Nhóm dịch</label>
+                    <select name="team_id">
+                        <option value="">Đăng cá nhân</option>
+                        @foreach($myTeams as $team)
+                            <option value="{{ $team->id }}" {{ (string) old('team_id', $article->team_id) === (string) $team->id ? 'selected' : '' }}>
+                                {{ $team->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            @endif
+
             @if(($myCharacters ?? collect())->count())
                 @php $selChars = $article->exists ? $article->characters->pluck('id')->all() : []; @endphp
                 <div class="frow">

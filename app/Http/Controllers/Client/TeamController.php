@@ -9,6 +9,7 @@ use App\Models\TeamMember;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TeamController extends Controller
 {
@@ -17,13 +18,20 @@ class TeamController extends Controller
     private function own($id): Team
     {
         $t = Team::findOrFail($id);
-        abort_unless($t->user_id === Auth::id(), 403);
+        abort_unless($t->isLeader(Auth::id()), 403);
         return $t;
     }
 
     public function index()
     {
-        $items = Team::where('user_id', Auth::id())
+        $items = Team::where(function ($q) {
+                $q->where('user_id', Auth::id())
+                    ->orWhereHas('members', function ($m) {
+                        $m->where('user_id', Auth::id())
+                            ->where('status', 'approved')
+                            ->where('role', 'leader');
+                    });
+            })
             ->withCount('approvedMembers')
             ->orderByDesc('updated_at')
             ->paginate(24);
@@ -63,12 +71,101 @@ class TeamController extends Controller
 
         $team->load('approvedMembers.user:id,name,username,avatar');
 
+        $monthStart = now()->startOfMonth();
+        $monthEnd = now()->endOfMonth();
+        $previousMonthStart = now()->subMonthNoOverflow()->startOfMonth();
+        $previousMonthEnd = now()->subMonthNoOverflow()->endOfMonth();
+
         $totalArticles  = \App\Models\Article::withoutGlobalScopes()->where('team_id', $team->id)->count();
         $totalChapters  = \App\Models\Chapter::query()
             ->join('articles', 'articles.id', '=', 'chapters.article_id')
             ->where('articles.team_id', $team->id)->count();
 
-        return view('client.community.team-dashboard', compact('team', 'totalArticles', 'totalChapters'));
+        $monthlyLikes = $this->teamLikesQuery($team->id)
+            ->whereBetween('chapter_likes.created_at', [$monthStart, $monthEnd])
+            ->count();
+
+        $previousMonthlyLikes = $this->teamLikesQuery($team->id)
+            ->whereBetween('chapter_likes.created_at', [$previousMonthStart, $previousMonthEnd])
+            ->count();
+
+        $monthlyCoupons = (int) $this->teamCouponsQuery($team->id)
+            ->whereBetween('chapter_unlocks.created_at', [$monthStart, $monthEnd])
+            ->sum('chapter_unlocks.credits_spent');
+
+        $previousMonthlyCoupons = (int) $this->teamCouponsQuery($team->id)
+            ->whereBetween('chapter_unlocks.created_at', [$previousMonthStart, $previousMonthEnd])
+            ->sum('chapter_unlocks.credits_spent');
+
+        $teamBalance = (int) $this->teamCouponsQuery($team->id)->sum('chapter_unlocks.credits_spent');
+
+        $chartDays = collect(range(14, 0))->map(fn ($i) => now()->subDays($i)->startOfDay());
+        $chartStart = $chartDays->first()->copy()->startOfDay();
+        $chartEnd = $chartDays->last()->copy()->endOfDay();
+
+        $likesByDay = $this->teamLikesQuery($team->id)
+            ->whereBetween('chapter_likes.created_at', [$chartStart, $chartEnd])
+            ->selectRaw('DATE(chapter_likes.created_at) as day, COUNT(*) as total')
+            ->groupBy('day')
+            ->pluck('total', 'day');
+
+        $couponsByDay = $this->teamCouponsQuery($team->id)
+            ->whereBetween('chapter_unlocks.created_at', [$chartStart, $chartEnd])
+            ->selectRaw('DATE(chapter_unlocks.created_at) as day, SUM(chapter_unlocks.credits_spent) as total')
+            ->groupBy('day')
+            ->pluck('total', 'day');
+
+        $chartData = $chartDays->map(function ($day) use ($likesByDay, $couponsByDay) {
+            $key = $day->format('Y-m-d');
+
+            return [
+                'label' => $day->format('d M'),
+                'likes' => (int) ($likesByDay[$key] ?? 0),
+                'coupons' => (int) ($couponsByDay[$key] ?? 0),
+            ];
+        });
+        $chartMax = max(1, $chartData->max('likes'), $chartData->max('coupons'));
+
+        $topLikedArticles = DB::table('articles')
+            ->join('chapters', 'chapters.article_id', '=', 'articles.id')
+            ->join('chapter_likes', 'chapter_likes.chapter_id', '=', 'chapters.id')
+            ->where('articles.team_id', $team->id)
+            ->whereBetween('chapter_likes.created_at', [$monthStart, $monthEnd])
+            ->groupBy('articles.id', 'articles.title')
+            ->select('articles.id', 'articles.title')
+            ->selectRaw('COUNT(*) as total')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+
+        $topCouponArticles = DB::table('articles')
+            ->join('chapter_unlocks', 'chapter_unlocks.article_id', '=', 'articles.id')
+            ->where('articles.team_id', $team->id)
+            ->whereBetween('chapter_unlocks.created_at', [$monthStart, $monthEnd])
+            ->groupBy('articles.id', 'articles.title')
+            ->select('articles.id', 'articles.title')
+            ->selectRaw('SUM(chapter_unlocks.credits_spent) as total')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+
+        $likesCompare = $this->compareMetric($monthlyLikes, $previousMonthlyLikes);
+        $couponsCompare = $this->compareMetric($monthlyCoupons, $previousMonthlyCoupons);
+
+        return view('client.community.team-dashboard', compact(
+            'team',
+            'totalArticles',
+            'totalChapters',
+            'monthlyLikes',
+            'monthlyCoupons',
+            'teamBalance',
+            'chartData',
+            'chartMax',
+            'topLikedArticles',
+            'topCouponArticles',
+            'likesCompare',
+            'couponsCompare'
+        ));
     }
 
     /** Quản lý thành viên — chỉ leader */
@@ -242,5 +339,32 @@ class TeamController extends Controller
             return $this->storePublicImage($r->file('photo'), 'images/teams');
         }
         return $r->filled('photo_url') ? $r->input('photo_url') : null;
+    }
+
+    private function teamLikesQuery(int $teamId)
+    {
+        return DB::table('chapter_likes')
+            ->join('chapters', 'chapters.id', '=', 'chapter_likes.chapter_id')
+            ->join('articles', 'articles.id', '=', 'chapters.article_id')
+            ->where('articles.team_id', $teamId);
+    }
+
+    private function teamCouponsQuery(int $teamId)
+    {
+        return DB::table('chapter_unlocks')
+            ->join('articles', 'articles.id', '=', 'chapter_unlocks.article_id')
+            ->where('articles.team_id', $teamId);
+    }
+
+    private function compareMetric(int $current, int $previous): string
+    {
+        if ($previous <= 0) {
+            return $current > 0 ? 'New activity this month' : 'No data to compare';
+        }
+
+        $percent = (($current - $previous) / $previous) * 100;
+        $prefix = $percent >= 0 ? '+' : '';
+
+        return $prefix . number_format($percent, 1) . '% vs previous month';
     }
 }

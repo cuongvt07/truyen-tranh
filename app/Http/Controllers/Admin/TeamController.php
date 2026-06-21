@@ -93,7 +93,7 @@ class TeamController extends Controller
     {
         $data = $request->validate([
             'username' => 'required|string|exists:users,username',
-            'role'     => 'required|in:leader,member',
+            'role'     => 'required|in:leader,admin,editor,member',
         ]);
 
         $user = User::where('username', $data['username'])->firstOrFail();
