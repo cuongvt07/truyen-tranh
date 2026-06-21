@@ -28,24 +28,32 @@
                     </div>
                     <div class="chart-box">
                         <div class="chart-zero-line"></div>
+                        <div class="team-chart-series">
+                            @foreach($chartData as $day)
+                                <div class="team-chart-day">
+                                    <span class="team-chart-bar coupons" style="height:{{ max(2, round(($day['coupons'] / $chartMax) * 190)) }}px" title="{{ $day['label'] }}: {{ number_format($day['coupons']) }} coupons"></span>
+                                    <span class="team-chart-bar likes" style="height:{{ max(2, round(($day['likes'] / $chartMax) * 190)) }}px" title="{{ $day['label'] }}: {{ number_format($day['likes']) }} likes"></span>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                     <div class="chart-axis">
-                        <span>10 May</span><span>21 May</span><span>25 May</span><span>27 May</span><span>29 May</span>
-                        <span>31 May</span><span>02 Jun</span><span>04 Jun</span><span>08 Jun</span><span>10 Jun</span>
-                        <span>12 Jun</span><span>14 Jun</span><span>16 Jun</span><span>18 Jun</span><span>19 Jun</span>
+                        @foreach($chartData as $day)
+                            <span>{{ $day['label'] }}</span>
+                        @endforeach
                     </div>
                 </section>
 
                 <aside class="metric-column">
                     <div class="metric-card">
                         <div class="label">Number of likes for the month</div>
-                        <div class="value">0</div>
-                        <div class="compare">No data to compare</div>
+                        <div class="value">{{ number_format($monthlyLikes) }}</div>
+                        <div class="compare">{{ $likesCompare }}</div>
                     </div>
                     <div class="metric-card">
                         <div class="label">Number of coupons for the month</div>
-                        <div class="value">0</div>
-                        <div class="compare">No data to compare</div>
+                        <div class="value">{{ number_format($monthlyCoupons) }}</div>
+                        <div class="compare">{{ $couponsCompare }}</div>
                     </div>
                 </aside>
             </div>
@@ -61,18 +69,40 @@
                 </div>
                 <div class="small-stat">
                     <div class="label">Team balance (coupons)</div>
-                    <div class="value">0</div>
+                    <div class="value">{{ number_format($teamBalance) }}</div>
                 </div>
             </div>
 
             <div class="dashboard-lists">
                 <section class="dashboard-list">
                     <h2>The most likes in a month</h2>
-                    <div class="empty-data">No data to display</div>
+                    @if($topLikedArticles->isEmpty())
+                        <div class="empty-data">No data to display</div>
+                    @else
+                        <div class="dashboard-rank">
+                            @foreach($topLikedArticles as $row)
+                                <a href="{{ route('articles.show', $row->id) }}" class="dashboard-rank-row">
+                                    <span class="rank-title">{{ $row->title }}</span>
+                                    <span class="rank-value">{{ number_format($row->total) }}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
                 </section>
                 <section class="dashboard-list">
                     <h2>The most coupons in a month</h2>
-                    <div class="empty-data">No data to display</div>
+                    @if($topCouponArticles->isEmpty())
+                        <div class="empty-data">No data to display</div>
+                    @else
+                        <div class="dashboard-rank">
+                            @foreach($topCouponArticles as $row)
+                                <a href="{{ route('articles.show', $row->id) }}" class="dashboard-rank-row">
+                                    <span class="rank-title">{{ $row->title }}</span>
+                                    <span class="rank-value">{{ number_format($row->total) }}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
                 </section>
             </div>
 
