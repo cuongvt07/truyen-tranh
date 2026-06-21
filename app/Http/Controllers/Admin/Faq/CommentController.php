@@ -7,6 +7,7 @@ use App\Models\FaqComment;
 use App\Models\FaqArticle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
@@ -32,10 +33,12 @@ class CommentController extends Controller
 
     public function destroy(FaqComment $comment)
     {
-        $articleId = $comment->article_id;
-        $parentId = $comment->parent_id;
-        $comment->delete();
-        $this->syncCounts([$articleId], $parentId ? [$parentId] : []);
+        DB::transaction(function () use ($comment) {
+            $articleId = $comment->article_id;
+            $parentId = $comment->parent_id;
+            $comment->delete();
+            $this->syncCounts([$articleId], $parentId ? [$parentId] : []);
+        });
 
         return back()->with('success', __('messages.flash.comment.deleted'));
     }
@@ -80,11 +83,15 @@ class CommentController extends Controller
             'ids.*' => ['integer', 'exists:faq_comments,id'],
         ]);
 
-        $comments = FaqComment::whereIn('id', $request->input('ids'))->get(['id', 'article_id', 'parent_id']);
-        $articleIds = $comments->pluck('article_id')->unique()->all();
-        $parentIds = $comments->pluck('parent_id')->filter()->unique()->all();
-        $deleted = FaqComment::whereIn('id', $comments->pluck('id'))->delete();
-        $this->syncCounts($articleIds, $parentIds);
+        $deleted = DB::transaction(function () use ($request) {
+            $comments = FaqComment::whereIn('id', $request->input('ids'))->get(['id', 'article_id', 'parent_id']);
+            $articleIds = $comments->pluck('article_id')->unique()->all();
+            $parentIds = $comments->pluck('parent_id')->filter()->unique()->all();
+            FaqComment::whereIn('id', $comments->pluck('id'))->delete();
+            $this->syncCounts($articleIds, $parentIds);
+
+            return $comments->count();
+        });
 
         return back()->with('success', __('messages.flash.comment.bulk_deleted', ['count' => $deleted]));
     }

@@ -9,6 +9,7 @@ use App\Models\CommentReport;
 use App\Scopes\ApprovedArticleScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
@@ -68,13 +69,15 @@ class CommentController extends Controller
 
     public function destroy(Comment $comment)
     {
-        if ($comment->parent_id) {
-            Comment::whereKey($comment->parent_id)
-                ->where('replies_count', '>', 0)
-                ->decrement('replies_count');
-        }
+        DB::transaction(function () use ($comment) {
+            $parentId = $comment->parent_id;
+            $comment->delete();
 
-        $comment->delete();
+            if ($parentId && ($parent = Comment::find($parentId))) {
+                $parent->forceFill(['replies_count' => $parent->replies()->count()])->save();
+            }
+        });
+
         return back()->with('success', __('messages.flash.comment.deleted'));
     }
 
@@ -113,8 +116,12 @@ class CommentController extends Controller
 
     public function bulkDestroy(Request $request)
     {
-        $ids = array_filter((array) $request->input('ids', []));
-        if (!empty($ids)) {
+        $ids = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:comments,id'],
+        ])['ids'];
+
+        $deleted = DB::transaction(function () use ($ids) {
             $comments = Comment::whereIn('id', $ids)->get(['id', 'parent_id']);
             $parentIds = $comments->pluck('parent_id')->filter()->unique();
             Comment::whereIn('id', $comments->pluck('id'))->delete();
@@ -123,8 +130,11 @@ class CommentController extends Controller
                     'replies_count' => $parent->replies()->count(),
                 ])->save()
             );
-        }
-        return back()->with('success', __('messages.flash.comment.bulk_deleted', ['count' => count($ids)]));
+
+            return $comments->count();
+        });
+
+        return back()->with('success', __('messages.flash.comment.bulk_deleted', ['count' => $deleted]));
     }
 
     private function validatedContent(Request $request): array

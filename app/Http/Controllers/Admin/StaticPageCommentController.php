@@ -8,6 +8,7 @@ use App\Models\StaticPageComment;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class StaticPageCommentController extends Controller
@@ -86,7 +87,7 @@ class StaticPageCommentController extends Controller
 
     public function destroy(StaticPageComment $comment)
     {
-        $comment->delete();
+        DB::transaction(fn () => $comment->delete());
 
         return back()->with('success', __('messages.flash.comment.deleted'));
     }
@@ -98,7 +99,12 @@ class StaticPageCommentController extends Controller
             'ids.*' => ['integer', 'exists:static_page_comments,id'],
         ])['ids'];
 
-        $deleted = StaticPageComment::whereIn('id', $ids)->delete();
+        $deleted = DB::transaction(function () use ($ids) {
+            $comments = StaticPageComment::whereIn('id', $ids)->get(['id']);
+            StaticPageComment::whereIn('id', $comments->pluck('id'))->delete();
+
+            return $comments->count();
+        });
 
         return back()->with('success', __('messages.flash.comment.bulk_deleted', ['count' => $deleted]));
     }

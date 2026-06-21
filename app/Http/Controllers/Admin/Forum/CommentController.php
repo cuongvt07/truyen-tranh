@@ -7,6 +7,7 @@ use App\Models\ForumComment;
 use App\Models\ForumPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
@@ -32,10 +33,12 @@ class CommentController extends Controller
 
     public function destroy(ForumComment $comment)
     {
-        $postId = $comment->post_id;
-        $parentId = $comment->parent_id;
-        $comment->delete();
-        $this->syncCounts([$postId], $parentId ? [$parentId] : []);
+        DB::transaction(function () use ($comment) {
+            $postId = $comment->post_id;
+            $parentId = $comment->parent_id;
+            $comment->delete();
+            $this->syncCounts([$postId], $parentId ? [$parentId] : []);
+        });
 
         return back()->with('success', __('messages.flash.comment.deleted'));
     }
@@ -80,11 +83,15 @@ class CommentController extends Controller
             'ids.*' => ['integer', 'exists:forum_comments,id'],
         ]);
 
-        $comments = ForumComment::whereIn('id', $request->input('ids'))->get(['id', 'post_id', 'parent_id']);
-        $postIds = $comments->pluck('post_id')->unique()->all();
-        $parentIds = $comments->pluck('parent_id')->filter()->unique()->all();
-        $deleted = ForumComment::whereIn('id', $comments->pluck('id'))->delete();
-        $this->syncCounts($postIds, $parentIds);
+        $deleted = DB::transaction(function () use ($request) {
+            $comments = ForumComment::whereIn('id', $request->input('ids'))->get(['id', 'post_id', 'parent_id']);
+            $postIds = $comments->pluck('post_id')->unique()->all();
+            $parentIds = $comments->pluck('parent_id')->filter()->unique()->all();
+            ForumComment::whereIn('id', $comments->pluck('id'))->delete();
+            $this->syncCounts($postIds, $parentIds);
+
+            return $comments->count();
+        });
 
         return back()->with('success', __('messages.flash.comment.bulk_deleted', ['count' => $deleted]));
     }

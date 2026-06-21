@@ -36,6 +36,8 @@ return new class extends Migration
             if (Schema::hasTable($tableName) && Schema::hasColumn($tableName, 'is_hidden')) {
                 Schema::table($tableName, function (Blueprint $table) {
                     $table->dropIndex(['is_hidden']);
+                });
+                Schema::table($tableName, function (Blueprint $table) {
                     $table->dropColumn('is_hidden');
                 });
             }
