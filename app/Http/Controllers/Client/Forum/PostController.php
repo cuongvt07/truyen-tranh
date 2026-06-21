@@ -45,7 +45,8 @@ class PostController extends Controller
         // Load comments with pagination
         $comments = $post->comments()
             ->whereNull('parent_id')
-            ->with(['user', 'replies.user'])
+            ->where('is_hidden', false)
+            ->with(['user', 'replies' => fn ($q) => $q->where('is_hidden', false)->with('user')])
             ->orderByDesc('score')
             ->orderByDesc('created_at')
             ->paginate(20);

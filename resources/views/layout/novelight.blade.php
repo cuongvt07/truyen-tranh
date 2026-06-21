@@ -154,7 +154,7 @@
                         <li class="header-nav__list"><div class="header-btn header-browse tippy-browse"><i class="fa fa-layer-group"></i> {{ __('messages.nav.browse') }} <i class="fa fa-caret-down"></i></div></li>
                         <li><a href="#" id="open-live-search" class="header-btn no-link open-close" p-target="fullscreen-search"><i class="fa fa-search"></i> {{ __('messages.nav.search') }}</a></li>
                         <li><a href="{{ route('pages.forum') }}" class="header-btn no-link"><i class="fa fa-comments"></i> {{ __('messages.nav.forum') }}</a></li>
-                        <li><a href="{{ route('pages.faq') }}" class="header-btn no-link"><i class="fa fa-circle-question"></i> {{ __('messages.nav.faq') }}</a></li>
+                        <li><a href="{{ route('pages.faq') }}" class="header-btn no-link"><i class="fa fa-question-circle"></i> {{ __('messages.nav.faq') }}</a></li>
                         <li><a href="{{ route('home.show_new_update_articles') }}" class="header-btn no-link"><i class="fa fa-bolt"></i> {{ __('messages.nav.new') }}</a></li>
                         <li><a href="{{ route('home.show_completed_articles') }}" class="header-btn no-link"><i class="fa fa-check-circle"></i> {{ __('messages.nav.completed') }}</a></li>
                     @endforelse
@@ -250,7 +250,7 @@
                     <li><a href="{{ route('home.index') }}"><i class="fa fa-home"></i> {{ __('messages.nav.home') }}</a></li>
                     <li><div class="tippy-browse"><span><i class="fa fa-layer-group"></i> {{ __('messages.nav.browse') }}</span> <i class="fa fa-caret-down"></i></div></li>
                     <li><a href="{{ route('pages.forum') }}"><i class="fa fa-comments"></i> {{ __('messages.nav.forum') }}</a></li>
-                    <li><a href="{{ route('pages.faq') }}"><i class="fa fa-circle-question"></i> {{ __('messages.nav.faq') }}</a></li>
+                    <li><a href="{{ route('pages.faq') }}"><i class="fa fa-question-circle"></i> {{ __('messages.nav.faq') }}</a></li>
                     <li><a href="{{ route('home.show_new_update_articles') }}"><i class="fa fa-bolt"></i> {{ __('messages.nav.new') }}</a></li>
                     <li><a href="{{ route('home.show_completed_articles') }}"><i class="fa fa-check-circle"></i> {{ __('messages.nav.completed') }}</a></li>
                 @endforelse

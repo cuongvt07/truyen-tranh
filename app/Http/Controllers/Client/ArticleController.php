@@ -33,12 +33,13 @@ class ArticleController extends Controller
             ->take(self::CHAPTERS_PER_PAGE)
             ->get();
         $latestChapters = $article->chapters()->orderByDesc('number')->take(10)->get();
-        // Chương hẹn giờ (chưa tới giờ đăng) — hiện "Coming soon" trên tab chương, không đọc được.
+        // Show only the two scheduled chapters that will be published next.
         $upcomingChapters = $article->chapters()
             ->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class)
             ->whereNotNull('published_at')
             ->where('published_at', '>', now())
-            ->orderByDesc('number')
+            ->orderBy('published_at')
+            ->limit(2)
             ->get();
         $comments = $article->getNewestCommentsPaginate();
         $displayChapterIds = $latestChapters->pluck('id')

@@ -24,6 +24,7 @@ class StaticPageCommentController extends Controller
             abort_unless(
                 StaticPageComment::where('id', $validated['parent_id'])
                     ->where('static_page_id', $staticPage->id)
+                    ->where('is_hidden', false)
                     ->exists(),
                 422
             );

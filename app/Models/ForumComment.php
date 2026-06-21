@@ -9,17 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ForumComment extends Model
 {
     protected $fillable = [
-        'post_id',
-        'user_id',
-        'parent_id',
-        'content',
-        'score',
-        'reply_count',
+        'post_id', 'user_id', 'parent_id', 'content', 'score', 'reply_count', 'is_hidden',
     ];
 
     protected $casts = [
         'score' => 'integer',
         'reply_count' => 'integer',
+        'is_hidden' => 'boolean',
     ];
 
     // --------------------------------------------------------------- relations

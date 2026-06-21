@@ -223,11 +223,12 @@ class Article extends Model
     ): \Illuminate\Contracts\Pagination\LengthAwarePaginator {
         return self::comments()
             ->whereNull('parent_id')                       // chỉ comment gốc
+            ->where('is_hidden', false)
             ->with([
                 'user',
                 'votes',
                 'replies' => function ($q) {
-                    return $q->with(['user', 'votes']);
+                    return $q->where('is_hidden', false)->with(['user', 'votes']);
                 },
             ])
             ->orderByDesc('score')

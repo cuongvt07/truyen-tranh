@@ -273,15 +273,21 @@
                 </div>
 
                 <div id="all-chapters-list" class="chapters">
-                    {{-- Chương hẹn giờ: hiện "Coming soon" để bạn đọc biết sắp ra, KHÔNG bấm đọc được. --}}
+                    {{-- Scheduled chapters are visible for reference but cannot be opened early. --}}
                     @foreach(($upcomingChapters ?? collect()) as $upcoming)
                         <div class="chapter chapter--coming-soon" aria-disabled="true">
                             <div class="title">
                                 {{ __('messages.article.chapter') }} {{ $upcoming->number }} - <span>{{ $upcoming->title }}</span>
                             </div>
                             <div class="chapter-info">
-                                <span class="cost coming-soon-badge"><i class="fa fa-clock"></i> {{ __('messages.article.coming_soon') }}</span>
-                                <span class="date">{{ optional($upcoming->published_at)->format('d.m.Y H:i') }}</span>
+                                <span class="cost coming-soon-badge">
+                                    <i class="fa fa-clock" title="{{ __('messages.article.coming_soon') }}" aria-label="{{ __('messages.article.coming_soon') }}"></i>
+                                </span>
+                                <span class="date">
+                                    {{ $upcoming->published_at->isTomorrow()
+                                        ? __('messages.article.tomorrow')
+                                        : $upcoming->published_at->format('d/m') }}
+                                </span>
                             </div>
                         </div>
                     @endforeach

@@ -33,6 +33,7 @@ class CommentController extends Controller
         if (!empty($validated['parent_id'])) {
             $parent = FaqComment::where('id', $validated['parent_id'])
                 ->where('article_id', $article->id)
+                ->where('is_hidden', false)
                 ->firstOrFail();
         }
 
@@ -90,6 +91,8 @@ class CommentController extends Controller
      */
     public function vote(Request $request, FaqComment $comment)
     {
+        abort_if($comment->is_hidden, 404);
+
         $validated = $request->validate([
             'value' => ['required', 'integer', 'in:1,-1'],
         ]);

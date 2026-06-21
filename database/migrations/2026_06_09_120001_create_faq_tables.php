@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title_vi')->nullable();
             $table->text('description_en')->nullable();
             $table->text('description_vi')->nullable();
-            $table->string('icon', 50)->default('fa-circle-question');
+            $table->string('icon', 50)->default('fa-question-circle');
             $table->unsignedInteger('sort_order')->default(0);
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();

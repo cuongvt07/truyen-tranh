@@ -152,6 +152,7 @@ class UserController extends Controller
     {
         $comments = $user->comments()
             ->whereHas(lcfirst(class_basename(Article::class)))
+            ->where('is_hidden', false)
             ->orderByDesc('created_at')->paginate();
         return view('client.users.comments', [
             'comments' => $comments,

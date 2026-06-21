@@ -1,6 +1,6 @@
 @extends('layout.novelight')
 
-@section('template_title', $category->localizedTitle() . ' - Forum')
+@section('template_title', $category->localizedTitle() . ' - ' . __('messages.nav.forum'))
 
 @section('page_css')
 <link rel="stylesheet" href="{{ asset('static/forum/css/forum.css') }}">
@@ -20,17 +20,17 @@
     {{-- Breadcrumb + New Post --}}
     <div class="forum-toolbar block">
         <div class="breadcumps">
-            <a href="{{ route('pages.forum') }}" class="last-bread"><i class="fa fa-chevron-left"></i> Forum</a>
+            <a href="{{ route('pages.forum') }}" class="last-bread"><i class="fa fa-chevron-left"></i> {{ __('messages.nav.forum') }}</a>
             <span>&gt;</span>
             <span>{{ $category->localizedTitle() }}</span>
         </div>
         @auth
             <a href="{{ route('forum.posts.create', $category->slug) }}" class="btn btn-primary btn-sm">
-                <i class="fa fa-pen"></i> {{ app()->getLocale() === 'vi' ? 'Đăng bài' : 'New Post' }}
+                <i class="fa fa-pen"></i> {{ __('messages.forum.new_post') }}
             </a>
         @else
             <a href="{{ route('login') }}" class="btn btn-outline-primary btn-sm">
-                {{ app()->getLocale() === 'vi' ? 'Đăng nhập để đăng bài' : 'Login to post' }}
+                {{ __('messages.forum.login_to_post') }}
             </a>
         @endauth
     </div>
@@ -45,14 +45,14 @@
                 <div class="fp-row__main">
                     <div class="fp-row__title">
                         @if($post->is_pinned)
-                            <i class="fa fa-thumbtack fp-pin" title="{{ app()->getLocale() === 'vi' ? 'Ghim' : 'Pinned' }}"></i>
+                            <i class="fa fa-thumbtack fp-pin" title="{{ __('messages.forum.pinned') }}"></i>
                         @endif
                         <a href="{{ route('pages.forum.post', [$category->slug, $post->slug]) }}" class="fp-row__title-link">
                             {{ $post->localizedTitle() }}
                         </a>
                     </div>
                     <div class="fp-row__meta meta-color">
-                        {{ app()->getLocale() === 'vi' ? 'bởi' : 'by' }}
+                        {{ __('messages.forum.by') }}
                         @if($post->author)
                             <a href="{{ route('users.show.profile', $post->author) }}" class="fp-author">{{ $post->author->name ?? $post->author->username }}</a>,
                         @else
@@ -67,7 +67,7 @@
                     @auth
                         @if(auth()->id() === $post->user_id)
                             <a href="{{ route('forum.posts.edit', [$category->slug, $post->slug]) }}"
-                               class="fp-edit meta-color" title="Edit">
+                               class="fp-edit meta-color" title="{{ __('messages.forum.edit') }}">
                                 <i class="fa fa-edit"></i>
                             </a>
                         @endif
@@ -76,7 +76,7 @@
             </div>
         @empty
             <div class="block meta-color" style="padding:16px">
-                {{ app()->getLocale() === 'vi' ? 'Chưa có bài viết nào được duyệt.' : 'No approved posts yet.' }}
+                {{ __('messages.forum.empty_approved_posts') }}
             </div>
         @endforelse
     </div>

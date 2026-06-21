@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\FaqComment;
 use App\Models\FaqArticle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -14,8 +15,8 @@ class CommentController extends Controller
         $query = FaqComment::with(['article.category', 'user'])->orderBy('created_at', 'desc');
 
         // Search by content
-        if ($request->filled('search')) {
-            $query->where('content', 'like', '%' . $request->search . '%');
+        if ($request->filled('q')) {
+            $query->where('content', 'like', '%' . $request->q . '%');
         }
 
         // Filter by article
@@ -23,47 +24,86 @@ class CommentController extends Controller
             $query->where('article_id', $request->article_id);
         }
 
-        $comments = $query->paginate(50);
+        $comments = $query->paginate(30)->withQueryString();
+        $sources = FaqArticle::orderByDesc('id')->limit(500)->get(['id', 'title_en', 'title_vi']);
 
-        return view('admin.faq.comments.index', compact('comments'));
+        return view('admin.faq.comments.index', compact('comments', 'sources'));
     }
 
     public function destroy(FaqComment $comment)
     {
-        // Update parent's reply_count if this is a reply
-        if ($comment->parent_id) {
-            $parent = FaqComment::find($comment->parent_id);
-            if ($parent) {
-                $parent->decrement('reply_count');
-            }
-        }
-
-        // Update article's comment_count
-        $article = $comment->article;
-        if ($article) {
-            $article->decrement('comment_count');
-        }
-
+        $articleId = $comment->article_id;
+        $parentId = $comment->parent_id;
         $comment->delete();
+        $this->syncCounts([$articleId], $parentId ? [$parentId] : []);
 
-        return redirect()->back()->with('success', 'Comment deleted successfully.');
+        return back()->with('success', __('messages.flash.comment.deleted'));
+    }
+
+    public function update(Request $request, FaqComment $comment)
+    {
+        $comment->update($this->validatedContent($request));
+
+        return back()->with('success', __('messages.flash.comment.updated'));
+    }
+
+    public function reply(Request $request, FaqComment $comment)
+    {
+        $root = $comment->parent ?: $comment;
+        $data = $this->validatedContent($request);
+
+        FaqComment::create([
+            'article_id' => $root->article_id,
+            'user_id' => Auth::id(),
+            'parent_id' => $root->id,
+            'content' => $data['content'],
+        ]);
+        $this->syncCounts([$root->article_id], [$root->id]);
+
+        return back()->with('success', __('messages.flash.comment.replied'));
+    }
+
+    public function toggleHidden(FaqComment $comment)
+    {
+        $comment->update(['is_hidden' => !$comment->is_hidden]);
+
+        return back()->with(
+            'success',
+            __('messages.flash.comment.' . ($comment->is_hidden ? 'hidden' : 'shown'))
+        );
     }
 
     public function bulkDestroy(Request $request)
     {
         $request->validate([
-            'comment_ids' => 'required|array',
-            'comment_ids.*' => 'exists:faq_comments,id',
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:faq_comments,id'],
         ]);
 
-        $deleted = FaqComment::whereIn('id', $request->comment_ids)->delete();
+        $comments = FaqComment::whereIn('id', $request->input('ids'))->get(['id', 'article_id', 'parent_id']);
+        $articleIds = $comments->pluck('article_id')->unique()->all();
+        $parentIds = $comments->pluck('parent_id')->filter()->unique()->all();
+        $deleted = FaqComment::whereIn('id', $comments->pluck('id'))->delete();
+        $this->syncCounts($articleIds, $parentIds);
 
-        // Recalculate comment counts
-        $affectedArticles = FaqArticle::whereHas('comments')->get();
-        foreach ($affectedArticles as $article) {
-            $article->update(['comment_count' => $article->comments()->count()]);
-        }
+        return back()->with('success', __('messages.flash.comment.bulk_deleted', ['count' => $deleted]));
+    }
 
-        return redirect()->back()->with('success', "$deleted comments deleted successfully.");
+    private function validatedContent(Request $request): array
+    {
+        return $request->validate([
+            'content' => ['required', 'string', 'max:5000'],
+        ]);
+    }
+
+    private function syncCounts(array $articleIds, array $parentIds = []): void
+    {
+        FaqArticle::whereIn('id', array_filter($articleIds))->get()->each(
+            fn (FaqArticle $article) => $article->update(['comment_count' => $article->comments()->count()])
+        );
+
+        FaqComment::whereIn('id', array_filter($parentIds))->get()->each(
+            fn (FaqComment $parent) => $parent->update(['reply_count' => $parent->replies()->count()])
+        );
     }
 }

@@ -22,7 +22,9 @@ class CommentController extends Controller
         // Reply chỉ lồng 1 cấp: nếu cha đã là reply thì gắn lên gốc của nó
         $parentId = null;
         if (!empty($data['parent_id'])) {
-            $parent = Comment::where('article_id', $article->id)->find($data['parent_id']);
+            $parent = Comment::where('article_id', $article->id)
+                ->where('is_hidden', false)
+                ->find($data['parent_id']);
             if ($parent) {
                 $parentId = $parent->parent_id ?? $parent->id;
             }
@@ -71,6 +73,8 @@ class CommentController extends Controller
     /** Vote up/down (toggle). value: 1 or -1 */
     public function vote(Request $request, Comment $comment)
     {
+        abort_if($comment->is_hidden, 404);
+
         if (!Auth::check()) {
             return response()->json(['ok' => false, 'message' => 'Please log in.'], 401);
         }
@@ -111,6 +115,8 @@ class CommentController extends Controller
     /** Report a comment */
     public function report(Request $request, Comment $comment)
     {
+        abort_if($comment->is_hidden, 404);
+
         if (!Auth::check()) {
             return response()->json(['ok' => false, 'message' => 'Please log in.'], 401);
         }

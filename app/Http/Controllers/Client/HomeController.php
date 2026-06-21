@@ -27,6 +27,7 @@ class HomeController extends Controller
         $lastComments        = DB::table('comments')
                                  ->join('users', 'users.id', '=', 'comments.user_id')
                                  ->join('articles', 'articles.id', '=', 'comments.article_id')
+                                 ->where('comments.is_hidden', false)
                                  ->leftJoin('slugs', function ($join) {
                                      $join->on('slugs.sluggable_id', '=', 'articles.id')
                                          ->where('slugs.sluggable_type', Article::class)
@@ -52,6 +53,7 @@ class HomeController extends Controller
             ? DB::table('collection_article')
                 ->join('comments', 'comments.article_id', '=', 'collection_article.article_id')
                 ->whereIn('collection_article.collection_id', $collectionIds)
+                ->where('comments.is_hidden', false)
                 ->selectRaw('collection_article.collection_id, COUNT(comments.id) as total')
                 ->groupBy('collection_article.collection_id')
                 ->pluck('total', 'collection_id')

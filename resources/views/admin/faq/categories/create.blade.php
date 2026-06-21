@@ -37,7 +37,7 @@
             </div>
             <div class="form-group">
                 <label for="icon">Icon (Font Awesome class)</label>
-                <input type="text" class="form-control @error('icon') is-invalid @enderror" id="icon" name="icon" value="{{ old('icon', 'fa-circle-question') }}" placeholder="fa-circle-question">
+                <input type="text" class="form-control @error('icon') is-invalid @enderror" id="icon" name="icon" value="{{ old('icon', 'fa-question-circle') }}" placeholder="fa-question-circle">
                 @error('icon')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">

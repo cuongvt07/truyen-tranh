@@ -168,7 +168,8 @@ class PageController extends Controller
 
         $comments = $articlePage->comments()
             ->whereNull('parent_id')
-            ->with(['user', 'replies.user'])
+            ->where('is_hidden', false)
+            ->with(['user', 'replies' => fn ($q) => $q->where('is_hidden', false)->with('user')])
             ->latest()
             ->paginate(20);
 
@@ -267,7 +268,8 @@ class PageController extends Controller
 
         $comments = $postPage->comments()
             ->whereNull('parent_id')
-            ->with(['user', 'replies.user'])
+            ->where('is_hidden', false)
+            ->with(['user', 'replies' => fn ($q) => $q->where('is_hidden', false)->with('user')])
             ->latest()
             ->paginate(20);
 
@@ -283,7 +285,8 @@ class PageController extends Controller
         if ($page = $this->staticPage('rules')) {
             $comments = $page->comments()
                 ->whereNull('parent_id')
-                ->with(['user', 'replies.user'])
+                ->where('is_hidden', false)
+                ->with(['user', 'replies' => fn ($q) => $q->where('is_hidden', false)->with('user')])
                 ->latest()
                 ->paginate(20);
 

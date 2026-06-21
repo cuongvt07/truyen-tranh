@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ForumComment;
 use App\Models\ForumPost;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -14,8 +15,8 @@ class CommentController extends Controller
         $query = ForumComment::with(['post.category', 'user'])->orderBy('created_at', 'desc');
 
         // Search by content
-        if ($request->filled('search')) {
-            $query->where('content', 'like', '%' . $request->search . '%');
+        if ($request->filled('q')) {
+            $query->where('content', 'like', '%' . $request->q . '%');
         }
 
         // Filter by post
@@ -23,47 +24,86 @@ class CommentController extends Controller
             $query->where('post_id', $request->post_id);
         }
 
-        $comments = $query->paginate(50);
+        $comments = $query->paginate(30)->withQueryString();
+        $sources = ForumPost::orderByDesc('id')->limit(500)->get(['id', 'title_en', 'title_vi']);
 
-        return view('admin.forum.comments.index', compact('comments'));
+        return view('admin.forum.comments.index', compact('comments', 'sources'));
     }
 
     public function destroy(ForumComment $comment)
     {
-        // Update parent's reply_count if this is a reply
-        if ($comment->parent_id) {
-            $parent = ForumComment::find($comment->parent_id);
-            if ($parent) {
-                $parent->decrement('reply_count');
-            }
-        }
-
-        // Update post's comment_count
-        $post = $comment->post;
-        if ($post) {
-            $post->decrement('comment_count');
-        }
-
+        $postId = $comment->post_id;
+        $parentId = $comment->parent_id;
         $comment->delete();
+        $this->syncCounts([$postId], $parentId ? [$parentId] : []);
 
-        return redirect()->back()->with('success', 'Comment deleted successfully.');
+        return back()->with('success', __('messages.flash.comment.deleted'));
+    }
+
+    public function update(Request $request, ForumComment $comment)
+    {
+        $comment->update($this->validatedContent($request));
+
+        return back()->with('success', __('messages.flash.comment.updated'));
+    }
+
+    public function reply(Request $request, ForumComment $comment)
+    {
+        $root = $comment->parent ?: $comment;
+        $data = $this->validatedContent($request);
+
+        ForumComment::create([
+            'post_id' => $root->post_id,
+            'user_id' => Auth::id(),
+            'parent_id' => $root->id,
+            'content' => $data['content'],
+        ]);
+        $this->syncCounts([$root->post_id], [$root->id]);
+
+        return back()->with('success', __('messages.flash.comment.replied'));
+    }
+
+    public function toggleHidden(ForumComment $comment)
+    {
+        $comment->update(['is_hidden' => !$comment->is_hidden]);
+
+        return back()->with(
+            'success',
+            __('messages.flash.comment.' . ($comment->is_hidden ? 'hidden' : 'shown'))
+        );
     }
 
     public function bulkDestroy(Request $request)
     {
         $request->validate([
-            'comment_ids' => 'required|array',
-            'comment_ids.*' => 'exists:forum_comments,id',
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:forum_comments,id'],
         ]);
 
-        $deleted = ForumComment::whereIn('id', $request->comment_ids)->delete();
+        $comments = ForumComment::whereIn('id', $request->input('ids'))->get(['id', 'post_id', 'parent_id']);
+        $postIds = $comments->pluck('post_id')->unique()->all();
+        $parentIds = $comments->pluck('parent_id')->filter()->unique()->all();
+        $deleted = ForumComment::whereIn('id', $comments->pluck('id'))->delete();
+        $this->syncCounts($postIds, $parentIds);
 
-        // Recalculate comment counts (simple approach)
-        $affectedPosts = ForumPost::whereHas('comments')->get();
-        foreach ($affectedPosts as $post) {
-            $post->update(['comment_count' => $post->comments()->count()]);
-        }
+        return back()->with('success', __('messages.flash.comment.bulk_deleted', ['count' => $deleted]));
+    }
 
-        return redirect()->back()->with('success', "$deleted comments deleted successfully.");
+    private function validatedContent(Request $request): array
+    {
+        return $request->validate([
+            'content' => ['required', 'string', 'max:5000'],
+        ]);
+    }
+
+    private function syncCounts(array $postIds, array $parentIds = []): void
+    {
+        ForumPost::whereIn('id', array_filter($postIds))->get()->each(
+            fn (ForumPost $post) => $post->update(['comment_count' => $post->comments()->count()])
+        );
+
+        ForumComment::whereIn('id', array_filter($parentIds))->get()->each(
+            fn (ForumComment $parent) => $parent->update(['reply_count' => $parent->replies()->count()])
+        );
     }
 }

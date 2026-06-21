@@ -1,6 +1,6 @@
 @extends('layout.novelight')
 
-@section('template_title', $post->localizedTitle() . ' - Forum')
+@section('template_title', $post->localizedTitle() . ' - ' . __('messages.nav.forum'))
 
 @section('page_css')
 <link rel="stylesheet" href="{{ asset('static/forum/css/forum.css') }}">
@@ -10,7 +10,7 @@
 <div class="container">
     {{-- Breadcrumb --}}
     <div class="breadcumps">
-        <a href="{{ route('pages.forum') }}" class="last-bread"><i class="fa fa-chevron-left"></i> Forum</a>
+        <a href="{{ route('pages.forum') }}" class="last-bread"><i class="fa fa-chevron-left"></i> {{ __('messages.nav.forum') }}</a>
         <span>&gt;</span>
         <a href="{{ route('pages.forum.category', $category->slug) }}">{{ $category->localizedTitle() }}</a>
         <span>&gt;</span>
@@ -20,9 +20,7 @@
     @if($post->isPending())
         <div class="alert alert-warning">
             <i class="fa fa-clock"></i>
-            {{ app()->getLocale() === 'vi'
-                ? 'Bài viết đang chờ admin duyệt. Chỉ bạn mới thấy bài này.'
-                : 'This post is pending approval. Only you can see it.' }}
+            {{ __('messages.forum.pending_notice') }}
         </div>
     @endif
 
@@ -59,14 +57,14 @@
             @if(auth()->id() === $post->user_id)
                 <div class="forum-post-actions">
                     <a href="{{ route('forum.posts.edit', [$category->slug, $post->slug]) }}" class="btn btn-sm btn-outline-primary">
-                        <i class="fa fa-edit"></i> {{ app()->getLocale() === 'vi' ? 'Sửa bài' : 'Edit' }}
+                        <i class="fa fa-edit"></i> {{ __('messages.forum.edit') }}
                     </a>
                     <form method="POST" action="{{ route('forum.posts.destroy', [$category->slug, $post->slug]) }}"
                           class="d-inline"
-                          onsubmit="return confirm('{{ app()->getLocale() === 'vi' ? 'Xoá bài này?' : 'Delete this post?' }}')">
+                          onsubmit="return confirm(@js(__('messages.forum.delete_confirm')))">
                         @csrf @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-outline-danger">
-                            <i class="fa fa-trash"></i> {{ app()->getLocale() === 'vi' ? 'Xoá bài' : 'Delete' }}
+                            <i class="fa fa-trash"></i> {{ __('messages.forum.delete_post') }}
                         </button>
                     </form>
                 </div>

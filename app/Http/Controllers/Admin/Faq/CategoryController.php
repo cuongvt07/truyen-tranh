@@ -34,7 +34,7 @@ class CategoryController extends Controller
 
         $validated['is_active'] = $request->has('is_active');
         $validated['sort_order'] = $validated['sort_order'] ?? 0;
-        $validated['icon'] = $validated['icon'] ?? 'fa-circle-question';
+        $validated['icon'] = $validated['icon'] ?? 'fa-question-circle';
 
         FaqCategory::create($validated);
 

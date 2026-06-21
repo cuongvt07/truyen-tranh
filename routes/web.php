@@ -239,11 +239,21 @@ Route::middleware(['auth'])->group(function () {
 
             // Quản lý bình luận (moderation)
             Route::get('comments', [\App\Http\Controllers\Admin\CommentController::class, 'index'])->name('comments.index');
+            Route::patch('comments/{comment}', [\App\Http\Controllers\Admin\CommentController::class, 'update'])->name('comments.update');
+            Route::post('comments/{comment}/reply', [\App\Http\Controllers\Admin\CommentController::class, 'reply'])->name('comments.reply');
             Route::delete('comments/{comment}', [\App\Http\Controllers\Admin\CommentController::class, 'destroy'])->name('comments.destroy');
             Route::post('comments/bulk-destroy', [\App\Http\Controllers\Admin\CommentController::class, 'bulkDestroy'])->name('comments.bulk_destroy');
+            Route::patch('comments/{comment}/toggle-hidden', [\App\Http\Controllers\Admin\CommentController::class, 'toggleHidden'])->name('comments.toggle_hidden');
             // Báo cáo bình luận
             Route::get('comment-reports', [\App\Http\Controllers\Admin\CommentController::class, 'reports'])->name('comment_reports.index');
             Route::post('comment-reports/{comment}/resolve', [\App\Http\Controllers\Admin\CommentController::class, 'resolveReports'])->name('comment_reports.resolve');
+            // Static page comments
+            Route::get('static-page-comments', [\App\Http\Controllers\Admin\StaticPageCommentController::class, 'index'])->name('static_page_comments.index');
+            Route::patch('static-page-comments/{comment}', [\App\Http\Controllers\Admin\StaticPageCommentController::class, 'update'])->name('static_page_comments.update');
+            Route::post('static-page-comments/{comment}/reply', [\App\Http\Controllers\Admin\StaticPageCommentController::class, 'reply'])->name('static_page_comments.reply');
+            Route::delete('static-page-comments/{comment}', [\App\Http\Controllers\Admin\StaticPageCommentController::class, 'destroy'])->name('static_page_comments.destroy');
+            Route::post('static-page-comments/bulk-destroy', [\App\Http\Controllers\Admin\StaticPageCommentController::class, 'bulkDestroy'])->name('static_page_comments.bulk_destroy');
+            Route::patch('static-page-comments/{comment}/toggle-hidden', [\App\Http\Controllers\Admin\StaticPageCommentController::class, 'toggleHidden'])->name('static_page_comments.toggle_hidden');
             // Báo cáo lỗi chương
             Route::get('chapter-reports', [\App\Http\Controllers\Admin\ChapterReportController::class, 'index'])->name('chapter_reports.index');
             Route::post('chapter-reports/resolve-chapter', [\App\Http\Controllers\Admin\ChapterReportController::class, 'resolveChapter'])->name('chapter_reports.resolve_chapter');
@@ -264,8 +274,11 @@ Route::middleware(['auth'])->group(function () {
                 Route::delete('posts/{post}', [\App\Http\Controllers\Admin\Forum\PostController::class, 'destroy'])->name('posts.destroy');
                 // Comments
                 Route::get('comments', [\App\Http\Controllers\Admin\Forum\CommentController::class, 'index'])->name('comments.index');
+                Route::patch('comments/{comment}', [\App\Http\Controllers\Admin\Forum\CommentController::class, 'update'])->name('comments.update');
+                Route::post('comments/{comment}/reply', [\App\Http\Controllers\Admin\Forum\CommentController::class, 'reply'])->name('comments.reply');
                 Route::delete('comments/{comment}', [\App\Http\Controllers\Admin\Forum\CommentController::class, 'destroy'])->name('comments.destroy');
                 Route::post('comments/bulk-destroy', [\App\Http\Controllers\Admin\Forum\CommentController::class, 'bulkDestroy'])->name('comments.bulk_destroy');
+                Route::patch('comments/{comment}/toggle-hidden', [\App\Http\Controllers\Admin\Forum\CommentController::class, 'toggleHidden'])->name('comments.toggle_hidden');
                 // Settings
                 Route::get('settings', [\App\Http\Controllers\Admin\Forum\SettingController::class, 'index'])->name('settings.index');
                 Route::post('settings', [\App\Http\Controllers\Admin\Forum\SettingController::class, 'update'])->name('settings.update');
@@ -279,8 +292,11 @@ Route::middleware(['auth'])->group(function () {
                 Route::resource('articles', \App\Http\Controllers\Admin\Faq\ArticleController::class)->except('show');
                 // Comments
                 Route::get('comments', [\App\Http\Controllers\Admin\Faq\CommentController::class, 'index'])->name('comments.index');
+                Route::patch('comments/{comment}', [\App\Http\Controllers\Admin\Faq\CommentController::class, 'update'])->name('comments.update');
+                Route::post('comments/{comment}/reply', [\App\Http\Controllers\Admin\Faq\CommentController::class, 'reply'])->name('comments.reply');
                 Route::delete('comments/{comment}', [\App\Http\Controllers\Admin\Faq\CommentController::class, 'destroy'])->name('comments.destroy');
                 Route::post('comments/bulk-destroy', [\App\Http\Controllers\Admin\Faq\CommentController::class, 'bulkDestroy'])->name('comments.bulk_destroy');
+                Route::patch('comments/{comment}/toggle-hidden', [\App\Http\Controllers\Admin\Faq\CommentController::class, 'toggleHidden'])->name('comments.toggle_hidden');
                 // Settings
                 Route::get('settings', [\App\Http\Controllers\Admin\Faq\SettingController::class, 'index'])->name('settings.index');
                 Route::post('settings', [\App\Http\Controllers\Admin\Faq\SettingController::class, 'update'])->name('settings.update');

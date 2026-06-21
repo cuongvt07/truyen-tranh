@@ -1,6 +1,6 @@
 @extends('layout.novelight')
 
-@section('template_title', ($article->{'title_' . app()->getLocale()} ?? $article->title_en) . ' - FAQ')
+@section('template_title', ($article->{'title_' . app()->getLocale()} ?? $article->title_en) . ' - ' . __('messages.nav.faq'))
 
 @section('page_css')
 <link rel="stylesheet" href="{{ asset('static/forum/css/forum.css') }}">
@@ -41,7 +41,7 @@
         <div class="faq-main">
             <article class="block forum-single">
                 <div class="breadcumps">
-                    <a href="{{ route('pages.faq') }}">FAQ</a>
+                    <a href="{{ route('pages.faq') }}">{{ __('messages.nav.faq') }}</a>
                     <span>&gt;</span>
                     <a href="{{ route('pages.faq.topic', $category->slug) }}">{{ $category->{"title_$locale"} ?? $category->title_en }}</a>
                     <span>&gt;</span>

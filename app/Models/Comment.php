@@ -11,7 +11,9 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'article_id', 'parent_id', 'content', 'score'];
+    protected $fillable = ['user_id', 'article_id', 'parent_id', 'content', 'score', 'is_hidden'];
+
+    protected $casts = ['is_hidden' => 'boolean'];
 
     protected function getCreatedAtTextAttribute()
     {

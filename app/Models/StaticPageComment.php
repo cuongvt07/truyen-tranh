@@ -9,12 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class StaticPageComment extends Model
 {
     protected $fillable = [
-        'static_page_id',
-        'user_id',
-        'parent_id',
-        'content',
-        'score',
+        'static_page_id', 'user_id', 'parent_id', 'content', 'score', 'is_hidden',
     ];
+
+    protected $casts = ['is_hidden' => 'boolean'];
 
     public function page(): BelongsTo
     {

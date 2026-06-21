@@ -5,7 +5,7 @@
     $categoryTitle = $category->{"title_$locale"} ?? $category->title_en;
 @endphp
 
-@section('template_title', $categoryTitle . ' - FAQ')
+@section('template_title', $categoryTitle . ' - ' . __('messages.nav.faq'))
 
 @section('page_css')
 <link rel="stylesheet" href="{{ asset('static/forum/css/forum.css') }}">
@@ -48,7 +48,7 @@
         {{-- Main content --}}
         <div class="block faq-main">
             <div class="breadcumps">
-                <a href="{{ route('pages.faq') }}">FAQ</a>
+                <a href="{{ route('pages.faq') }}">{{ __('messages.nav.faq') }}</a>
                 <span>&gt;</span>
                 <span>{{ $categoryTitle }}</span>
             </div>

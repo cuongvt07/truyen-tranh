@@ -1,6 +1,6 @@
 @extends('layout.novelight')
 
-@section('template_title', 'FAQ - ' . config('app.name'))
+@section('template_title', __('messages.nav.faq') . ' - ' . config('app.name'))
 
 @section('page_css')
 <link rel="stylesheet" href="{{ asset('static/forum/css/forum.css') }}">
@@ -20,13 +20,16 @@
                 $title = $category->{"title_$locale"} ?? $category->title_en;
                 $description = $category->{"description_$locale"} ?? $category->description_en ?? '';
                 $count = $category->articles_count ?? 0;
+                $iconClass = trim($category->icon ?: 'fa-question-circle');
+                $iconClass = $iconClass === 'fa-circle-question' ? 'fa-question-circle' : $iconClass;
+                if (!preg_match('/(^|\s)(fa|fas|far|fab|fa-solid|fa-regular|fa-brands)(\s|$)/', $iconClass)) {
+                    $iconClass = 'fa ' . $iconClass;
+                }
             @endphp
             <a href="{{ route('pages.faq.topic', $category->slug) }}" class="block faq-theme-card">
-                @if($category->icon)
-                    <div class="faq-theme-card__icon">
-                        <i class="{{ $category->icon }}"></i>
-                    </div>
-                @endif
+                <div class="faq-theme-card__icon">
+                    <i class="{{ $iconClass }}"></i>
+                </div>
                 <h2 class="faq-theme-card__title">{{ $title }}</h2>
                 @if($description)
                     <p class="faq-theme-card__description">{{ $description }}</p>

@@ -280,7 +280,12 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('admin.comments.index') }}" class="nav-link {{ set_active('admin.comments.*') }}">
-                                        <i class="nav-icon fa-solid fa-comments"></i><p>Bình luận</p>
+                                        <i class="nav-icon fa-solid fa-comments"></i><p>{{ __('messages.admin_comments.story_title') }}</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.static_page_comments.index') }}" class="nav-link {{ set_active('admin.static_page_comments.*') }}">
+                                        <i class="nav-icon fa-solid fa-message"></i><p>{{ __('messages.admin_comments.static_title') }}</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -391,7 +396,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('admin.forum.comments.index') }}" class="nav-link {{ set_active('admin.forum.comments.*') }}">
-                                        <i class="nav-icon fa-solid fa-comment"></i><p>Comments</p>
+                                        <i class="nav-icon fa-solid fa-comment"></i><p>{{ __('messages.admin_comments.forum_title') }}</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -424,7 +429,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('admin.faq.comments.index') }}" class="nav-link {{ set_active('admin.faq.comments.*') }}">
-                                        <i class="nav-icon fa-solid fa-comment"></i><p>Comments</p>
+                                        <i class="nav-icon fa-solid fa-comment"></i><p>{{ __('messages.admin_comments.faq_title') }}</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">

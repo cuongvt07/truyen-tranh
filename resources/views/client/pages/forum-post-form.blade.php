@@ -1,6 +1,6 @@
 @extends('layout.novelight')
 
-@section('template_title', $post ? (app()->getLocale() === 'vi' ? 'Chỉnh sửa bài viết' : 'Edit Post') : (app()->getLocale() === 'vi' ? 'Đăng bài viết mới' : 'New Post'))
+@section('template_title', $post ? __('messages.forum.edit_post') : __('messages.forum.new_post_title'))
 
 @section('page_css')
 <link rel="stylesheet" href="{{ asset('static/forum/css/forum.css') }}">
@@ -9,18 +9,16 @@
 @section('content')
 <div class="container">
     <div class="breadcumps">
-        <a href="{{ route('pages.forum') }}">Forum</a>
+        <a href="{{ route('pages.forum') }}">{{ __('messages.nav.forum') }}</a>
         <span>&gt;</span>
         <a href="{{ route('pages.forum.category', $category->slug) }}">{{ $category->localizedTitle() }}</a>
         <span>&gt;</span>
-        <span>{{ $post ? (app()->getLocale() === 'vi' ? 'Chỉnh sửa' : 'Edit') : (app()->getLocale() === 'vi' ? 'Bài viết mới' : 'New Post') }}</span>
+        <span>{{ $post ? __('messages.forum.edit_short') : __('messages.forum.new_post_short') }}</span>
     </div>
 
     <div class="block forum-post-form">
         <h1 class="page-title">
-            {{ $post
-                ? (app()->getLocale() === 'vi' ? 'Chỉnh sửa bài viết' : 'Edit Post')
-                : (app()->getLocale() === 'vi' ? 'Đăng bài viết mới' : 'New Post') }}
+            {{ $post ? __('messages.forum.edit_post') : __('messages.forum.new_post_title') }}
         </h1>
 
         @if($errors->any())
@@ -44,7 +42,7 @@
             @if($post) @method('PATCH') @endif
 
             <div class="form-group">
-                <label>{{ app()->getLocale() === 'vi' ? 'Tiêu đề' : 'Title' }}</label>
+                <label>{{ __('messages.forum.title') }}</label>
                 <input
                     type="text"
                     name="title"
@@ -52,38 +50,36 @@
                     required
                     maxlength="255"
                     value="{{ old('title', $post ? $post->localizedTitle() : '') }}"
-                    placeholder="{{ app()->getLocale() === 'vi' ? 'Nhập tiêu đề bài viết...' : 'Enter post title...' }}"
+                    placeholder="{{ __('messages.forum.title_placeholder') }}"
                 >
             </div>
 
             <div class="form-group">
-                <label>{{ app()->getLocale() === 'vi' ? 'Nội dung' : 'Content' }}</label>
+                <label>{{ __('messages.forum.content') }}</label>
                 <textarea
                     name="content"
                     class="form-control forum-textarea"
                     required
                     rows="14"
-                    placeholder="{{ app()->getLocale() === 'vi' ? 'Viết nội dung bài viết...' : 'Write your post content...' }}"
+                    placeholder="{{ __('messages.forum.content_placeholder') }}"
                 >{{ old('content', $post ? $post->localizedContent() : '') }}</textarea>
             </div>
 
             <div class="forum-form-footer">
                 <button type="submit" class="btn btn-primary">
                     <i class="fa fa-paper-plane"></i>
-                    {{ $post
-                        ? (app()->getLocale() === 'vi' ? 'Cập nhật' : 'Update')
-                        : (app()->getLocale() === 'vi' ? 'Gửi bài' : 'Submit Post') }}
+                    {{ $post ? __('messages.forum.update') : __('messages.forum.submit_post') }}
                 </button>
                 <a href="{{ route('pages.forum.category', $category->slug) }}" class="btn btn-secondary">
-                    {{ app()->getLocale() === 'vi' ? 'Huỷ' : 'Cancel' }}
+                    {{ __('messages.forum.cancel') }}
                 </a>
                 @if($post)
                     <form method="POST" action="{{ route('forum.posts.destroy', [$category->slug, $post->slug]) }}" class="d-inline"
-                          onsubmit="return confirm('{{ app()->getLocale() === 'vi' ? 'Xoá bài viết này?' : 'Delete this post?' }}')">
+                          onsubmit="return confirm(@js(__('messages.forum.delete_post_confirm')))">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger ml-2">
-                            <i class="fa fa-trash"></i> {{ app()->getLocale() === 'vi' ? 'Xoá bài' : 'Delete' }}
+                            <i class="fa fa-trash"></i> {{ __('messages.forum.delete_post') }}
                         </button>
                     </form>
                 @endif
@@ -92,16 +88,12 @@
             @if(!$post)
                 <p class="meta-color mt-2" style="font-size:0.85em">
                     <i class="fa fa-info-circle"></i>
-                    {{ app()->getLocale() === 'vi'
-                        ? 'Bài viết sẽ được hiển thị sau khi admin duyệt.'
-                        : 'Your post will be visible after admin approval.' }}
+                    {{ __('messages.forum.create_pending_notice') }}
                 </p>
             @else
                 <p class="meta-color mt-2" style="font-size:0.85em">
                     <i class="fa fa-info-circle"></i>
-                    {{ app()->getLocale() === 'vi'
-                        ? 'Sau khi chỉnh sửa, bài viết sẽ chờ duyệt lại.'
-                        : 'After editing, the post will require re-approval.' }}
+                    {{ __('messages.forum.edit_pending_notice') }}
                 </p>
             @endif
         </form>

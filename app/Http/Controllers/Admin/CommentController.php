@@ -8,6 +8,7 @@ use App\Models\Comment;
 use App\Models\CommentReport;
 use App\Scopes\ApprovedArticleScope;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -67,16 +68,69 @@ class CommentController extends Controller
 
     public function destroy(Comment $comment)
     {
+        if ($comment->parent_id) {
+            Comment::whereKey($comment->parent_id)
+                ->where('replies_count', '>', 0)
+                ->decrement('replies_count');
+        }
+
         $comment->delete();
         return back()->with('success', __('messages.flash.comment.deleted'));
+    }
+
+    public function update(Request $request, Comment $comment)
+    {
+        $comment->update($this->validatedContent($request));
+
+        return back()->with('success', __('messages.flash.comment.updated'));
+    }
+
+    public function reply(Request $request, Comment $comment)
+    {
+        $root = $comment->parent ?: $comment;
+        $data = $this->validatedContent($request);
+
+        Comment::create([
+            'user_id' => Auth::id(),
+            'article_id' => $root->article_id,
+            'parent_id' => $root->id,
+            'content' => $data['content'],
+        ]);
+        $root->increment('replies_count');
+
+        return back()->with('success', __('messages.flash.comment.replied'));
+    }
+
+    public function toggleHidden(Comment $comment)
+    {
+        $comment->update(['is_hidden' => !$comment->is_hidden]);
+
+        return back()->with(
+            'success',
+            __('messages.flash.comment.' . ($comment->is_hidden ? 'hidden' : 'shown'))
+        );
     }
 
     public function bulkDestroy(Request $request)
     {
         $ids = array_filter((array) $request->input('ids', []));
         if (!empty($ids)) {
-            Comment::whereIn('id', $ids)->delete();
+            $comments = Comment::whereIn('id', $ids)->get(['id', 'parent_id']);
+            $parentIds = $comments->pluck('parent_id')->filter()->unique();
+            Comment::whereIn('id', $comments->pluck('id'))->delete();
+            Comment::whereIn('id', $parentIds)->get()->each(
+                fn (Comment $parent) => $parent->forceFill([
+                    'replies_count' => $parent->replies()->count(),
+                ])->save()
+            );
         }
         return back()->with('success', __('messages.flash.comment.bulk_deleted', ['count' => count($ids)]));
+    }
+
+    private function validatedContent(Request $request): array
+    {
+        return $request->validate([
+            'content' => ['required', 'string', 'max:5000'],
+        ]);
     }
 }
