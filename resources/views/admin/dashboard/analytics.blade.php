@@ -12,6 +12,45 @@
         line-height: 1.35;
         max-height: 2.7em;
     }
+    .need-action {
+        display: flex;
+        align-items: center;
+        min-height: 76px;
+        padding: 10px 14px;
+        color: inherit;
+        border-right: 1px solid #dee2e6;
+        text-decoration: none !important;
+    }
+    .need-action:hover { background: #f8f9fa; color: inherit; }
+    .need-action-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 42px;
+        width: 42px;
+        height: 42px;
+        margin-right: 11px;
+        border-radius: 4px;
+        color: #fff;
+    }
+    .need-action-label {
+        display: block;
+        margin-bottom: 3px;
+        color: #6c757d;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+    .need-action-count { font-size: 20px; font-weight: 700; line-height: 1.1; }
+    .need-action-note { display: block; margin-top: 3px; color: #6c757d; font-size: 11px; }
+    @media (min-width: 768px) {
+        .need-action-grid > div:last-child .need-action { border-right: 0; }
+    }
+    @media (max-width: 767.98px) {
+        .need-action-grid > div:nth-child(2n) .need-action { border-right: 0; }
+        .need-action-grid > div:nth-child(-n+2) .need-action { border-bottom: 1px solid #dee2e6; }
+    }
 </style>
 @endpush
 
@@ -79,69 +118,45 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-chart-line mr-1"></i> Xu hướng mua credit 30 ngày</h3>
-                </div>
-                <div class="card-body">
-                    <canvas id="purchaseTrendChart" height="110"></canvas>
-                </div>
+    @php
+        $needActions = [
+            ['url' => route('admin.articles.index', ['status' => 0]), 'icon' => 'fa-hourglass-half', 'color' => 'bg-warning', 'label' => 'Truyện chờ duyệt', 'open' => $pendingArticles, 'done' => $approvedArticles, 'note' => 'Chưa xử lý / Đã duyệt'],
+            ['url' => route('admin.comment_reports.index'), 'icon' => 'fa-flag', 'color' => 'bg-danger', 'label' => 'Báo cáo bình luận', 'open' => $openReports, 'done' => $resolvedReports, 'note' => 'Chưa xử lý / Đã xử lý'],
+            ['url' => route('admin.chapter_reports.index'), 'icon' => 'fa-exclamation-triangle', 'color' => 'bg-warning', 'label' => 'Báo lỗi chương', 'open' => $openChapterReports, 'done' => $resolvedChapterReports, 'note' => 'Chưa xử lý / Đã xử lý'],
+            ['url' => route('admin.articles.index', ['status' => 2]), 'icon' => 'fa-eye-slash', 'color' => 'bg-secondary', 'label' => 'Truyện đang ẩn', 'open' => $hiddenArticles, 'done' => $approvedArticles, 'note' => 'Đang ẩn / Đang hiện'],
+        ];
+    @endphp
+
+    <div class="card mb-3">
+        <div class="card-header py-2">
+            <h3 class="card-title"><i class="fas fa-bell text-danger mr-1"></i> Cần xử lý</h3>
+        </div>
+        <div class="card-body p-0">
+            <div class="row no-gutters need-action-grid">
+                @foreach($needActions as $action)
+                    <div class="col-md-3 col-6">
+                        <a href="{{ $action['url'] }}" class="need-action">
+                            <span class="need-action-icon {{ $action['color'] }}"><i class="fas {{ $action['icon'] }}"></i></span>
+                            <span>
+                                <span class="need-action-label">{{ $action['label'] }}</span>
+                                <span class="need-action-count text-danger">{{ number_format($action['open']) }}</span>
+                                <span class="text-muted mx-1">/</span>
+                                <span class="need-action-count text-success">{{ number_format($action['done']) }}</span>
+                                <span class="need-action-note">{{ $action['note'] }}</span>
+                            </span>
+                        </a>
+                    </div>
+                @endforeach
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-bell text-danger mr-1"></i> Cần xử lý</h3>
-                </div>
-                <div class="card-body p-0">
-                    <a href="{{ route('admin.articles.index', ['status' => 0]) }}" class="info-box mb-0">
-                        <span class="info-box-icon bg-warning"><i class="fas fa-hourglass-half"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Truyện chờ duyệt</span>
-                            <span class="info-box-number">
-                                <span class="text-danger">{{ number_format($pendingArticles) }}</span>
-                                <small class="text-muted ml-2">/ <span class="text-success">{{ number_format($approvedArticles) }}</span></small>
-                            </span>
-                            <span class="progress-description"><small class="text-muted">Chưa xử lý / Đã duyệt</small></span>
-                        </div>
-                    </a>
-                    <a href="{{ route('admin.comment_reports.index') }}" class="info-box mb-0">
-                        <span class="info-box-icon bg-danger"><i class="fas fa-flag"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Báo cáo bình luận</span>
-                            <span class="info-box-number">
-                                <span class="text-danger">{{ number_format($openReports) }}</span>
-                                <small class="text-muted ml-2">/ <span class="text-success">{{ number_format($resolvedReports) }}</span></small>
-                            </span>
-                            <span class="progress-description"><small class="text-muted">Chưa xử lý / Đã xử lý</small></span>
-                        </div>
-                    </a>
-                    <a href="{{ route('admin.chapter_reports.index') }}" class="info-box mb-0">
-                        <span class="info-box-icon bg-warning"><i class="fas fa-exclamation-triangle"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Báo lỗi chương</span>
-                            <span class="info-box-number">
-                                <span class="text-danger">{{ number_format($openChapterReports) }}</span>
-                                <small class="text-muted ml-2">/ <span class="text-success">{{ number_format($resolvedChapterReports) }}</span></small>
-                            </span>
-                            <span class="progress-description"><small class="text-muted">Chưa xử lý / Đã xử lý</small></span>
-                        </div>
-                    </a>
-                    <a href="{{ route('admin.articles.index', ['status' => 2]) }}" class="info-box mb-0">
-                        <span class="info-box-icon bg-secondary"><i class="fas fa-eye-slash"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Truyện đang ẩn</span>
-                            <span class="info-box-number">
-                                <span class="text-danger">{{ number_format($hiddenArticles) }}</span>
-                                <small class="text-muted ml-2">/ <span class="text-success">{{ number_format($approvedArticles) }}</span></small>
-                            </span>
-                            <span class="progress-description"><small class="text-muted">Đang ẩn / Đang hiện</small></span>
-                        </div>
-                    </a>
-                </div>
-            </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-chart-line mr-1"></i> Xu hướng mua credit 30 ngày</h3>
+        </div>
+        <div class="card-body">
+            <canvas id="purchaseTrendChart" height="110"></canvas>
         </div>
     </div>
 
