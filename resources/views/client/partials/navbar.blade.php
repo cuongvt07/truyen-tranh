@@ -3,7 +3,7 @@
     <ul class="control nav navbar-nav">
         <li class="dropdown">
             <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
-                <span class="glyphicon glyphicon-list"></span> Danh mục <span class="caret"></span>
+                <span class="glyphicon glyphicon-list"></span> {{ __('messages.nav.category') }} <span class="caret"></span>
             </a>
             <ul class="dropdown-menu" role="menu">
                 @foreach ($links as $link)
@@ -17,7 +17,7 @@
             @endphp
 
             <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
-                <span class="glyphicon glyphicon-list"></span> Thể loại <span class="caret"></span>
+                <span class="glyphicon glyphicon-list"></span> {{ __('messages.common.genres') }} <span class="caret"></span>
             </a>
             <div class="dropdown-menu multi-column">
                 <div class="row">
@@ -37,13 +37,13 @@
         <li class="dropdown">
             @if (!$isUserLoggedIn)
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-user"></span> Tài khoản <span class="caret"></span>
+                    <span class="glyphicon glyphicon-user"></span> {{ __('messages.nav.account') }} <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu" role="menu">
 
-                    <li><a href="{{ route('login') }}" title="Đăng nhập">Đăng nhập</a></li>
-                    <li><a href="{{ route('register') }}" title="Đăng ký">Đăng ký</a></li>
-                    <li><a href="{{ route('client.paypoints') }}" title="Nạp tiền">Nạp tiền</a></li>
+                    <li><a href="{{ route('login') }}" title="{{ __('messages.auth.login') }}">{{ __('messages.auth.login') }}</a></li>
+                    <li><a href="{{ route('register') }}" title="{{ __('messages.auth.register') }}">{{ __('messages.auth.register') }}</a></li>
+                    <li><a href="{{ route('client.paypoints') }}" title="{{ __('messages.nav.topup') }}">{{ __('messages.nav.topup') }}</a></li>
                 </ul>
             @else
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
@@ -54,51 +54,50 @@
                 <ul class="dropdown-menu" role="menu">
                     @if ($currentUser->is_admin)
                         <li>
-                            <a href="{{ route('admin.dashboard') }}" title="Admin Panel"><i class="fa fa-cog"
+                            <a href="{{ route('admin.dashboard') }}" title="{{ __('messages.nav.admin_panel') }}"><i class="fa fa-cog"
                                                                                             aria-hidden="true"></i>
-                                Admin
-                                Panel</a>
+                                {{ __('messages.nav.admin_panel') }}</a>
                         </li>
                     @endif
                     @if($currentUser->is_poster || $currentUser->is_admin)
-                        <li><a href="{{ route('admin.articles.create') }}" title="Thêm bài viết"><i
+                        <li><a href="{{ route('admin.articles.create') }}" title="{{ __('messages.nav.add_article') }}"><i
                                     class="fa fa-plus"
                                     aria-hidden="true"></i>
-                                Thêm bài viêt</a>
+                                {{ __('messages.nav.add_article') }}</a>
                         </li>
                     @endif
                     @if($currentUser->is_admin)
                         <li>
-                            <a href="{{ route('admin.authors.create') }}" title="Thêm tác giả"><i class="fa fa-plus"
+                            <a href="{{ route('admin.authors.create') }}" title="{{ __('messages.nav.add_author') }}"><i class="fa fa-plus"
                                                                                                   aria-hidden="true"></i>
-                                Thêm tác giả</a>
+                                {{ __('messages.nav.add_author') }}</a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.genres.create') }}" title="Thêm thể loại"><i class="fa fa-plus"
+                            <a href="{{ route('admin.genres.create') }}" title="{{ __('messages.nav.add_genre') }}"><i class="fa fa-plus"
                                                                                                   aria-hidden="true"></i>
-                                Thêm thể loại</a>
+                                {{ __('messages.nav.add_genre') }}</a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.menus.create') }}" title="Thêm link"><i class="fa fa-plus"
+                            <a href="{{ route('admin.menus.create') }}" title="{{ __('messages.nav.add_link') }}"><i class="fa fa-plus"
                                                                                              aria-hidden="true"></i>
-                                Thêm link</a>
+                                {{ __('messages.nav.add_link') }}</a>
                         </li>
                     @endif
-                    <li><a href="{{ route('users.show', $currentUser->id) }}" title="Thông tin tài khoản"><i
+                    <li><a href="{{ route('users.show', $currentUser->id) }}" title="{{ __('messages.nav.account_info') }}"><i
                                 class="fa fa-solid fa-circle-info"></i>
-                            Thông tin tài khoản</a></li>
-                    <li><a href="{{ route('client.paypoints') }}" title="Nạp tiền & Mua Vip"><i
+                            {{ __('messages.nav.account_info') }}</a></li>
+                    <li><a href="{{ route('client.paypoints') }}" title="{{ __('messages.pay.topup_and_buy_vip') }}"><i
                                 class="fa fa-solid fa-credit-card"></i>
-                            Nạp tiền & Mua Vip</a></li>
+                            {{ __('messages.pay.topup_and_buy_vip') }}</a></li>
                     <li><a href="{{ route('users.show_bookmarks', $currentUser->id) }}" title="Bookmark"><i
                                 class="fa fa-solid fa-bookmark"></i> Bookmark</a></li>
                     <li><a href="{{ route('users.show_posted_articles', $currentUser->id) }}"
-                           title="Bài viết đã đăng"><i
-                                class="fa fa-list"></i> Bài viết đã đăng</a></li>
+                           title="{{ __('messages.nav.posted_articles') }}"><i
+                                class="fa fa-list"></i> {{ __('messages.nav.posted_articles') }}</a></li>
                     <li>
                         <form action="{{ route('logout') }}" method="post" id="logout">
                             @csrf
-                            <button type="submit"><i class="fa fa-sign-out"></i> Đăng xuất</button>
+                            <button type="submit"><i class="fa fa-sign-out"></i> {{ __('messages.auth.logout') }}</button>
                         </form>
                     </li>
                 </ul>
@@ -108,7 +107,7 @@
             <li>
             <a href="{{ route('client.paypoints') }}">
                 <i class="fa fa-database"></i>
-                Số xu: <strong>{{ number_format($currentUser->points) }}</strong>
+                {{ __('messages.nav.coin_balance') }} <strong>{{ number_format($currentUser->points) }}</strong>
             </a>
             </li>
         @endif
@@ -116,7 +115,7 @@
             <li>
                 <a href="javascript:void(0)">
                     <i class="fa fa-clock"></i>
-                    Gói VIP: 
+                    {{ __('messages.nav.vip_package') }}
                     <strong id="package-countdown"></strong>
                 </a>
             </li>
@@ -132,7 +131,7 @@
                         countdownElement.textContent = `${hours}h ${minutes}m ${seconds}s`;
                         remainingTime--;
                     } else {
-                        countdownElement.textContent = 'Hết hạn';
+                        countdownElement.textContent = @json(__('messages.nav.expired'));
                     }
                 }
 
@@ -144,14 +143,14 @@
 
     <form class="navbar-form navbar-right" role="search" action="{{ route('home.search') }}">
         @if($isUserLoggedIn && !$currentUser->hasVerifiedEmail())
-            <a href="{{ route('verification.notice') }}" class="btn btn-danger">Bấm vào đây để xác thực email</a>
+            <a href="{{ route('verification.notice') }}" class="btn btn-danger">{{ __('messages.nav.verify_email_cta') }}</a>
         @endif
         <div class="input-group search-holder">
-            <input aria-label="Keyword search" class="form-control" type="search" name="keyword"
-                   placeholder="Tìm kiếm theo tên truyện" value="" itemprop="query-input" required
+            <input aria-label="{{ __('messages.nav.keyword_search') }}" class="form-control" type="search" name="keyword"
+                   placeholder="{{ __('messages.nav.search_placeholder') }}" value="" itemprop="query-input" required
                    style="border-radius: 5px 0 0 5px; height: 40px;"/>
             <div class="input-group-btn">
-                <button class="btn btn-default" type="submit" aria-label="Search"
+                <button class="btn btn-default" type="submit" aria-label="{{ __('messages.nav.search') }}"
                         style="border-radius: 0 5px 5px 0; height: 40px; background: #e7e7e7;">
                     <span class="glyphicon glyphicon-search"></span>
                 </button>

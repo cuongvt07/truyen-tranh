@@ -2,7 +2,7 @@
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Show Menu</span><span class="icon-bar"></span><span class="icon-bar"></span><span
+                <span class="sr-only">{{ __('messages.layout.show_menu') }}</span><span class="icon-bar"></span><span class="icon-bar"></span><span
                     class="icon-bar"></span>
             </button>
             @php $siteName = setting('site_name') ?: config('app.name', 'Laravel'); @endphp
@@ -26,9 +26,9 @@
                     <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                         <a href="/"
                            accesskey="1"><span class="glyphicon glyphicon-home"></span></a><a href="/"
-                                                                                              title="Home"
+                                                                                              title="{{ __('messages.nav.home') }}"
                                                                                               itemprop="item"><span
-                                itemprop="name">Trang chủ</span></a>
+                                itemprop="name">{{ __('messages.nav.home') }}</span></a>
                         <meta itemprop="position" content="1"/>
                     </li>
                 @endif

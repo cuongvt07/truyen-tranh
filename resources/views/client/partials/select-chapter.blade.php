@@ -7,11 +7,11 @@
     @if ($previousChapter)
         <a class="btn btn-success btn-chapter-nav" id="prev_chap"
            href="{{ route('articles.chapters.show', [$article, $previousChapter->number]) }}">
-            <span class="glyphicon glyphicon-chevron-left"></span> Trước
+            <span class="glyphicon glyphicon-chevron-left"></span> {{ __('messages.chapter.previous_chapter') }}
         </a>
     @else
         <a class="btn btn-success btn-chapter-nav disabled" href="javascript:void(0)">
-            <span class="glyphicon glyphicon-chevron-left"></span> Trước
+            <span class="glyphicon glyphicon-chevron-left"></span> {{ __('messages.chapter.previous_chapter') }}
         </a>
     @endif
 
@@ -31,11 +31,11 @@
         <a class="btn btn-success btn-chapter-nav" id="next_chap"
            href="{{ route('articles.chapters.show', [$article, $nextChapter->number]) }}"
            data-affiliate-link="{{ $redirectAffiliateLink ?? '' }}">
-            Tiếp <span class="glyphicon glyphicon-chevron-right"></span>
+            {{ __('messages.chapter.next_chapter') }} <span class="glyphicon glyphicon-chevron-right"></span>
         </a>
     @else
         <a class="btn btn-success btn-chapter-nav disabled" href="javascript:void(0)">
-            Tiếp <span class="glyphicon glyphicon-chevron-right"></span>
+            {{ __('messages.chapter.next_chapter') }} <span class="glyphicon glyphicon-chevron-right"></span>
         </a>
     @endif
 </div>

@@ -7,24 +7,24 @@
     <title>
         @if (trim($__env->yieldContent('template_title')))
             @yield('template_title') |
-        @endif {{ config('app.name', 'Thích truyện') }}
+        @endif {{ config('app.name', __('messages.layout.default_site_name')) }}
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=yes">
-    <meta name="description" content="Đọc truyện online miễn phí, truyện full, truyện hay mới nhất: ngôn tình, tiên hiệp, kiếm hiệp, đam mỹ. Cập nhật nhanh, giao diện thân thiện trên mọi thiết bị.">
-    <meta name="keywords" content="đọc truyện, truyện online, truyện full, ngôn tình, tiên hiệp, kiếm hiệp, truyện hay, truyện miễn phí">
+    <meta name="description" content="{{ __('messages.layout.default_meta_description') }}">
+    <meta name="keywords" content="{{ __('messages.layout.default_keywords') }}">
     <meta name="robots" content="index, follow">
     <meta name="google-site-verification" content="your-google-verification-code"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
     <meta name="theme-color" content="#f8f9fa">
-    <meta property="og:title" content="@yield('og_title', config('app.name', 'Thích truyện'))"/>
-    <meta property="og:description" content="@yield('og_description', 'Đọc truyện online miễn phí, truyện full, truyện hay nhất.')"/>
+    <meta property="og:title" content="@yield('og_title', config('app.name', __('messages.layout.default_site_name')))"/>
+    <meta property="og:description" content="@yield('og_description', __('messages.layout.default_meta_description'))"/>
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="@yield('og_url', request()->url())"/>
     <meta property="og:image" content="{{ asset('storage/' . setting('logo_file')) }}"/>
-    <meta property="og:site_name" content="{{ config('app.name', 'Thích truyện') }}"/>
+    <meta property="og:site_name" content="{{ config('app.name', __('messages.layout.default_site_name')) }}"/>
     <meta name="twitter:card" content="summary_large_image"/>
-    <meta name="twitter:title" content="@yield('twitter_title', config('app.name', 'Thích truyện'))"/>
-    <meta name="twitter:description" content="@yield('twitter_description', 'Đọc truyện online miễn phí, truyện full, truyện hay nhất.')"/>
+    <meta name="twitter:title" content="@yield('twitter_title', config('app.name', __('messages.layout.default_site_name')))"/>
+    <meta name="twitter:description" content="@yield('twitter_description', __('messages.layout.default_meta_description'))"/>
     <meta name="twitter:image" content="@yield('twitter_image', asset('images/default-share.jpg'))"/>
     <link rel="canonical" href="@yield('canonical_url', request()->url())"/>
     <link rel="icon" type="image/png" href="/favicon.png"/>
@@ -175,7 +175,7 @@
 
 <div id="affiliate-popup">
     <span class="close-btn" onclick="document.getElementById('affiliate-popup').style.display='none'">&times;</span>
-    <p>💡 Bạn quan tâm có thể xem liên kết sau:</p>
+    <p>💡 {{ __('messages.layout.affiliate_suggestion') }}</p>
     <a href="#" id="affiliate-link" target="_blank">
         <img id="affiliate-image" src="" alt="Affiliate">
     </a>

@@ -2,13 +2,13 @@
     <div class="container">
         <div class="xs col-sm-5">
             <strong>
-                Website Thích truyện - là trang đọc truyện chữ full hay online miễn phí với nhiều thể loại truyện tiểu thuyết ngôn tình có tình tiết lãng mạn ngọt ngào, đi kèm đam mỹ sắc đầy kịch tính và nóng bỏng cùng sự sủng, ngọt, hoàn ngược, HE. Các thể loại khác như Tiên Hiệp, Thám Hiểm, Quân Sự, Truyện Ma,...
-            </strong> - Web đọc truyện
+                {{ __('messages.footer.description', ['name' => config('app.name')]) }}
+            </strong> - {{ __('messages.footer.reading_site') }}
             <br />
         </div>
         <ul class="col-xs-12 col-sm-7 list-unstyled">
             <li class="text-right pull-right">
-                <a class="backtop" title="Back to top" href="#wrap" rel="nofollow" aria-label="Back to top">
+                <a class="backtop" title="{{ __('messages.footer.back_to_top') }}" href="#wrap" rel="nofollow" aria-label="{{ __('messages.footer.back_to_top') }}">
                     <span class="glyphicon glyphicon-upload"></span>
                 </a>
             </li>

@@ -69,7 +69,7 @@
                         <a href="{{ route('pages.faq.article', [$category->slug, $article->slug]) }}">
                             {{ $artTitle }}
                             @if($article->is_pinned)
-                                <i class="fa fa-thumbtack text-warning ml-1" title="Pinned"></i>
+                                <i class="fa fa-thumbtack text-warning ml-1" title="{{ __('messages.faq.pinned') }}"></i>
                             @endif
                         </a>
                         <span class="meta-color">
@@ -78,7 +78,7 @@
                     </li>
                 @empty
                     <li class="meta-color">
-                        {{ $locale === 'vi' ? 'Chưa có bài viết.' : 'No articles yet.' }}
+                        {{ __('messages.faq.empty_articles') }}
                     </li>
                 @endforelse
             </ul>

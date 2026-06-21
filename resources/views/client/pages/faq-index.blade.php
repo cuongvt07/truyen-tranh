@@ -25,7 +25,7 @@
                 <h2 class="faq-theme-card__title">{{ $category->localizedTitle() }}</h2>
                 <div class="meta-color faq-theme-card__meta">
                     <i class="fa fa-newspaper"></i>
-                    {{ $count }} {{ app()->getLocale() === 'vi' ? 'bài viết' : 'Articles' }}
+                    {{ __('messages.faq.articles_count', ['count' => $count]) }}
                 </div>
             </a>
         @endforeach

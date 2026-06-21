@@ -3,8 +3,8 @@
 <head>
     @php
         $seoSep   = seo_setting('title_separator', ' · ');
-        $seoSite  = seo_setting('site_name', config('app.name', 'Novel'));
-        $seoDesc  = trim($__env->yieldContent('meta_description')) ?: seo_setting('default_description', 'Đọc truyện online.');
+        $seoSite  = seo_setting('site_name', config('app.name', __('messages.layout.default_site_name')));
+        $seoDesc  = trim($__env->yieldContent('meta_description')) ?: seo_setting('default_description', __('messages.layout.default_meta_description'));
         $seoOg    = trim($__env->yieldContent('og_image')) ?: asset(ltrim(seo_setting('default_og_image', '/static/core/images/no_cover.webp'), '/'));
         $seoTitle = trim($__env->yieldContent('template_title'));
         $seoFullTitle = ($seoTitle ? $seoTitle . $seoSep : '') . $seoSite;
@@ -12,7 +12,7 @@
     @endphp
     <title>{{ $seoFullTitle }}</title>
     <meta name="description" content="{{ \Illuminate\Support\Str::limit(strip_tags($seoDesc), 160) }}">
-    <meta name="keywords" content="{{ seo_setting('default_keywords', 'light novel, web novel, đọc truyện') }}">
+    <meta name="keywords" content="{{ seo_setting('default_keywords', __('messages.layout.default_keywords')) }}">
     <meta name="robots" content="@yield('robots', 'index, follow')">
     <link rel="canonical" href="{{ $seoCanonical }}">
     <meta charset="utf-8">
@@ -190,7 +190,7 @@
                 {{-- Language switcher --}}
                 @if(config('locales.user_multilingual', true) && config('locales.switchable', true))
                     @php $curLocale = app()->getLocale(); $locales = config('locales.supported', []); @endphp
-                    <div class="header-btn header-lang tippy-lang" title="Language">
+                    <div class="header-btn header-lang tippy-lang" title="{{ __('messages.layout.language') }}">
                         @if(!empty($locales[$curLocale]['flag_code']))
                             <span class="flag-icon flag-icon-{{ $locales[$curLocale]['flag_code'] }}"></span>
                         @else

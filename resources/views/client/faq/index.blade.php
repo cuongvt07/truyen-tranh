@@ -10,7 +10,7 @@
 @section('content')
 <div class="container">
     <h1 class="page-title" style="text-align:center">
-        {{ app()->getLocale() === 'vi' ? 'Câu hỏi thường gặp' : 'Frequently Asked Questions' }}
+        {{ __('messages.faq.title') }}
     </h1>
 
     <div class="faq-theme-blocks">
@@ -33,13 +33,13 @@
                 @endif
                 <div class="meta-color faq-theme-card__meta">
                     <i class="fa fa-newspaper"></i>
-                    {{ $count }} {{ $locale === 'vi' ? 'bài viết' : 'Articles' }}
+                    {{ __('messages.faq.articles_count', ['count' => $count]) }}
                 </div>
             </a>
         @empty
             <div class="block text-center py-5">
                 <p class="meta-color">
-                    {{ app()->getLocale() === 'vi' ? 'Chưa có danh mục FAQ nào.' : 'No FAQ categories yet.' }}
+                    {{ __('messages.faq.empty_categories') }}
                 </p>
             </div>
         @endforelse
