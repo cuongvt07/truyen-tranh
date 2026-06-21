@@ -196,6 +196,7 @@ return array (
     'forum_title' => 'Forum comments',
     'faq_title' => 'FAQ comments',
     'static_title' => 'Page comments',
+    'schema_warning' => 'Comment storage is not ready. Run the latest database migrations to enable management actions.',
     'search_placeholder' => 'Search comment content...',
     'all_sources' => 'All sources',
     'total' => ':count comment|:count comments',

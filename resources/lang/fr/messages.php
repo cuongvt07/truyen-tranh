@@ -118,6 +118,7 @@ return array_replace_recursive($messages, [
         'forum_title' => 'Commentaires du forum',
         'faq_title' => 'Commentaires de la FAQ',
         'static_title' => 'Commentaires des pages',
+        'schema_warning' => 'Le stockage des commentaires n’est pas prêt. Exécutez les dernières migrations de base de données pour activer la gestion.',
         'search_placeholder' => 'Rechercher dans les commentaires...',
         'all_sources' => 'Toutes les sources',
         'total' => ':count commentaire|:count commentaires',

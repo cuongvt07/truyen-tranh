@@ -186,6 +186,7 @@ return [
         'forum_title' => 'Bình luận Forum',
         'faq_title' => 'Bình luận FAQ',
         'static_title' => 'Bình luận trang',
+        'schema_warning' => 'Kho dữ liệu bình luận chưa sẵn sàng. Hãy chạy migration mới nhất để bật các thao tác quản lý.',
         'search_placeholder' => 'Tìm nội dung bình luận...',
         'all_sources' => 'Tất cả nguồn',
         'total' => ':count bình luận|:count bình luận',

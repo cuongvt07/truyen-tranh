@@ -6,12 +6,27 @@ use App\Http\Controllers\Controller;
 use App\Models\StaticPage;
 use App\Models\StaticPageComment;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 
 class StaticPageCommentController extends Controller
 {
     public function index(Request $request)
     {
+        if (!Schema::hasTable('static_page_comments')) {
+            $comments = new LengthAwarePaginator([], 0, 30, 1, [
+                'path' => $request->url(),
+                'query' => $request->query(),
+            ]);
+            $pageTypes = collect();
+
+            return view('admin.static-page-comments.index', compact('comments', 'pageTypes'))
+                ->with('schemaWarning', true)
+                ->with('supportsHidden', false);
+        }
+
+        $supportsHidden = Schema::hasColumn('static_page_comments', 'is_hidden');
         $query = StaticPageComment::with([
             'user:id,name,username',
             'page:id,title_en,title_vi,slug,page_type',
@@ -33,7 +48,8 @@ class StaticPageCommentController extends Controller
             ->orderBy('page_type')
             ->pluck('page_type');
 
-        return view('admin.static-page-comments.index', compact('comments', 'pageTypes'));
+        return view('admin.static-page-comments.index', compact('comments', 'pageTypes', 'supportsHidden'))
+            ->with('schemaWarning', !$supportsHidden);
     }
 
     public function update(Request $request, StaticPageComment $comment)

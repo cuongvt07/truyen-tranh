@@ -40,7 +40,9 @@ class ArticleController extends Controller
             ->where('published_at', '>', now())
             ->orderBy('published_at')
             ->limit(2)
-            ->get();
+            ->get()
+            ->sortByDesc('number')
+            ->values();
         $comments = $article->getNewestCommentsPaginate();
         $displayChapterIds = $latestChapters->pluck('id')
             ->merge($chapters->pluck('id'))

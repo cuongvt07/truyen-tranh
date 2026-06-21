@@ -1,6 +1,7 @@
 @php
     $filterOptions = $filterOptions ?? collect();
     $filterName = $filterName ?? null;
+    $supportsHidden = $supportsHidden ?? true;
 @endphp
 
 <div class="content">
@@ -88,13 +89,13 @@
                                         default => optional($comment->page)->title_en,
                                     };
                                 @endphp
-                                <tr class="{{ $comment->is_hidden ? 'table-secondary' : '' }}">
+                                <tr class="{{ $supportsHidden && $comment->is_hidden ? 'table-secondary' : '' }}">
                                     <td><input type="checkbox" name="ids[]" value="{{ $comment->id }}" class="comment-check"></td>
                                     <td>
                                         @if($comment->parent_id)
                                             <span class="badge badge-light mr-1"><i class="fas fa-reply"></i> {{ __('messages.admin_comments.reply_badge') }}</span>
                                         @endif
-                                        @if($comment->is_hidden)
+                                        @if($supportsHidden && $comment->is_hidden)
                                             <span class="badge badge-secondary mr-1"><i class="fas fa-eye-slash"></i> {{ __('messages.admin_comments.hidden') }}</span>
                                         @endif
                                         {{ \Illuminate\Support\Str::limit($comment->content, 160) }}
@@ -115,11 +116,13 @@
                                                 title="{{ __('messages.common.edit') }}">
                                             <i class="fas fa-pen"></i>
                                         </button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary"
-                                                onclick="document.getElementById('toggle-comment-{{ $comment->id }}').submit()"
-                                                title="{{ $comment->is_hidden ? __('messages.admin_comments.show') : __('messages.admin_comments.hide') }}">
-                                            <i class="fas {{ $comment->is_hidden ? 'fa-eye' : 'fa-eye-slash' }}"></i>
-                                        </button>
+                                        @if($supportsHidden)
+                                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                    onclick="document.getElementById('toggle-comment-{{ $comment->id }}').submit()"
+                                                    title="{{ $comment->is_hidden ? __('messages.admin_comments.show') : __('messages.admin_comments.hide') }}">
+                                                <i class="fas {{ $comment->is_hidden ? 'fa-eye' : 'fa-eye-slash' }}"></i>
+                                            </button>
+                                        @endif
                                         <button type="button" class="btn btn-sm btn-outline-danger"
                                                 onclick="if(confirm(@js(__('messages.admin_comments.confirm_delete')))){document.getElementById('delete-comment-{{ $comment->id }}').submit()}"
                                                 title="{{ __('messages.common.delete') }}">
@@ -145,10 +148,12 @@
         </form>
 
         @foreach($comments as $comment)
-            <form id="toggle-comment-{{ $comment->id }}" method="POST"
-                  action="{{ route($routePrefix . '.toggle_hidden', $comment) }}" class="d-none">
-                @csrf @method('PATCH')
-            </form>
+            @if($supportsHidden)
+                <form id="toggle-comment-{{ $comment->id }}" method="POST"
+                      action="{{ route($routePrefix . '.toggle_hidden', $comment) }}" class="d-none">
+                    @csrf @method('PATCH')
+                </form>
+            @endif
             <form id="delete-comment-{{ $comment->id }}" method="POST"
                   action="{{ route($routePrefix . '.destroy', $comment) }}" class="d-none">
                 @csrf @method('DELETE')
