@@ -43,6 +43,7 @@
             'id'        => $i->id,
             'title'     => $i->title,
             'image_url' => $i->image_url,
+            'script_code' => $i->script_code,
             'link'      => $i->link,
             'sort_order'=> $i->sort_order,
             'is_active' => $i->is_active,
@@ -50,7 +51,7 @@
         ])->values()->all();
     }
     if (empty($itemRows)) {
-        $itemRows = [['id'=>null,'title'=>'','image_url'=>'','link'=>'','sort_order'=>0,'is_active'=>true,'image'=>null]];
+        $itemRows = [['id'=>null,'title'=>'','image_url'=>'','script_code'=>'','link'=>'','sort_order'=>0,'is_active'=>true,'image'=>null]];
     }
 
     $typeInfo = [
@@ -182,6 +183,14 @@
                                 hint="Upload hoặc dán URL ảnh ngoài (URL được ưu tiên)" />
                         </div>
                     </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label>Script quang cao</label>
+                            <textarea name="script_code" class="form-control" rows="5"
+                                      placeholder="<script>...</script> hoac iframe/html tu network quang cao">{{ old('script_code', $ad->script_code) }}</textarea>
+                            <small class="text-muted">Neu nhap script, frontend se render script thay vi anh banner.</small>
+                        </div>
+                    </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Link đích khi click</label>
@@ -285,6 +294,14 @@
                                 :current="$ad->image ?? null"
                                 urlName="image_url" :urlValue="old('image_url', $ad->image_url)"
                                 hint="Ảnh sẽ hiện giữa màn hình, nền mờ phía sau" />
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="form-group">
+                            <label>Script quang cao</label>
+                            <textarea name="script_code" class="form-control" rows="5"
+                                      placeholder="<script>...</script> hoac iframe/html tu network quang cao">{{ old('script_code', $ad->script_code) }}</textarea>
+                            <small class="text-muted">Neu nhap script, popup se render script thay vi anh.</small>
                         </div>
                     </div>
                     <div class="col-md-5">
@@ -403,6 +420,8 @@
                                    placeholder="Tiêu đề (tuỳ chọn)" value="{{ $item['title'] ?? '' }}">
                             <input type="text" name="items[{{ $index }}][link]" class="form-control form-control-sm"
                                    placeholder="Link đích https://..." value="{{ $item['link'] ?? '' }}">
+                            <textarea name="items[{{ $index }}][script_code]" class="form-control form-control-sm mt-1" rows="3"
+                                      placeholder="Script/iframe/html quang cao (tuy chon)">{{ $item['script_code'] ?? '' }}</textarea>
                         </div>
                         <div style="flex:0 0 80px">
                             <label class="small mb-1">Thứ tự</label>
@@ -498,6 +517,7 @@
             '<div style="flex:1">' +
                 '<input type="text" name="items['+idx+'][title]" class="form-control form-control-sm mb-1" placeholder="Tiêu đề (tuỳ chọn)">' +
                 '<input type="text" name="items['+idx+'][link]" class="form-control form-control-sm" placeholder="Link đích https://...">' +
+                '<textarea name="items['+idx+'][script_code]" class="form-control form-control-sm mt-1" rows="3" placeholder="Script/iframe/html quang cao (tuy chon)"></textarea>' +
             '</div>' +
             '<div style="flex:0 0 80px"><label class="small mb-1">Thứ tự</label>' +
                 '<input type="number" name="items['+idx+'][sort_order]" class="form-control form-control-sm" min="0" value="'+idx+'">' +
@@ -525,10 +545,15 @@
         });
     }
 
-    // ===== Prevent submitting disabled panel fields =====
-    // Fields inside inactive panels use name= — họ vẫn submit nhưng server-side chỉ dùng
-    // fields phù hợp với display_mode. Không cần disable.
-
+    // Fields in hidden panels share names like link/script_code, so disable them before submit.
+    var form = document.getElementById('adForm');
+    if (form) {
+        form.addEventListener('submit', function () {
+            document.querySelectorAll('.ad-panel:not(.active) input, .ad-panel:not(.active) select, .ad-panel:not(.active) textarea').forEach(function (el) {
+                el.disabled = true;
+            });
+        });
+    }
 })();
 </script>
 @endpush

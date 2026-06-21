@@ -345,11 +345,17 @@
             <p>{{ __('messages.chapter.ad_popup_message') }}</p>
         </div>
         <div class="ad-popup-body">
-            <a href="{{ $affiLink ?? '#' }}" target="_blank" id="adLink" class="ad-link">
+            @if(!empty($affiScript))
                 <div class="ad-banner">
-                    <img src="{{ $affiImage ?? '' }}" alt="{{ __('messages.chapter.advertisement') }}" style="max-width:100%">
+                    {!! $affiScript !!}
                 </div>
-            </a>
+            @else
+                <a href="{{ $affiLink ?? '#' }}" target="_blank" id="adLink" class="ad-link">
+                    <div class="ad-banner">
+                        <img src="{{ $affiImage ?? '' }}" alt="{{ __('messages.chapter.advertisement') }}" style="max-width:100%">
+                    </div>
+                </a>
+            @endif
         </div>
         <div class="ad-packages">
             @php $userPoints = auth()->user()->points ?? 0; @endphp

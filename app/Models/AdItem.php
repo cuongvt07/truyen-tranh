@@ -15,6 +15,7 @@ class AdItem extends Model
         'title',
         'image_path',
         'image_url',
+        'script_code',
         'link',
         'sort_order',
         'is_active',

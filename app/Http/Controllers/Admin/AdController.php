@@ -122,6 +122,7 @@ class AdController extends Controller
         // Fields tuỳ theo loại
         if (in_array($mode, ['banner', 'popup'])) {
             $rules['image_url']  = 'nullable|string|max:500';
+            $rules['script_code'] = 'nullable|string';
             $rules['image_file'] = 'nullable|image|max:32768';
             $rules['link']       = 'nullable|string|max:500';
         }
@@ -146,6 +147,7 @@ class AdController extends Controller
             $rules['items.*.id']       = 'nullable|integer|exists:ad_items,id';
             $rules['items.*.title']    = 'nullable|string|max:160';
             $rules['items.*.image_url']= 'nullable|string|max:500';
+            $rules['items.*.script_code']= 'nullable|string';
             $rules['items.*.image_file']= 'nullable|image|max:32768';
             $rules['items.*.link']     = 'nullable|string|max:500';
             $rules['items.*.sort_order']= 'nullable|integer|min:0|max:9999';
@@ -154,6 +156,7 @@ class AdController extends Controller
         }
 
         $v = $request->validate($rules);
+        $scriptCode = trim((string) ($v['script_code'] ?? ''));
 
         // Build payload theo từng loại
         $data = [
@@ -168,6 +171,7 @@ class AdController extends Controller
             // Nullify fields irrelevant to this mode
             'placement'          => null,
             'image_url'          => null,
+            'script_code'        => null,
             'link'               => null,
             'frequency'          => null,
             'frequency_value'    => null,
@@ -181,6 +185,7 @@ class AdController extends Controller
         match ($mode) {
             'banner' => array_merge($data, [
                 'image_url'  => $v['image_url'] ?? null,
+                'script_code'=> $scriptCode !== '' ? $scriptCode : null,
                 'link'       => $v['link'] ?? null,
                 'placement'  => $v['placement'] ?? 'top',
             ]),
@@ -193,6 +198,7 @@ class AdController extends Controller
             ]),
             'popup' => array_merge($data, [
                 'image_url'        => $v['image_url'] ?? null,
+                'script_code'      => $scriptCode !== '' ? $scriptCode : null,
                 'link'             => $v['link'] ?? null,
                 'delay_seconds'    => $v['delay_seconds'] ?? 5,
                 'frequency'        => $v['frequency'] ?? 'once_session',
@@ -210,6 +216,7 @@ class AdController extends Controller
         // match() returns value; assign properly per mode
         if ($mode === 'banner') {
             $data['image_url'] = $v['image_url'] ?? null;
+            $data['script_code'] = $scriptCode !== '' ? $scriptCode : null;
             $data['link']      = $v['link'] ?? null;
             $data['placement'] = $v['placement'] ?? 'top';
         } elseif ($mode === 'click_anywhere') {
@@ -220,6 +227,7 @@ class AdController extends Controller
             $data['cooldown_seconds'] = $v['cooldown_seconds'] ?? 0;
         } elseif ($mode === 'popup') {
             $data['image_url']        = $v['image_url'] ?? null;
+            $data['script_code']      = $scriptCode !== '' ? $scriptCode : null;
             $data['link']             = $v['link'] ?? null;
             $data['delay_seconds']    = $v['delay_seconds'] ?? 5;
             $data['frequency']        = $v['frequency'] ?? 'once_session';
@@ -261,16 +269,18 @@ class AdController extends Controller
 
             $title = trim((string) ($itemData['title'] ?? ''));
             $imageUrl = trim((string) ($itemData['image_url'] ?? ''));
+            $scriptCode = trim((string) ($itemData['script_code'] ?? ''));
             $link = trim((string) ($itemData['link'] ?? ''));
             $uploadedFile = $files[$index]['image_file'] ?? null;
 
-            if ($title === '' && $imageUrl === '' && $link === '' && ! $uploadedFile && ! $itemId) {
+            if ($title === '' && $imageUrl === '' && $scriptCode === '' && $link === '' && ! $uploadedFile && ! $itemId) {
                 continue;
             }
 
             $payload = [
                 'title' => $title !== '' ? $title : $ad->name,
                 'image_url' => $imageUrl !== '' ? $imageUrl : null,
+                'script_code' => $scriptCode !== '' ? $scriptCode : null,
                 'link' => $link !== '' ? $link : null,
                 'sort_order' => (int) ($itemData['sort_order'] ?? $index),
                 'is_active' => filter_var($itemData['is_active'] ?? true, FILTER_VALIDATE_BOOLEAN),

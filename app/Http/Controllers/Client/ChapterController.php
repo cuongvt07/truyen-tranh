@@ -62,9 +62,9 @@ class ChapterController extends Controller
             }
             $hasActiveItem = $ad->items
                 ->where('is_active', true)
-                ->first(fn ($item) => $item->image);
+                ->first(fn ($item) => $item->image || $item->script_code);
 
-            if (!$ad->image && !$ad->link && !$hasActiveItem) {
+            if (!$ad->image && !$ad->script_code && !$ad->link && !$hasActiveItem) {
                 return false;
             }
 
@@ -81,10 +81,10 @@ class ChapterController extends Controller
             $inlineCount = max(1, (int) ($inlineCampaign->chapter_inline_count ?: 1));
             $inlineItems = $inlineCampaign->items
                 ->where('is_active', true)
-                ->filter(fn ($item) => $item->image)
+                ->filter(fn ($item) => $item->image || $item->script_code)
                 ->values();
 
-            if ($inlineItems->isEmpty() && $inlineCampaign->image) {
+            if ($inlineItems->isEmpty() && ($inlineCampaign->image || $inlineCampaign->script_code)) {
                 $inlineItems = collect([$inlineCampaign]);
             }
 
@@ -94,7 +94,7 @@ class ChapterController extends Controller
         $showPopup    = $chapterAd !== null;
         $requireClick = (bool) ($chapterAd->require_click ?? false);
         $popupAdItem = $chapterAd
-            ? $chapterAd->items->where('is_active', true)->filter(fn ($item) => $item->image)->shuffle()->first()
+            ? $chapterAd->items->where('is_active', true)->filter(fn ($item) => $item->image || $item->script_code)->shuffle()->first()
             : null;
 
         $chapterLikesCount = ChapterLike::where('chapter_id', $chapter->id)->count();
@@ -155,6 +155,7 @@ class ChapterController extends Controller
             'requireClick'   => $requireClick,
             'affiLink'       => $popupAdItem?->link ?? $chapterAd?->link ?? '',
             'affiImage'      => $popupAdItem?->image ?? $chapterAd?->image ?? '',
+            'affiScript'     => $popupAdItem?->script_code ?? $chapterAd?->script_code ?? '',
             'inlineChapterAds' => $inlineChapterAds,
             'inlineAdFirstAfter' => $inlineAdFirstAfter,
             'inlineAdEvery' => $inlineAdEvery,

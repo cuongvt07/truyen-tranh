@@ -13,7 +13,7 @@ class Ad extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'image_path', 'image_url', 'link',
+        'name', 'image_path', 'image_url', 'script_code', 'link',
         'display_mode', 'placement', 'pages',
         'frequency', 'frequency_value', 'delay_seconds',
         'after_click', 'cooldown_seconds',

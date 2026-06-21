@@ -1,13 +1,15 @@
 @php
     $__adGroups = ads_for();
-    $__banners  = ($__adGroups['banner'] ?? collect())->filter(fn ($a) => $a->image);
-    $__popup    = ($__adGroups['popup'] ?? collect())->first(fn ($a) => $a->image || $a->link);
+    $__banners  = ($__adGroups['banner'] ?? collect())->filter(fn ($a) => $a->image || $a->script_code);
+    $__popup    = ($__adGroups['popup'] ?? collect())->first(fn ($a) => $a->image || $a->script_code || $a->link);
 @endphp
 
 @if($__banners->isNotEmpty() || $__popup)
 <style>
-    .site-ad-banner{position:relative;display:inline-block;line-height:0}
+    .site-ad-banner{position:relative;display:inline-block;line-height:normal}
     .site-ad-banner img{max-width:100%;height:auto;border-radius:4px}
+    .site-ad-script{display:inline-block;max-width:100%}
+    .site-ad-script iframe{max-width:100%}
     .site-ad-banner .site-ad-close{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;
         background:rgba(0,0,0,.65);color:#fff;border:none;font-size:13px;line-height:22px;cursor:pointer;z-index:2}
     .site-ad-fixed{position:fixed;z-index:9000;text-align:center}
@@ -34,9 +36,13 @@
     <div class="site-ad {{ $fixed ? 'site-ad-fixed '.$place : 'site-ad-inline' }}" data-ad-id="{{ $ad->id }}">
         <span class="site-ad-banner">
             <button type="button" class="site-ad-close" onclick="this.closest('.site-ad').remove()">×</button>
-            @if($ad->link)<a href="{{ $ad->link }}" target="_blank" rel="nofollow noopener">@endif
-                <img src="{{ $ad->image }}" alt="{{ $ad->name }}">
-            @if($ad->link)</a>@endif
+            @if($ad->script_code)
+                <div class="site-ad-script">{!! $ad->script_code !!}</div>
+            @else
+                @if($ad->link)<a href="{{ $ad->link }}" target="_blank" rel="nofollow noopener">@endif
+                    <img src="{{ $ad->image }}" alt="{{ $ad->name }}">
+                @if($ad->link)</a>@endif
+            @endif
         </span>
     </div>
 @endforeach
@@ -52,9 +58,13 @@
      data-cooldown="{{ $__popup->cooldown_seconds }}">
     <div class="site-ad-popup-box">
         <button type="button" class="site-ad-popup-close" id="siteAdPopupClose">×</button>
-        @if($__popup->link)<a href="{{ $__popup->link }}" target="_blank" rel="nofollow noopener" id="siteAdPopupLink">@endif
-            @if($__popup->image)<img src="{{ $__popup->image }}" alt="{{ $__popup->name }}">@endif
-        @if($__popup->link)</a>@endif
+        @if($__popup->script_code)
+            <div class="site-ad-script">{!! $__popup->script_code !!}</div>
+        @else
+            @if($__popup->link)<a href="{{ $__popup->link }}" target="_blank" rel="nofollow noopener" id="siteAdPopupLink">@endif
+                @if($__popup->image)<img src="{{ $__popup->image }}" alt="{{ $__popup->name }}">@endif
+            @if($__popup->link)</a>@endif
+        @endif
         <div class="site-ad-popup-name">{{ $__popup->name }}</div>
     </div>
 </div>
