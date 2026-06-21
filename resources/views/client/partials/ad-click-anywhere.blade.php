@@ -1,11 +1,14 @@
 @php
     $__clickAdsAll   = ads_for();
     $__clickAdsGroup = $__clickAdsAll['click_anywhere'] ?? collect();
-    $__clickAd       = $__clickAdsGroup->first(fn ($a) => $a->link);
+    $__clickAd       = $__clickAdsGroup->first(fn ($a) => $a->link || $a->script_code);
 @endphp
 {{-- DEBUG: server-side diagnosis (remove after confirmed working) --}}
-<!-- [AD-CLICK] page_type={{ current_ad_page_type() ?? 'null' }} | is_vip={{ user_has_active_vip() ? '1' : '0' }} | click_anywhere_count={{ $__clickAdsGroup->count() }} | chosen_id={{ $__clickAd?->id ?? 'none' }} | chosen_link={{ $__clickAd?->link ?? 'none' }} -->
+<!-- [AD-CLICK] page_type={{ current_ad_page_type() ?? 'null' }} | is_vip={{ user_has_active_vip() ? '1' : '0' }} | click_anywhere_count={{ $__clickAdsGroup->count() }} | chosen_id={{ $__clickAd?->id ?? 'none' }} | chosen_link={{ $__clickAd?->link ?? 'none' }} | chosen_script={{ $__clickAd?->script_code ? 'yes' : 'no' }} -->
 @if($__clickAd)
+@if($__clickAd->script_code)
+<div class="site-ad-click-script">{!! $__clickAd->script_code !!}</div>
+@endif
 <script type="application/json" id="siteAdClickData">@php
     $__clickData = [
         'id'              => $__clickAd->id,
@@ -23,7 +26,8 @@
     if (!el) { console.warn(LOG, 'JSON element not found'); return; }
     var cad;
     try { cad = JSON.parse(el.textContent); } catch (e) { console.error(LOG, 'JSON parse error', e); return; }
-    if (!cad || !cad.link) { console.warn(LOG, 'no link in config', cad); return; }
+    if (!cad) { console.warn(LOG, 'no config'); return; }
+    if (!cad.link) { console.log(LOG, 'script-only ad rendered; no click link listener attached'); return; }
 
     console.log(LOG, 'config loaded', cad);
 

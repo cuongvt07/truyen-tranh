@@ -228,10 +228,18 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Link đích <span class="text-danger">*</span></label>
+                            <label>Link đích</label>
                             <input type="text" name="link" class="form-control" placeholder="https://..."
                                    value="{{ old('link', $ad->link) }}">
                             <small class="text-muted">Tab mới sẽ mở link này khi user click</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Script quang cao</label>
+                            <textarea name="script_code" class="form-control" rows="5"
+                                      placeholder="<script>...</script> hoac iframe/html tu network quang cao">{{ old('script_code', $ad->script_code) }}</textarea>
+                            <small class="text-muted">Co the dung script thay cho link dich.</small>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -387,6 +395,14 @@
                             <label class="form-check-label" for="require_click">
                                 <strong>Phải click quảng cáo mới đọc tiếp</strong>
                             </label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group mb-0">
+                            <label>Script quang cao chung</label>
+                            <textarea name="script_code" class="form-control" rows="4"
+                                      placeholder="<script>...</script> hoac iframe/html tu network quang cao">{{ old('script_code', $ad->script_code) }}</textarea>
+                            <small class="text-muted">Dung khi khong tao item rieng ben duoi.</small>
                         </div>
                     </div>
                 </div>

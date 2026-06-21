@@ -120,9 +120,10 @@ class AdController extends Controller
         ];
 
         // Fields tuỳ theo loại
+        $rules['script_code'] = 'nullable|string';
+
         if (in_array($mode, ['banner', 'popup'])) {
             $rules['image_url']  = 'nullable|string|max:500';
-            $rules['script_code'] = 'nullable|string';
             $rules['image_file'] = 'nullable|image|max:32768';
             $rules['link']       = 'nullable|string|max:500';
         }
@@ -130,7 +131,7 @@ class AdController extends Controller
             $rules['placement'] = 'nullable|in:' . implode(',', array_keys(Ad::PLACEMENTS));
         }
         if ($mode === 'click_anywhere') {
-            $rules['link'] = 'required|string|max:500';
+            $rules['link'] = 'nullable|required_without:script_code|string|max:500';
         }
         if (in_array($mode, ['popup', 'click_anywhere'])) {
             $rules['frequency']       = 'required|in:' . implode(',', array_keys(Ad::FREQUENCIES));
@@ -190,7 +191,8 @@ class AdController extends Controller
                 'placement'  => $v['placement'] ?? 'top',
             ]),
             'click_anywhere' => array_merge($data, [
-                'link'             => $v['link'],
+                'script_code'      => $scriptCode !== '' ? $scriptCode : null,
+                'link'             => $v['link'] ?? null,
                 'frequency'        => $v['frequency'] ?? 'once_session',
                 'frequency_value'  => $v['frequency_value'] ?? 1,
                 'after_click'      => $v['after_click'] ?? 'stop_session',
@@ -207,6 +209,7 @@ class AdController extends Controller
                 'cooldown_seconds' => $v['cooldown_seconds'] ?? 0,
             ]),
             'chapter' => array_merge($data, [
+                'script_code'        => $scriptCode !== '' ? $scriptCode : null,
                 'require_click'      => $request->boolean('require_click'),
                 'chapter_inline_count' => $v['chapter_inline_count'] ?? 1,
             ]),
@@ -220,7 +223,8 @@ class AdController extends Controller
             $data['link']      = $v['link'] ?? null;
             $data['placement'] = $v['placement'] ?? 'top';
         } elseif ($mode === 'click_anywhere') {
-            $data['link']             = $v['link'];
+            $data['script_code']      = $scriptCode !== '' ? $scriptCode : null;
+            $data['link']             = $v['link'] ?? null;
             $data['frequency']        = $v['frequency'] ?? 'once_session';
             $data['frequency_value']  = $v['frequency_value'] ?? 1;
             $data['after_click']      = $v['after_click'] ?? 'stop_session';
@@ -235,6 +239,7 @@ class AdController extends Controller
             $data['after_click']      = $v['after_click'] ?? 'none';
             $data['cooldown_seconds'] = $v['cooldown_seconds'] ?? 0;
         } elseif ($mode === 'chapter') {
+            $data['script_code']          = $scriptCode !== '' ? $scriptCode : null;
             $data['require_click']        = $request->boolean('require_click');
             $data['chapter_inline_count'] = $v['chapter_inline_count'] ?? 1;
         }
