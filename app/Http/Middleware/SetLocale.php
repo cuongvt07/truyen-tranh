@@ -14,10 +14,16 @@ class SetLocale
         $default   = config('locales.default', 'vi');
 
         // Ưu tiên: session -> cookie -> trình duyệt -> mặc định
-        $locale = session('locale')
-            ?? $request->cookie('locale')
-            ?? $request->getPreferredLanguage($supported)
-            ?? $default;
+        $isAdmin = $request->is('admin') || $request->is('admin/*');
+
+        if (!$isAdmin && !config('locales.user_multilingual', true)) {
+            $locale = config('locales.user_locale', $default);
+        } else {
+            $locale = session('locale')
+                ?? $request->cookie('locale')
+                ?? $request->getPreferredLanguage($supported)
+                ?? $default;
+        }
 
         if (!in_array($locale, $supported, true)) {
             $locale = $default;

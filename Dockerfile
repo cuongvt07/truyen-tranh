@@ -8,6 +8,7 @@ COPY composer.json composer.lock ./
 RUN --mount=type=cache,target=/tmp/cache/composer \
     composer install \
         --no-dev \
+        --ignore-platform-req=php \
         --prefer-dist \
         --no-interaction \
         --no-progress \

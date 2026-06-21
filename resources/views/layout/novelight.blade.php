@@ -188,7 +188,7 @@
                 @endauth
 
                 {{-- Language switcher --}}
-                @if(config('locales.switchable', true))
+                @if(config('locales.user_multilingual', true) && config('locales.switchable', true))
                     @php $curLocale = app()->getLocale(); $locales = config('locales.supported', []); @endphp
                     <div class="header-btn header-lang tippy-lang" title="Language">
                         @if(!empty($locales[$curLocale]['flag_code']))
@@ -345,6 +345,7 @@
             @endif
         </ul>
 
+        @if(config('locales.user_multilingual', true) && config('locales.switchable', true))
         {{-- Language dropdown --}}
         <ul id="header-lang-list" class="header-sublist">
             @foreach(config('locales.supported', []) as $code => $loc)
@@ -353,6 +354,7 @@
                 </a></li>
             @endforeach
         </ul>
+        @endif
 
         @auth
             {{-- Menu nút + (thêm) --}}

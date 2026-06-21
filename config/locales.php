@@ -17,6 +17,10 @@ return [
 
     'switchable' => env('LOCALE_SWITCHABLE', true),
 
+    // Frontend can follow the selected locale or be locked to one locale.
+    'user_multilingual' => env('USER_MULTILINGUAL', true),
+    'user_locale' => env('USER_LOCALE', env('APP_LOCALE', 'en')),
+
     'supported' => [
         'en' => [
             'name'      => 'English',
@@ -31,6 +35,13 @@ return [
             'flag_code' => 'vn',
             'currency'  => 'VND',
             'locale'    => 'vi_VN',
+        ],
+        'fr' => [
+            'name'      => 'Français',
+            'flag'      => '🇫🇷',
+            'flag_code' => 'fr',
+            'currency'  => 'EUR',
+            'locale'    => 'fr_FR',
         ],
         // 'th' => ['name' => 'ไทย', 'flag' => '🇹🇭', 'currency' => 'THB', 'locale' => 'th_TH'],
         // 'id' => ['name' => 'Indonesia', 'flag' => '🇮🇩', 'currency' => 'IDR', 'locale' => 'id_ID'],
