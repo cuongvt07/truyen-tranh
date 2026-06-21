@@ -214,7 +214,7 @@ class TeamController extends Controller
         ]);
 
         return redirect()->route('teams.show', $team->id)
-            ->with('success', 'The team is under review by administrators');
+            ->with('success', __('messages.community.flash_team_pending'));
     }
 
     public function edit($id)
@@ -248,16 +248,16 @@ class TeamController extends Controller
         $uid = Auth::id();
 
         if ($team->user_id === $uid) {
-            return back()->with('error', 'Bạn là trưởng nhóm, không cần gia nhập.');
+            return back()->with('error', __('messages.community.flash_owner_no_join'));
         }
 
         $exists = TeamMember::where('team_id', $team->id)->where('user_id', $uid)->first();
         if ($exists) {
             $msg = match($exists->status) {
-                'approved' => 'Bạn đã là thành viên của nhóm này.',
-                'pending'  => 'Yêu cầu của bạn đang chờ admin duyệt.',
-                'rejected' => 'Yêu cầu trước đó đã bị từ chối.',
-                default    => 'Bạn đã tồn tại trong nhóm.',
+                'approved' => __('messages.community.flash_already_member'),
+                'pending'  => __('messages.community.flash_join_pending'),
+                'rejected' => __('messages.community.flash_join_rejected'),
+                default    => __('messages.community.flash_member_exists'),
             };
             return back()->with('error', $msg);
         }
@@ -270,7 +270,7 @@ class TeamController extends Controller
             'requested_by'=> $uid,
         ]);
 
-        return back()->with('success', 'Đã gửi yêu cầu gia nhập. Admin sẽ xem xét trong thời gian sớm nhất.');
+        return back()->with('success', __('messages.community.flash_join_sent'));
     }
 
     /** Trưởng nhóm gửi yêu cầu thêm thành viên → chờ admin duyệt */
@@ -285,16 +285,16 @@ class TeamController extends Controller
         $user = User::where('username', $data['username'])->firstOrFail();
 
         if ($user->id === Auth::id()) {
-            return back()->with('error', 'Bạn là trưởng nhóm, không cần thêm chính mình.');
+            return back()->with('error', __('messages.community.flash_owner_no_add_self'));
         }
 
         $exists = TeamMember::where('team_id', $team->id)->where('user_id', $user->id)->first();
         if ($exists) {
             $msg = match($exists->status) {
-                'approved' => 'User này đã là thành viên của nhóm.',
-                'pending'  => 'Yêu cầu cho user này đang chờ admin duyệt.',
-                'rejected' => 'Yêu cầu trước đó đã bị từ chối. Vui lòng liên hệ admin.',
-                default    => 'User này đã tồn tại trong nhóm.',
+                'approved' => __('messages.community.flash_user_already_member'),
+                'pending'  => __('messages.community.flash_user_pending'),
+                'rejected' => __('messages.community.flash_user_rejected'),
+                default    => __('messages.community.flash_user_exists'),
             };
             return back()->with('error', $msg);
         }
@@ -307,7 +307,7 @@ class TeamController extends Controller
             'requested_by'=> Auth::id(),
         ]);
 
-        return back()->with('success', "Đã gửi yêu cầu thêm @{$user->username}. Admin sẽ xem xét và duyệt trong thời gian sớm nhất.");
+        return back()->with('success', __('messages.community.flash_member_request_sent', ['username' => $user->username]));
     }
 
     /** Trưởng nhóm huỷ yêu cầu đang pending hoặc xoá thành viên */
@@ -315,10 +315,10 @@ class TeamController extends Controller
     {
         $team = $this->own($id);
         abort_if($member->team_id !== $team->id, 404);
-        abort_if($member->role === 'leader', 403, 'Không thể xoá trưởng nhóm.');
+        abort_if($member->role === 'leader', 403, __('messages.community.flash_cannot_remove_leader'));
 
         $member->delete();
-        return back()->with('success', 'Đã xoá thành viên khỏi nhóm.');
+        return back()->with('success', __('messages.community.flash_member_removed'));
     }
 
     private function validateData(Request $r): array
@@ -330,7 +330,7 @@ class TeamController extends Controller
             'donation_text' => ['nullable', 'string', 'max:255'],
             'donation_url'  => ['nullable', 'string', 'max:255'],
             'photo'         => ['nullable', 'image', 'max:4096'],
-        ], [], ['name' => 'tên nhóm']);
+        ], [], ['name' => __('messages.community.team_name')]);
     }
 
     private function upload(Request $r): ?string
@@ -359,12 +359,16 @@ class TeamController extends Controller
     private function compareMetric(int $current, int $previous): string
     {
         if ($previous <= 0) {
-            return $current > 0 ? 'New activity this month' : 'No data to compare';
+            return $current > 0
+                ? __('messages.community.compare_new_activity')
+                : __('messages.community.compare_no_data');
         }
 
         $percent = (($current - $previous) / $previous) * 100;
         $prefix = $percent >= 0 ? '+' : '';
 
-        return $prefix . number_format($percent, 1) . '% vs previous month';
+        return __('messages.community.compare_vs_previous', [
+            'percent' => $prefix . number_format($percent, 1),
+        ]);
     }
 }

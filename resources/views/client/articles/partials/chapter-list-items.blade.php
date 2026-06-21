@@ -21,7 +21,7 @@
                     <span class="cost"><i class="fa fa-lock"></i></span>
                 @else
                     @if($chapterIsUnlocked)
-                        <span class="cost paid">paid</span>
+                        <span class="cost paid">{{ __('messages.article.paid') }}</span>
                     @else
                         <span class="cost"><i class="fa fa-money-bill"></i> {{ number_format($chapterCreditCost) }}</span>
                     @endif

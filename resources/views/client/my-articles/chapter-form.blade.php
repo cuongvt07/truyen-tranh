@@ -34,28 +34,28 @@
                 <textarea name="content" rows="18" required>{{ old('content') }}</textarea>
             </div>
             <div class="frow">
-                <label>Credit để mở chương này <span class="meta-color" style="font-weight:400">(ghi đè cấu hình truyện)</span></label>
+                <label>{{ __('messages.myarticle.credit_cost_label') }} <span class="meta-color" style="font-weight:400">{{ __('messages.myarticle.credit_cost_override_hint') }}</span></label>
                 <input type="number" name="credit_cost" min="0" value="{{ old('credit_cost') }}"
-                       placeholder="Để trống = dùng mặc định của truyện">
+                       placeholder="{{ __('messages.myarticle.credit_cost_placeholder') }}">
                 @php $start = $article->credit_start_chapter; $perChap = $article->credit_per_chapter ?? 0; @endphp
                 <small class="meta-color" style="font-size:12px">
-                    Truyện cấu hình:
+                    {{ __('messages.myarticle.story_credit_config') }}
                     @if($start)
-                        thu từ chương <strong>{{ $start }}</strong>, mặc định <strong>{{ $perChap }}</strong> credit/chương.
+                        {{ __('messages.myarticle.charge_from_chapter') }} <strong>{{ $start }}</strong>, {{ __('messages.myarticle.default_credit_per_chapter', ['credit' => $perChap]) }}
                     @else
-                        miễn phí toàn bộ.
+                        {{ __('messages.myarticle.free_all_chapters') }}
                     @endif
                 </small>
             </div>
 
             <div class="frow">
-                <label>Lịch đăng <span class="meta-color" style="font-weight:400">(delay publish)</span></label>
+                <label>{{ __('messages.myarticle.publish_schedule') }} <span class="meta-color" style="font-weight:400">{{ __('messages.myarticle.publish_schedule_hint') }}</span></label>
                 <input type="text" name="published_at" value="{{ old('published_at') }}"
-                       placeholder="Để trống = đăng ngay.  VD: 2026-06-15 08:00">
+                       placeholder="{{ __('messages.myarticle.publish_now_placeholder') }}">
                 @error('published_at')<small style="color:#e3342f;font-size:12px">{{ $message }}</small>@enderror
                 <small class="meta-color" style="font-size:12px">
-                    Để trống = đăng ngay. Nhập thời điểm tương lai để hẹn giờ (ẩn khỏi bạn đọc tới giờ đó).
-                    Định dạng <code>YYYY-MM-DD HH:MM</code> hoặc <code>DD/MM/YYYY HH:MM</code> — copy-paste từ Excel được.
+                    {{ __('messages.myarticle.publish_schedule_help') }}
+                    {{ __('messages.myarticle.publish_schedule_format') }}
                 </small>
             </div>
             <div style="display:flex;gap:10px">

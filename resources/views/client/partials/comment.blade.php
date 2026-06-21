@@ -1,5 +1,5 @@
 <div class="title-list">
-    <h2>Bình luận</h2>
+    <h2>{{ __('messages.comments.title') }}</h2>
 </div>
 <div class="tab">
     <ul class="nav nav-tabs main-tab lazy-module">
@@ -36,17 +36,17 @@
                             <div class="form-group">
                                 <textarea id="commentContent" name="content" class="form-control"></textarea>
                             </div>
-                            <button type="submit" id="submit-comment" class="btn btn-primary">Gửi</button>
+                            <button type="submit" id="submit-comment" class="btn btn-primary">{{ __('messages.comments.send') }}</button>
                         </form>
                     </div>
                 @else
                     <div class="form-group">
-                        <p style="margin-top: 20px">Vui lòng xác thực email để bình luận!</p>
+                        <p style="margin-top: 20px">{{ __('messages.comments.verify_email_prompt') }}</p>
                     </div>
                 @endif
             @else
                 <div class="form-group">
-                    <p style="margin-top: 20px">Vui đăng nhập để bình luận!</p>
+                    <p style="margin-top: 20px">{{ __('messages.comments.login_to_comment_plain') }}</p>
                 </div>
             @endif
             <div class="row" id="comment-list">
@@ -81,7 +81,7 @@
                                         @csrf
                                         @method('delete')
                                         <button id="btnDeleteComment" class="btn btn-link glyphicon glyphicon-trash"
-                                                style="color: #ff0000;" title="Xoá bình luận"></button>
+                                                style="color: #ff0000;" title="{{ __('messages.comments.delete_comment_title') }}"></button>
                                     </form>
                                 @endif
                             </div>
@@ -123,7 +123,7 @@
             $('.formDeleteComment').each(function (i, el) {
                 $(el).find('#btnDeleteComment').on('click', function (event) {
                     event.preventDefault();
-                    if (confirm("Bạn có chắc chắn muốn xoá bình luận này không?")) {
+                    if (confirm(@json(__('messages.comments.confirm_delete_long')))) {
                         $(el).submit();
                     }
                 });

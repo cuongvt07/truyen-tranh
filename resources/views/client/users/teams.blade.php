@@ -2,6 +2,14 @@
 @section('template_title', __('messages.account.nav_teams'))
 
 @section('user_content')
+@php
+    $teamRoleLabels = [
+        'leader' => __('messages.community.role_leader'),
+        'admin' => __('messages.community.role_admin'),
+        'editor' => __('messages.community.role_editor'),
+        'member' => __('messages.community.role_member'),
+    ];
+@endphp
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
     <h2 class="user-tab-title" style="margin:0">{{ __('messages.account.nav_teams') }}</h2>
     @if($isMine ?? false)
@@ -9,10 +17,9 @@
     @endif
 </div>
 
-{{-- Teams mà user làm chủ --}}
 @if($ownedTeams->isNotEmpty())
 <div style="margin-bottom:6px;font-size:13px;color:var(--meta-color);font-weight:600;text-transform:uppercase;letter-spacing:.5px">
-    <i class="fa fa-crown" style="color:#f5a623"></i> Nhóm của tôi
+    <i class="fa fa-crown" style="color:#f5a623"></i> {{ __('messages.community.my_teams') }}
 </div>
 <div class="user-team-list" style="margin-bottom:20px">
     @foreach($ownedTeams as $t)
@@ -23,15 +30,15 @@
         <div class="user-team-card__info">
             <a href="{{ route('teams.show', $t->id) }}" class="user-team-card__name">{{ $t->name }}</a>
             <div style="font-size:12px;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-                <span style="background:#f5a623;color:#000;border-radius:3px;padding:1px 6px;font-size:11px;font-weight:600">Trưởng nhóm</span>
-                <span style="color:var(--meta-color)"><i class="fa fa-users"></i> {{ $t->approved_members_count }} thành viên</span>
+                <span style="background:#f5a623;color:#000;border-radius:3px;padding:1px 6px;font-size:11px;font-weight:600">{{ __('messages.community.team_leader') }}</span>
+                <span style="color:var(--meta-color)"><i class="fa fa-users"></i> {{ trans_choice('messages.community.members_count', $t->approved_members_count, ['count' => $t->approved_members_count]) }}</span>
                 @if($t->site)<span style="color:var(--meta-color)"><i class="fa fa-link"></i> {{ $t->site }}</span>@endif
             </div>
         </div>
         @if($isMine ?? false)
         <div style="display:flex;gap:6px;flex-shrink:0">
-            <a href="{{ route('teams.dashboard', $t->id) }}" class="btn btn-invincible" title="Dashboard"><i class="fa fa-tachometer-alt"></i></a>
-            <a href="{{ route('teams.edit', $t->id) }}" class="btn btn-invincible" title="Chỉnh sửa"><i class="fa fa-edit"></i></a>
+            <a href="{{ route('teams.dashboard', $t->id) }}" class="btn btn-invincible" title="{{ __('messages.community.dashboard') }}"><i class="fa fa-tachometer-alt"></i></a>
+            <a href="{{ route('teams.edit', $t->id) }}" class="btn btn-invincible" title="{{ __('messages.community.update_team') }}"><i class="fa fa-edit"></i></a>
         </div>
         @endif
     </div>
@@ -39,10 +46,9 @@
 </div>
 @endif
 
-{{-- Teams mà user là thành viên --}}
 @if($memberTeams->isNotEmpty())
 <div style="margin-bottom:6px;font-size:13px;color:var(--meta-color);font-weight:600;text-transform:uppercase;letter-spacing:.5px">
-    <i class="fa fa-users"></i> Tham gia
+    <i class="fa fa-users"></i> {{ __('messages.community.joined_teams') }}
 </div>
 <div class="user-team-list">
     @foreach($memberTeams as $t)
@@ -57,10 +63,10 @@
                 @if($myMembership)
                 @php $roleColors = ['admin'=>'#6c5ce7','editor'=>'#00b894','member'=>'#636e72']; $rc = $roleColors[$myMembership->role] ?? '#636e72'; @endphp
                 <span style="background:{{ $rc }};color:#fff;border-radius:3px;padding:1px 6px;font-size:11px;font-weight:600">
-                    {{ \App\Models\TeamMember::ROLES[$myMembership->role] ?? $myMembership->role }}
+                    {{ $teamRoleLabels[$myMembership->role] ?? $myMembership->role }}
                 </span>
                 @endif
-                <span style="color:var(--meta-color)"><i class="fa fa-users"></i> {{ $t->approved_members_count }} thành viên</span>
+                <span style="color:var(--meta-color)"><i class="fa fa-users"></i> {{ trans_choice('messages.community.members_count', $t->approved_members_count, ['count' => $t->approved_members_count]) }}</span>
                 @if($t->site)<span style="color:var(--meta-color)"><i class="fa fa-link"></i> {{ $t->site }}</span>@endif
             </div>
         </div>

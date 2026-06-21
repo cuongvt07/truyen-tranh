@@ -43,7 +43,7 @@
                     <a href="{{ route('articles.show', $article) }}" class="item">
                         <div class="poster image image-cover lazy-load-bg">
                             <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
-                            @if($article->is_completed)<span class="grid-badge">Full</span>@endif
+                            @if($article->is_completed)<span class="grid-badge">{{ __('messages.ui.full') }}</span>@endif
                         </div>
                         <div class="title clamp clamp-2">{{ $article->title }}</div>
                     </a>

@@ -1,6 +1,6 @@
 @extends('layout.novelight')
 
-@section('template_title', 'Checkout')
+@section('template_title', __('messages.pay.checkout'))
 
 @section('page_css')
 <style>
@@ -118,11 +118,11 @@
 
 @section('content')
 <div class="checkout-wrap">
-    <h1>Checkout</h1>
+    <h1>{{ __('messages.pay.checkout') }}</h1>
 
     {{-- Order summary --}}
     <div class="checkout-card">
-        <h2>Order summary</h2>
+        <h2>{{ __('messages.pay.order_summary') }}</h2>
         <div class="order-item">
             @if($package->icon)
                 <img src="{{ asset($package->icon) }}" alt="{{ $package->name }}">
@@ -132,9 +132,9 @@
             <div class="order-item-info">
                 <strong>{{ $package->name }}</strong>
                 @if($package->isSubscription())
-                    <span>Hide ads for {{ $package->subscription_days }} days + {{ number_format($package->daily_credits) }} credits/day</span>
+                    <span>{{ __('messages.pay.subscription_summary', ['days' => $package->subscription_days, 'credits' => number_format($package->daily_credits)]) }}</span>
                 @else
-                    <span>Buy {{ number_format($package->coins) }} credits for ${{ number_format($package->price_usd, 0) }}</span>
+                    <span>{{ __('messages.pay.credit_package_summary', ['credits' => number_format($package->coins), 'price' => number_format($package->price_usd, 0)]) }}</span>
                 @endif
             </div>
             <div class="order-item-price">${{ number_format($package->price_usd, 2) }}</div>
@@ -143,31 +143,31 @@
 
     {{-- Payment --}}
     <div class="checkout-card" id="payment-card">
-        <h2>Payment methods</h2>
+        <h2>{{ __('messages.pay.payment_methods') }}</h2>
 
         <div class="pay-method-list">
             <div class="pay-method">
                 <div class="pm-icon"><span class="paypal-mark">PayPal</span></div>
-                <span>PayPal / Credit or debit card</span>
+                <span>{{ __('messages.pay.paypal_card') }}</span>
             </div>
         </div>
 
         {{-- PayPal smart buttons --}}
         <div id="paypal-button-container"></div>
-        <div id="payment-status" class="payment-status">Loading PayPal payment buttons...</div>
+        <div id="payment-status" class="payment-status">{{ __('messages.pay.loading_paypal') }}</div>
 
         <p class="checkout-notice">
-            <i class="fa fa-lock"></i> Thanh toán bảo mật qua PayPal. Sau khi xác nhận xu sẽ được cộng ngay vào tài khoản.
+            <i class="fa fa-lock"></i> {{ __('messages.pay.secure_paypal_notice') }}
         </p>
     </div>
 
     {{-- Success state --}}
     <div class="checkout-card" id="checkout-success">
         <div class="success-icon">✅</div>
-        <h3>Thanh toán thành công!</h3>
+        <h3>{{ __('messages.pay.payment_success_title') }}</h3>
         <p id="success-msg"></p>
-        <a href="{{ route('users.transactions', auth()->id()) }}" class="btn btn-primary">Xem giao dịch</a>
-        <a href="{{ route('pages.pricing') }}" class="btn btn-outline-secondary ms-2">Mua thêm</a>
+        <a href="{{ route('users.transactions', auth()->id()) }}" class="btn btn-primary">{{ __('messages.pay.view_transactions') }}</a>
+        <a href="{{ route('pages.pricing') }}" class="btn btn-outline-secondary ms-2">{{ __('messages.pay.buy_more') }}</a>
     </div>
 </div>
 @endsection
@@ -189,7 +189,7 @@
     }
 
     if (!window.paypal || !paypal.Buttons) {
-        setPaymentError('PayPal payment buttons could not be loaded. Please refresh the page or check the PayPal client configuration.');
+        setPaymentError(@json(__('messages.pay.paypal_load_error')));
         return;
     }
 
@@ -225,7 +225,7 @@
             })
             .then(r => r.json())
             .then(d => {
-                if (!d.success) throw new Error(d.error ?? 'Lỗi không xác định');
+                if (!d.success) throw new Error(d.error ?? @json(__('messages.pay.checkout_unknown_error')));
                 document.getElementById('payment-card').style.display  = 'none';
                 document.getElementById('checkout-success').style.display = 'block';
                 document.getElementById('success-msg').textContent = d.message;
@@ -237,7 +237,7 @@
 
         onError: function (err) {
             console.error(err);
-            setPaymentError('Có lỗi xảy ra trong quá trình tải phương thức thanh toán. Vui lòng thử lại.');
+            setPaymentError(@json(__('messages.pay.checkout_payment_error')));
         },
 
         onCancel: function () {
@@ -247,13 +247,13 @@
         if (statusEl) statusEl.style.display = 'none';
     }).catch(function (err) {
         console.error(err);
-        setPaymentError('Không thể hiển thị PayPal. Vui lòng kiểm tra cấu hình PayPal hoặc thử lại sau.');
+        setPaymentError(@json(__('messages.pay.paypal_render_error')));
     });
 })();
 </script>
 @else
 <script>
-    document.getElementById('payment-status').textContent = 'PayPal chưa được cấu hình. Vui lòng thêm PAYPAL_CLIENT_ID để hiển thị phương thức thanh toán.';
+    document.getElementById('payment-status').textContent = @json(__('messages.pay.paypal_not_configured'));
     document.getElementById('payment-status').classList.add('error');
 </script>
 @endif

@@ -1,5 +1,5 @@
 @extends('layout.novelight')
-@section('template_title', $mode === 'create' ? 'Create team' : ('Edit information - ' . $item->name))
+@section('template_title', $mode === 'create' ? __('messages.community.create_team_title') : __('messages.community.edit_team_title', ['name' => $item->name]))
 @php
     $action = $mode === 'create' ? route('teams.store') : route('teams.update', $item->id);
 @endphp
@@ -11,7 +11,7 @@
 
 @section('content')
 <div class="team-page">
-    <h1 class="team-title">{{ $mode === 'create' ? 'Create team' : 'Edit information - ' . $item->name }}</h1>
+    <h1 class="team-title">{{ $mode === 'create' ? __('messages.community.create_team_title') : __('messages.community.edit_team_title', ['name' => $item->name]) }}</h1>
 
     <div class="team-layout">
         <main class="team-main team-panel">
@@ -25,7 +25,7 @@
             @if($item->exists && $item->isPending())
                 <div class="review-alert">
                     <i class="fa fa-info-circle"></i>
-                    The team is under review by administrators
+                    {{ __('messages.community.pending_review_notice') }}
                 </div>
             @endif
 
@@ -34,12 +34,12 @@
                 @if($mode === 'edit') @method('patch') @endif
 
                 <div class="frow">
-                    <label>Title:</label>
+                    <label>{{ __('messages.community.title') }}</label>
                     <input type="text" name="name" value="{{ old('name', $item->name) }}" required>
                 </div>
 
                 <div class="frow">
-                    <label>Image:</label>
+                    <label>{{ __('messages.community.image') }}</label>
                     <div class="team-photo-upload">
                         <div class="team-photo-preview">
                             <img id="team-photo-img"
@@ -47,40 +47,40 @@
                                  alt="">
                         </div>
                         <div class="team-photo-controls">
-                            <label for="team-photo-input" class="btn btn-invincible" style="cursor:pointer">Choose image</label>
+                            <label for="team-photo-input" class="btn btn-invincible" style="cursor:pointer">{{ __('messages.community.choose_image') }}</label>
                             <input type="file" id="team-photo-input" name="photo" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
                             <span id="team-photo-name" style="font-size:12px;color:#666"></span>
                             <input type="text" name="photo_url" id="team-photo-url"
                                    value="{{ old('photo_url') }}"
-                                   placeholder="Paste image URL"
+                                   placeholder="{{ __('messages.community.paste_image_url') }}"
                                    style="flex:1;min-width:220px">
                         </div>
                     </div>
                 </div>
 
                 <div class="frow">
-                    <label>Description:</label>
+                    <label>{{ __('messages.community.description') }}:</label>
                     <textarea name="description">{{ old('description', $item->description) }}</textarea>
                 </div>
 
                 <div class="frow">
-                    <label>Site Url:</label>
+                    <label>{{ __('messages.community.site_url') }}</label>
                     <input type="text" name="site" value="{{ old('site', $item->site) }}" placeholder="https://...">
                 </div>
 
                 <div class="frow">
-                    <label>Donation text:</label>
+                    <label>{{ __('messages.community.donation_text_label') }}</label>
                     <input type="text" name="donation_text" value="{{ old('donation_text', $item->donation_text) }}">
                 </div>
 
                 <div class="frow">
-                    <label>Donation resource Url:</label>
+                    <label>{{ __('messages.community.donation_url_label') }}</label>
                     <input type="text" name="donation_url" value="{{ old('donation_url', $item->donation_url) }}" placeholder="https://...">
                 </div>
 
                 <div class="team-form-actions">
-                    <button type="submit" class="btn">{{ $mode === 'create' ? 'Create' : 'Update' }}</button>
-                    <a href="{{ $mode === 'edit' ? route('teams.show', $item->id) : route('teams.index') }}" class="btn btn-invincible">Cancel</a>
+                    <button type="submit" class="btn">{{ $mode === 'create' ? __('messages.community.create') : __('messages.community.update') }}</button>
+                    <a href="{{ $mode === 'edit' ? route('teams.show', $item->id) : route('teams.index') }}" class="btn btn-invincible">{{ __('messages.community.cancel') }}</a>
                 </div>
             </form>
         </main>

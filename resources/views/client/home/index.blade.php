@@ -248,7 +248,7 @@
                     @endphp
                     <a href="{{ route('articles.show', $article) }}" class="manga-line-item">
                         <div class="poster image image-cover lazy-load-bg">
-                            @if($isNew)<span class="ribbon-new">NEW</span>@endif
+                            @if($isNew)<span class="ribbon-new">{{ strtoupper(__('messages.ui.new')) }}</span>@endif
                             <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                         </div>
                         <div class="info">
@@ -258,7 +258,7 @@
                             </div>
                             <div class="last-chapter-date">
                                 {{ $lastChapterAt ? $lastChapterAt->format('d.m.Y') : '—' }}
-                                @if($isNew)<span class="badge-new-inline">new</span>@endif
+                                @if($isNew)<span class="badge-new-inline">{{ __('messages.ui.new') }}</span>@endif
                             </div>
                         </div>
                     </a>
@@ -290,7 +290,7 @@
 
             {{-- Forum (fix cứng tạm) --}}
             {{-- Last collections (dùng genres nhóm 3 ảnh) --}}
-            <h2>Last collections</h2>
+            <h2>{{ __('messages.ui.last_collections') }}</h2>
             <div class="collections">
                 <div class="collection-mini-grid">
                     @forelse($lastCollections as $collection)
@@ -351,4 +351,3 @@
 
 </div>
 @endsection
-

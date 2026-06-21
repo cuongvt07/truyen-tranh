@@ -109,27 +109,27 @@
     <div class="lock-wall">
         <div class="lock-icon">🔒</div>
         <h2>{{ __('messages.chapter.chapter') }} {{ $chapter->number }}: {{ $chapter->title }}</h2>
-        <p style="color:var(--text-muted,#888);margin-bottom:4px">Chương này yêu cầu credit để mở khoá</p>
-        <div class="credit-cost">{{ $creditCost }} credit</div>
+        <p style="color:var(--text-muted,#888);margin-bottom:4px">{{ __('messages.chapter.locked_requires_credit') }}</p>
+        <div class="credit-cost">{{ $creditCost }} {{ __('messages.chapter.credit') }}</div>
 
         @auth
-            <div class="user-balance">Số dư của bạn: <strong>{{ $userPoints }} credit</strong></div>
+            <div class="user-balance">{{ __('messages.chapter.your_balance') }} <strong>{{ $userPoints }} {{ __('messages.chapter.credit') }}</strong></div>
 
             @if($userPoints >= $creditCost)
                 <button class="btn-unlock" id="btn-unlock"
                         data-url="{{ route('articles.chapters.unlock', [$article, $chapter->number]) }}">
-                    Mở khoá chương này
+                    {{ __('messages.chapter.unlock_this_chapter') }}
                 </button>
             @else
-                <button class="btn-unlock" disabled>Không đủ credit</button>
+                <button class="btn-unlock" disabled>{{ __('messages.chapter.not_enough_credit') }}</button>
                 <div class="topup-link">
-                    <a href="{{ route('pages.pricing') }}">Nạp thêm credit ngay →</a>
+                    <a href="{{ route('pages.pricing') }}">{{ __('messages.chapter.topup_now') }}</a>
                 </div>
             @endif
             <div id="unlock-msg"></div>
         @else
-            <p style="color:var(--text-muted,#888);margin-bottom:16px">Đăng nhập để mua và đọc chương này</p>
-            <a href="{{ route('login') }}" class="btn-login">Đăng nhập</a>
+            <p style="color:var(--text-muted,#888);margin-bottom:16px">{{ __('messages.chapter.login_to_buy_read') }}</p>
+            <a href="{{ route('login') }}" class="btn-login">{{ __('messages.chapter.login') }}</a>
         @endauth
     </div>
 </div>
@@ -143,7 +143,7 @@
 
     btn.addEventListener('click', function () {
         btn.disabled = true;
-        btn.textContent = 'Đang xử lý…';
+        btn.textContent = @json(__('messages.chapter.buy_processing'));
         msg.className = '';
         msg.textContent = '';
 
@@ -159,20 +159,20 @@
         .then(function (data) {
             if (data.success) {
                 msg.className = 'success';
-                msg.textContent = 'Mở khoá thành công! Đang chuyển hướng…';
+                msg.textContent = @json(__('messages.chapter.buy_success'));
                 setTimeout(function () { window.location.href = data.redirect; }, 800);
             } else {
                 msg.className = 'error';
-                msg.textContent = data.error || 'Có lỗi xảy ra.';
+                msg.textContent = data.error || @json(__('messages.chapter.action_failed'));
                 btn.disabled = false;
-                btn.textContent = 'Mở khoá chương này';
+                btn.textContent = @json(__('messages.chapter.unlock_this_chapter'));
             }
         })
         .catch(function () {
             msg.className = 'error';
-            msg.textContent = 'Lỗi kết nối. Vui lòng thử lại.';
+            msg.textContent = @json(__('messages.chapter.action_failed'));
             btn.disabled = false;
-            btn.textContent = 'Mở khoá chương này';
+            btn.textContent = @json(__('messages.chapter.unlock_this_chapter'));
         });
     });
 })();

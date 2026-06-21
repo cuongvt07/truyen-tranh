@@ -40,7 +40,7 @@
             <input type="text" name="username" value="{{ old('username', $user->username) }}" required>
         </div>
         <div class="form-row">
-            <label class="form-label">Email <span class="req">*</span></label>
+            <label class="form-label">{{ __('messages.auth.email') }} <span class="req">*</span></label>
             <input type="email" name="email" value="{{ old('email', $user->email) }}" required>
         </div>
         <div class="form-row">

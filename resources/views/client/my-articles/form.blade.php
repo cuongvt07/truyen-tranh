@@ -58,8 +58,8 @@
                 <div class="frow">
                     <label>{{ __('messages.myarticle.type') }}</label>
                     <select name="novel_type">
-                        <option value="0" {{ old('novel_type', $article->novel_type)==0?'selected':'' }}>Web Novel</option>
-                        <option value="1" {{ old('novel_type', $article->novel_type)==1?'selected':'' }}>Light Novel</option>
+                        <option value="0" {{ old('novel_type', $article->novel_type)==0?'selected':'' }}>{{ __('messages.myarticle.web_novel') }}</option>
+                        <option value="1" {{ old('novel_type', $article->novel_type)==1?'selected':'' }}>{{ __('messages.myarticle.light_novel') }}</option>
                         <option value="2" {{ old('novel_type', $article->novel_type)==2?'selected':'' }}>{{ __('messages.myarticle.published_book') }}</option>
                     </select>
                 </div>
@@ -92,15 +92,15 @@
 
             @php $articleTags = $article->exists ? $article->tags->pluck('name')->implode(', ') : ''; @endphp
             <div class="frow">
-                <label>Tags <span class="meta-color" style="font-weight:400">{{ __('messages.myarticle.tags_hint') }}</span></label>
+                <label>{{ __('messages.myarticle.tags') }} <span class="meta-color" style="font-weight:400">{{ __('messages.myarticle.tags_hint') }}</span></label>
                 <input type="text" name="tags" value="{{ old('tags', $articleTags) }}" placeholder="{{ __('messages.myarticle.tags_placeholder') }}">
             </div>
 
             @if(($myTeams ?? collect())->count())
                 <div class="frow">
-                    <label>Nhóm dịch</label>
+                    <label>{{ __('messages.myarticle.translation_team') }}</label>
                     <select name="team_id">
-                        <option value="">Đăng cá nhân</option>
+                        <option value="">{{ __('messages.myarticle.personal_post') }}</option>
                         @foreach($myTeams as $team)
                             <option value="{{ $team->id }}" {{ (string) old('team_id', $article->team_id) === (string) $team->id ? 'selected' : '' }}>
                                 {{ $team->name }}

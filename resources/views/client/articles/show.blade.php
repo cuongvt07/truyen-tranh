@@ -102,7 +102,7 @@
                                             <span class="cost"><i class="fa fa-lock"></i></span>
                                         @else
                                             @if($chapterIsUnlocked)
-                                                <span class="cost paid">paid</span>
+                                                <span class="cost paid">{{ __('messages.article.paid') }}</span>
                                             @else
                                                 <span class="cost"><i class="fa fa-money-bill"></i> {{ number_format($chapterCreditCost) }}</span>
                                             @endif
@@ -280,7 +280,7 @@
                                 {{ __('messages.article.chapter') }} {{ $upcoming->number }} - <span>{{ $upcoming->title }}</span>
                             </div>
                             <div class="chapter-info">
-                                <span class="cost coming-soon-badge"><i class="fa fa-clock"></i> Coming soon</span>
+                                <span class="cost coming-soon-badge"><i class="fa fa-clock"></i> {{ __('messages.article.coming_soon') }}</span>
                                 <span class="date">{{ optional($upcoming->published_at)->format('d.m.Y H:i') }}</span>
                             </div>
                         </div>

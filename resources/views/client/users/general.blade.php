@@ -5,7 +5,7 @@
 <div class="block">
     <h2 class="user-tab-title">{{ __('messages.account.account_info') }}</h2>
     <div class="info-row">
-        <div class="label">Username</div>
+        <div class="label">{{ __('messages.account.username') }}</div>
         <div class="detail">{!! method_exists($user,'renderUserName') ? $user->renderUserName() : e($user->username) !!}</div>
     </div>
     <div class="info-row">
@@ -13,7 +13,7 @@
         <div class="detail">{{ $user->name }}</div>
     </div>
     <div class="info-row">
-        <div class="label">Email</div>
+        <div class="label">{{ __('messages.auth.email') }}</div>
         <div class="detail">{{ $user->email }}</div>
     </div>
     @if(!empty($user->gender_text))

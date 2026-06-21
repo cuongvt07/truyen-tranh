@@ -29,7 +29,7 @@
                     <div class="poster image image-cover lazy-load-bg">
                         <img class="lazy-image" loading="lazy" src="{{ $poster }}" alt="{{ $article->title }}">
                         @if($article->is_completed)
-                            <span style="position:absolute;top:4px;right:4px;background:var(--primary);color:#fff;font-size:10px;padding:2px 5px;border-radius:3px">Full</span>
+                            <span style="position:absolute;top:4px;right:4px;background:var(--primary);color:#fff;font-size:10px;padding:2px 5px;border-radius:3px">{{ __('messages.ui.full') }}</span>
                         @endif
                     </div>
                     <div class="manga-list__info">

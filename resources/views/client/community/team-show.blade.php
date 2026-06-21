@@ -1,5 +1,5 @@
 @extends('layout.novelight')
-@section('template_title', $team->name . ' - Team')
+@section('template_title', $team->name . ' - ' . __('messages.community.team'))
 
 @push('styles')
 @php $teamCssVer = file_exists(public_path('static/team/css/team.css')) ? filemtime(public_path('static/team/css/team.css')) : time(); @endphp
@@ -7,6 +7,14 @@
 @endpush
 
 @section('content')
+@php
+    $teamRoleLabels = [
+        'leader' => __('messages.community.role_leader'),
+        'admin' => __('messages.community.role_admin'),
+        'editor' => __('messages.community.role_editor'),
+        'member' => __('messages.community.role_member'),
+    ];
+@endphp
 <div class="team-page">
     <div class="team-panel team-public">
         <aside class="team-public-sidebar">
@@ -18,52 +26,52 @@
 
             @auth
                 @if($isLeader)
-                    <a href="{{ route('teams.dashboard', $team->id) }}">Dashboard</a>
+                    <a href="{{ route('teams.dashboard', $team->id) }}">{{ __('messages.community.dashboard') }}</a>
                 @elseif($isMember)
-                    <span class="btn-invincible">Joined</span>
+                    <span class="btn-invincible">{{ __('messages.community.joined') }}</span>
                 @elseif($team->isPending())
-                    <span class="btn-invincible">Under review</span>
+                    <span class="btn-invincible">{{ __('messages.community.under_review') }}</span>
                 @else
                     <form method="POST" action="{{ route('teams.join', $team->id) }}">
                         @csrf
                         <button type="submit" class="primary-action">
-                            <i class="fa fa-heart"></i> Subscribe
+                            <i class="fa fa-heart"></i> {{ __('messages.community.subscribe') }}
                         </button>
                     </form>
                 @endif
             @else
                 <a href="{{ route('login') }}" class="primary-action">
-                    <i class="fa fa-heart"></i> Subscribe
+                    <i class="fa fa-heart"></i> {{ __('messages.community.subscribe') }}
                 </a>
             @endauth
 
             @if($team->site)
                 <a href="{{ $team->site }}" target="_blank" rel="nofollow">
-                    <i class="fa fa-globe"></i> Website
+                    <i class="fa fa-globe"></i> {{ __('messages.community.website') }}
                 </a>
             @endif
             @if($team->donation_url)
                 <a href="{{ $team->donation_url }}" target="_blank" rel="nofollow">
-                    <i class="fa fa-gift"></i> {{ $team->donation_text ?: 'Donation' }}
+                    <i class="fa fa-gift"></i> {{ $team->donation_text ?: __('messages.community.donation') }}
                 </a>
             @endif
         </aside>
 
         <main>
-            <div class="team-kicker">Team</div>
+            <div class="team-kicker">{{ __('messages.community.team') }}</div>
             <h1 class="team-heading">{{ $team->name }}</h1>
 
             <div class="team-stats-line">
-                <span class="team-stat-pill"><strong>0</strong><span>Likes</span></span>
-                <span class="team-stat-pill"><strong>0</strong><span>Followers</span></span>
-                <span class="team-stat-pill"><strong>{{ number_format($totalChapters) }}</strong><span>Chapters</span></span>
-                <span class="team-stat-pill"><strong>{{ $articles->total() }}</strong><span>Books</span></span>
+                <span class="team-stat-pill"><strong>0</strong><span>{{ __('messages.community.likes') }}</span></span>
+                <span class="team-stat-pill"><strong>0</strong><span>{{ __('messages.community.followers') }}</span></span>
+                <span class="team-stat-pill"><strong>{{ number_format($totalChapters) }}</strong><span>{{ __('messages.community.chapters') }}</span></span>
+                <span class="team-stat-pill"><strong>{{ $articles->total() }}</strong><span>{{ __('messages.community.books') }}</span></span>
             </div>
 
             @if($team->isPending())
                 <div class="review-alert">
                     <i class="fa fa-info-circle"></i>
-                    The team is under review by administrators
+                    {{ __('messages.community.pending_review_notice') }}
                 </div>
             @endif
 
@@ -78,7 +86,7 @@
                 <div class="team-description">{!! nl2br(e($team->description)) !!}</div>
             @endif
 
-            <h2 class="team-section-title">Members</h2>
+            <h2 class="team-section-title">{{ __('messages.community.members') }}</h2>
             <div class="team-members-simple">
                 @foreach($team->approvedMembers->sortBy(fn($m) => array_search($m->role, ['leader','admin','editor','member'])) as $m)
                     @php $profileUrl = optional($m->user)->id ? route('users.show.profile', $m->user) : '#'; @endphp
@@ -88,14 +96,14 @@
                         </span>
                         <span>
                             <span class="team-member-name">{{ optional($m->user)->username ?? '?' }}</span>
-                            <span class="team-member-role">{{ $m->role }}</span>
+                            <span class="team-member-role">{{ $teamRoleLabels[$m->role] ?? $m->role }}</span>
                         </span>
                     </a>
                 @endforeach
             </div>
 
             @if($articles->count())
-                <h2 class="team-section-title" style="margin-top:18px">Books</h2>
+                <h2 class="team-section-title" style="margin-top:18px">{{ __('messages.community.books') }}</h2>
                 <div class="team-members-simple">
                     @foreach($articles as $art)
                         <a href="{{ route('articles.show', $art) }}" class="team-member">

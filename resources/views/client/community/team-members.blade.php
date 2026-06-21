@@ -1,5 +1,5 @@
 @extends('layout.novelight')
-@section('template_title', 'Edit members - ' . $team->name)
+@section('template_title', __('messages.community.edit_members_title', ['name' => $team->name]))
 
 @push('styles')
 @php $teamCssVer = file_exists(public_path('static/team/css/team.css')) ? filemtime(public_path('static/team/css/team.css')) : time(); @endphp
@@ -7,8 +7,16 @@
 @endpush
 
 @section('content')
+@php
+    $teamRoleLabels = [
+        'leader' => __('messages.community.role_leader'),
+        'admin' => __('messages.community.role_admin'),
+        'editor' => __('messages.community.role_editor'),
+        'member' => __('messages.community.role_member'),
+    ];
+@endphp
 <div class="team-page">
-    <h1 class="team-title">Edit members - {{ $team->name }}</h1>
+    <h1 class="team-title">{{ __('messages.community.edit_members_title', ['name' => $team->name]) }}</h1>
 
     <div class="team-layout">
         <main class="team-main team-panel">
@@ -18,13 +26,13 @@
             @if($team->isPending())
                 <div class="review-alert">
                     <i class="fa fa-info-circle"></i>
-                    The team is under review by administrators
+                    {{ __('messages.community.pending_review_notice') }}
                 </div>
             @endif
 
             <div class="member-editor">
                 <section class="member-editor-list">
-                    <h2 class="team-section-title">Members</h2>
+                    <h2 class="team-section-title">{{ __('messages.community.members') }}</h2>
                     @foreach($team->members->where('status', 'approved')->sortBy(fn($m) => array_search($m->role, ['leader','admin','editor','member'])) as $m)
                         <button type="button"
                                 class="member-row"
@@ -37,14 +45,14 @@
                             </span>
                             <span>
                                 <span class="member-name">{{ optional($m->user)->username ?? '?' }}</span>
-                                <span class="member-role">{{ $m->role }}</span>
+                                <span class="member-role">{{ $teamRoleLabels[$m->role] ?? $m->role }}</span>
                             </span>
                         </button>
                     @endforeach
 
                     @php $pending = $team->members->where('status', 'pending'); @endphp
                     @if($pending->count())
-                        <h2 class="team-section-title" style="margin-top:18px">Pending</h2>
+                        <h2 class="team-section-title" style="margin-top:18px">{{ __('messages.community.pending') }}</h2>
                         @foreach($pending as $m)
                             <div class="member-row">
                                 <span class="member-avatar">
@@ -52,7 +60,7 @@
                                 </span>
                                 <span>
                                     <span class="member-name">{{ optional($m->user)->username ?? '?' }}</span>
-                                    <span class="member-role">waiting admin review</span>
+                                    <span class="member-role">{{ __('messages.community.waiting_admin_review') }}</span>
                                 </span>
                             </div>
                         @endforeach
@@ -60,25 +68,25 @@
                 </section>
 
                 <section class="member-empty-panel" id="empty-panel">
-                    You haven't selected a member yet
+                    {{ __('messages.community.no_member_selected') }}
                 </section>
 
                 <section id="member-panel" style="display:none">
-                    <h2 class="team-section-title" id="panel-title">Member</h2>
+                    <h2 class="team-section-title" id="panel-title">{{ __('messages.community.member') }}</h2>
                     <form method="POST" id="member-form" class="team-form">
                         @csrf
                         @method('PATCH')
                         <div class="frow">
-                            <label>Role</label>
+                            <label>{{ __('messages.community.role') }}</label>
                             <select name="role" id="panel-role">
-                                <option value="admin">Admin</option>
-                                <option value="editor">Editor</option>
-                                <option value="member">Member</option>
+                                <option value="admin">{{ __('messages.community.role_admin') }}</option>
+                                <option value="editor">{{ __('messages.community.role_editor') }}</option>
+                                <option value="member">{{ __('messages.community.role_member') }}</option>
                             </select>
                         </div>
                         <div class="team-form-actions">
-                            <button type="submit" class="btn">Update</button>
-                            <button type="button" class="btn btn-invincible" onclick="confirmRemove()">Remove</button>
+                            <button type="submit" class="btn">{{ __('messages.community.update') }}</button>
+                            <button type="button" class="btn btn-invincible" onclick="confirmRemove()">{{ __('messages.community.remove') }}</button>
                         </div>
                     </form>
                     <form method="POST" id="remove-form" style="display:none">
@@ -89,16 +97,16 @@
             </div>
 
             <div class="member-note">
-                * All coupons (currency) received from users for chapters go to the team creator
+                {{ __('messages.community.member_coupon_note') }}
             </div>
 
             <form method="POST" action="{{ route('teams.members.request', $team->id) }}" class="team-form" style="margin-top:18px">
                 @csrf
                 <div class="frow">
-                    <label>Request member by username</label>
-                    <input type="text" name="username" placeholder="username" required>
+                    <label>{{ __('messages.community.request_member_by_username') }}</label>
+                    <input type="text" name="username" placeholder="{{ __('messages.community.username_placeholder') }}" required>
                 </div>
-                <button type="submit" class="btn">Send request</button>
+                <button type="submit" class="btn">{{ __('messages.community.send_request') }}</button>
             </form>
         </main>
 
@@ -109,6 +117,7 @@
 <script>
 var currentId = null;
 var baseUrl = '{{ url("teams/" . $team->id . "/members") }}/';
+var removeConfirmMessage = @json(__('messages.community.confirm_remove_member'));
 
 function selectMember(id, username, role) {
     document.querySelectorAll('.member-row').forEach(function(row) {
@@ -127,7 +136,7 @@ function selectMember(id, username, role) {
 }
 
 function confirmRemove() {
-    if (!currentId || !confirm('Remove this member?')) return;
+    if (!currentId || !confirm(removeConfirmMessage)) return;
     document.getElementById('remove-form').submit();
 }
 </script>
