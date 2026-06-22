@@ -1815,4 +1815,4 @@ footer {
 .vip-ring { position: relative !important; border: 0 !important; overflow: visible !important; }
 .vip-ring > img, .vip-ring .lazy-image, .vip-ring img.lazy { border-radius: 50% !important; }
 /* Khung phủ lên trên, canh giữa avatar; rộng hơn để vòng tròn trong của khung ôm vừa avatar. */
-.vip-frame { position: absolute; top: 50%; left: 50%; width: 188%; height: auto; transform: translate(-50%, -50%); z-index: 3; pointer-events: none; }
+.vip-frame { position: absolute; top: 50%; left: 50%; width: 150%; height: auto; transform: translate(-50%, -50%); z-index: 3; pointer-events: none; }
