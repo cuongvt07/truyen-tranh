@@ -65,9 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/my-books/{article}/add-chapter', [\App\Http\Controllers\Client\MyArticleController::class, 'createChapter'])->name('my-articles.create_chapter');
     Route::post('/my-books/{article}/add-chapter', [\App\Http\Controllers\Client\MyArticleController::class, 'storeChapter'])->name('my-articles.store_chapter');
 
-    // Nhân vật / Nhóm dịch / Bộ sưu tập (community, scoped owner)
-    Route::get('/characters/create', [\App\Http\Controllers\Client\CharacterController::class, 'create'])->name('characters.create');
-    Route::resource('characters', \App\Http\Controllers\Client\CharacterController::class)->except(['create', 'show'])->parameters(['characters' => 'id']);
+    // Nhóm dịch / Bộ sưu tập (community, scoped owner). Nhân vật quản lý ở admin (toàn site).
     Route::get('/teams/create', [\App\Http\Controllers\Client\TeamController::class, 'create'])->name('teams.create');
     Route::get('/teams/{team}', [\App\Http\Controllers\Client\TeamController::class, 'show'])->name('teams.show');
     Route::get('/teams/{team}/dashboard', [\App\Http\Controllers\Client\TeamController::class, 'dashboard'])->name('teams.dashboard');
@@ -148,6 +146,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
                     Route::resource('static-pages', \App\Http\Controllers\Admin\StaticPageController::class)->except('show');
                     // ads (quảng cáo)
+                    Route::post('ads/settings', [\App\Http\Controllers\Admin\AdController::class, 'updateSettings'])->name('ads.settings');
                     Route::post('ads/{ad}/toggle', [\App\Http\Controllers\Admin\AdController::class, 'toggle'])->name('ads.toggle');
                     Route::resource('ads', \App\Http\Controllers\Admin\AdController::class)->except('show');
                     // SEO settings
@@ -428,6 +427,10 @@ Route::post('articles/{article}/chapters/{number}/like', [\App\Http\Controllers\
 Route::get('/authors/{author}',
     [\App\Http\Controllers\Client\AuthorController::class, 'show'])
     ->name('authors.show');
+// characters (trang công khai: truyện nhân vật xuất hiện)
+Route::get('/character/{character}',
+    [\App\Http\Controllers\Client\CharacterController::class, 'show'])
+    ->name('characters.show');
 // users
 Route::get('/users/{user}/posted-articles',
     [UserAuthController::class, 'showPostedArticles'])

@@ -189,5 +189,8 @@
 @yield('comment-article-scripts')
 @yield('article-scripts')
 @stack('scripts')
+@if(setting('ads_body_code'))
+{!! setting('ads_body_code') !!}
+@endif
 </body>
 </html>

@@ -179,5 +179,8 @@
 </script>
 @endauth
 
+@if(setting('ads_body_code'))
+{!! setting('ads_body_code') !!}
+@endif
 </body>
 </html>

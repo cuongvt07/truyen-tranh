@@ -113,7 +113,11 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                <a href="{{ route('admin.characters.edit', $item->id) }}" 
+                                <a href="{{ route('characters.show', $item) }}" target="_blank"
+                                   class="btn btn-sm btn-secondary" title="Xem trang công khai">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('admin.characters.edit', $item->id) }}"
                                    class="btn btn-sm btn-info" title="Chỉnh sửa">
                                     <i class="fas fa-edit"></i>
                                 </a>

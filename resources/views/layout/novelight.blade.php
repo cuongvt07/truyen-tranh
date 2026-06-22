@@ -282,7 +282,6 @@
                     <div class="mobile-menu-label"><i class="fa fa-plus"></i> {{ __('messages.add.menu') }}</div>
                     <ul>
                         <li><a href="{{ route('my-articles.create') }}"><i class="fa fa-book"></i> {{ __('messages.add.book') }}</a></li>
-                        <li><a href="{{ route('characters.create') }}"><i class="fa fa-user-pen"></i> {{ __('messages.add.character') }}</a></li>
                         <li><a href="{{ route('teams.create') }}"><i class="fa fa-user-friends"></i> {{ __('messages.add.team') }}</a></li>
                         <li><a href="{{ route('collections.create') }}"><i class="fa fa-layer-group"></i> {{ __('messages.add.collection') }}</a></li>
                     </ul>
@@ -360,7 +359,6 @@
             {{-- Menu nút + (thêm) --}}
             <ul id="header-add-list" class="header-sublist">
                 <li><a href="{{ route('my-articles.create') }}"><i class="fa fa-book"></i> {{ __('messages.add.book') }}</a></li>
-                <li><a href="{{ route('characters.create') }}"><i class="fa fa-user-pen"></i> {{ __('messages.add.character') }}</a></li>
                 <li><a href="{{ route('teams.create') }}"><i class="fa fa-user-friends"></i> {{ __('messages.add.team') }}</a></li>
                 <li><a href="{{ route('collections.create') }}"><i class="fa fa-layer-group"></i> {{ __('messages.add.collection') }}</a></li>
             </ul>
@@ -417,5 +415,9 @@ window.addEventListener('load', forceLoadImages);
 @yield('page_js')
 @stack('scripts')
 @include('client.partials.ads')
+{{-- Mã quảng cáo (ad network) đặt cuối trang, trước </body> --}}
+@if(setting('ads_body_code'))
+{!! setting('ads_body_code') !!}
+@endif
 </body>
 </html>

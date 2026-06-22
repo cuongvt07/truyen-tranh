@@ -62,7 +62,7 @@ class MyArticleController extends Controller
             'article'      => new Article(),
             'genres'       => Genre::orderBy('name')->get(),
             'countries'    => Country::orderBy('sort_order')->get(),
-            'myCharacters' => Character::where('user_id', Auth::id())->orderBy('name')->get(),
+            'myCharacters' => Character::orderBy('name')->get(), // nhân vật dùng chung toàn site
             'myTeams'      => $this->selectableTeams(),
             'mode'         => 'create',
         ]);
@@ -102,7 +102,7 @@ class MyArticleController extends Controller
             'article'      => $article,
             'genres'       => Genre::orderBy('name')->get(),
             'countries'    => Country::orderBy('sort_order')->get(),
-            'myCharacters' => Character::where('user_id', Auth::id())->orderBy('name')->get(),
+            'myCharacters' => Character::orderBy('name')->get(), // nhân vật dùng chung toàn site
             'myTeams'      => $this->selectableTeams($article->team_id),
             'mode'         => 'edit',
         ]);
@@ -219,10 +219,7 @@ class MyArticleController extends Controller
             'genres'          => ['nullable', 'array'],
             'genres.*'        => ['integer', 'exists:genres,id'],
             'characters'      => ['nullable', 'array'],
-            'characters.*'    => [
-                'integer',
-                Rule::exists('characters', 'id')->where(fn ($query) => $query->where('user_id', Auth::id())),
-            ],
+            'characters.*'    => ['integer', 'exists:characters,id'], // nhân vật dùng chung toàn site
             'cover_image'     => ['nullable', 'image', 'max:4096'],
             'background'      => ['nullable', 'image', 'max:6144'],
             'author_name'         => ['nullable', 'string', 'max:255'],
