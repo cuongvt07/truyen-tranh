@@ -3,22 +3,6 @@
 @section('template_title', 'Quản lý Quảng cáo')
 
 @section('content')
-{{-- Mã quảng cáo chèn cuối trang (trước </body>) — loader của ad network, dùng chung toàn site --}}
-<div class="card card-warning card-outline">
-    <div class="card-header"><h3 class="card-title"><i class="fas fa-code mr-2"></i>Mã quảng cáo cuối trang (trước &lt;/body&gt;)</h3></div>
-    <div class="card-body">
-        <form method="POST" action="{{ route('admin.ads.settings') }}">
-            @csrf
-            <div class="form-group mb-2">
-                <textarea name="ads_body_code" class="form-control text-monospace" rows="5"
-                          placeholder="<script>...</script> — dán mã loader/anti-adblock từ ad network">{{ setting('ads_body_code') }}</textarea>
-                <small class="text-muted">Chèn nguyên văn ngay trước thẻ &lt;/body&gt; trên mọi trang người đọc. Chỉ dán mã từ nguồn tin cậy.</small>
-            </div>
-            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Lưu mã</button>
-        </form>
-    </div>
-</div>
-
 <div class="card">
     <div class="card-header">
         <div class="d-flex justify-content-between align-items-center">

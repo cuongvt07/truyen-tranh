@@ -570,6 +570,7 @@ return array_replace_recursive($messages, [
             'click_anywhere' => "Clic n'importe où",
             'popup'          => 'Popup / superposition',
             'chapter'        => 'Dans le chapitre',
+            'footer'         => 'Script footer',
         ],
         'placements' => [
             'top'         => 'Barre supérieure', 'bottom'      => 'Barre inférieure',

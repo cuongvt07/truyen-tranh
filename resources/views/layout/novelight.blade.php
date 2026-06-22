@@ -415,9 +415,6 @@ window.addEventListener('load', forceLoadImages);
 @yield('page_js')
 @stack('scripts')
 @include('client.partials.ads')
-{{-- Mã quảng cáo (ad network) đặt cuối trang, trước </body> --}}
-@if(setting('ads_body_code'))
-{!! setting('ads_body_code') !!}
-@endif
+@include('client.partials.ad-footer')
 </body>
 </html>

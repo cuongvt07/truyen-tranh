@@ -146,7 +146,6 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
                     Route::resource('static-pages', \App\Http\Controllers\Admin\StaticPageController::class)->except('show');
                     // ads (quảng cáo)
-                    Route::post('ads/settings', [\App\Http\Controllers\Admin\AdController::class, 'updateSettings'])->name('ads.settings');
                     Route::post('ads/{ad}/toggle', [\App\Http\Controllers\Admin\AdController::class, 'toggle'])->name('ads.toggle');
                     Route::resource('ads', \App\Http\Controllers\Admin\AdController::class)->except('show');
                     // SEO settings

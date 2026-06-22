@@ -812,6 +812,7 @@ return array (
       'click_anywhere' => 'Click anywhere',
       'popup' => 'Popup / overlay',
       'chapter' => 'Inside chapter',
+      'footer' => 'Footer script',
     ),
     'placements' =>
     array (

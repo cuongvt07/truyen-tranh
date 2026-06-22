@@ -59,6 +59,7 @@
         'click_anywhere' => ['icon'=>'👆', 'name'=>'Click bất kỳ đâu', 'hint'=>'Mở link khi user click bất kỳ vị trí nào trên trang'],
         'popup'          => ['icon'=>'🖼️', 'name'=>'Popup / Overlay',  'hint'=>'Hiện ảnh che màn hình, có đếm ngược đóng'],
         'chapter'        => ['icon'=>'📖', 'name'=>'Trong chapter',     'hint'=>'Chèn ảnh quảng cáo xen kẽ nội dung khi đọc truyện'],
+        'footer'         => ['icon'=>'🦶', 'name'=>'Footer script',      'hint'=>'Chèn script/HTML nguyên văn ngay trước thẻ </body> (ad network, consent, analytics)'],
     ];
 @endphp
 
@@ -457,6 +458,23 @@
                         </div>
                     </div>
                     @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ===== PANEL: FOOTER SCRIPT ===== --}}
+    <div class="ad-panel {{ $mode === 'footer' ? 'active' : '' }}" id="panel-footer">
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">🦶 Footer script (chèn trước &lt;/body&gt;)</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group mb-0">
+                    <label>Script / HTML</label>
+                    <textarea name="script_code" class="form-control text-monospace" rows="6"
+                              placeholder="<script>...</script> — mã bên thứ ba: ad network, consent (Cookiebot), analytics...">{{ old('script_code', $ad->script_code) }}</textarea>
+                    <small class="text-muted">Chèn nguyên văn ngay trước thẻ &lt;/body&gt; trên các trang đã chọn ở "Thông tin chung". Chỉ dán mã từ nguồn tin cậy.</small>
                 </div>
             </div>
         </div>

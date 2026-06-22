@@ -887,9 +887,6 @@ $(document).ready(function() {
 
 {{-- Quảng cáo "click bất kỳ đâu" (trang chương có layout riêng nên include trực tiếp) --}}
 @include('client.partials.ad-click-anywhere')
-{{-- Mã quảng cáo cuối trang (trang chương layout riêng nên render trực tiếp) --}}
-@if(setting('ads_body_code'))
-{!! setting('ads_body_code') !!}
-@endif
+@include('client.partials.ad-footer')
 </body>
 </html>

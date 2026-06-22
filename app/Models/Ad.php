@@ -47,6 +47,7 @@ class Ad extends Model
         'click_anywhere' => 'Click bất kỳ đâu',
         'popup'          => 'Popup / che màn hình',
         'chapter'        => 'Chèn khi đọc chapter',
+        'footer'         => 'Footer script (cuối trang)',
     ];
 
     /** Vị trí slot cho banner */

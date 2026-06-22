@@ -6,24 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Ad;
 use App\Models\AdItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class AdController extends Controller
 {
-    /**
-     * Lưu mã quảng cáo chèn cuối trang (trước </body>) — script loader của ad network,
-     * dùng chung toàn site. Render qua setting('ads_body_code'). In nguyên văn nên chỉ admin nhập.
-     */
-    public function updateSettings(Request $request)
-    {
-        $request->validate(['ads_body_code' => ['nullable', 'string']]);
-        DB::table('settings')->updateOrInsert(
-            ['meta_key' => 'ads_body_code'],
-            ['meta_value' => (string) $request->input('ads_body_code', '')]
-        );
-        return back()->with('success', 'Đã lưu mã quảng cáo cuối trang.');
-    }
-
     public function index(Request $request)
     {
         $query = Ad::query()->with('items')->withCount('items');
@@ -257,6 +242,9 @@ class AdController extends Controller
             $data['script_code']          = $scriptCode !== '' ? $scriptCode : null;
             $data['require_click']        = $request->boolean('require_click');
             $data['chapter_inline_count'] = $v['chapter_inline_count'] ?? 1;
+        } elseif ($mode === 'footer') {
+            // Footer script: chèn nguyên văn trước </body> (ad network, consent, analytics...).
+            $data['script_code'] = $scriptCode !== '' ? $scriptCode : null;
         }
 
         return $data;

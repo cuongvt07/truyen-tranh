@@ -179,8 +179,6 @@
 </script>
 @endauth
 
-@if(setting('ads_body_code'))
-{!! setting('ads_body_code') !!}
-@endif
+@include('client.partials.ad-footer')
 </body>
 </html>
