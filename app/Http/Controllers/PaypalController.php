@@ -63,7 +63,7 @@ class PaypalController extends Controller
 
         if ($res->failed()) {
             Log::error('PayPal createOrder failed', $res->json());
-            return response()->json(['error' => 'Không thể tạo đơn PayPal.'], 500);
+            return response()->json(['error' => __('messages.pay.paypal_create_failed')], 500);
         }
 
         return response()->json(['id' => $res->json('id')]);
@@ -87,21 +87,21 @@ class PaypalController extends Controller
 
         if ($res->failed()) {
             Log::error('PayPal capture failed', $res->json());
-            return response()->json(['error' => 'Thanh toán thất bại.'], 500);
+            return response()->json(['error' => __('messages.pay.paypal_failed')], 500);
         }
 
         $data   = $res->json();
         $status = $data['status'] ?? '';
 
         if ($status !== 'COMPLETED') {
-            return response()->json(['error' => 'Giao dịch chưa hoàn thành: ' . $status], 422);
+            return response()->json(['error' => __('messages.pay.paypal_incomplete', ['status' => $status])], 422);
         }
 
         $captureId = $data['purchase_units'][0]['payments']['captures'][0]['id'] ?? $request->order_id;
 
         // Tránh xử lý trùng
         if (Deposit::where('transaction_id', $captureId)->exists()) {
-            return response()->json(['success' => true, 'message' => 'Đã xử lý trước đó.']);
+            return response()->json(['success' => true, 'message' => __('messages.pay.paypal_already_processed')]);
         }
 
         // Lưu giao dịch
@@ -124,7 +124,10 @@ class PaypalController extends Controller
             return response()->json([
                 'success' => true,
                 'type'    => 'subscription',
-                'message' => "Thanh toán thành công! Subscription đã kích hoạt đến " . $benefit['vip_end']->format('d/m/Y') . ". Bạn đã nhận " . number_format($benefit['initial_credits']) . " credit ngày đầu.",
+                'message' => __('messages.pay.paypal_subscription_success', [
+                    'date'    => $benefit['vip_end']->format('d/m/Y'),
+                    'credits' => number_format($benefit['initial_credits']),
+                ]),
             ]);
         }
 
@@ -132,7 +135,7 @@ class PaypalController extends Controller
             'success' => true,
             'type'    => 'credit',
             'coins'   => $pkg->coins,
-            'message' => "Thanh toán thành công! Bạn nhận được {$pkg->coins} xu.",
+            'message' => __('messages.pay.paypal_credit_success', ['coins' => $pkg->coins]),
         ]);
     }
 
