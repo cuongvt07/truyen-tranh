@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Concerns\HandlesImageUploads;
 use App\Http\Controllers\Controller;
+use App\Models\Article;
 use App\Models\Character;
 use Illuminate\Http\Request;
 
@@ -52,31 +53,47 @@ class CharacterController extends Controller
 
     public function create()
     {
-        return view('admin.characters.form', ['item' => new Character(), 'mode' => 'create']);
+        return view('admin.characters.form', [
+            'item' => new Character(),
+            'mode' => 'create',
+            'articleOptions' => Article::orderBy('title')->get(['id', 'title']),
+            'selectedArticleIds' => [],
+        ]);
     }
 
     public function store(Request $request)
     {
         $data = $this->validateData($request);
+        $articleIds = $data['articles'] ?? [];
+        unset($data['articles']);
         $data['photo'] = $this->upload($request);
-        Character::create($data);
+        $character = Character::create($data);
+        $character->articles()->sync($articleIds);
         return redirect()->route('admin.characters.index')->with('success', __('messages.flash.character.created'));
     }
 
     public function edit(Character $character)
     {
-        return view('admin.characters.form', ['item' => $character, 'mode' => 'edit']);
+        return view('admin.characters.form', [
+            'item' => $character,
+            'mode' => 'edit',
+            'articleOptions' => Article::orderBy('title')->get(['id', 'title']),
+            'selectedArticleIds' => $character->articles()->pluck('articles.id')->all(),
+        ]);
     }
 
     public function update(Request $request, Character $character)
     {
         $data = $this->validateData($request);
+        $articleIds = $data['articles'] ?? [];
+        unset($data['articles']);
         if ($photo = $this->upload($request)) {
             $data['photo'] = $photo;
         } elseif ($request->input('photo_remove') === '1') {
             $data['photo'] = null;
         }
         $character->update($data);
+        $character->articles()->sync($articleIds);
         return redirect()->route('admin.characters.index')->with('success', __('messages.flash.character.updated'));
     }
 
@@ -94,6 +111,8 @@ class CharacterController extends Controller
             'type'        => ['nullable', 'integer', 'in:0,1,2'],
             'description' => ['nullable', 'string'],
             'photo'       => ['nullable', 'image', 'max:4096'],
+            'articles'    => ['nullable', 'array'],
+            'articles.*'  => ['integer', 'exists:articles,id'],
         ], [], ['name' => 'tên nhân vật']);
     }
 

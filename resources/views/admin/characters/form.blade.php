@@ -7,16 +7,15 @@
     $action = $mode === 'create' ? route('admin.characters.store') : route('admin.characters.update', $item->id); 
 @endphp
 
+<form method="POST" action="{{ $action }}" enctype="multipart/form-data">
+@csrf
+@if($mode === 'edit') @method('PATCH') @endif
 <div class="row">
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">{{ $mode === 'create' ? 'Thêm mới Nhân vật' : 'Chỉnh sửa Nhân vật' }}</h3>
             </div>
-            <form method="POST" action="{{ $action }}" enctype="multipart/form-data">
-                @csrf
-                @if($mode === 'edit') @method('PATCH') @endif
-                
                 <div class="card-body">
                     {{-- Tên nhân vật --}}
                     <div class="form-group">
@@ -58,6 +57,20 @@
                         @enderror
                         <small class="form-text text-muted">Thông tin về nhân vật, vai trò, đặc điểm...</small>
                     </div>
+
+                    {{-- Truyện nhân vật xuất hiện (gán nhiều truyện) --}}
+                    <div class="form-group">
+                        <label for="articles">Xuất hiện trong truyện</label>
+                        <select name="articles[]" id="articles" class="form-control character-article-select @error('articles') is-invalid @enderror" multiple>
+                            @foreach($articleOptions as $option)
+                                <option value="{{ $option->id }}" {{ in_array($option->id, old('articles', $selectedArticleIds)) ? 'selected' : '' }}>
+                                    {{ $option->title }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('articles.*')<span class="invalid-feedback d-block">{{ $message }}</span>@enderror
+                        <small class="form-text text-muted">Chọn các truyện mà nhân vật này xuất hiện. Có thể gõ để tìm.</small>
+                    </div>
                 </div>
 
                 <div class="card-footer">
@@ -68,7 +81,6 @@
                         <i class="fas fa-arrow-left"></i> Quay lại
                     </a>
                 </div>
-            </form>
         </div>
     </div>
 
@@ -78,17 +90,12 @@
             <div class="card-header">
                 <h3 class="card-title">Ảnh đại diện</h3>
             </div>
-            <form method="POST" action="{{ $action }}" enctype="multipart/form-data">
-                @csrf
-                @if($mode === 'edit') @method('PATCH') @endif
-                
                 <div class="card-body text-center">
                     <x-admin.image-upload name="photo" :height="150"
                         :current="$item->photo ?: null"
                         urlName="photo_url" :urlValue="old('photo_url')"
                         hint="Link ảnh từ nguồn khác" />
                 </div>
-            </form>
         </div>
 
         <div class="card card-secondary">
@@ -119,5 +126,25 @@
         </div>
     </div>
 </div>
+</form>
 
+@endsection
+
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
+@endpush
+
+@section('ArticleScripts')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(function () {
+            $('.character-article-select').select2({
+                theme: 'bootstrap4',
+                placeholder: 'Chọn truyện...',
+                width: '100%',
+                allowClear: true,
+            });
+        });
+    </script>
 @endsection

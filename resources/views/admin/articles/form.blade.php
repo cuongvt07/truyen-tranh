@@ -108,6 +108,17 @@
                 @endforeach
             </div>
         </div>
+        <div class="form-group">
+            <label for="characters">Nhân vật</label>
+            <select name="characters[]" id="characters" class="form-control detail-block-select" multiple>
+                @foreach(($characters ?? collect()) as $character)
+                    <option value="{{ $character->id }}" {{ in_array($character->id, old('characters', $selectedCharacterIds ?? [])) ? 'selected' : '' }}>
+                        {{ $character->name }}
+                    </option>
+                @endforeach
+            </select>
+            <small class="form-text text-muted">Nhân vật xuất hiện trong truyện. Có thể gõ để tìm. Quản lý nhân vật ở mục Nhân vật.</small>
+        </div>
         @php
             $selectedSimilarArticleIds = collect(old('similar_article_ids', $article->similar_article_ids ?? []))->map(function ($id) { return (int) $id; })->all();
             $selectedTranslationArticleIds = collect(old('translation_request_article_ids', $article->translation_request_article_ids ?? []))->map(function ($id) { return (int) $id; })->all();

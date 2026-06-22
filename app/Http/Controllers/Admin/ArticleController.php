@@ -10,6 +10,7 @@ use App\Http\Requests\Admin\Article\UpdateArticleRequest;
 use App\Http\Requests\Article\ChangeStatusRequest;
 use App\Models\Article;
 use App\Models\Author;
+use App\Models\Character;
 use App\Models\Country;
 use App\Models\Genre;
 use App\Models\Slug;
@@ -97,6 +98,8 @@ class ArticleController extends Controller
             'articleOptions' => $articleOptions,
             'selectedGenres' => array(),
             'selectedAuthors' => array(),
+            'characters' => Character::orderBy('name')->get(),
+            'selectedCharacterIds' => array(),
         ]);
     }
 
@@ -116,6 +119,7 @@ class ArticleController extends Controller
         Slug::ensureFor($article, 'article', $request->input('slug') ?: $article->title);
         $article->genres()->attach($validateData['genres']);
         $article->authors()->attach($validateData['authors']);
+        $article->characters()->sync($request->input('characters', []));
         $this->syncTags($article, $request->input('tags'));
 
         if ($request->has('affiliate_links')) {
@@ -168,6 +172,8 @@ class ArticleController extends Controller
             'articleOptions' => $articleOptions,
             'selectedGenres' => $selectedGenres,
             'selectedAuthors' => $selectedAuthors,
+            'characters' => Character::orderBy('name')->get(),
+            'selectedCharacterIds' => $article->characters->pluck('id')->toArray(),
         ]);
     }
 
@@ -189,6 +195,7 @@ class ArticleController extends Controller
         Slug::ensureFor($article, 'article', $request->input('slug') ?: $article->title);
         $article->genres()->sync($data['genres'] ?? []);
         $article->authors()->sync($data['authors'] ?? []);
+        $article->characters()->sync($request->input('characters', []));
         $this->syncTags($article, $request->input('tags'));
 
         $article->affiliateLinks()->delete();
