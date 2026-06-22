@@ -23,6 +23,14 @@
     </script>
     @endif
 
+    @if($errors->any())
+        <div class="alert alert-danger">
+            @foreach($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
+    @endif
+
     <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data">
         @csrf
 
@@ -47,6 +55,38 @@
                         accept="image/x-icon,image/png,image/svg+xml" :height="40"
                         :current="!empty($settings['favicon_file']) ? asset('storage/'.$settings['favicon_file']) : null" />
                 </div>
+            </div>
+        </div>
+
+        <!-- GIỚI HẠN ĐỌC MIỄN PHÍ -->
+        <div class="card mb-4">
+            <div class="card-header bg-danger text-white">
+                <i class="fas fa-shield-alt"></i> GIỚI HẠN ĐỌC MIỄN PHÍ
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-group col-md-4 mb-2">
+                        <label>Số truyện tối đa/ngày khi chưa đăng nhập</label>
+                        <input type="number" name="guest_articles_per_day" min="1" max="10000"
+                               class="form-control" required
+                               value="{{ old('guest_articles_per_day', $settings['guest_articles_per_day'] ?? 5) }}">
+                    </div>
+                    <div class="form-group col-md-4 mb-2">
+                        <label>Số chương tối đa/ngày khi chưa đăng nhập</label>
+                        <input type="number" name="guest_chapters_per_day" min="1" max="10000"
+                               class="form-control" required
+                               value="{{ old('guest_chapters_per_day', $settings['guest_chapters_per_day'] ?? 10) }}">
+                    </div>
+                    <div class="form-group col-md-4 mb-2">
+                        <label>Tổng số chương cho tài khoản chưa thanh toán</label>
+                        <input type="number" name="unpaid_user_chapters" min="1" max="1000000"
+                               class="form-control" required
+                               value="{{ old('unpaid_user_chapters', $settings['unpaid_user_chapters'] ?? 100) }}">
+                    </div>
+                </div>
+                <small class="form-text text-muted">
+                    Khách vượt hạn mức theo ngày sẽ được chuyển tới đăng nhập. Tài khoản chưa từng có giao dịch hoàn tất vượt tổng số chương sẽ được chuyển tới bảng giá.
+                </small>
             </div>
         </div>
 

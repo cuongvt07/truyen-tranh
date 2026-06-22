@@ -16,6 +16,12 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
+        $request->validate([
+            'guest_articles_per_day' => ['sometimes', 'required', 'integer', 'min:1', 'max:10000'],
+            'guest_chapters_per_day' => ['sometimes', 'required', 'integer', 'min:1', 'max:10000'],
+            'unpaid_user_chapters' => ['sometimes', 'required', 'integer', 'min:1', 'max:1000000'],
+        ]);
+
         $data = $request->except([
             '_token', '_method', 'logo_file', 'favicon_file', 'site_name', 'bank1_qr_image',
             'chapter_footer_image',

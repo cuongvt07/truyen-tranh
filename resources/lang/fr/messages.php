@@ -478,6 +478,8 @@ return array_replace_recursive($messages, [
 
     'chapter' => [
         'chapter' => 'Chapitre',
+        'guest_reading_limit' => 'Vous avez lu :articles histoires ou :chapters chapitres gratuits aujourd’hui. Connectez-vous pour continuer.',
+        'unpaid_reading_limit' => 'Vous avez lu :chapters chapitres gratuits. Choisissez une offre payante pour continuer.',
         'select_paragraph_to_bookmark' => 'Sélectionnez le paragraphe à marquer',
         'bookmark_paragraph' => 'Enregistrer votre position de lecture',
         'bookmark_saved' => 'Position enregistrée',

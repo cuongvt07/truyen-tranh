@@ -11,6 +11,7 @@ use App\Models\ChapterParagraphBookmark;
 use App\Models\ChapterReport;
 use App\Models\ChapterUnlock;
 use App\Models\ReadingHistory;
+use App\Services\ReadingAccessService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Session;
 
 class ChapterController extends Controller
 {
-    public function show(Article $article, $number)
+    public function show(Article $article, $number, Request $request, ReadingAccessService $readingAccess)
     {
         if (request()->route()->originalParameter('article') !== $article->getRouteKey()) {
             return redirect()->route('articles.chapters.show', [$article, $number], 301);
@@ -49,6 +50,24 @@ class ChapterController extends Controller
             } else {
                 $alreadyUnlocked = ChapterUnlock::hasUnlocked(Auth::id(), $chapter->id);
                 $isLocked = !$alreadyUnlocked;
+            }
+        }
+
+        // Locked teaser pages are not reads and do not consume either quota.
+        if (!$isLocked) {
+            if (!Auth::check() && !$readingAccess->guestCanRead($request, $article->id, $chapter->id)) {
+                return redirect()->guest(route('login'))
+                    ->with('reading_limit_notice', __('messages.chapter.guest_reading_limit', [
+                        'articles' => $readingAccess->guestArticleLimit(),
+                        'chapters' => $readingAccess->guestChapterLimit(),
+                    ]));
+            }
+
+            if (Auth::check() && !$readingAccess->unpaidUserCanRead(Auth::user(), $chapter->id)) {
+                return redirect()->route('pages.pricing')
+                    ->with('reading_limit_notice', __('messages.chapter.unpaid_reading_limit', [
+                        'chapters' => $readingAccess->unpaidUserChapterLimit(),
+                    ]));
             }
         }
 
@@ -122,6 +141,10 @@ class ChapterController extends Controller
             $showPopup = false;
             $inlineChapterAds = collect();
         } else {
+            if (!Auth::check()) {
+                $readingAccess->recordGuestRead($request, $article->id, $chapter->id);
+            }
+
             // Đếm view
             $chapter->increaseViewCount();
             $article->increaseViewCount();

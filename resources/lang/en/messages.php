@@ -673,6 +673,8 @@ return array (
   'chapter' => 
   array (
     'chapter' => 'Chapter',
+    'guest_reading_limit' => 'You have read :articles stories or :chapters free chapters today. Please log in to continue reading.',
+    'unpaid_reading_limit' => 'You have read :chapters free chapters. Please choose a payment plan to continue reading.',
     'select_paragraph_to_bookmark' => 'Select the paragraph you are reading to bookmark',
     'bookmark_paragraph' => 'Bookmark your reading position',
     'bookmark_saved' => 'Reading position saved',

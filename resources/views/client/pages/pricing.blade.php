@@ -10,6 +10,12 @@
 <div class="container">
     <h1 class="page-title">{{ __('messages.pay.store') }}</h1>
 
+    @if(session('reading_limit_notice'))
+        <div class="block" style="padding:14px 18px;margin-bottom:20px;border-left:4px solid #f0c040">
+            {{ session('reading_limit_notice') }}
+        </div>
+    @endif
+
     {{-- Nổi bật --}}
     <div class="huge-recomendations">
         {{-- Gói xu nổi bật --}}

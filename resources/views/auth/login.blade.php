@@ -12,6 +12,12 @@
         <div id="login" class="login-form block">
             <h2>Đăng nhập</h2>
 
+            @if(session('reading_limit_notice'))
+                <div class="login-notice" style="color:#f0c040">
+                    <p>{{ session('reading_limit_notice') }}</p>
+                </div>
+            @endif
+
             @if($errors->any())
                 <div class="login-notice" style="color:#f66">
                     @foreach($errors->all() as $e)<p>{{ $e }}</p>@endforeach

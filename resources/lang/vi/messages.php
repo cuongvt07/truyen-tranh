@@ -641,6 +641,8 @@ return [
     ],
     'chapter' => [
         'chapter' => 'Chương',
+        'guest_reading_limit' => 'Bạn đã đọc đủ :articles truyện hoặc :chapters chương miễn phí trong hôm nay. Vui lòng đăng nhập để đọc tiếp.',
+        'unpaid_reading_limit' => 'Bạn đã đọc đủ :chapters chương miễn phí. Vui lòng chọn gói thanh toán để đọc tiếp.',
         'select_paragraph_to_bookmark' => 'Chọn đoạn văn bạn đang đọc để đánh dấu',
         'table_of_contents' => 'Mục lục',
         'posted_by' => 'Đăng bởi',
