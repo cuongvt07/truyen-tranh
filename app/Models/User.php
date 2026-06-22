@@ -235,6 +235,16 @@ class User extends Model implements AuthenticatableContract,
         return $this->hasMany(\App\Models\Deposit::class, 'user_id', 'id');
     }
 
+    /** Đã từng thanh toán mua gói (có deposit completed). Memo theo instance. */
+    private ?bool $hasPurchasedCache = null;
+    public function hasPurchased(): bool
+    {
+        if ($this->hasPurchasedCache !== null) {
+            return $this->hasPurchasedCache;
+        }
+        return $this->hasPurchasedCache = $this->deposits()->where('status', 'completed')->exists();
+    }
+
     public function achievements(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(\App\Models\Achievement::class, 'user_achievements')

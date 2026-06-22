@@ -191,11 +191,13 @@ class TeamController extends Controller
 
     public function create()
     {
+        $this->ensurePurchased();
         return view('client.community.team-form', ['item' => new Team(), 'mode' => 'create']);
     }
 
     public function store(Request $request)
     {
+        $this->ensurePurchased();
         $data = $this->validateData($request);
         $data['user_id'] = Auth::id();
         $data['photo'] = $this->upload($request);

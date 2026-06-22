@@ -24,4 +24,17 @@ class Controller extends BaseController
             Paginator::defaultView('pagination::client');
         }
     }
+
+    /**
+     * Chỉ cho phép user đã từng mua gói (có lịch sử thanh toán) dùng các chức năng
+     * cộng đồng (đăng truyện / tạo nhóm dịch / tạo bộ sưu tập).
+     */
+    protected function ensurePurchased(): void
+    {
+        abort_unless(
+            \Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->hasPurchased(),
+            403,
+            __('messages.community.purchase_required')
+        );
+    }
 }

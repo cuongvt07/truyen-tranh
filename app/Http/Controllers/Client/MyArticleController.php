@@ -58,6 +58,7 @@ class MyArticleController extends Controller
     /** Form tạo truyện. */
     public function create()
     {
+        $this->ensurePurchased();
         return view('client.my-articles.form', [
             'article'      => new Article(),
             'genres'       => Genre::orderBy('name')->get(),
@@ -71,6 +72,7 @@ class MyArticleController extends Controller
     /** Lưu truyện mới. */
     public function store(Request $request)
     {
+        $this->ensurePurchased();
         $data = $this->validateData($request);
         $data = $this->normalizeCreditFields($data);
 

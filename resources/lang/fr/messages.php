@@ -323,6 +323,7 @@ return array_replace_recursive($messages, [
     ],
 
     'community' => [
+        'purchase_required' => "Vous devez acheter un forfait avant d'utiliser cette fonction.",
         'add_character' => 'Ajouter un personnage',
         'edit_character' => 'Modifier le personnage',
         'character_name' => 'Nom du personnage',

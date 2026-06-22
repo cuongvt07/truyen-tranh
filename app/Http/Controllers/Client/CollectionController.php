@@ -26,6 +26,7 @@ class CollectionController extends Controller
 
     public function create()
     {
+        $this->ensurePurchased();
         return view('client.community.collection-form', [
             'item' => new Collection(), 'mode' => 'create',
             'articles' => Article::orderBy('title')->limit(200)->get(),
@@ -34,6 +35,7 @@ class CollectionController extends Controller
 
     public function store(Request $request)
     {
+        $this->ensurePurchased();
         $data = $this->validateData($request);
         $data['user_id'] = Auth::id();
         $collection = Collection::create($data);

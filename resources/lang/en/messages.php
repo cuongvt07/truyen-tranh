@@ -446,8 +446,9 @@ return array (
     'post_chapter' => 'Post Chapter',
     'back' => 'Back',
   ),
-  'community' => 
+  'community' =>
   array (
+    'purchase_required' => 'You need to purchase a package before using this feature.',
     'add_character' => 'Add Character',
     'edit_character' => 'Edit Character',
     'character_name' => 'Character Name',

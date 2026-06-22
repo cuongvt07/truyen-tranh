@@ -164,8 +164,10 @@
                 @auth
                     @php $authUser = Auth::user(); $userAvatar = $authUser->avatar ?: asset('static/account/images/no-ava.jpg'); @endphp
 
-                    {{-- Nút + (thêm) — mọi user đã đăng nhập --}}
+                    {{-- Nút + (thêm) — chỉ user đã từng mua gói (có lịch sử thanh toán) --}}
+                    @if($authUser->hasPurchased())
                     <div id="add-item-btn" class="header-btn header-add"><i class="fa fa-plus"></i></div>
+                    @endif
 
                     {{-- Chuông thông báo --}}
                     <a href="{{ route('users.notifications', Auth::id()) }}" class="header-btn header-bell" title="{{ __('messages.account.nav_notifications') }}">
@@ -279,12 +281,14 @@
                         <li><a href="{{ route('users.teams', Auth::id()) }}"><i class="fa fa-user-friends"></i> {{ __('messages.ui.menu_teams') }}</a></li>
                         <li><a href="{{ route('users.change_info') }}"><i class="fa fa-cog"></i> {{ __('messages.ui.menu_settings') }}</a></li>
                     </ul>
+                    @if($authUser->hasPurchased())
                     <div class="mobile-menu-label"><i class="fa fa-plus"></i> {{ __('messages.add.menu') }}</div>
                     <ul>
                         <li><a href="{{ route('my-articles.create') }}"><i class="fa fa-book"></i> {{ __('messages.add.book') }}</a></li>
                         <li><a href="{{ route('teams.create') }}"><i class="fa fa-user-friends"></i> {{ __('messages.add.team') }}</a></li>
                         <li><a href="{{ route('collections.create') }}"><i class="fa fa-layer-group"></i> {{ __('messages.add.collection') }}</a></li>
                     </ul>
+                    @endif
                 </div>
                 {{-- Đăng xuất để RIÊNG ngoài dropdown, luôn hiện ở cuối --}}
                 <ul class="mobile-menu-logout">
@@ -356,12 +360,14 @@
         @endif
 
         @auth
-            {{-- Menu nút + (thêm) --}}
+            {{-- Menu nút + (thêm) — chỉ user đã từng mua gói --}}
+            @if(auth()->user()->hasPurchased())
             <ul id="header-add-list" class="header-sublist">
                 <li><a href="{{ route('my-articles.create') }}"><i class="fa fa-book"></i> {{ __('messages.add.book') }}</a></li>
                 <li><a href="{{ route('teams.create') }}"><i class="fa fa-user-friends"></i> {{ __('messages.add.team') }}</a></li>
                 <li><a href="{{ route('collections.create') }}"><i class="fa fa-layer-group"></i> {{ __('messages.add.collection') }}</a></li>
             </ul>
+            @endif
 
             {{-- Menu avatar --}}
             <ul id="header-user-list" class="header-sublist">

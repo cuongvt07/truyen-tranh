@@ -421,6 +421,7 @@ return [
         'back' => 'Quay lại',
     ],
     'community' => [
+        'purchase_required' => 'Bạn cần mua gói trước khi sử dụng chức năng này.',
         'add_character' => 'Thêm nhân vật',
         'edit_character' => 'Sửa nhân vật',
         'character_name' => 'Tên nhân vật',
