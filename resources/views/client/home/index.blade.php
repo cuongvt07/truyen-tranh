@@ -248,7 +248,7 @@
                     @endphp
                     <a href="{{ route('articles.show', $article) }}" class="manga-line-item">
                         <div class="poster image image-cover lazy-load-bg">
-                            @if($isNew)<span class="ribbon-new">{{ strtoupper(__('messages.ui.new')) }}</span>@endif
+                            @if($isNew)<span class="ribbon-new" title="{{ __('messages.ui.new') }}">{{ mb_strtoupper(mb_substr(__('messages.ui.new'), 0, 1)) }}</span>@endif
                             <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                         </div>
                         <div class="info">
