@@ -9,69 +9,71 @@ use App\Models\Collection;
 use App\Models\ReadingHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $hotArticles         = Article::getHotArticles()->with('genres')->take(16)->get();
-        $newUpdateArticles   = Article::getNewUpdateArticles()->with('genres')
-            ->withMax('chapters', 'created_at') // ngày chương mới nhất (đã đăng) -> chapters_max_created_at
-            ->take(30)->get();
-        $completedArticles   = Article::getCompletedArticles()->take(12)->get();
-        // "Translation requests": truyện do USER tự gửi (/dang-truyen) đã được admin DUYỆT
-        // (ApprovedArticleScope tự lọc status=APPROVED), mới nhất.
-        $userSubmittedArticles = Article::where('is_user_submitted', true)
-            ->latest('id')->take(12)->get();
-        $lastComments        = DB::table('comments')
-                                 ->join('users', 'users.id', '=', 'comments.user_id')
-                                 ->join('articles', 'articles.id', '=', 'comments.article_id')
-                                 ->where('comments.is_hidden', false)
-                                 ->leftJoin('slugs', function ($join) {
-                                     $join->on('slugs.sluggable_id', '=', 'articles.id')
-                                         ->where('slugs.sluggable_type', Article::class)
-                                         ->where('slugs.type', 'article');
-                                 })
-                                 ->select('comments.*', 'users.name as user_name', 'articles.title as article_title', 'articles.id as article_id', 'slugs.slug as article_slug')
-                                 ->orderByDesc('comments.created_at')
-                                 ->limit(6)
-                                 ->get();
+        // Cache dữ liệu chung (không phụ thuộc user) để giảm TTFB. Truyện mới/comment/
+        // collection chỉ trễ tối đa 3 phút. readingHistory tính riêng theo user (không cache).
+        $data = Cache::remember('home:index:v1', 180, function () {
+            $hotArticles         = Article::getHotArticles()->with('genres')->take(16)->get();
+            $newUpdateArticles   = Article::getNewUpdateArticles()->with(['genres', 'authors'])
+                ->withMax('chapters', 'created_at') // ngày chương mới nhất (đã đăng) -> chapters_max_created_at
+                ->take(30)->get();
+            $completedArticles   = Article::getCompletedArticles()->take(12)->get();
+            // "Translation requests": truyện do USER tự gửi (/dang-truyen) đã được admin DUYỆT
+            // (ApprovedArticleScope tự lọc status=APPROVED), mới nhất.
+            $userSubmittedArticles = Article::where('is_user_submitted', true)
+                ->latest('id')->take(12)->get();
+            $lastComments        = DB::table('comments')
+                                     ->join('users', 'users.id', '=', 'comments.user_id')
+                                     ->join('articles', 'articles.id', '=', 'comments.article_id')
+                                     ->where('comments.is_hidden', false)
+                                     ->leftJoin('slugs', function ($join) {
+                                         $join->on('slugs.sluggable_id', '=', 'articles.id')
+                                             ->where('slugs.sluggable_type', Article::class)
+                                             ->where('slugs.type', 'article');
+                                     })
+                                     ->select('comments.*', 'users.name as user_name', 'articles.title as article_title', 'articles.id as article_id', 'slugs.slug as article_slug')
+                                     ->orderByDesc('comments.created_at')
+                                     ->limit(6)
+                                     ->get();
+            $lastCollections = Collection::query()
+                ->with(['user:id,name,username', 'articles.slug'])
+                ->withCount('articles')
+                ->where('is_private', false)
+                ->orderByDesc('created_at')
+                ->take(4)
+                ->get();
+
+            $collectionIds = $lastCollections->pluck('id');
+            $collectionCommentCounts = $collectionIds->isNotEmpty()
+                ? DB::table('collection_article')
+                    ->join('comments', 'comments.article_id', '=', 'collection_article.article_id')
+                    ->whereIn('collection_article.collection_id', $collectionIds)
+                    ->where('comments.is_hidden', false)
+                    ->selectRaw('collection_article.collection_id, COUNT(comments.id) as total')
+                    ->groupBy('collection_article.collection_id')
+                    ->pluck('total', 'collection_id')
+                : collect();
+
+            $lastCollections->each(function ($collection) use ($collectionCommentCounts) {
+                $collection->setAttribute('comments_count', (int) ($collectionCommentCounts[$collection->id] ?? 0));
+            });
+
+            return compact('hotArticles', 'newUpdateArticles', 'completedArticles', 'userSubmittedArticles', 'lastComments', 'lastCollections');
+        });
+
         $readingHistory = Auth::check()
             ? ReadingHistory::continueReading(Auth::id(), 6)
             : collect();
-        $lastCollections = Collection::query()
-            ->with(['user:id,name,username', 'articles.slug'])
-            ->withCount('articles')
-            ->where('is_private', false)
-            ->orderByDesc('created_at')
-            ->take(4)
-            ->get();
 
-        $collectionIds = $lastCollections->pluck('id');
-        $collectionCommentCounts = $collectionIds->isNotEmpty()
-            ? DB::table('collection_article')
-                ->join('comments', 'comments.article_id', '=', 'collection_article.article_id')
-                ->whereIn('collection_article.collection_id', $collectionIds)
-                ->where('comments.is_hidden', false)
-                ->selectRaw('collection_article.collection_id, COUNT(comments.id) as total')
-                ->groupBy('collection_article.collection_id')
-                ->pluck('total', 'collection_id')
-            : collect();
-
-        $lastCollections->each(function ($collection) use ($collectionCommentCounts) {
-            $collection->setAttribute('comments_count', (int) ($collectionCommentCounts[$collection->id] ?? 0));
-        });
-
-        return view('client.home.index', [
-            'hotArticles'       => $hotArticles,
-            'newUpdateArticles' => $newUpdateArticles,
-            'completedArticles' => $completedArticles,
-            'userSubmittedArticles' => $userSubmittedArticles,
-            'lastComments'      => $lastComments,
-            'readingHistory'    => $readingHistory,
-            'lastCollections'   => $lastCollections,
-        ]);
+        return view('client.home.index', array_merge($data, [
+            'readingHistory' => $readingHistory,
+        ]));
     }
 
     public function showHotArticles()
