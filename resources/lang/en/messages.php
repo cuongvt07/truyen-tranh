@@ -62,8 +62,10 @@ return array (
     'keyword_search' => 'Keyword search',
     'search_placeholder' => 'Search by story title',
   ),
-  'auth' => 
+  'auth' =>
   array (
+    'google_not_configured' => 'Google login is not configured. Please contact the administrator.',
+    'google_failed' => 'Google login failed, please try again.',
     'login' => 'Login',
     'register' => 'Sign Up',
     'logout' => 'Log Out',

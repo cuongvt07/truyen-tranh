@@ -51,6 +51,8 @@ return array_replace_recursive($messages, [
         'keyword_search' => 'Recherche par mot-clé', 'search_placeholder' => 'Rechercher par titre',
     ],
     'auth' => [
+        'google_not_configured' => "La connexion Google n'est pas configurée. Veuillez contacter l'administrateur.",
+        'google_failed' => 'Échec de la connexion Google, veuillez réessayer.',
         'login' => 'Connexion', 'register' => "S'inscrire", 'logout' => 'Déconnexion',
         'email_or_username' => "E-mail ou nom d'utilisateur", 'password' => 'Mot de passe',
         'confirm_password' => 'Confirmer le mot de passe', 'forgot' => 'Mot de passe oublié ?',

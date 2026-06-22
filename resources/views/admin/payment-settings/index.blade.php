@@ -98,6 +98,40 @@
             </div>
         </div>
 
+        <div class="card mb-4">
+            <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                <span><i class="fab fa-google"></i> Đăng nhập Google (OAuth)</span>
+                <button class="btn btn-light btn-sm">Lưu thay đổi</button>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Redirect URI (khai báo y hệt trong Google Console)</label>
+                    <input type="text" class="form-control" readonly value="{{ url('/auth/google/callback') }}">
+                    <small class="form-text text-muted">Google Cloud Console → Credentials → OAuth client → Authorized redirect URIs.</small>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label>Client ID</label>
+                        <input type="text" name="google_client_id" class="form-control" autocomplete="off"
+                               value="{{ old('google_client_id', $googleClientId) }}" placeholder="....apps.googleusercontent.com">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Client Secret
+                            @if($flags['google_secret'])<span class="badge badge-success">đã cấu hình</span>@else<span class="badge badge-secondary">chưa có</span>@endif
+                        </label>
+                        <input type="password" name="google_client_secret" class="form-control" autocomplete="new-password"
+                               placeholder="{{ $flags['google_secret'] ? '•••••••• (để trống = giữ nguyên)' : 'GOCSPX-...' }}">
+                    </div>
+                </div>
+                @if($envFallback['google_client_id'] || $envFallback['google_client_secret'])
+                    <div class="alert alert-info mb-0 mt-2">
+                        <i class="fas fa-info-circle"></i> Đang có cấu hình Google trong <code>.env</code> — dùng làm
+                        <strong>fallback</strong> khi ô tương ứng để trống.
+                    </div>
+                @endif
+            </div>
+        </div>
+
         <button class="btn btn-primary">Lưu thay đổi</button>
     </form>
 </div></div>

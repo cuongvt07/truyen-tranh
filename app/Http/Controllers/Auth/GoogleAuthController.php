@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,12 +18,33 @@ class GoogleAuthController extends Controller
      */
     public function redirect()
     {
+        $this->configureGoogleFromDb();
+
         if (!config('services.google.client_id')) {
             return redirect()->route('login')
-                ->withErrors(['login' => 'Đăng nhập Google chưa được cấu hình. Vui lòng liên hệ quản trị viên.']);
+                ->withErrors(['login' => __('messages.auth.google_not_configured')]);
         }
 
         return Socialite::driver('google')->redirect();
+    }
+
+    /**
+     * Ưu tiên Client ID/Secret từ DB (admin Payment Settings); thiếu thì giữ .env.
+     * Override config runtime để Socialite dùng giá trị DB.
+     */
+    private function configureGoogleFromDb(): void
+    {
+        try {
+            $ps = PaymentSetting::current();
+            if (filled($ps->google_client_id)) {
+                config(['services.google.client_id' => $ps->google_client_id]);
+            }
+            if (filled($ps->google_client_secret)) {
+                config(['services.google.client_secret' => $ps->google_client_secret]);
+            }
+        } catch (Throwable $e) {
+            // Lỗi đọc/giải mã (vd APP_KEY đổi) → giữ nguyên .env.
+        }
     }
 
     /**
@@ -30,11 +52,13 @@ class GoogleAuthController extends Controller
      */
     public function callback()
     {
+        $this->configureGoogleFromDb();
+
         try {
             $googleUser = Socialite::driver('google')->user();
         } catch (Throwable $e) {
             return redirect()->route('login')
-                ->withErrors(['login' => 'Đăng nhập Google thất bại, vui lòng thử lại.']);
+                ->withErrors(['login' => __('messages.auth.google_failed')]);
         }
 
         // 1. Đã liên kết google_id

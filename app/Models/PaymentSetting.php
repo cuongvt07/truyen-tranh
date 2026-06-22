@@ -18,6 +18,7 @@ class PaymentSetting extends Model
         'paypal_sandbox_webhook_id' => 'encrypted',
         'paypal_live_secret'        => 'encrypted',
         'paypal_live_webhook_id'    => 'encrypted',
+        'google_client_secret'      => 'encrypted',
     ];
 
     /** Singleton: luôn dùng 1 bản ghi cấu hình. */

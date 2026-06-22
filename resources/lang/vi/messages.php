@@ -61,6 +61,8 @@ return [
         'search_placeholder' => 'Tìm kiếm theo tên truyện',
     ],
     'auth' => [
+        'google_not_configured' => 'Đăng nhập Google chưa được cấu hình. Vui lòng liên hệ quản trị viên.',
+        'google_failed' => 'Đăng nhập Google thất bại, vui lòng thử lại.',
         'login'        => 'Đăng nhập',
         'register'     => 'Đăng ký',
         'logout'       => 'Đăng xuất',
