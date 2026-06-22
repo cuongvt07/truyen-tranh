@@ -40,8 +40,9 @@
     <div class="static-comment-list">
         @forelse($comments as $comment)
             <div class="sc-item" id="comment-{{ $comment->id }}">
-                <div class="sc-avatar">
+                <div class="sc-avatar {{ user_is_vip(optional($comment->user)->id) ? 'vip-ring' : '' }}">
                     <img src="{{ optional($comment->user)->avatar ?: asset('static/account/images/no-ava.jpg') }}" alt="">
+                    @include('partials.vip-crown', ['userId' => optional($comment->user)->id])
                 </div>
                 <div class="sc-body">
                     <div class="sc-meta">
@@ -85,8 +86,9 @@
                     {{-- Replies --}}
                     @foreach($comment->replies as $reply)
                         <div class="sc-item sc-item--reply" id="comment-{{ $reply->id }}">
-                            <div class="sc-avatar">
+                            <div class="sc-avatar {{ user_is_vip(optional($reply->user)->id) ? 'vip-ring' : '' }}">
                                 <img src="{{ optional($reply->user)->avatar ?: asset('static/account/images/no-ava.jpg') }}" alt="">
+                                @include('partials.vip-crown', ['userId' => optional($reply->user)->id])
                             </div>
                             <div class="sc-body">
                                 <div class="sc-meta">

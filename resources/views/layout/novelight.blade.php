@@ -182,7 +182,7 @@
 
                     {{-- Avatar (mở menu) --}}
                     <div class="header-btn header-profile tippy-profile">
-                        <div class="header-avatar"><img src="{{ $userAvatar }}" alt="{{ $authUser->username }}"></div>
+                        <div class="header-avatar {{ user_is_vip($authUser->id) ? 'vip-ring' : '' }}"><img src="{{ $userAvatar }}" alt="{{ $authUser->username }}">@include('partials.vip-crown', ['userId' => $authUser->id])</div>
                     </div>
                 @else
                     <a href="{{ route('login') }}" class="btn login-btn">{{ __('messages.auth.login') }}</a>

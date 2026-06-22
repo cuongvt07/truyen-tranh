@@ -8,9 +8,11 @@
 @endphp
 <li class="comment" id="comment-{{ $comment->id }}" data-id="{{ $comment->id }}">
     <div class="comment-header">
-        <a href="{{ $profile }}" class="comment-header__ava image image-cover">
+        <a href="{{ $profile }}" class="comment-header__ava image image-cover {{ user_is_vip(optional($u)->id) ? 'vip-ring' : '' }}">
             <img class="lazy-image avatar-image" loading="lazy" src="{{ $ava }}" alt="{{ optional($u)->username }}">
+            @include('partials.vip-crown', ['userId' => optional($u)->id])
         </a>
+
         <div class="comment-header__info">
             <a href="{{ $profile }}" class="comment-header__username">{{ optional($u)->name ?? optional($u)->username ?? __('messages.comments.anonymous') }}</a>
             <div class="comment-header__meta meta-color">

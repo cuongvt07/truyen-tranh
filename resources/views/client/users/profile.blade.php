@@ -17,8 +17,9 @@
 
 <div class="container">
     <header class="header-user-page has-background">
-        <div class="profile-avatar image image-cover lazy-load-bg">
+        <div class="profile-avatar image image-cover lazy-load-bg {{ user_is_vip($user->id) ? 'vip-ring' : '' }}">
             <img class="lazy-image" loading="eager" src="{{ $avatar }}" alt="{{ $user->username }}">
+            @include('partials.vip-crown', ['userId' => $user->id])
         </div>
         <h1 class="nickname">
             {!! method_exists($user, 'renderUserName') ? $user->renderUserName() : e($user->username) !!}

@@ -55,9 +55,10 @@
                         @php
                             $commentUser = $comment->user;
                         @endphp
-                        <figure class="avatar">
+                        <figure class="avatar {{ user_is_vip(optional($commentUser)->id) ? 'vip-ring' : '' }}">
                             <img src="{{ $commentUser->avatar }}" class="lazy"
                                  data-original="{{ $commentUser->avatar }}" alt="{{ $commentUser->username }}">
+                            @include('partials.vip-crown', ['userId' => optional($commentUser)->id])
                         </figure>
                         <div class="summary">
                             <i class="fa fa-angle-left fa-arrow">

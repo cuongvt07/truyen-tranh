@@ -222,6 +222,29 @@ if (!function_exists('user_has_active_vip')) {
     }
 }
 
+if (!function_exists('user_is_vip')) {
+    /**
+     * VIP active theo user_id bất kỳ (dùng cho avatar người khác: comment, profile...).
+     * Nạp 1 lần tập user_id VIP còn hạn để tránh N+1.
+     */
+    function user_is_vip(?int $userId): bool
+    {
+        if (!$userId) {
+            return false;
+        }
+        static $vipIds = null;
+        if ($vipIds === null) {
+            try {
+                $vipIds = \App\Models\UserVip::where('end_at', '>=', now())
+                    ->pluck('user_id')->flip()->all();
+            } catch (\Throwable $e) {
+                $vipIds = [];
+            }
+        }
+        return isset($vipIds[$userId]);
+    }
+}
+
 /**
  * Quảng cáo cho trang hiện tại (gom theo dạng chạy: banner|popup|click_anywhere).
  * VIP đang subscribe thì không hiện bất kỳ quảng cáo nào.

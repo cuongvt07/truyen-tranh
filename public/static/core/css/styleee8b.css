@@ -1810,3 +1810,8 @@ footer {
         justify-content: space-between;
     }
 }
+
+/* ===== VIP avatar: viền vàng tròn + vương miện góc trên-trái ===== */
+.vip-ring { position: relative !important; border: 2px solid #f0c040 !important; border-radius: 50% !important; box-sizing: border-box; overflow: visible !important; }
+.vip-ring > img, .vip-ring .lazy-image, .vip-ring img.lazy { border-radius: 50% !important; }
+.vip-crown { position: absolute; top: -9px; left: -7px; width: 56%; max-width: 34px; height: auto; transform: rotate(-22deg); transform-origin: center; z-index: 3; pointer-events: none; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
