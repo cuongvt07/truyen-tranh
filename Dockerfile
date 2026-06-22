@@ -16,9 +16,7 @@ RUN --mount=type=cache,target=/tmp/cache/composer \
         --optimize-autoloader
 
 COPY . .
-# --optimize (không --classmap-authoritative): giữ fallback PSR-4 để class thêm sau
-# build (live-mount + git pull trên prod) vẫn load được, tránh 500 "Class does not exist".
-RUN composer dump-autoload --no-dev --optimize
+RUN composer dump-autoload --no-dev --classmap-authoritative
 
 
 FROM node:22-alpine AS frontend
