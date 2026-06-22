@@ -117,8 +117,8 @@ class ArticleController extends Controller
         $validateData = $this->uploadCoverImage($request, $validateData);
         $article = Article::create($validateData);
         Slug::ensureFor($article, 'article', $request->input('slug') ?: $article->title);
-        $article->genres()->attach($validateData['genres']);
-        $article->authors()->attach($validateData['authors']);
+        $article->genres()->attach($validateData['genres'] ?? []);
+        $article->authors()->attach($validateData['authors'] ?? []);
         $article->characters()->sync($request->input('characters', []));
         $this->syncTags($article, $request->input('tags'));
 
