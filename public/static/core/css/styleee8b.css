@@ -1811,7 +1811,8 @@ footer {
     }
 }
 
-/* ===== VIP avatar: viền vàng tròn + vương miện góc trên-trái ===== */
-.vip-ring { position: relative !important; border: 2px solid #f0c040 !important; border-radius: 50% !important; box-sizing: border-box; overflow: visible !important; }
+/* ===== VIP avatar: khung trang trí (viền + vương miện + ruy băng) overlay quanh avatar ===== */
+.vip-ring { position: relative !important; border: 0 !important; overflow: visible !important; }
 .vip-ring > img, .vip-ring .lazy-image, .vip-ring img.lazy { border-radius: 50% !important; }
-.vip-crown { position: absolute; top: -9px; left: -7px; width: 56%; max-width: 34px; height: auto; transform: rotate(-22deg); transform-origin: center; z-index: 3; pointer-events: none; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+/* Khung phủ lên trên, canh giữa avatar; rộng hơn để vòng tròn trong của khung ôm vừa avatar. */
+.vip-frame { position: absolute; top: 50%; left: 50%; width: 188%; height: auto; transform: translate(-50%, -50%); z-index: 3; pointer-events: none; }
