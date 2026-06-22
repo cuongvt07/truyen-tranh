@@ -169,18 +169,19 @@ class AdController extends Controller
             'hide_for_vip' => $request->boolean('hide_for_vip'),
             'start_at'     => $v['start_at'] ?? null,
             'end_at'       => $v['end_at'] ?? null,
-            // Nullify fields irrelevant to this mode
+            // Reset fields irrelevant to this mode. Cột nullable -> null; cột NOT NULL
+            // (frequency/...) phải dùng giá trị default hợp lệ, không được ghi null.
             'placement'          => null,
             'image_url'          => null,
             'script_code'        => null,
             'link'               => null,
-            'frequency'          => null,
-            'frequency_value'    => null,
-            'delay_seconds'      => null,
-            'after_click'        => null,
-            'cooldown_seconds'   => null,
+            'frequency'          => 'once_session',
+            'frequency_value'    => 1,
+            'delay_seconds'      => 0,
+            'after_click'        => 'none',
+            'cooldown_seconds'   => 0,
             'require_click'      => false,
-            'chapter_inline_count' => null,
+            'chapter_inline_count' => 1,
         ];
 
         match ($mode) {
