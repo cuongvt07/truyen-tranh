@@ -301,7 +301,29 @@ return array (
     'no_results_in_genre' => 'No stories in this genre yet.',
     'no_results' => 'No stories found.',
   ),
-  'pay' => 
+  'credit_log' =>
+  array (
+    'title' => 'Credit history',
+    'empty' => 'No credit activity yet.',
+    'time' => 'Time',
+    'source' => 'Source',
+    'change' => 'Change',
+    'balance' => 'Balance',
+    'user' => 'User',
+    'admin' => 'By admin',
+    'types' =>
+    array (
+      'purchase' => 'Top-up / purchase',
+      'daily_subscription' => 'Daily subscription credit',
+      'subscription_init' => 'Subscription first-day credit',
+      'chapter_unlock' => 'Chapter unlock',
+      'vip_purchase' => 'VIP purchase',
+      'signup_bonus' => 'Sign-up bonus',
+      'achievement' => 'Achievement reward',
+      'admin_adjust' => 'Admin adjustment',
+    ),
+  ),
+  'pay' =>
   array (
     'topup_and_buy_vip' => 'Top Up Coins & Buy VIP',
     'deposit_to_account' => 'Deposit to Account',

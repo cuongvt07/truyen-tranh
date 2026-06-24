@@ -307,6 +307,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('transactions', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('transactions.index');
             Route::get('transactions/{transaction}', [\App\Http\Controllers\Admin\TransactionController::class, 'show'])->name('transactions.show');
             Route::patch('transactions/{transaction}/status', [\App\Http\Controllers\Admin\TransactionController::class, 'updateStatus'])->name('transactions.update-status');
+            // Sổ biến động credit (ledger)
+            Route::get('credit-transactions', [\App\Http\Controllers\Admin\CreditTransactionController::class, 'index'])->name('credit-transactions.index');
             // VIP
             Route::get('vips', [\App\Http\Controllers\Admin\VipController::class, 'index'])->name('vips.index');
             Route::get('vips/create', [\App\Http\Controllers\Admin\VipController::class, 'create'])->name('vips.create');

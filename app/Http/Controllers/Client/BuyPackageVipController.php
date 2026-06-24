@@ -33,9 +33,8 @@ class BuyPackageVipController extends Controller
             ]);
         }
 
-        // Trừ xu
-        $user->points -= $coins;
-        $user->save();
+        // Trừ xu (ghi ledger)
+        \App\Services\CreditService::adjust($user->id, -$coins, 'vip_purchase');
 
         $lastVip = UserVip::where('user_id', $user->id)
             ->where('end_at', '>=', now())

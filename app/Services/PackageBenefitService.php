@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\CreditPackage;
 use App\Models\User;
 use App\Models\UserVip;
+use App\Services\CreditService;
 use Carbon\Carbon;
 
 class PackageBenefitService
@@ -15,7 +16,7 @@ class PackageBenefitService
             return $this->grantSubscription($user, $package);
         }
 
-        $user->increment('points', $package->coins);
+        CreditService::adjust($user->id, (int) $package->coins, 'purchase', ['reference' => $package]);
 
         return [
             'type' => 'credit',
@@ -48,7 +49,7 @@ class PackageBenefitService
         ]);
 
         if ((int) $package->daily_credits > 0) {
-            $user->increment('points', (int) $package->daily_credits);
+            CreditService::adjust($user->id, (int) $package->daily_credits, 'subscription_init', ['reference' => $vip]);
         }
 
         return [

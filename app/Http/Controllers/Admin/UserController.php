@@ -142,11 +142,16 @@ class UserController extends Controller
             $user->gender = $data['gender'];
         }
 
-        if (isset($data['points'])) {
-            $user->points = $data['points'];
-        }
-
         $user->save();
+
+        // Credit khởi tạo (nếu admin nhập) -> ghi ledger thay vì set thẳng.
+        $initPoints = (int) ($data['points'] ?? 0);
+        if ($initPoints > 0) {
+            \App\Services\CreditService::adjust($user->id, $initPoints, 'admin_adjust', [
+                'admin_id'    => \Illuminate\Support\Facades\Auth::id(),
+                'description' => 'Khởi tạo khi tạo tài khoản',
+            ]);
+        }
 
         return redirect()->route('admin.users.index')
             ->with('success', __('messages.flash.user.created'));
@@ -182,10 +187,18 @@ class UserController extends Controller
             $user->password = bcrypt($data['password']);
         }
         $user->role = $data['role'];
-        if (isset($data['points'])) {
-            $user->points = $data['points'];
-        }
+        $oldPoints = (int) $user->points;
         $user->save();
+
+        // Chỉnh credit tay -> ghi ledger phần chênh lệch (admin_adjust).
+        if (isset($data['points'])) {
+            $delta = (int) $data['points'] - $oldPoints;
+            if ($delta !== 0) {
+                \App\Services\CreditService::adjust($user->id, $delta, 'admin_adjust', [
+                    'admin_id' => \Illuminate\Support\Facades\Auth::id(),
+                ]);
+            }
+        }
 
         return redirect()->route('admin.users.index')
             ->with('success', __('messages.flash.user.updated'));

@@ -323,13 +323,13 @@ class ChapterController extends Controller
         }
 
         DB::transaction(function () use ($user, $chapter, $article, $creditCost) {
-            $user->decrement('points', $creditCost);
-            ChapterUnlock::create([
+            $unlock = ChapterUnlock::create([
                 'user_id'       => $user->id,
                 'chapter_id'    => $chapter->id,
                 'article_id'    => $article->id,
                 'credits_spent' => $creditCost,
             ]);
+            \App\Services\CreditService::adjust($user->id, -$creditCost, 'chapter_unlock', ['reference' => $unlock]);
         });
 
         return response()->json([

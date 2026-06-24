@@ -95,7 +95,7 @@ class GoogleAuthController extends Controller
             // points không nằm trong $fillable nên set tường minh ở đây.
             $bonus = max(0, (int) setting('google_signup_bonus', 30));
             if ($bonus > 0) {
-                $user->increment('points', $bonus);
+                \App\Services\CreditService::adjust($user->id, $bonus, 'signup_bonus');
             }
         }
 

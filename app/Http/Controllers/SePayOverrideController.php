@@ -28,7 +28,7 @@ class SePayOverrideController extends BaseController
                     ->value('user_id');
 
                 if ($userId) {
-                    User::where('id', $userId)->increment('points', $amount);
+                    \App\Services\CreditService::adjust($userId, (int) $amount, 'purchase');
                 }
 
                 \Log::info('Deposit updated in override controller', [

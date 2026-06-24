@@ -55,7 +55,7 @@ class AchievementService
                 ]);
                 // Thưởng credits
                 if ($ach->reward_credits > 0) {
-                    $user->increment('points', $ach->reward_credits);
+                    \App\Services\CreditService::adjust($user->id, (int) $ach->reward_credits, 'achievement', ['reference' => $ach]);
                 }
                 $unlocked[] = $ach;
             }

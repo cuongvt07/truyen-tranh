@@ -62,7 +62,10 @@ class TransactionController extends Controller
         if ($old !== 'completed' && $request->status === 'completed') {
             $coins = (int) $transaction->amount;
             if ($transaction->user_id && $coins > 0) {
-                User::where('id', $transaction->user_id)->increment('points', $coins);
+                \App\Services\CreditService::adjust($transaction->user_id, $coins, 'purchase', [
+                    'reference' => $transaction,
+                    'admin_id'  => \Illuminate\Support\Facades\Auth::id(),
+                ]);
             }
         }
 

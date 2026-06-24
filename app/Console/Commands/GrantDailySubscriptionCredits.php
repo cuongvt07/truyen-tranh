@@ -36,7 +36,7 @@ class GrantDailySubscriptionCredits extends Command
                         continue;
                     }
 
-                    User::where('id', $vip->user_id)->increment('points', $amount);
+                    \App\Services\CreditService::adjust($vip->user_id, $amount, 'daily_subscription', ['reference' => $vip]);
                     $vip->forceFill(['last_daily_credit_at' => $now])->save();
 
                     $granted++;

@@ -263,9 +263,13 @@ class UserController extends Controller
         $this->authorizePrivateProfile($user);
         $deposits = \App\Models\Deposit::where('user_id', $user->id)
             ->orderByDesc('created_at')->paginate(15);
+        // Sổ biến động credit (tăng/giảm + nguồn).
+        $creditLog = \App\Models\CreditTransaction::where('user_id', $user->id)
+            ->orderByDesc('id')->paginate(20, ['*'], 'log');
         return view('client.users.transactions', [
             'user' => $user,
             'deposits' => $deposits,
+            'creditLog' => $creditLog,
         ]);
     }
 

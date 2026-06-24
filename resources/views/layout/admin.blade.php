@@ -307,7 +307,7 @@
 
                     {{-- ===== CREDIT & THANH TOÁN ===== --}}
                     @if($currentUser->is_admin)
-                        @php $openCredit = request()->routeIs('admin.credit-packages.*','admin.transactions.*','admin.vips.*','admin.payment_settings.*'); @endphp
+                        @php $openCredit = request()->routeIs('admin.credit-packages.*','admin.transactions.*','admin.credit-transactions.*','admin.vips.*','admin.payment_settings.*'); @endphp
                         <li class="nav-item has-treeview {{ $openCredit ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ $openCredit ? 'active' : '' }}">
                                 <i class="nav-icon fa-solid fa-coins"></i>
@@ -322,6 +322,11 @@
                                 <li class="nav-item">
                                     <a href="{{ route('admin.transactions.index') }}" class="nav-link {{ set_active('admin.transactions.*') }}">
                                         <i class="nav-icon fa-solid fa-receipt"></i><p>Giao dịch</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.credit-transactions.index') }}" class="nav-link {{ set_active('admin.credit-transactions.*') }}">
+                                        <i class="nav-icon fa-solid fa-clock-rotate-left"></i><p>Lịch sử credit</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">

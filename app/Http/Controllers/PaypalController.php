@@ -179,7 +179,7 @@ class PaypalController extends Controller
                     preg_match('/\((\d+) xu\)/', $deposit->content ?? '', $m);
                     $coins = (int) ($m[1] ?? 0);
                     if ($coins > 0) {
-                        \App\Models\User::where('id', $deposit->user_id)->increment('points', $coins);
+                        \App\Services\CreditService::adjust($deposit->user_id, $coins, 'purchase', ['reference' => $deposit]);
                     }
                 }
                 $deposit->update(['status' => 'completed', 'transaction_id' => $captureId]);

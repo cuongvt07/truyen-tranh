@@ -56,6 +56,38 @@
     @endif
 </div>
 
+{{-- Sổ biến động credit (tăng/giảm + nguồn) --}}
+<div class="block" style="margin-top:16px;overflow-x:auto">
+    <h2 class="user-tab-title" style="margin-bottom:12px">{{ __('messages.credit_log.title') }}</h2>
+    @if($creditLog->isEmpty())
+        <div class="nothing" style="padding:30px 0;text-align:center;color:var(--meta-color)">{{ __('messages.credit_log.empty') }}</div>
+    @else
+        <table class="trans-table full">
+            <thead>
+                <tr>
+                    <th>{{ __('messages.credit_log.time') }}</th>
+                    <th>{{ __('messages.credit_log.source') }}</th>
+                    <th>{{ __('messages.credit_log.change') }}</th>
+                    <th>{{ __('messages.credit_log.balance') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($creditLog as $t)
+                    <tr>
+                        <td>{{ optional($t->created_at)->format('d.m.Y H:i') }}</td>
+                        <td>{{ $t->typeLabel() }}@if($t->description)<br><small class="meta-color">{{ $t->description }}</small>@endif</td>
+                        <td style="color:{{ $t->amount >= 0 ? '#4caf50' : '#e84040' }};font-weight:600;white-space:nowrap">
+                            {{ $t->amount >= 0 ? '+' : '' }}{{ number_format($t->amount) }}
+                        </td>
+                        <td>{{ number_format($t->balance_after) }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <div style="margin-top:14px">{{ $creditLog->links() }}</div>
+    @endif
+</div>
+
 <style>
 .trans-table { width:100%; border-collapse:collapse; }
 .trans-table td, .trans-table th { padding:8px 12px; text-align:left; }

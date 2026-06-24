@@ -177,6 +177,26 @@ return array_replace_recursive($messages, [
         'no_results_in_genre' => 'Aucune histoire dans ce genre.', 'no_results' => 'Aucune histoire trouvée.',
     ],
 
+    'credit_log' => [
+        'title' => 'Historique des crédits',
+        'empty' => 'Aucune activité de crédit pour le moment.',
+        'time' => 'Heure',
+        'source' => 'Source',
+        'change' => 'Variation',
+        'balance' => 'Solde',
+        'user' => 'Utilisateur',
+        'admin' => 'Par admin',
+        'types' => [
+            'purchase' => 'Recharge / achat',
+            'daily_subscription' => 'Crédit quotidien (abonnement)',
+            'subscription_init' => 'Crédit du premier jour',
+            'chapter_unlock' => 'Déblocage de chapitre',
+            'vip_purchase' => 'Achat VIP',
+            'signup_bonus' => "Bonus d'inscription",
+            'achievement' => 'Récompense de succès',
+            'admin_adjust' => 'Ajustement admin',
+        ],
+    ],
     'pay' => [
         'topup_and_buy_vip' => 'Recharger & Acheter VIP',
         'deposit_to_account' => 'Recharger le compte',
