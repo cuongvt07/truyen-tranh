@@ -337,6 +337,14 @@ HTML;
 
     public function terms()
     {
+        if ($page = $this->staticPage('terms')) {
+            return $this->render(
+                $page->localizedTitle() ?: 'Terms of Service',
+                '<i class="fa fa-file-contract"></i>',
+                $page->localizedContent()
+            );
+        }
+
         $app = config('app.name');
         $content = <<<HTML
 <h2>1. Chấp nhận điều khoản</h2>
@@ -398,6 +406,14 @@ HTML;
 
     public function feedback()
     {
+        if ($page = $this->staticPage('feedback')) {
+            return $this->render(
+                $page->localizedTitle() ?: 'Feedback',
+                '<i class="fa fa-comment-dots"></i>',
+                $page->localizedContent()
+            );
+        }
+
         $content = <<<HTML
 <p>Chúng tôi luôn lắng nghe ý kiến của bạn để cải thiện trải nghiệm đọc truyện.</p>
 <p>Nếu bạn gặp lỗi, có đề xuất tính năng, hoặc muốn yêu cầu truyện mới, vui lòng liên hệ qua email hỗ trợ hoặc để lại bình luận trong các trang truyện tương ứng.</p>
