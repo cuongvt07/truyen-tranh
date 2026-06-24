@@ -10,7 +10,15 @@ class Genre extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $fillable = ['name', 'description', 'cover_image'];
+    protected $fillable = ['name', 'description', 'cover_image', 'is_hot'];
+
+    protected $casts = ['is_hot' => 'boolean'];
+
+    /** Thể loại "hot" — hiển thị ở dropdown thể loại trên header. */
+    public function scopeHot($query)
+    {
+        return $query->where('is_hot', true);
+    }
 
     protected static function booted(): void
     {

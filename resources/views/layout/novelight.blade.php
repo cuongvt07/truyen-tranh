@@ -129,7 +129,11 @@
 </head>
 <body>
 @php
-    $navGenres = \App\Models\Genre::orderBy('name')->get();
+    // Dropdown thể loại header: chỉ thể loại Hot. Chưa đánh dấu Hot cái nào -> fallback toàn bộ (tránh trống).
+    $navGenres = \App\Models\Genre::hot()->orderBy('name')->get();
+    if ($navGenres->isEmpty()) {
+        $navGenres = \App\Models\Genre::orderBy('name')->get();
+    }
 @endphp
 <header class="header">
     <div class="container">

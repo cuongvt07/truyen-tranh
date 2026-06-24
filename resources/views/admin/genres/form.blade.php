@@ -56,6 +56,19 @@
     @enderror
 </div>
 
+{{-- Hot: hiện ở dropdown thể loại trên header --}}
+<div class="form-group">
+    <div class="form-check">
+        <input type="hidden" name="is_hot" value="0">
+        <input type="checkbox" name="is_hot" value="1" id="is_hot" class="form-check-input"
+               {{ old('is_hot', $genre->is_hot ?? false) ? 'checked' : '' }}>
+        <label class="form-check-label" for="is_hot">
+            <strong>Hot</strong> — hiển thị ở menu thể loại (dropdown) trên header
+        </label>
+    </div>
+    <small class="form-text text-muted">Mặc định tắt. Khi có thể loại Hot, dropdown header chỉ hiện các thể loại Hot.</small>
+</div>
+
 @push('scripts')
 <script>
 (function () {

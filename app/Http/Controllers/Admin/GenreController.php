@@ -66,6 +66,7 @@ class GenreController extends Controller
     public function store(StoreGenreRequest $request)
     {
         $data = $request->safe()->only(['name', 'description']);
+        $data['is_hot'] = $request->boolean('is_hot');
 
         if ($request->hasFile('cover_image')) {
             $data['cover_image'] = $this->storePublicImage($request->file('cover_image'), 'images/genres');
@@ -99,6 +100,7 @@ class GenreController extends Controller
     public function update(UpdateGenreRequest $request, Genre $genre)
     {
         $data = $request->safe()->only(['name', 'description']);
+        $data['is_hot'] = $request->boolean('is_hot');
         $oldImage = $genre->cover_image;
 
         if ($request->hasFile('cover_image')) {
