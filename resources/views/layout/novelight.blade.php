@@ -129,11 +129,8 @@
 </head>
 <body>
 @php
-    // Dropdown thể loại header: chỉ thể loại Hot. Chưa đánh dấu Hot cái nào -> fallback toàn bộ (tránh trống).
+    // Dropdown thể loại header: CHỈ thể loại Hot. Chưa tick Hot cái nào -> không liệt kê genre (chỉ còn link "Tất cả").
     $navGenres = \App\Models\Genre::hot()->orderBy('name')->get();
-    if ($navGenres->isEmpty()) {
-        $navGenres = \App\Models\Genre::orderBy('name')->get();
-    }
 @endphp
 <header class="header">
     <div class="container">
@@ -343,11 +340,11 @@
                     <li><a href="{{ $mi->href }}"@if($mi->target === '_blank') target="_blank"@endif>{{ $mi->display_label }}</a></li>
                 @endforeach
             @else
-                {{-- Fallback: tự liệt kê tất cả thể loại --}}
+                {{-- Chỉ liệt kê thể loại Hot (admin tick). Chưa có Hot -> chỉ hiện link Tất cả. --}}
                 @foreach($navGenres as $genre)
                     <li><a href="{{ route('genres.show', $genre) }}">{{ $genre->name }}</a></li>
                 @endforeach
-                <hr>
+                @if($navGenres->isNotEmpty())<hr>@endif
                 <li><a href="{{ route('catalog.index') }}">{{ __('messages.nav.all') }}</a></li>
             @endif
         </ul>
