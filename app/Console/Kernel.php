@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('subscriptions:grant-daily-credits')->everyFifteenMinutes();
+        // Cộng credit subscription đúng 00:00 mỗi ngày (đầu ngày mới). withoutOverlapping phòng chạy chồng.
+        $schedule->command('subscriptions:grant-daily-credits')->dailyAt('00:00')->withoutOverlapping();
         // Báo "chương mới" cho chương hẹn giờ vừa tới giờ đăng (chương đăng ngay đã báo lúc tạo).
         $schedule->command('notifications:new-chapters')->everyFiveMinutes();
     }

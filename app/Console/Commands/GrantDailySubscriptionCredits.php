@@ -15,7 +15,7 @@ class GrantDailySubscriptionCredits extends Command
     public function handle(): int
     {
         $now = now();
-        $eligibleBefore = $now->copy()->subDay();
+        $todayStart = $now->copy()->startOfDay();
         $granted = 0;
         $credits = 0;
 
@@ -23,9 +23,10 @@ class GrantDailySubscriptionCredits extends Command
             ->where('daily_credits', '>', 0)
             ->where('start_at', '<=', $now)
             ->where('end_at', '>=', $now)
-            ->where(function ($query) use ($eligibleBefore) {
+            ->where(function ($query) use ($todayStart) {
+                // Chưa được cộng trong hôm nay (chạy 00:00 -> mỗi sub nhận đúng 1 lần/ngày).
                 $query->whereNull('last_daily_credit_at')
-                    ->orWhere('last_daily_credit_at', '<=', $eligibleBefore);
+                    ->orWhere('last_daily_credit_at', '<', $todayStart);
             })
             ->orderBy('id')
             ->chunkById(100, function ($vips) use ($now, &$granted, &$credits) {
