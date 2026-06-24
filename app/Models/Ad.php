@@ -48,6 +48,7 @@ class Ad extends Model
         'popup'          => 'Popup / che màn hình',
         'chapter'        => 'Chèn khi đọc chapter',
         'footer'         => 'Footer script (cuối trang)',
+        'head'           => 'Head script (trong <head>)',
     ];
 
     /** Vị trí slot cho banner */

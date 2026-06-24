@@ -78,6 +78,7 @@
         #unlock-msg.error { color: #ff6b6b; }
         #unlock-msg.success { color: #51cf66; }
     </style>
+    @include('client.partials.ad-head')
 </head>
 <body chapter_ph="">
 

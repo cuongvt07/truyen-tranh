@@ -60,6 +60,7 @@
         'popup'          => ['icon'=>'🖼️', 'name'=>'Popup / Overlay',  'hint'=>'Hiện ảnh che màn hình, có đếm ngược đóng'],
         'chapter'        => ['icon'=>'📖', 'name'=>'Trong chapter',     'hint'=>'Chèn ảnh quảng cáo xen kẽ nội dung khi đọc truyện'],
         'footer'         => ['icon'=>'🦶', 'name'=>'Footer script',      'hint'=>'Chèn script/HTML nguyên văn ngay trước thẻ </body> (ad network, consent, analytics)'],
+        'head'           => ['icon'=>'🧠', 'name'=>'Head script',        'hint'=>'Chèn script/HTML nguyên văn vào trong thẻ <head> (loader, verify, analytics)'],
     ];
 @endphp
 
@@ -475,6 +476,23 @@
                     <textarea name="script_code" class="form-control text-monospace" rows="6"
                               placeholder="<script>...</script> — mã bên thứ ba: ad network, consent (Cookiebot), analytics...">{{ old('script_code', $ad->script_code) }}</textarea>
                     <small class="text-muted">Chèn nguyên văn ngay trước thẻ &lt;/body&gt; trên các trang đã chọn ở "Thông tin chung". Chỉ dán mã từ nguồn tin cậy.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ===== PANEL: HEAD SCRIPT ===== --}}
+    <div class="ad-panel {{ $mode === 'head' ? 'active' : '' }}" id="panel-head">
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">🧠 Head script (chèn trong &lt;head&gt;)</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group mb-0">
+                    <label>Script / HTML</label>
+                    <textarea name="script_code" class="form-control text-monospace" rows="6"
+                              placeholder="<script>...</script> — loader/verify/analytics đặt trong <head>">{{ old('script_code', $ad->script_code) }}</textarea>
+                    <small class="text-muted">Chèn nguyên văn vào trong thẻ &lt;head&gt; trên các trang đã chọn ở "Thông tin chung". Chỉ dán mã từ nguồn tin cậy.</small>
                 </div>
             </div>
         </div>

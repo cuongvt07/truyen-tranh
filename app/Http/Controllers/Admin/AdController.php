@@ -246,6 +246,9 @@ class AdController extends Controller
         } elseif ($mode === 'footer') {
             // Footer script: chèn nguyên văn trước </body> (ad network, consent, analytics...).
             $data['script_code'] = $scriptCode !== '' ? $scriptCode : null;
+        } elseif ($mode === 'head') {
+            // Head script: chèn nguyên văn trong <head> (loader/verify/analytics...).
+            $data['script_code'] = $scriptCode !== '' ? $scriptCode : null;
         }
 
         return $data;

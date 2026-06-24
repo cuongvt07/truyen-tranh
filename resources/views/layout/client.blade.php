@@ -36,6 +36,7 @@
     <link rel="stylesheet" type="text/css" href="/resource/style.css"/>
     <script src="/resource/js/main.js"></script>
     <link rel="pingback" href=""/>
+    @include('client.partials.ad-head')
 </head>
 
 @php

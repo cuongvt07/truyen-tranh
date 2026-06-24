@@ -600,6 +600,7 @@ return array_replace_recursive($messages, [
             'popup'          => 'Popup / superposition',
             'chapter'        => 'Dans le chapitre',
             'footer'         => 'Script footer',
+            'head'           => 'Script head',
         ],
         'placements' => [
             'top'         => 'Barre supérieure', 'bottom'      => 'Barre inférieure',

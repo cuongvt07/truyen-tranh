@@ -844,6 +844,7 @@ return array (
       'popup' => 'Popup / overlay',
       'chapter' => 'Inside chapter',
       'footer' => 'Footer script',
+      'head' => 'Head script',
     ),
     'placements' =>
     array (

@@ -126,6 +126,7 @@
         .header-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .header-sublist .fa { width: 18px; text-align: center; margin-right: 4px; }
     </style>
+    @include('client.partials.ad-head')
 </head>
 <body>
 @php

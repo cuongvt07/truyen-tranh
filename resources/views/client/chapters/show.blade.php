@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="{{ asset('static/core/css/styleee8b.css') }}?ver=1.8.0">
     <link rel="stylesheet" href="{{ asset('static/book/css/chapteree8b.css') }}?ver=1.8.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @include('client.partials.ad-head')
 </head>
 <body chapter_ph="{{ (int) ($bookmarkParagraph ?? 0) }}">
 
