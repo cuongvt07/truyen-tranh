@@ -74,6 +74,38 @@ services:
       app:
         condition: service_started
 
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app
+    image: truyen-tranh-app:${APP_IMAGE_TAG:-latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env.production
+        required: false
+    command: ["php", "artisan", "schedule:work"]
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      LOG_CHANNEL: ${LOG_CHANNEL:-stack}
+      CACHE_STORE: ${CACHE_STORE:-redis}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
+      SESSION_DRIVER: ${SESSION_DRIVER:-redis}
+      REDIS_CLIENT: ${REDIS_CLIENT:-phpredis}
+      REDIS_HOST: redis
+      RUN_MIGRATIONS: "false"
+      RUN_SEEDERS: "false"
+      RUN_CACHE_WARMUP: ${RUN_CACHE_WARMUP:-true}
+    volumes:
+      - app-storage:/var/www/html/storage
+      - public-storage:/var/www/html/storage/app/public
+    depends_on:
+      redis:
+        condition: service_healthy
+      app:
+        condition: service_started
+
   redis:
     image: redis:7.4-alpine
     restart: unless-stopped
