@@ -80,6 +80,12 @@
                            placeholder="VD: THÔNG TIN PHÁT TRIỂN">
                     @error('section_label_vi')<span class="invalid-feedback">{{ $message }}</span>@enderror
                 </div>
+                <div class="form-group col-md-6">
+                    <label>Section Label (FR)</label>
+                    <input type="text" name="section_label_fr" class="form-control @error('section_label_fr') is-invalid @enderror"
+                           value="{{ old('section_label_fr', $page->section_label_fr ?? '') }}">
+                    @error('section_label_fr')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                </div>
             </div>
 
             {{-- Titles --}}
@@ -92,9 +98,15 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label>Tiêu đề (VI)</label>
-                    <input type="text" name="title_vi" class="form-control @error('title_vi') is-invalid @enderror" 
+                    <input type="text" name="title_vi" class="form-control @error('title_vi') is-invalid @enderror"
                            value="{{ old('title_vi', $page->title_vi) }}">
                     @error('title_vi')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Tiêu đề (FR)</label>
+                    <input type="text" name="title_fr" class="form-control @error('title_fr') is-invalid @enderror"
+                           value="{{ old('title_fr', $page->title_fr) }}">
+                    @error('title_fr')<span class="invalid-feedback">{{ $message }}</span>@enderror
                 </div>
             </div>
 
@@ -108,9 +120,15 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label>Mô tả ngắn (VI)</label>
-                    <textarea name="excerpt_vi" class="form-control @error('excerpt_vi') is-invalid @enderror" 
+                    <textarea name="excerpt_vi" class="form-control @error('excerpt_vi') is-invalid @enderror"
                               rows="3">{{ old('excerpt_vi', $page->excerpt_vi) }}</textarea>
                     @error('excerpt_vi')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Mô tả ngắn (FR)</label>
+                    <textarea name="excerpt_fr" class="form-control @error('excerpt_fr') is-invalid @enderror"
+                              rows="3">{{ old('excerpt_fr', $page->excerpt_fr) }}</textarea>
+                    @error('excerpt_fr')<span class="invalid-feedback">{{ $message }}</span>@enderror
                 </div>
             </div>
 
@@ -124,9 +142,15 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label>Nội dung HTML (VI)</label>
-                    <textarea name="content_vi" class="form-control js-editor @error('content_vi') is-invalid @enderror" 
+                    <textarea name="content_vi" class="form-control js-editor @error('content_vi') is-invalid @enderror"
                               rows="16">{{ old('content_vi', $page->content_vi) }}</textarea>
                     @error('content_vi')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                </div>
+                <div class="form-group col-md-12">
+                    <label>Nội dung HTML (FR)</label>
+                    <textarea name="content_fr" class="form-control js-editor @error('content_fr') is-invalid @enderror"
+                              rows="16">{{ old('content_fr', $page->content_fr) }}</textarea>
+                    @error('content_fr')<span class="invalid-feedback">{{ $message }}</span>@enderror
                 </div>
             </div>
 

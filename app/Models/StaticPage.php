@@ -36,12 +36,16 @@ class StaticPage extends Model
         'slug',
         'title_en',
         'title_vi',
+        'title_fr',
         'content_en',
         'content_vi',
+        'content_fr',
         'excerpt_en',
         'excerpt_vi',
+        'excerpt_fr',
         'section_label_en',
         'section_label_vi',
+        'section_label_fr',
         'comments_enabled',
         'is_pinned',
         'view_count',
@@ -99,25 +103,33 @@ class StaticPage extends Model
 
     // ----------------------------------------------------------------- helpers
 
-    public function localizedTitle(?string $locale = null): string
+    /** Lấy giá trị field đa ngữ theo locale (en/vi/fr...), fallback về _en nếu trống. */
+    private function localizedField(string $base, ?string $locale = null): string
     {
         $locale = $locale ?: app()->getLocale();
-        return ($locale === 'vi' && $this->title_vi) ? $this->title_vi : $this->title_en;
+        $val = $this->{"{$base}_{$locale}"} ?? null;
+        if ($val !== null && trim($val) !== '') {
+            return $val;
+        }
+        return (string) ($this->{"{$base}_en"} ?? '');
+    }
+
+    public function localizedTitle(?string $locale = null): string
+    {
+        return $this->localizedField('title', $locale);
     }
 
     public function localizedContent(?string $locale = null): string
     {
-        $locale = $locale ?: app()->getLocale();
-        $content = $locale === 'vi' ? $this->content_vi : $this->content_en;
-        return ($content === null || trim($content) === '') ? (string) $this->content_en : $content;
+        return $this->localizedField('content', $locale);
     }
 
     public function localizedExcerpt(?string $locale = null): string
     {
         $locale = $locale ?: app()->getLocale();
-        $excerpt = $locale === 'vi' ? $this->excerpt_vi : $this->excerpt_en;
+        $excerpt = $this->localizedField('excerpt', $locale);
 
-        if ($excerpt !== null && trim($excerpt) !== '') {
+        if (trim($excerpt) !== '') {
             return $excerpt;
         }
 
@@ -126,8 +138,7 @@ class StaticPage extends Model
 
     public function localizedSectionLabel(?string $locale = null): string
     {
-        $locale = $locale ?: app()->getLocale();
-        return ($locale === 'vi' && $this->section_label_vi) ? $this->section_label_vi : (string) $this->section_label_en;
+        return $this->localizedField('section_label', $locale);
     }
 
     public function isPending(): bool
