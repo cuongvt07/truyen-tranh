@@ -312,6 +312,15 @@ class PageController extends Controller
 
     public function dmca()
     {
+        // Ưu tiên trang admin cấu hình (StaticPage slug 'dmca'); thiếu thì dùng mặc định.
+        if ($page = $this->staticPage('dmca')) {
+            return $this->render(
+                $page->localizedTitle() ?: 'DMCA',
+                '<i class="fa fa-shield-halved"></i>',
+                $page->localizedContent()
+            );
+        }
+
         $app = config('app.name');
         $content = <<<HTML
 <p>$app tôn trọng quyền sở hữu trí tuệ. Nếu bạn là chủ sở hữu bản quyền và cho rằng nội dung trên website vi phạm, vui lòng gửi yêu cầu gỡ bỏ kèm các thông tin sau:</p>
