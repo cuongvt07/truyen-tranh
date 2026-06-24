@@ -59,7 +59,7 @@
 @endpush
 
 @section('content')
-@php $navGenres = \App\Models\Genre::orderBy('name')->get(); @endphp
+@php $navGenres = \App\Models\Genre::hot()->orderBy('name')->get(); @endphp {{-- danh sách thể loại home: chỉ thể loại Hot --}}
 <div class="container">
 
     {{-- 1. POPULAR SWIPER --}}
@@ -129,6 +129,7 @@
             'Horror'    => 'media/genres/horror.jpg',
         ];
     @endphp
+    @if(($navGenres ?? collect())->isNotEmpty())
     <div class="section">
         <div class="block index-tags index-tags-swiper">
             <div class="swiper-container">
@@ -150,6 +151,7 @@
             </div>
         </div>
     </div>
+    @endif
 
     {{-- 4. TRANSLATION REQUESTS — truyện do user gửi, đã admin duyệt --}}
     @if($userSubmittedArticles->isNotEmpty())
