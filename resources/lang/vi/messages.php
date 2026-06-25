@@ -316,7 +316,7 @@ return [
         'paypal_already_processed' => 'Đã xử lý trước đó.',
         'paypal_create_failed' => 'Không thể tạo đơn PayPal.',
         'paypal_credit_success' => 'Thanh toán thành công! Bạn nhận được :coins xu.',
-        'paypal_subscription_success' => 'Thanh toán thành công! Subscription đã kích hoạt đến :date. Bạn đã nhận :credits credit ngày đầu.',
+        'paypal_subscription_success' => 'Thanh toán thành công! Gói đã kích hoạt đến :date. Bạn nhận :credits credit ngày đầu.',
         'buy_vip_package' => 'Mua Gói VIP',
         'vip_days' => 'ngày VIP',
         'enough_points' => 'Đủ điểm để đăng ký!',

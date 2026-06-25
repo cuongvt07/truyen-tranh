@@ -48,6 +48,7 @@ class PackageBenefitService
             'end_at' => $endAt,
         ]);
 
+        // Cộng NGAY credit gốc của gói (= daily_credits) khi mua/gia hạn. Các ngày sau do scheduler 00:00 cộng.
         if ((int) $package->daily_credits > 0) {
             CreditService::adjust($user->id, (int) $package->daily_credits, 'subscription_init', ['reference' => $vip]);
         }
