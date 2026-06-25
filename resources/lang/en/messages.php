@@ -315,7 +315,7 @@ return array (
     array (
       'purchase' => 'Top-up / purchase',
       'daily_subscription' => 'Daily subscription credit',
-      'subscription_init' => 'Subscription first-day credit',
+      'subscription_init' => 'Subscription package credit',
       'chapter_unlock' => 'Chapter unlock',
       'vip_purchase' => 'VIP purchase',
       'signup_bonus' => 'Sign-up bonus',
@@ -343,7 +343,7 @@ return array (
     'paypal_already_processed' => 'Already processed.',
     'paypal_create_failed' => 'Could not create PayPal order.',
     'paypal_credit_success' => 'Payment successful! You received :coins coins.',
-    'paypal_subscription_success' => 'Payment successful! Subscription active until :date. You received :credits credits for the first day.',
+    'paypal_subscription_success' => 'Payment successful! Subscription active until :date. :credits credits were added to your account.',
     'buy_vip_package' => 'Buy VIP Package',
     'vip_days' => 'VIP days',
     'enough_points' => 'Enough points to subscribe!',

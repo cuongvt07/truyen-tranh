@@ -48,16 +48,17 @@ class PackageBenefitService
             'end_at' => $endAt,
         ]);
 
-        // Cộng NGAY credit gốc của gói (= daily_credits) khi mua/gia hạn. Các ngày sau do scheduler 00:00 cộng.
-        if ((int) $package->daily_credits > 0) {
-            CreditService::adjust($user->id, (int) $package->daily_credits, 'subscription_init', ['reference' => $vip]);
+        // Cộng NGAY coins (coin gốc gói) thẳng vào tài khoản khi mua/gia hạn.
+        // Daily (daily_credits/ngày) do scheduler 00:00 cộng trong suốt thời gian active.
+        if ((int) $package->coins > 0) {
+            CreditService::adjust($user->id, (int) $package->coins, 'subscription_init', ['reference' => $vip]);
         }
 
         return [
             'type' => 'subscription',
             'vip' => $vip,
             'daily_credits' => (int) $package->daily_credits,
-            'initial_credits' => (int) $package->daily_credits,
+            'initial_credits' => (int) $package->coins,
             'vip_start' => $startAt,
             'vip_end' => $endAt,
             'message' => "Gói subscription {$package->name} đã được kích hoạt.",

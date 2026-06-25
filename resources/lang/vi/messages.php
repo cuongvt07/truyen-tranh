@@ -289,7 +289,7 @@ return [
         'types' => [
             'purchase' => 'Nạp / mua xu',
             'daily_subscription' => 'Credit gói hằng ngày',
-            'subscription_init' => 'Credit ngày đầu của gói',
+            'subscription_init' => 'Credit gói (mua/gia hạn)',
             'chapter_unlock' => 'Mở khoá chương',
             'vip_purchase' => 'Mua VIP',
             'signup_bonus' => 'Thưởng đăng ký',
@@ -316,7 +316,7 @@ return [
         'paypal_already_processed' => 'Đã xử lý trước đó.',
         'paypal_create_failed' => 'Không thể tạo đơn PayPal.',
         'paypal_credit_success' => 'Thanh toán thành công! Bạn nhận được :coins xu.',
-        'paypal_subscription_success' => 'Thanh toán thành công! Gói đã kích hoạt đến :date. Bạn nhận :credits credit ngày đầu.',
+        'paypal_subscription_success' => 'Thanh toán thành công! Gói đã kích hoạt đến :date. Đã cộng :credits credit vào tài khoản.',
         'buy_vip_package' => 'Mua Gói VIP',
         'vip_days' => 'ngày VIP',
         'enough_points' => 'Đủ điểm để đăng ký!',

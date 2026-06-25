@@ -189,7 +189,7 @@ return array_replace_recursive($messages, [
         'types' => [
             'purchase' => 'Recharge / achat',
             'daily_subscription' => 'Crédit quotidien (abonnement)',
-            'subscription_init' => 'Crédit du premier jour',
+            'subscription_init' => 'Crédit du forfait',
             'chapter_unlock' => 'Déblocage de chapitre',
             'vip_purchase' => 'Achat VIP',
             'signup_bonus' => "Bonus d'inscription",
@@ -216,7 +216,7 @@ return array_replace_recursive($messages, [
         'paypal_already_processed' => 'Déjà traité.',
         'paypal_create_failed' => 'Impossible de créer la commande PayPal.',
         'paypal_credit_success' => 'Paiement réussi ! Vous avez reçu :coins jetons.',
-        'paypal_subscription_success' => "Paiement réussi ! Abonnement actif jusqu'au :date. Vous avez reçu :credits crédits pour le premier jour.",
+        'paypal_subscription_success' => "Paiement réussi ! Abonnement actif jusqu'au :date. :credits crédits ont été ajoutés à votre compte.",
         'buy_vip_package' => 'Acheter un forfait VIP',
         'vip_days' => 'jours VIP',
         'enough_points' => 'Assez de pièces !',
