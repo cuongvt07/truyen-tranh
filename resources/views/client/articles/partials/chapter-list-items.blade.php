@@ -8,7 +8,7 @@
     @php
         $chapterCreditCost = $chapter->getEffectiveCreditCost($article);
         $chapterIsPaid = $chapterCreditCost > 0;
-        $chapterIsUnlocked = $chapterIsPaid && (($unlockedChapterIds ?? collect())->contains($chapter->id) || ($hasActiveVip ?? false));
+        $chapterIsUnlocked = $chapterIsPaid && ($unlockedChapterIds ?? collect())->contains($chapter->id);
     @endphp
     <a href="{{ route('articles.chapters.show', [$article, $chapter->number]) }}"
        class="chapter {{ ($currentChapterId ?? null) === $chapter->id ? 'active' : '' }}">

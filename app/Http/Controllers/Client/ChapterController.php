@@ -44,7 +44,8 @@ class ChapterController extends Controller
         $isLocked = false;
         $alreadyUnlocked = false;
 
-        if ($creditCost > 0 && !$hasActiveVip) {
+        // VIP KHÔNG được đọc free — gói nào cũng trừ credit như thường (VIP chỉ ad-free + credit ngày).
+        if ($creditCost > 0) {
             if (!Auth::check()) {
                 $isLocked = true;
             } else {
@@ -301,14 +302,10 @@ class ChapterController extends Controller
             return response()->json(['success' => false, 'error' => 'Không tìm thấy chương.'], 404);
         }
 
-        $hasActiveVip = \App\Models\UserVip::where('user_id', Auth::id())
-            ->where('end_at', '>=', now())
-            ->exists();
-
         $creditCost = $chapter->getEffectiveCreditCost($article);
 
-        // Already free or VIP
-        if ($creditCost === 0 || $hasActiveVip) {
+        // Chương free (cost 0). VIP KHÔNG được free — vẫn trừ credit như thường.
+        if ($creditCost === 0) {
             return response()->json(['success' => true, 'redirect' => route('articles.chapters.show', [$article, $number])]);
         }
 
@@ -319,7 +316,7 @@ class ChapterController extends Controller
 
         $user = Auth::user();
         if ($user->points < $creditCost) {
-            return response()->json(['success' => false, 'error' => 'Không đủ credit. Vui lòng nạp thêm.'], 422);
+            return response()->json(['success' => false, 'error' => __('messages.chapter.not_enough_credit_topup')], 422);
         }
 
         DB::transaction(function () use ($user, $chapter, $article, $creditCost) {

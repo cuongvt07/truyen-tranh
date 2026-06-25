@@ -529,6 +529,7 @@ return array_replace_recursive($messages, [
         'login_to_buy_read' => 'Connectez-vous pour acheter et lire ce chapitre',
         'buy_for' => 'Acheter (:cost coupons)', 'buy_processing' => 'Traitement…',
         'buy_success' => 'Débloqué ! Chargement…', 'not_enough_credit' => 'Crédit insuffisant',
+        'not_enough_credit_topup' => 'Crédit insuffisant. Veuillez recharger pour continuer.',
         'topup_now' => 'Recharger maintenant →', 'login_to_buy' => 'Connectez-vous pour acheter',
         'give_thanks' => 'Remercier', 'bookmark' => 'Signet', 'bookmarked' => 'Ajouté aux signets',
         'follow' => 'Suivre', 'previous_chapter' => 'Précédent', 'next_chapter' => 'Suivant',

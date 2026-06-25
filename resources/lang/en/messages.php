@@ -732,6 +732,7 @@ return array (
     'buy_processing' => 'Processing…',
     'buy_success' => 'Unlocked! Loading…',
     'not_enough_credit' => 'Not enough credit',
+    'not_enough_credit_topup' => 'Not enough credit. Please top up to continue.',
     'topup_now' => 'Top up credit now →',
     'login_to_buy' => 'Log in to buy',
     'give_thanks' => 'Give thanks',

@@ -688,6 +688,7 @@ return [
         'buy_processing' => 'Đang xử lý…',
         'buy_success' => 'Đã mở khoá! Đang tải…',
         'not_enough_credit' => 'Không đủ credit',
+        'not_enough_credit_topup' => 'Không đủ credit. Vui lòng nạp thêm để tiếp tục.',
         'topup_now' => 'Nạp credit ngay →',
         'login_to_buy' => 'Đăng nhập để mua',
         'give_thanks' => 'Cảm ơn',
