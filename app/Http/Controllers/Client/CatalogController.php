@@ -19,10 +19,16 @@ class CatalogController extends Controller
             $query->where('title', 'like', '%' . $search . '%');
         }
 
-        // Lọc theo thể loại (nhiều); ?genre=3 là alias đơn cho ?genres[]=3
+        // Lọc theo thể loại (nhiều); ?genre=drama (slug) hoặc ?genre=3 (id) là alias đơn cho ?genres[]=
         $selectedGenres = array_filter((array) $request->get('genres', []));
         if (empty($selectedGenres) && $request->filled('genre')) {
-            $selectedGenres = [(int) $request->get('genre')];
+            $g = $request->get('genre');
+            $genreModel = is_numeric($g)
+                ? Genre::find((int) $g)
+                : \App\Models\Slug::resolve('genre', $g);
+            if ($genreModel) {
+                $selectedGenres = [$genreModel->id];
+            }
         }
         if (!empty($selectedGenres)) {
             $query->whereHas('genres', function ($q) use ($selectedGenres) {

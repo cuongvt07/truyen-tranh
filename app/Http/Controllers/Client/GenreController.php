@@ -14,6 +14,7 @@ class GenreController extends Controller
             return redirect()->route('genres.show', $genre, 301);
         }
 
-        return redirect()->to(route('catalog.index') . '?genre=' . $genre->id);
+        // Dùng slug cho URL dễ đọc: /catalog?genre=drama (thay vì ?genre=11).
+        return redirect()->to(route('catalog.index') . '?genre=' . $genre->getRouteKey());
     }
 }
