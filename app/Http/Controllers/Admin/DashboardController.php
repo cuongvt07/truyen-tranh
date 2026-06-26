@@ -86,6 +86,8 @@ class DashboardController extends Controller
         return [
             'analyticsPeriodLabel' => $monthStart->format('d/m/Y') . ' - ' . $monthEnd->format('d/m/Y'),
 
+            'monthlyRegistrations' => User::whereBetween('created_at', [$monthStart, $monthEnd])->count(),
+
             'monthlyBuyers' => (clone $completedDepositsThisMonth)->distinct('user_id')->count('user_id'),
             'monthlyTransactions' => (clone $completedDepositsThisMonth)->count(),
             'monthlyRevenue' => (clone $completedDepositsThisMonth)->sum('amount'),
@@ -103,6 +105,7 @@ class DashboardController extends Controller
                 ->get(['id', 'title', 'cover_image', 'view']),
 
             'chartLabels' => $this->chartLabels($trendStart, $trendEnd),
+            'registrationChartData' => $this->registrationChartData($trendStart, $trendEnd),
             'purchaseChartData' => $this->purchaseChartData($trendStart, $trendEnd),
             'creditChartData' => $this->creditChartData($trendStart, $trendEnd),
             'readChartData' => $this->readChartData($trendStart, $trendEnd),
@@ -144,6 +147,21 @@ class DashboardController extends Controller
             ->map(fn ($day) => $day->format('d/m'))
             ->values()
             ->all();
+    }
+
+    private function registrationChartData($start, $end): array
+    {
+        $rows = User::query()
+            ->whereBetween('created_at', [$start, $end])
+            ->selectRaw('DATE(created_at) as day')
+            ->selectRaw('COUNT(*) as registrations')
+            ->groupBy('day')
+            ->get()
+            ->keyBy('day');
+
+        return $this->fillDailySeries($start, $end, $rows, [
+            'registrations' => 'registrations',
+        ]);
     }
 
     private function purchaseChartData($start, $end): array

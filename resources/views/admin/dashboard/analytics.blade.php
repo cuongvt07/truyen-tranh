@@ -67,6 +67,19 @@
 
     <div class="row">
         <div class="col-lg-3 col-6">
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>{{ number_format($monthlyRegistrations) }}</h3>
+                    <p>Người đăng ký tháng này</p>
+                    <small>Tài khoản mới ({{ $analyticsPeriodLabel }})</small>
+                </div>
+                <div class="icon"><i class="fas fa-user-plus"></i></div>
+                <a href="{{ route('admin.users.index') }}" class="small-box-footer">
+                    Xem tài khoản <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
             <div class="small-box bg-success">
                 <div class="inner">
                     <h3>{{ number_format($monthlyBuyers) }}</h3>
@@ -157,6 +170,15 @@
         </div>
         <div class="card-body">
             <canvas id="purchaseTrendChart" height="110"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-user-plus mr-1"></i> Số lượng người đăng ký theo ngày (30 ngày)</h3>
+        </div>
+        <div class="card-body">
+            <canvas id="registrationTrendChart" height="110"></canvas>
         </div>
     </div>
 
@@ -291,6 +313,7 @@
         const purchaseData = @json($purchaseChartData);
         const creditData = @json($creditChartData);
         const readData = @json($readChartData);
+        const registrationData = @json($registrationChartData);
 
         const baseOptions = {
             responsive: true,
@@ -321,6 +344,23 @@
                         backgroundColor: 'rgba(0, 123, 255, .1)',
                         fill: true,
                         lineTension: 0.25
+                    }
+                ]
+            },
+            options: baseOptions
+        });
+
+        new Chart(document.getElementById('registrationTrendChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Người đăng ký',
+                        data: registrationData.registrations,
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, .35)',
+                        borderWidth: 1
                     }
                 ]
             },
