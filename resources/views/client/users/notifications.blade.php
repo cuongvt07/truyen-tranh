@@ -17,19 +17,26 @@
             @php
                 $d = $n->data;
                 $isNew = is_null($n->read_at);
-                $link = (!empty($d['article_slug']) && isset($d['chapter_number']))
-                    ? route('articles.chapters.show', [$d['article_slug'], $d['chapter_number']])
-                    : (!empty($d['article_slug']) ? url('articles/'.$d['article_slug']) : '#');
+                $isGift = ($d['type'] ?? '') === 'gift';
+                $link = $isGift
+                    ? ($d['url'] ?? url('/catalog'))
+                    : ((!empty($d['article_slug']) && isset($d['chapter_number']))
+                        ? route('articles.chapters.show', [$d['article_slug'], $d['chapter_number']])
+                        : (!empty($d['article_slug']) ? url('articles/'.$d['article_slug']) : '#'));
             @endphp
-            <a href="{{ $link }}" class="block notif-item {{ $isNew ? 'is-new' : '' }}">
-                <div class="notif-icon"><i class="fa {{ ($d['mode'] ?? 'new') === 'soon' ? 'fa-clock' : 'fa-book-open' }}"></i></div>
+            <a href="{{ $link }}" class="block notif-item {{ $isNew ? 'is-new' : '' }} {{ $isGift ? 'notif-gift' : '' }}">
+                <div class="notif-icon"><i class="fa {{ $isGift ? 'fa-gift' : (($d['mode'] ?? 'new') === 'soon' ? 'fa-clock' : 'fa-book-open') }}"></i></div>
                 <div class="notif-body">
                     <div class="notif-text">
-                        <strong>{{ $d['article_title'] ?? __('messages.account.nav_notifications') }}</strong>
-                        — @if(($d['mode'] ?? 'new') === 'soon')
-                            {{ __('messages.account.chapter_soon_notif', ['number' => $d['chapter_number'] ?? '', 'date' => $d['publish_at'] ?? '']) }}
+                        @if($isGift)
+                            <strong>{{ $d['title'] ?? 'Gift' }}</strong>
                         @else
-                            {{ __('messages.account.new_chapter_notif', ['number' => $d['chapter_number'] ?? '']) }}
+                            <strong>{{ $d['article_title'] ?? __('messages.account.nav_notifications') }}</strong>
+                            — @if(($d['mode'] ?? 'new') === 'soon')
+                                {{ __('messages.account.chapter_soon_notif', ['number' => $d['chapter_number'] ?? '', 'date' => $d['publish_at'] ?? '']) }}
+                            @else
+                                {{ __('messages.account.new_chapter_notif', ['number' => $d['chapter_number'] ?? '']) }}
+                            @endif
                         @endif
                     </div>
                     <div class="notif-time">{{ optional($n->created_at)->diffForHumans() }}</div>
@@ -51,5 +58,6 @@
 .notif-text { font-size:14px; }
 .notif-time { font-size:12px;color:var(--meta-color,#888);margin-top:2px; }
 .notif-dot { width:9px;height:9px;border-radius:50%;background:#ff4040;flex-shrink:0; }
+.notif-gift .notif-icon { background:#fff7e0; color:#e0a020; }
 </style>
 @endsection
