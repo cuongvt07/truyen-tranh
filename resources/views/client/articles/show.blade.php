@@ -191,7 +191,7 @@
                 @if(($relatedGenres ?? collect())->count())
                 <section class="section">
                     <h2 class="section-title">{{ __('messages.article.related_collections') }}</h2>
-                    <div class="collections"><div class="collection-mini-grid">
+                    <div class="collections"><div class="collection-mini-grid related-collections-6">
                         @foreach($relatedGenres as $genre)
                             <a href="{{ route('genres.show', $genre) }}" class="collection-item">
                                 <div class="collection__inner">

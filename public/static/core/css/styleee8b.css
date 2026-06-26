@@ -1401,6 +1401,17 @@ footer {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
 
+/* Related Collections (trang chi tiết truyện): 6 khối/hàng trên PC */
+@media (min-width: 992px) {
+    .related-collections-6 { grid-template-columns: repeat(6, 1fr); }
+}
+@media (min-width: 576px) and (max-width: 991px) {
+    .related-collections-6 { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 575px) {
+    .related-collections-6 { grid-template-columns: repeat(2, 1fr); }
+}
+
 .collection-item {
     text-align: center;
     color: var(--text-color);
