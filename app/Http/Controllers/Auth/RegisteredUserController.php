@@ -47,6 +47,12 @@ class RegisteredUserController extends Controller
 
         // event(new Registered($user));
 
+        // Thưởng coin đăng ký thường (cấu hình admin 'signup_bonus', mặc định 30, 0 = tắt). Ghi ledger.
+        $bonus = max(0, (int) setting('signup_bonus', 30));
+        if ($bonus > 0) {
+            \App\Services\CreditService::adjust($user->id, $bonus, 'signup_bonus');
+        }
+
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);

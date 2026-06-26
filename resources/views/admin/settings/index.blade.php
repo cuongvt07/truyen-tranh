@@ -121,11 +121,19 @@
                 🎁 THƯỞNG ĐĂNG KÝ
             </div>
             <div class="card-body">
-                <div class="form-group" style="max-width:320px">
-                    <label>Xu tặng khi đăng ký bằng Google</label>
-                    <input type="number" name="google_signup_bonus" min="0" class="form-control"
-                           value="{{ $settings['google_signup_bonus'] ?? 30 }}">
-                    <small class="form-text text-muted">Số xu cộng cho tài khoản MỚI đăng ký bằng Google. Đăng ký thường không được tặng. Đặt 0 để tắt.</small>
+                <div class="form-row">
+                    <div class="form-group col-md-6" style="max-width:320px">
+                        <label>Xu tặng khi đăng ký thường</label>
+                        <input type="number" name="signup_bonus" min="0" class="form-control"
+                               value="{{ $settings['signup_bonus'] ?? 30 }}">
+                        <small class="form-text text-muted">Số xu cộng cho tài khoản MỚI đăng ký bằng email/mật khẩu. Đặt 0 để tắt.</small>
+                    </div>
+                    <div class="form-group col-md-6" style="max-width:320px">
+                        <label>Xu tặng khi đăng ký bằng Google</label>
+                        <input type="number" name="google_signup_bonus" min="0" class="form-control"
+                               value="{{ $settings['google_signup_bonus'] ?? 30 }}">
+                        <small class="form-text text-muted">Số xu cộng cho tài khoản MỚI đăng ký bằng Google. Đặt 0 để tắt.</small>
+                    </div>
                 </div>
 
                 <hr>
