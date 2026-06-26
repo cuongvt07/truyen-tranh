@@ -4,6 +4,18 @@
 
 @push('styles')
 <style>
+    /* Hàng thống kê: 5 ô/dòng (20%) trên màn lớn, gọn lại */
+    @media (min-width: 992px) {
+        .analytics-stat-row > [class*="col-"] { flex: 0 0 20%; max-width: 20%; }
+    }
+    .analytics-stat-row .small-box { border-radius: 8px; }
+    .analytics-stat-row .small-box .inner { padding: 12px; }
+    .analytics-stat-row .small-box .inner h3 { font-size: 1.9rem; margin-bottom: 2px; }
+    .analytics-stat-row .small-box .inner p { font-size: 13px; margin-bottom: 2px; }
+    .analytics-stat-row .small-box .inner small { font-size: 11px; opacity: .9; }
+    .analytics-stat-row .small-box .icon { font-size: 48px; top: 6px; }
+    .analytics-stat-row .small-box .icon > i { font-size: 48px; }
+    .analytics-stat-row .small-box-footer { font-size: 12px; padding: 4px; }
     .analytics-story-title {
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -65,7 +77,7 @@
         </a>
     </div>
 
-    <div class="row">
+    <div class="row analytics-stat-row">
         <div class="col-lg-3 col-6">
             <div class="small-box bg-danger">
                 <div class="inner">
