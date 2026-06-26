@@ -111,8 +111,9 @@ TXT;
     {
         $xml = $this->cached('genres', function () {
             $urls = [];
-            foreach (Genre::with('slug')->get(['id']) as $g) {
-                $urls[] = ['loc' => route('genres.show', $g), 'freq' => 'daily', 'pri' => '0.7'];
+            foreach (Genre::get(['id']) as $g) {
+                // URL cuối (genres.show 301 -> catalog?genre=id); liệt kê thẳng để tránh redirect trong sitemap.
+                $urls[] = ['loc' => url('/catalog?genre=' . $g->id), 'freq' => 'daily', 'pri' => '0.7'];
             }
             return $this->urlset($urls);
         });

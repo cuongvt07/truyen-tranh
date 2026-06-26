@@ -20,7 +20,7 @@ class NewUserGiftNotification extends Notification
         return [
             'type'    => 'gift',
             'title'   => "Gift for New User: {$this->amount} LuneCoin",
-            'url'     => $this->url ?: url('/genres/drama'),
+            'url'     => $this->url ?: url('/catalog?genre=11'),
             'icon'    => 'fa-gift',
         ];
     }
