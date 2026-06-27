@@ -349,6 +349,25 @@ a.meta-color:hover {
     background: #ff4040;
 }
 
+/* Badge số tin chưa đọc trên chuông */
+.header-btn.header-bell { position: relative; }
+.header-btn .notif-count {
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 9px;
+    background: #ff4040;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
 .header-btn:hover {
     color: #fff !important;
     background-color: #ffffff3d;

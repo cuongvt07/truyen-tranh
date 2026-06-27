@@ -174,7 +174,7 @@
                     {{-- Chuông thông báo --}}
                     <a href="{{ route('users.notifications', Auth::id()) }}" class="header-btn header-bell" title="{{ __('messages.account.nav_notifications') }}">
                         <i class="fa fa-bell"></i>
-                        @if(($unreadNotifCount ?? 0) > 0)<span class="alert"></span>@endif
+                        @if(($unreadNotifCount ?? 0) > 0)<span class="notif-count">{{ $unreadNotifCount > 99 ? '99+' : $unreadNotifCount }}</span>@endif
                     </a>
 
                     {{-- Số xu --}}
