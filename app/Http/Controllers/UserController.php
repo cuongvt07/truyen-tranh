@@ -171,7 +171,12 @@ class UserController extends Controller
     {
         $this->authorizePrivateProfile($user);
         $isMine = true;
-        $notifications = $user->notifications()->paginate(20);
+        // Ưu tiên tin CHƯA ĐỌC lên đầu, rồi mới nhất trước. (reorder() bỏ latest() mặc định của quan hệ.)
+        $notifications = $user->notifications()
+            ->reorder()
+            ->orderByRaw('read_at IS NULL DESC')
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
         // KHÔNG auto đánh dấu đã đọc khi mở trang — chỉ đọc từng tin khi click vào dòng đó.
 
         // "Sắp ra" (live, mọi user thấy chung): 20 chương hẹn giờ sớm nhất chưa tới giờ đăng.
