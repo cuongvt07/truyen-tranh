@@ -39,14 +39,21 @@ class Chapter extends Model
     }
 
     /**
-     * Gửi thông báo cho những người đã add truyện vào list (bookmark / quan tâm).
-     * - Đăng ngay  -> "chương mới N".
-     * - Hẹn giờ    -> "chương N sắp ra (ngày X)".
-     * Idempotent: chỉ gửi 1 lần (đánh dấu notified_at) -> khỏi cần cron/scheduler.
+     * Gửi thông báo "chương mới N" cho người đã bookmark truyện.
+     * - Đăng ngay -> báo ngay lúc tạo.
+     * - Hẹn giờ   -> KHÔNG báo lúc tạo; scheduler (notifications:new-chapters, 5'/lần)
+     *               sẽ báo cho NGƯỜI ĐANG BOOKMARK vào đúng lúc chương tới giờ đăng,
+     *               nên người bookmark sau khi tạo chương vẫn nhận được.
+     * Idempotent: chỉ gửi 1 lần (đánh dấu notified_at).
      */
     public function dispatchNewChapterNotification(): void
     {
         if ($this->notified_at !== null) {
+            return;
+        }
+
+        // Hẹn giờ chưa tới giờ đăng -> chờ scheduler báo lúc publish (giữ notified_at = null).
+        if ($this->isScheduled()) {
             return;
         }
 
