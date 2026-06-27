@@ -9,25 +9,8 @@
 {{-- Tất cả thông báo nằm chung 1 khung; mỗi tin là 1 dòng, có gạch ngăn. --}}
 <div class="block notif-block">
 
-    {{-- "Sắp ra" — live, mọi user đều thấy chung các chương hẹn giờ sắp tới --}}
-    @if($hasUpcoming)
-        <div class="notif-section-title"><i class="fa fa-clock"></i> {{ __('messages.account.upcoming_title') }}</div>
-        @foreach($upcomingChapters as $c)
-            <a href="{{ url('articles/'.$c->article->getRouteKey()) }}" class="notif-item notif-soon">
-                <div class="notif-icon"><i class="fa fa-clock"></i></div>
-                <div class="notif-body">
-                    <div class="notif-text">
-                        <strong>{{ $c->article->title }}</strong> —
-                        {{ __('messages.account.chapter_soon_notif', ['number' => $c->number, 'date' => optional($c->published_at)->format('d/m/Y H:i')]) }}
-                    </div>
-                </div>
-            </a>
-        @endforeach
-    @endif
-
-    {{-- Thông báo cá nhân --}}
+    {{-- Thông báo cá nhân TRƯỚC (chưa đọc đã được sắp lên đầu) --}}
     @if($notifications->isNotEmpty())
-        @if($hasUpcoming)<div class="notif-section-title">{{ __('messages.account.nav_notifications') }}</div>@endif
         @foreach($notifications as $n)
             @php
                 $d = $n->data;
@@ -52,6 +35,21 @@
                     <div class="notif-time">{{ optional($n->created_at)->diffForHumans() }}</div>
                 </div>
                 @if($isNew)<span class="notif-dot"></span>@endif
+            </a>
+        @endforeach
+    @endif
+
+    {{-- "Sắp ra" (live) — xuống cuối, không phải tin chưa đọc nên không lên đầu --}}
+    @if($hasUpcoming && $notifications->onFirstPage())
+        @foreach($upcomingChapters as $c)
+            <a href="{{ url('articles/'.$c->article->getRouteKey()) }}" class="notif-item notif-soon">
+                <div class="notif-icon"><i class="fa fa-clock"></i></div>
+                <div class="notif-body">
+                    <div class="notif-text">
+                        <strong>{{ $c->article->title }}</strong> —
+                        {{ __('messages.account.chapter_soon_notif', ['number' => $c->number, 'date' => optional($c->published_at)->format('d/m/Y H:i')]) }}
+                    </div>
+                </div>
             </a>
         @endforeach
     @endif
