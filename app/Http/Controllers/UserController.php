@@ -172,10 +172,7 @@ class UserController extends Controller
         $this->authorizePrivateProfile($user);
         $isMine = true;
         $notifications = $user->notifications()->paginate(20);
-        // Xem tab của chính mình -> đánh dấu đã đọc (cập nhật badge chuông).
-        if ($isMine) {
-            $user->unreadNotifications()->update(['read_at' => now()]);
-        }
+        // KHÔNG auto đánh dấu đã đọc khi mở trang — chỉ đọc từng tin khi click vào dòng đó.
 
         // "Sắp ra" (live, mọi user thấy chung): 20 chương hẹn giờ sớm nhất chưa tới giờ đăng.
         $upcomingChapters = \App\Models\Chapter::withoutGlobalScope(\App\Scopes\PublishedChapterScope::class)
@@ -189,6 +186,34 @@ class UserController extends Controller
             ->values();
 
         return view('client.users.notifications', compact('user', 'notifications', 'isMine', 'upcomingChapters'));
+    }
+
+    /** Click 1 dòng thông báo -> đánh dấu ĐÃ ĐỌC đúng tin đó rồi chuyển tới nội dung. */
+    public function readNotification(string $id)
+    {
+        $notif = Auth::user()->notifications()->whereKey($id)->first();
+        if (!$notif) {
+            return redirect()->route('users.notifications', Auth::id());
+        }
+        if ($notif->read_at === null) {
+            $notif->markAsRead();
+        }
+        return redirect()->to($this->notificationTarget((array) $notif->data));
+    }
+
+    /** Tính URL đích của 1 thông báo từ data (server-side, tránh open-redirect). */
+    private function notificationTarget(array $d): string
+    {
+        if (($d['type'] ?? '') === 'gift') {
+            return $d['url'] ?? url('/catalog');
+        }
+        if (!empty($d['article_slug']) && isset($d['chapter_number'])) {
+            return route('articles.chapters.show', [$d['article_slug'], $d['chapter_number']]);
+        }
+        if (!empty($d['article_slug'])) {
+            return url('articles/' . $d['article_slug']);
+        }
+        return url('/');
     }
 
     public function collections(User $user): View

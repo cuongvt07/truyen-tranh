@@ -44,7 +44,7 @@
                         ? route('articles.chapters.show', [$d['article_slug'], $d['chapter_number']])
                         : (!empty($d['article_slug']) ? url('articles/'.$d['article_slug']) : '#'));
             @endphp
-            <a href="{{ $link }}" class="block notif-item {{ $isNew ? 'is-new' : '' }} {{ $isGift ? 'notif-gift' : '' }}">
+            <a href="{{ route('notifications.read', $n->id) }}" class="block notif-item {{ $isNew ? 'is-new' : '' }} {{ $isGift ? 'notif-gift' : '' }}">
                 <div class="notif-icon"><i class="fa {{ $isGift ? 'fa-gift' : (($d['mode'] ?? 'new') === 'soon' ? 'fa-clock' : 'fa-book-open') }}"></i></div>
                 <div class="notif-body">
                     <div class="notif-text">

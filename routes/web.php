@@ -446,6 +446,7 @@ Route::get('/users/{user}/comments',
     ->name('users.show_comments');
 // các tab profile bổ sung (clone novelight)
 Route::get('/users/{user}/notifications', [UserAuthController::class, 'notifications'])->name('users.notifications');
+Route::get('/notifications/{id}/read', [UserAuthController::class, 'readNotification'])->name('notifications.read')->middleware('auth');
 Route::get('/users/{user}/collections', [UserAuthController::class, 'collections'])->name('users.collections');
 Route::get('/users/{user}/teams', [UserAuthController::class, 'teams'])->name('users.teams');
 Route::get('/users/{user}/favourites', [UserAuthController::class, 'favourites'])->name('users.favourites');
