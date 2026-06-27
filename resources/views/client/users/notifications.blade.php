@@ -4,6 +4,26 @@
 @section('user_content')
 <h2 class="user-tab-title">{{ __('messages.account.nav_notifications') }}</h2>
 
+{{-- "Sắp ra" — live, mọi user đều thấy chung các chương hẹn giờ sắp tới --}}
+@if(($upcomingChapters ?? collect())->isNotEmpty())
+<div class="block" style="margin-bottom:16px">
+    <h3 class="user-tab-title" style="margin-bottom:10px"><i class="fa fa-clock" style="color:#e0a020"></i> {{ __('messages.account.upcoming_title') }}</h3>
+    <div class="notif-list">
+        @foreach($upcomingChapters as $c)
+            <a href="{{ url('articles/'.$c->article->getRouteKey()) }}" class="block notif-item notif-soon">
+                <div class="notif-icon"><i class="fa fa-clock"></i></div>
+                <div class="notif-body">
+                    <div class="notif-text">
+                        <strong>{{ $c->article->title }}</strong> —
+                        {{ __('messages.account.chapter_soon_notif', ['number' => $c->number, 'date' => optional($c->published_at)->format('d/m/Y H:i')]) }}
+                    </div>
+                </div>
+            </a>
+        @endforeach
+    </div>
+</div>
+@endif
+
 @if($notifications->isEmpty())
     <div class="block">
         <div class="nothing" style="padding:40px 0;text-align:center;color:var(--meta-color)">
@@ -59,5 +79,6 @@
 .notif-time { font-size:12px;color:var(--meta-color,#888);margin-top:2px; }
 .notif-dot { width:9px;height:9px;border-radius:50%;background:#ff4040;flex-shrink:0; }
 .notif-gift .notif-icon { background:#fff7e0; color:#e0a020; }
+.notif-soon .notif-icon { background:#fff3e0; color:#e0a020; }
 </style>
 @endsection

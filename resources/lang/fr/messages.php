@@ -458,6 +458,7 @@ return array_replace_recursive($messages, [
         'nav_profile' => 'Profil', 'nav_collections' => 'Collections', 'nav_teams' => 'Équipes de traduction',
         'nav_following' => 'Abonnements', 'nav_achievements' => 'Succès', 'nav_suggestions' => 'Suggestions',
         'nav_bookmarks' => 'Signets', 'nav_comments' => 'Commentaires', 'nav_notifications' => 'Notifications',
+        'upcoming_title' => 'Bientôt disponible',
         'nav_transactions' => 'Pièces et transactions', 'nav_banlist' => 'Liste noire', 'nav_settings' => 'Paramètres',
         'account_info' => 'Informations du compte', 'full_name' => 'Nom complet', 'gender' => 'Genre',
         'date_of_birth' => 'Date de naissance', 'role' => 'Rôle', 'points' => 'Pièces', 'about' => 'À propos',

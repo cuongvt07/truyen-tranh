@@ -176,7 +176,19 @@ class UserController extends Controller
         if ($isMine) {
             $user->unreadNotifications()->update(['read_at' => now()]);
         }
-        return view('client.users.notifications', compact('user', 'notifications', 'isMine'));
+
+        // "Sắp ra" (live, mọi user thấy chung): 20 chương hẹn giờ sớm nhất chưa tới giờ đăng.
+        $upcomingChapters = \App\Models\Chapter::withoutGlobalScope(\App\Scopes\PublishedChapterScope::class)
+            ->whereNotNull('published_at')
+            ->where('published_at', '>', now())
+            ->orderBy('published_at')
+            ->with(['article' => fn ($q) => $q->with('slug')])
+            ->take(20)
+            ->get()
+            ->filter(fn ($c) => $c->article !== null)
+            ->values();
+
+        return view('client.users.notifications', compact('user', 'notifications', 'isMine', 'upcomingChapters'));
     }
 
     public function collections(User $user): View

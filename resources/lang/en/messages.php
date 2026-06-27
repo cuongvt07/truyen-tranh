@@ -603,6 +603,7 @@ return array (
     'nav_bookmarks' => 'Bookmarks',
     'nav_comments' => 'Comments',
     'nav_notifications' => 'Notifications',
+    'upcoming_title' => 'Coming soon',
     'nav_transactions' => 'Coins & Transactions',
     'nav_banlist' => 'Block list',
     'nav_settings' => 'Settings',

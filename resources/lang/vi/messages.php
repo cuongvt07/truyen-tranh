@@ -573,6 +573,7 @@ return [
         'nav_bookmarks' => 'Đánh dấu',
         'nav_comments' => 'Bình luận',
         'nav_notifications' => 'Thông báo',
+        'upcoming_title' => 'Sắp ra mắt',
         'nav_transactions' => 'Xu & Giao dịch',
         'nav_banlist' => 'Danh sách chặn',
         'nav_settings' => 'Cài đặt',
