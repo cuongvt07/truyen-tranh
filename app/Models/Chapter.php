@@ -57,11 +57,10 @@ class Chapter extends Model
             return;
         }
 
-        $authorId = \App\Models\Article::withoutGlobalScopes()->where('id', $this->article_id)->value('user_id');
+        // Bookmark = chủ động theo dõi (opt-in) -> báo cho TẤT CẢ người đã bookmark,
+        // kể cả author/admin (admin là author gần như mọi truyện nên không loại trừ).
         $userIds = \App\Models\Bookmark::where('article_id', $this->article_id)
-            ->pluck('user_id')->unique()
-            ->reject(fn ($id) => $id === $authorId)   // không tự báo tác giả
-            ->values();
+            ->pluck('user_id')->unique()->values();
 
         if ($userIds->isNotEmpty()) {
             $users = \App\Models\User::whereIn('id', $userIds)->get();
