@@ -113,7 +113,89 @@ if (!function_exists('novel_poster')) {
         if (!$img || str_contains($img, 'via.placeholder') || str_contains($img, 'placeholder.com')) {
             return asset('static/core/images/no_cover.webp');
         }
-        return $img;
+        // Ưu tiên bản thu nhỏ -500.jpg (nhẹ) cho card trang chủ / trang con; fallback ảnh gốc.
+        return cover_thumb_url($img, 500) ?? $img;
+    }
+}
+
+if (!function_exists('cover_thumb_rel')) {
+    /** Đường dẫn tương đối (trong public disk) của bản thu nhỏ -{w}.jpg, hoặc null nếu ảnh không phải /storage/. */
+    function cover_thumb_rel(?string $img, int $w = 500): ?string
+    {
+        if (!$img || !\Illuminate\Support\Str::startsWith($img, '/storage/')) {
+            return null;
+        }
+        $rel = ltrim(\Illuminate\Support\Str::after($img, '/storage/'), '/');
+        $dir = trim(pathinfo($rel, PATHINFO_DIRNAME), '.');
+
+        return ($dir !== '' ? $dir . '/' : '') . pathinfo($rel, PATHINFO_FILENAME) . '-' . $w . '.jpg';
+    }
+}
+
+if (!function_exists('cover_thumb_url')) {
+    /** URL "/storage/...-{w}.jpg" nếu bản thu nhỏ ĐÃ tồn tại, ngược lại null. Cache theo request. */
+    function cover_thumb_url(?string $img, int $w = 500): ?string
+    {
+        $thumbRel = cover_thumb_rel($img, $w);
+        if ($thumbRel === null) {
+            return null;
+        }
+        static $cache = [];
+        if (!array_key_exists($thumbRel, $cache)) {
+            $cache[$thumbRel] = \Illuminate\Support\Facades\Storage::disk('public')->exists($thumbRel)
+                ? '/storage/' . $thumbRel : null;
+        }
+
+        return $cache[$thumbRel];
+    }
+}
+
+if (!function_exists('cover_make_thumb')) {
+    /**
+     * Tạo bản thu nhỏ <tên>-{w}.jpg (rộng tối đa {w}px, giữ tỉ lệ, chỉ thu nhỏ) cạnh ảnh gốc.
+     * Chỉ xử lý ảnh /storage/ jpg/png/gif/webp(nếu GD hỗ trợ). Trả URL bản thu nhỏ hoặc null.
+     */
+    function cover_make_thumb(?string $img, int $w = 500): ?string
+    {
+        $thumbRel = cover_thumb_rel($img, $w);
+        if ($thumbRel === null || !function_exists('imagecreatetruecolor')) {
+            return null;
+        }
+        $rel = ltrim(\Illuminate\Support\Str::after($img, '/storage/'), '/');
+        $disk = \Illuminate\Support\Facades\Storage::disk('public');
+        if (!$disk->exists($rel)) {
+            return null;
+        }
+        $abs = $disk->path($rel);
+        $info = @getimagesize($abs);
+        if (!$info) {
+            return null;
+        }
+        [$ow, $oh, $type] = $info;
+        if ($ow < 1 || $oh < 1) {
+            return null;
+        }
+        $src = match ($type) {
+            IMAGETYPE_JPEG => @imagecreatefromjpeg($abs),
+            IMAGETYPE_PNG  => @imagecreatefrompng($abs),
+            IMAGETYPE_GIF  => @imagecreatefromgif($abs),
+            IMAGETYPE_WEBP => function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($abs) : null,
+            default        => null,
+        };
+        if (!$src) {
+            return null;
+        }
+        $nw = min($ow, $w);
+        $nh = max(1, (int) round($oh * ($nw / $ow)));
+        $dst = imagecreatetruecolor($nw, $nh);
+        $white = imagecolorallocate($dst, 255, 255, 255);   // nền trắng cho ảnh trong suốt -> jpg
+        imagefilledrectangle($dst, 0, 0, $nw, $nh, $white);
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $nw, $nh, $ow, $oh);
+        @imagejpeg($dst, $disk->path($thumbRel), 82);
+        imagedestroy($src);
+        imagedestroy($dst);
+
+        return $disk->exists($thumbRel) ? '/storage/' . $thumbRel : null;
     }
 }
 

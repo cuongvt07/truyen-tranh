@@ -108,7 +108,7 @@
                     @foreach($articles as $art)
                         <a href="{{ route('articles.show', $art) }}" class="team-member">
                             <span class="team-member-avatar">
-                                <img src="{{ $art->cover_image ?: asset('static/core/images/no_cover.webp') }}" alt="">
+                                <img src="{{ novel_poster($art) }}" alt="">
                             </span>
                             <span class="team-member-name">{{ $art->title }}</span>
                         </a>

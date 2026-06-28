@@ -331,6 +331,8 @@ class ArticleController extends Controller
     ): array {
         if ($request->hasFile('cover_image')) {
             $validateData['cover_image'] = $this->storePublicImage($request->file('cover_image'), 'images/articles');
+            // Tạo sẵn bản thu nhỏ -500.jpg để dùng cho card trang chủ / trang con (nhẹ hơn ảnh gốc).
+            cover_make_thumb($validateData['cover_image'], 500);
         } else {
             if ($validateData['cover_image_url']) {
                 $validateData['cover_image'] = $validateData['cover_image_url'];
