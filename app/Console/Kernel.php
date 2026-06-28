@@ -16,6 +16,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('subscriptions:grant-daily-credits')->dailyAt('00:00')->withoutOverlapping();
         // Báo "chương mới" cho chương hẹn giờ vừa tới giờ đăng (chương đăng ngay đã báo lúc tạo).
         $schedule->command('notifications:new-chapters')->everyFiveMinutes();
+        // Seed 10 bình luận/ngày (10 người, 10 comment, 10 truyện khác nhau) — chạy cuối ngày để created_at rải cả ngày.
+        $schedule->command('comments:seed-daily --count=10')->dailyAt('22:00')->withoutOverlapping();
     }
 
     /**
