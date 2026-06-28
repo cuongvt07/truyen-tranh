@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\UserRole;
 use App\Models\Article;
 use App\Models\Comment;
 use App\Models\User;
@@ -32,10 +31,10 @@ class SeedDailyComments extends Command
             $count = count($articles);
         }
 
-        // N người dùng KHÁC NHAU (role = user thường).
-        $users = User::where('role', UserRole::USER->value)->inRandomOrder()->limit($count)->pluck('id')->all();
+        // N người dùng KHÁC NHAU — chỉ dùng tài khoản seed có email @example.
+        $users = User::where('email', 'like', '%@example%')->inRandomOrder()->limit($count)->pluck('id')->all();
         if (empty($users)) {
-            $this->error('Không có user role thường để gán comment.');
+            $this->error('Không có tài khoản email @example để gán comment.');
             return self::FAILURE;
         }
 
