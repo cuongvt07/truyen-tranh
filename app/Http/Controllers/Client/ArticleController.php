@@ -230,47 +230,48 @@ class ArticleController extends Controller
         })->filter()->take($limit)->values();
     }
 
-    private function defaultSimilarArticles(Article $article, $author, $genreIds, int $limit)
+    /**
+     * "Similaires" = truyện CÙNG THỂ LOẠI: mỗi thể loại lấy $perGenre truyện rồi gộp lại (không trùng).
+     * Vd truyện 5 thể loại -> tối đa 5 x 2 = 10 truyện, đại diện đủ các thể loại (không thiên về phổ biến).
+     */
+    private function defaultSimilarArticles(Article $article, $author, $genreIds, int $limit, int $perGenre = 2)
     {
-        $query = Article::where('id', '!=', $article->id);
+        $picked = collect();
+        $usedIds = [$article->id];
 
-        if ($author) {
-            $query->whereHas('authors', function ($q) use ($author) {
-                return $q->where('authors.id', $author->id);
-            });
-        }
-
-        if ($genreIds->isNotEmpty()) {
-            $query->whereHas('genres', function ($q) use ($genreIds) {
-                return $q->whereIn('genres.id', $genreIds);
-            });
-        }
-
-        $items = $query->orderByDesc('view')->latest()->limit($limit)->get();
-
-        if ($items->isNotEmpty()) {
-            return $items;
-        }
-
-        if ($genreIds->isNotEmpty()) {
-            return Article::where('id', '!=', $article->id)
-                ->whereHas('genres', function ($q) use ($genreIds) {
-                    return $q->whereIn('genres.id', $genreIds);
+        foreach ($genreIds as $gid) {
+            $rows = Article::with('slug')
+                ->where('id', '!=', $article->id)
+                ->whereNotIn('id', $usedIds)
+                ->whereHas('genres', function ($q) use ($gid) {
+                    return $q->where('genres.id', $gid);
                 })
                 ->orderByDesc('view')
-                ->latest()
-                ->limit($limit)
+                ->limit($perGenre)
                 ->get();
+
+            foreach ($rows as $r) {
+                $picked->push($r);
+                $usedIds[] = $r->id;
+            }
         }
 
+        if ($picked->isNotEmpty()) {
+            return $picked->values();
+        }
+
+        // Fallback khi truyện chưa có thể loại / không tìm thấy truyện cùng thể loại.
         if ($author) {
-            return Article::where('id', '!=', $article->id)
+            $byAuthor = Article::where('id', '!=', $article->id)
                 ->whereHas('authors', function ($q) use ($author) {
                     return $q->where('authors.id', $author->id);
                 })
                 ->latest()
                 ->limit($limit)
                 ->get();
+            if ($byAuthor->isNotEmpty()) {
+                return $byAuthor;
+            }
         }
 
         return Article::where('id', '!=', $article->id)
