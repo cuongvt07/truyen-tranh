@@ -52,7 +52,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div style="margin-top:14px">{{ $deposits->links() }}</div>
+        <div style="margin-top:14px">{{ $deposits->links('vendor.pagination.novelight') }}</div>
     @endif
 </div>
 
@@ -84,7 +84,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div style="margin-top:14px">{{ $creditLog->links() }}</div>
+        <div style="margin-top:14px">{{ $creditLog->links('vendor.pagination.novelight') }}</div>
     @endif
 </div>
 

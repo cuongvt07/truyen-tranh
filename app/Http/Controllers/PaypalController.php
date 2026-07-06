@@ -101,6 +101,7 @@ class PaypalController extends Controller
 
         // Tránh xử lý trùng
         if (Deposit::where('transaction_id', $captureId)->exists()) {
+            session()->flash('purchase_result', ['ok' => true, 'already' => true, 'message' => __('messages.pay.paypal_already_processed')]);
             return response()->json(['success' => true, 'message' => __('messages.pay.paypal_already_processed')]);
         }
 
@@ -121,19 +122,38 @@ class PaypalController extends Controller
         $benefit = app(PackageBenefitService::class)->grant(auth()->user(), $pkg);
 
         if ($pkg->isSubscription()) {
+            $message = __('messages.pay.paypal_subscription_success', [
+                'date'    => $benefit['vip_end']->format('d/m/Y'),
+                'credits' => number_format($benefit['initial_credits']),
+            ]);
+            session()->flash('purchase_result', [
+                'ok'             => true,
+                'type'           => 'subscription',
+                'value'          => (float) $pkg->price_usd,
+                'currency'       => 'USD',
+                'transaction_id' => $captureId,
+                'message'        => $message,
+            ]);
             return response()->json([
                 'success'        => true,
                 'type'           => 'subscription',
                 'value'          => (float) $pkg->price_usd,
                 'currency'       => 'USD',
                 'transaction_id' => $captureId,
-                'message' => __('messages.pay.paypal_subscription_success', [
-                    'date'    => $benefit['vip_end']->format('d/m/Y'),
-                    'credits' => number_format($benefit['initial_credits']),
-                ]),
+                'message'        => $message,
             ]);
         }
 
+        $message = __('messages.pay.paypal_credit_success', ['coins' => $pkg->coins]);
+        session()->flash('purchase_result', [
+            'ok'             => true,
+            'type'           => 'credit',
+            'coins'          => $pkg->coins,
+            'value'          => (float) $pkg->price_usd,
+            'currency'       => 'USD',
+            'transaction_id' => $captureId,
+            'message'        => $message,
+        ]);
         return response()->json([
             'success'        => true,
             'type'           => 'credit',
@@ -141,8 +161,23 @@ class PaypalController extends Controller
             'value'          => (float) $pkg->price_usd,
             'currency'       => 'USD',
             'transaction_id' => $captureId,
-            'message' => __('messages.pay.paypal_credit_success', ['coins' => $pkg->coins]),
+            'message'        => $message,
         ]);
+    }
+
+    /** Trang cảm ơn sau khi thanh toán thành công (đọc kết quả flash từ captureOrder). */
+    public function purchaseSuccess(Request $request)
+    {
+        $result = session('purchase_result');
+        $result = (is_array($result) && ($result['ok'] ?? false)) ? $result : null;
+
+        return view('client.purchase.success', ['result' => $result]);
+    }
+
+    /** Trang báo thanh toán thất bại / bị hủy. */
+    public function purchaseFail(Request $request)
+    {
+        return view('client.purchase.fail', ['result' => session('purchase_result')]);
     }
 
     // ─── PayPal Webhook (server-side xác nhận async) ────────────────────────

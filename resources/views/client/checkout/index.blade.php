@@ -180,6 +180,8 @@
     const PACKAGE_ID = {{ $package->id }};
     const CSRF       = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
     const TRANSACTIONS_URL = @json(route('users.transactions', auth()->id()));
+    const SUCCESS_URL = @json(route('purchase.success'));
+    const FAIL_URL    = @json(route('purchase.fail'));
     const statusEl = document.getElementById('payment-status');
 
     function setPaymentError(message) {
@@ -226,30 +228,19 @@
             .then(r => r.json())
             .then(d => {
                 if (!d.success) throw new Error(d.error ?? @json(__('messages.pay.checkout_unknown_error')));
-                // Google Ads / GA4 purchase conversion — chỉ bắn khi thanh toán thành công thật.
-                if (typeof gtag === 'function' && d.transaction_id) {
-                    gtag('event', 'conversion_event_purchase', {
-                        value: d.value,
-                        currency: d.currency || 'USD',
-                        transaction_id: d.transaction_id,
-                    });
-                }
-                document.getElementById('payment-card').style.display  = 'none';
-                document.getElementById('checkout-success').style.display = 'block';
-                document.getElementById('success-msg').textContent = d.message;
-                setTimeout(() => {
-                    window.location.href = TRANSACTIONS_URL;
-                }, 3000);
+                // Thành công -> sang trang cảm ơn (gtag conversion bắn ở đó).
+                window.location.href = SUCCESS_URL;
             });
         },
 
         onError: function (err) {
             console.error(err);
-            setPaymentError(@json(__('messages.pay.checkout_payment_error')));
+            // Thanh toán lỗi (capture fail / PayPal từ chối) -> sang trang thất bại.
+            window.location.href = FAIL_URL;
         },
 
         onCancel: function () {
-            // user đóng popup PayPal, không làm gì
+            // User đóng popup PayPal -> không phải lỗi, ở lại trang checkout.
         },
     }).render('#paypal-button-container').then(function () {
         if (statusEl) statusEl.style.display = 'none';

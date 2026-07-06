@@ -404,6 +404,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout/{creditPackage}', [App\Http\Controllers\PaypalController::class, 'checkout'])->name('checkout.show');
     Route::post('/paypal/create-order',  [App\Http\Controllers\PaypalController::class, 'createOrder'])->name('paypal.create_order');
     Route::post('/paypal/capture-order', [App\Http\Controllers\PaypalController::class, 'captureOrder'])->name('paypal.capture_order');
+    // Trang kết quả thanh toán (checkout redirect tới đây sau khi có kết quả)
+    Route::get('/purchase/success', [App\Http\Controllers\PaypalController::class, 'purchaseSuccess'])->name('purchase.success');
+    Route::get('/purchase/fail', [App\Http\Controllers\PaypalController::class, 'purchaseFail'])->name('purchase.fail');
 });
 // genres
 Route::get('/genres/{genre}',
