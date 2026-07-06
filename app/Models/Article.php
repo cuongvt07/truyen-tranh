@@ -202,7 +202,15 @@ class Article extends Model
     public static function getNewUpdateArticles(
     ): \Illuminate\Database\Eloquent\Builder
     {
+        // "Mới cập nhật" = theo CHƯƠNG published mới nhất (không phải article.updated_at, vì thêm
+        // chương không touch updated_at và thao tác hàng loạt có thể bump updated_at của truyện cũ).
         return self::query()
+            ->orderByRaw(
+                '(select max(coalesce(chapters.published_at, chapters.created_at)) from chapters '
+                . 'where chapters.article_id = articles.id '
+                . 'and (chapters.published_at is null or chapters.published_at <= ?)) desc',
+                [now()]
+            )
             ->orderByDesc('updated_at');
     }
 
