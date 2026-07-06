@@ -242,9 +242,9 @@
             <div class="block recently">
                 @foreach($newUpdateArticles as $article)
                     @php
-                        // Ngày chương mới nhất (đã đăng). Fallback updated_at nếu chưa có chương.
-                        $lastChapterAt = $article->chapters_max_created_at
-                            ? \Illuminate\Support\Carbon::parse($article->chapters_max_created_at)
+                        // Ngày chương mới nhất ĐÃ PHÁT HÀNH (published_at nếu hẹn giờ). Fallback updated_at nếu chưa có chương.
+                        $lastChapterAt = $article->last_chapter_at
+                            ? \Illuminate\Support\Carbon::parse($article->last_chapter_at)
                             : $article->updated_at;
                         $isNew = $lastChapterAt && $lastChapterAt->gt(now()->subDays(3));
                     @endphp

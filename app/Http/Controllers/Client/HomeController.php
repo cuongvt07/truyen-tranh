@@ -21,7 +21,16 @@ class HomeController extends Controller
         $data = Cache::remember('home:index:v1', 180, function () {
             $hotArticles         = Article::getHotArticles()->with('genres')->take(16)->get();
             $newUpdateArticles   = Article::getNewUpdateArticles()->with(['genres', 'authors'])
-                ->withMax('chapters', 'created_at') // ngày chương mới nhất (đã đăng) -> chapters_max_created_at
+                // Ngày chương mới nhất ĐÃ PHÁT HÀNH (published_at nếu hẹn giờ, else created_at) -> last_chapter_at.
+                // Khớp với thứ tự sort để card hiển thị đúng ngày publish, không phải ngày tạo chương.
+                ->addSelect(['last_chapter_at' => function ($q) {
+                    $q->from('chapters')
+                        ->selectRaw('max(coalesce(published_at, created_at))')
+                        ->whereColumn('chapters.article_id', 'articles.id')
+                        ->where(function ($w) {
+                            $w->whereNull('published_at')->orWhere('published_at', '<=', now());
+                        });
+                }])
                 ->take(30)->get();
             $completedArticles   = Article::getCompletedArticles()->take(12)->get();
             // "Translation requests": truyện do USER tự gửi (/dang-truyen) đã được admin DUYỆT
