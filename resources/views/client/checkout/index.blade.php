@@ -226,6 +226,14 @@
             .then(r => r.json())
             .then(d => {
                 if (!d.success) throw new Error(d.error ?? @json(__('messages.pay.checkout_unknown_error')));
+                // Google Ads / GA4 purchase conversion — chỉ bắn khi thanh toán thành công thật.
+                if (typeof gtag === 'function' && d.transaction_id) {
+                    gtag('event', 'conversion_event_purchase', {
+                        value: d.value,
+                        currency: d.currency || 'USD',
+                        transaction_id: d.transaction_id,
+                    });
+                }
                 document.getElementById('payment-card').style.display  = 'none';
                 document.getElementById('checkout-success').style.display = 'block';
                 document.getElementById('success-msg').textContent = d.message;

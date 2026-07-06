@@ -122,8 +122,11 @@ class PaypalController extends Controller
 
         if ($pkg->isSubscription()) {
             return response()->json([
-                'success' => true,
-                'type'    => 'subscription',
+                'success'        => true,
+                'type'           => 'subscription',
+                'value'          => (float) $pkg->price_usd,
+                'currency'       => 'USD',
+                'transaction_id' => $captureId,
                 'message' => __('messages.pay.paypal_subscription_success', [
                     'date'    => $benefit['vip_end']->format('d/m/Y'),
                     'credits' => number_format($benefit['initial_credits']),
@@ -132,9 +135,12 @@ class PaypalController extends Controller
         }
 
         return response()->json([
-            'success' => true,
-            'type'    => 'credit',
-            'coins'   => $pkg->coins,
+            'success'        => true,
+            'type'           => 'credit',
+            'coins'          => $pkg->coins,
+            'value'          => (float) $pkg->price_usd,
+            'currency'       => 'USD',
+            'transaction_id' => $captureId,
             'message' => __('messages.pay.paypal_credit_success', ['coins' => $pkg->coins]),
         ]);
     }

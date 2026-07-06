@@ -1,6 +1,6 @@
 @extends('layout.novelight')
 
-@section('template_title', 'Đăng nhập')
+@section('template_title', __('messages.auth.login'))
 
 @section('page_css')
 <link rel="stylesheet" href="{{ asset('static/account/css/login.css') }}?ver=1.8.0">
@@ -10,7 +10,7 @@
 <div class="container">
     <div class="container-login">
         <div id="login" class="login-form block">
-            <h2>Đăng nhập</h2>
+            <h2>{{ __('messages.auth.login') }}</h2>
 
             @if(session('reading_limit_notice'))
                 <div class="login-notice" style="color:#f0c040">
@@ -29,18 +29,18 @@
 
                 <div class="text-input">
                     <div class="left-icon"><i class="fa fa-user"></i></div>
-                    <input type="text" name="login" placeholder="Email hoặc tên đăng nhập"
+                    <input type="text" name="login" placeholder="{{ __('messages.auth.email_or_username') }}"
                            value="{{ old('login') }}" required autofocus>
                 </div>
 
                 <div class="text-input">
                     <div class="left-icon"><i class="fa fa-key"></i></div>
-                    <input type="password" name="password" placeholder="Mật khẩu" required>
+                    <input type="password" name="password" placeholder="{{ __('messages.auth.password') }}" required>
                 </div>
 
                 <div class="control-btn">
-                    <a class="forgot-password-link" href="{{ route('password.request') }}">Quên mật khẩu?</a>
-                    <button class="btn btn-primary" type="submit">Đăng nhập</button>
+                    <a class="forgot-password-link" href="{{ route('password.request') }}">{{ __('messages.auth.forgot') }}</a>
+                    <button class="btn btn-primary" type="submit">{{ __('messages.auth.login') }}</button>
                 </div>
             </form>
 
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <span class="account-span">Chưa có tài khoản? <a href="{{ route('register') }}">Đăng ký</a></span>
+        <span class="account-span">{{ __('messages.auth.no_account') }} <a href="{{ route('register') }}">{{ __('messages.auth.register') }}</a></span>
     </div>
 </div>
 @endsection

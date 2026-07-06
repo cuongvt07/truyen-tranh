@@ -65,7 +65,16 @@ class CatalogController extends Controller
             case '-year_of_realese': $query->orderByDesc('year_of_release'); break;
             case 'popularity':       $query->orderByDesc('view'); break;
             case '-time_updated':
-            default:                 $query->orderByDesc('updated_at'); break;
+            default:
+                // "Mới cập nhật" = truyện có CHƯƠNG published mới nhất (không phải article.updated_at,
+                // vì thêm chương KHÔNG touch updated_at). Truyện chưa có chương xếp sau (updated_at).
+                $query->orderByRaw(
+                    '(select max(coalesce(chapters.published_at, chapters.created_at)) from chapters '
+                    . 'where chapters.article_id = articles.id '
+                    . 'and (chapters.published_at is null or chapters.published_at <= ?)) desc',
+                    [now()]
+                )->orderByDesc('updated_at');
+                break;
         }
 
         $articles  = $query->paginate(30)->withQueryString();
