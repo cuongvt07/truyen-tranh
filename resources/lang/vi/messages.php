@@ -372,7 +372,7 @@ return [
         'purchase_fail_title' => 'Thanh toán thất bại',
         'purchase_fail_desc' => 'Thanh toán chưa hoàn tất hoặc đã bị hủy. Tài khoản của bạn chưa bị trừ tiền.',
         'try_again' => 'Thử lại',
-        'back_home' => 'Về trang chủ',
+        'back_home' => 'Trang chủ',
         'paypal_load_error' => 'Không tải được nút thanh toán PayPal. Vui lòng tải lại trang hoặc kiểm tra cấu hình PayPal.',
         'checkout_unknown_error' => 'Lỗi không xác định',
         'checkout_payment_error' => 'Có lỗi xảy ra khi tải phương thức thanh toán. Vui lòng thử lại.',

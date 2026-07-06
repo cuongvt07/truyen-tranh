@@ -399,7 +399,7 @@ return array (
     'purchase_fail_title' => 'Payment failed',
     'purchase_fail_desc' => 'Your payment could not be completed or was cancelled. No charge has been made to your account.',
     'try_again' => 'Try again',
-    'back_home' => 'Back to home',
+    'back_home' => 'Home',
     'paypal_load_error' => 'PayPal payment buttons could not be loaded. Please refresh the page or check the PayPal client configuration.',
     'checkout_unknown_error' => 'Unknown error',
     'checkout_payment_error' => 'An error occurred while loading the payment method. Please try again.',

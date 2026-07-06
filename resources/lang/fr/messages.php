@@ -272,7 +272,7 @@ return array_replace_recursive($messages, [
         'purchase_fail_title' => 'Échec du paiement',
         'purchase_fail_desc' => "Votre paiement n'a pas pu être effectué ou a été annulé. Aucun montant n'a été débité de votre compte.",
         'try_again' => 'Réessayer',
-        'back_home' => "Retour à l'accueil",
+        'back_home' => 'Accueil',
         'paypal_load_error' => "Les boutons PayPal n'ont pas pu être chargés. Actualisez la page.",
         'checkout_unknown_error' => 'Erreur inconnue',
         'checkout_payment_error' => 'Erreur lors du chargement du paiement. Veuillez réessayer.',
