@@ -31,7 +31,7 @@
             @if($posterName)
                 <span class="poster"><i class="fa fa-user"></i> {{ $posterName }}</span>
             @endif
-            <span class="date">{{ optional($chapter->created_at)->format('d.m.Y') }}</span>
+            <span class="date">{{ optional($chapter->published_at ?: $chapter->created_at)->format('d.m.Y') }}</span>
         </div>
     </a>
 @endforeach
