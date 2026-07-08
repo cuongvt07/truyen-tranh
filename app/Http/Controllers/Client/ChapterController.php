@@ -97,7 +97,7 @@ class ChapterController extends Controller
         $inlineAdFirstAfter = 4;
         $inlineAdEvery = 8;
 
-        if ($inlineCampaign) {
+        if ($inlineCampaign && $this->chapterAdFrequencyAllows($inlineCampaign)) {
             $inlineCount = max(1, (int) ($inlineCampaign->chapter_inline_count ?: 1));
             $inlineItems = $inlineCampaign->items
                 ->where('is_active', true)
@@ -194,6 +194,37 @@ class ChapterController extends Controller
             'chapterLikesCount' => $chapterLikesCount,
             'userLikedChapter' => $userLikedChapter,
         ]);
+    }
+
+    /**
+     * Áp tần suất hiển thị cho QC chèn trong chapter (server-side, dựa vào session):
+     *  - every_load    : luôn hiện.
+     *  - once_session  : chỉ hiện 1 lần / phiên.
+     *  - every_n_views : cứ mỗi N lượt xem chapter mới hiện 1 lần.
+     * Khi không cho phép -> không render inline ad (không tải cả script QC).
+     */
+    private function chapterAdFrequencyAllows(Ad $ad): bool
+    {
+        $freq = $ad->frequency ?: 'every_load';
+        if ($freq === 'every_load') {
+            return true;
+        }
+        if ($freq === 'once_session') {
+            $key = 'chapter_ad_seen_' . $ad->id;
+            if (session()->get($key)) {
+                return false;
+            }
+            session()->put($key, 1);
+            return true;
+        }
+        if ($freq === 'every_n_views') {
+            $step = max(1, (int) ($ad->frequency_value ?: 1));
+            $key = 'chapter_ad_views_' . $ad->id;
+            $count = (int) session()->get($key, 0) + 1;
+            session()->put($key, $count);
+            return ($count % $step) === 0;
+        }
+        return true;
     }
 
     /**

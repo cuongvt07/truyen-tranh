@@ -144,6 +144,8 @@ class AdController extends Controller
         }
         if ($mode === 'chapter') {
             $rules['chapter_inline_count'] = 'nullable|integer|min:1|max:20';
+            $rules['frequency']        = 'nullable|in:' . implode(',', array_keys(Ad::FREQUENCIES));
+            $rules['frequency_value']  = 'nullable|integer|min:1|max:9999';
             $rules['items']            = 'nullable|array';
             $rules['items.*.id']       = 'nullable|integer|exists:ad_items,id';
             $rules['items.*.title']    = 'nullable|string|max:160';
@@ -243,6 +245,8 @@ class AdController extends Controller
             $data['script_code']          = $scriptCode !== '' ? $scriptCode : null;
             $data['require_click']        = $request->boolean('require_click');
             $data['chapter_inline_count'] = $v['chapter_inline_count'] ?? 1;
+            $data['frequency']            = $v['frequency'] ?? 'every_load';
+            $data['frequency_value']      = $v['frequency_value'] ?? 1;
         } elseif ($mode === 'footer') {
             // Footer script: chèn nguyên văn trước </body> (ad network, consent, analytics...).
             $data['script_code'] = $scriptCode !== '' ? $scriptCode : null;

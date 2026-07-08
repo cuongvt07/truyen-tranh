@@ -409,15 +409,40 @@
                     </div>
                 </div>
 
+                {{-- Tần suất hiển thị (giống popup/click): every_load / once_session / every_n_views --}}
+                <div class="row mb-2">
+                    <div class="col-md-4">
+                        <div class="form-group mb-0">
+                            <label>Tần suất hiển thị</label>
+                            <select name="frequency" class="form-control">
+                                @foreach(\App\Models\Ad::FREQUENCIES as $val => $label)
+                                <option value="{{ $val }}" {{ old('frequency', $ad->frequency ?? 'every_load') === $val ? 'selected' : '' }}>
+                                    {{ __('messages.ads.frequencies.'.$val) }}
+                                </option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted">Bao lâu hiện lại QC chapter cho cùng 1 người đọc.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group mb-0">
+                            <label>Mỗi N lượt xem</label>
+                            <input type="number" name="frequency_value" class="form-control" min="1"
+                                   value="{{ old('frequency_value', $ad->frequency_value ?? 1) }}">
+                            <small class="text-muted">Chỉ dùng khi chọn "Mỗi N lượt xem".</small>
+                        </div>
+                    </div>
+                </div>
+
                 <hr>
-                {{-- Items pool --}}
+                {{-- Items pool: mỗi item là 1 vị trí QC — ẢNH hoặc SCRIPT (dán script thì bỏ trống ảnh) --}}
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
-                        <h5 class="mb-0">Pool ảnh quảng cáo</h5>
-                        <small class="text-muted">Hệ thống sẽ random trong pool này khi chèn vào chapter</small>
+                        <h5 class="mb-0">Pool quảng cáo — mỗi item: <b>ẢNH</b> hoặc <b>SCRIPT</b></h5>
+                        <small class="text-muted">Hệ thống random trong pool này khi chèn vào chapter. Muốn dùng script (vd adflex) thì dán vào ô Script, để trống ảnh.</small>
                     </div>
                     <button type="button" class="btn btn-outline-primary btn-sm" id="addAdItem">
-                        <i class="fas fa-plus"></i> Thêm ảnh
+                        <i class="fas fa-plus"></i> Thêm item
                     </button>
                 </div>
                 <div id="adItems">
@@ -439,7 +464,7 @@
                             <input type="text" name="items[{{ $index }}][link]" class="form-control form-control-sm"
                                    placeholder="Link đích https://..." value="{{ $item['link'] ?? '' }}">
                             <textarea name="items[{{ $index }}][script_code]" class="form-control form-control-sm mt-1" rows="3"
-                                      placeholder="Script/iframe/html quang cao (tuy chon)">{{ $item['script_code'] ?? '' }}</textarea>
+                                      placeholder="HOẶC dán Script/iframe (vd adflex) — dùng thay cho ảnh">{{ $item['script_code'] ?? '' }}</textarea>
                         </div>
                         <div style="flex:0 0 80px">
                             <label class="small mb-1">Thứ tự</label>
