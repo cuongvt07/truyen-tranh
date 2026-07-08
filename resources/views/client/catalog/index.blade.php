@@ -57,6 +57,11 @@
 
         {{-- Filter sidebar --}}
         <div class="second-information block">
+            {{-- Nút thu gọn/mở rộng filter — chỉ hiện trên mobile/tablet --}}
+            <button type="button" class="filter-toggle" aria-expanded="false">
+                <span><i class="fa fa-sliders-h"></i> {{ __('messages.catalog.filter') }}</span>
+                <i class="fa fa-chevron-down"></i>
+            </button>
             <form class="filter-container" method="get" action="{{ route('catalog.index') }}">
                 <input type="hidden" name="ordering" value="{{ $filters['ordering'] ?? '-time_updated' }}">
 
@@ -233,11 +238,25 @@
 .filter-container .btns { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px; }
 .filter-container .btns .btn { text-align:center; }
 
-/* Tablet: 3 columns */
-@media (max-width:1055px){ 
-    .catalog-flex { flex-direction:column-reverse; } 
+/* Nút toggle filter: ẩn trên desktop (filter luôn hiện ở sidebar phải) */
+.filter-toggle { display:none; }
+
+/* Tablet: 3 columns + filter XUỐNG DƯỚI kết quả, dạng panel thu gọn/mở rộng */
+@media (max-width:1055px){
+    .catalog-flex { flex-direction:column; }
     .catalog-flex .main, .catalog-flex .second-information { width:100%; position:static; }
     .manga-grid-list { grid-template-columns: repeat(3, 1fr); }
+
+    .catalog-flex .filter-toggle {
+        display:flex; align-items:center; justify-content:space-between; width:100%;
+        padding:4px 2px; margin:0; font-weight:700; font-size:15px; cursor:pointer;
+        background:transparent; color:inherit; border:none;
+    }
+    .catalog-flex .filter-toggle .fa-chevron-down { transition:transform .2s; opacity:.7; }
+    /* Mặc định THU GỌN trên mobile; mở khi bấm nút */
+    .catalog-flex .second-information .filter-container { display:none; margin-top:12px; }
+    .catalog-flex .second-information.filter-open .filter-container { display:block; }
+    .catalog-flex .second-information.filter-open .filter-toggle .fa-chevron-down { transform:rotate(180deg); }
 }
 
 /* Mobile: 2 columns */
@@ -251,4 +270,16 @@
     }
 }
 </style>
+
+<script>
+// Thu gọn/mở rộng panel filter trên mobile (event delegation)
+document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.filter-toggle');
+    if (!btn) return;
+    var panel = btn.closest('.second-information');
+    if (!panel) return;
+    var open = panel.classList.toggle('filter-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+</script>
 @endsection
