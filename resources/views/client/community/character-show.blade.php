@@ -49,7 +49,7 @@
                 <a href="{{ route('articles.show', $article) }}" class="item">
                     <div class="poster image image-cover lazy-load-bg">
                         <img class="lazy-image" loading="lazy" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
-                        @if($article->is_completed)<span class="grid-badge">{{ __('messages.ui.full') }}</span>@endif
+                        @if($article->is_completed)<span class="grid-badge" title="{{ __('messages.ui.full') }}">C</span>@endif
                     </div>
                     <div class="title clamp clamp-2">{{ $article->title }}</div>
                 </a>
@@ -78,7 +78,7 @@
 .manga-grid-list .item { display:block; }
 .manga-grid-list .item .poster { position:relative; aspect-ratio:2/3; border-radius:6px; overflow:hidden; }
 .manga-grid-list .item .poster img { width:100%; height:100%; object-fit:cover; }
-.manga-grid-list .item .grid-badge { position:absolute; top:4px; right:4px; background:var(--primary,#e84040); color:#fff; font-size:10px; padding:2px 5px; border-radius:3px; }
+.manga-grid-list .item .grid-badge { position:absolute; top:4px; right:4px; background:#2e9c5a; color:#fff; font-size:11px; font-weight:700; line-height:1; width:18px; height:18px; display:flex; align-items:center; justify-content:center; border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,.35); }
 .manga-grid-list .item .title { margin-top:6px; font-size:13px; line-height:1.35; }
 @media (max-width:1024px){ .manga-grid-list { grid-template-columns:repeat(4,1fr); } }
 @media (max-width:640px){ .manga-grid-list { grid-template-columns:repeat(3,1fr); } .character-photo{ width:90px;height:90px; } }

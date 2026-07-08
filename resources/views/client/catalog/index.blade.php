@@ -43,7 +43,7 @@
                     <a href="{{ route('articles.show', $article) }}" class="item">
                         <div class="poster image image-cover lazy-load-bg">
                             <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
-                            @if($article->is_completed)<span class="grid-badge">{{ __('messages.ui.full') }}</span>@endif
+                            @if($article->is_completed)<span class="grid-badge" title="{{ __('messages.ui.full') }}">C</span>@endif
                         </div>
                         <div class="title clamp clamp-2">{{ $article->title }}</div>
                     </a>
@@ -185,7 +185,7 @@
 .page-title__catalog .page-title { font-size:28px; margin:0; }
 .page-title__catalog select { padding:8px 12px; border-radius:6px; border:1px solid var(--input-border-color,#2a2a3e); background:var(--bg,#fff); color:inherit; min-width:170px; cursor:pointer; }
 .catalog-flex .second-information { width:280px; flex-shrink:0; position:sticky; top:90px; padding:16px; border-radius:8px; }
-.grid-badge { background:var(--primary,#e84040); color:#fff; font-size:11px; padding:2px 6px; border-radius:3px; position:absolute; top:4px; right:4px; }
+.grid-badge { background:#2e9c5a; color:#fff; font-size:11px; font-weight:700; line-height:1; width:18px; height:18px; display:flex; align-items:center; justify-content:center; border-radius:4px; position:absolute; top:4px; right:4px; box-shadow:0 1px 3px rgba(0,0,0,.35); }
 
 /* Grid layout: 5 columns on desktop, 2 on mobile */
 .manga-grid-list {

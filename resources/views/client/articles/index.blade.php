@@ -30,7 +30,7 @@
                     <div class="poster image image-cover lazy-load-bg">
                         <img class="lazy-image" loading="lazy" src="{{ $poster }}" alt="{{ $article->title }}">
                         @if($article->is_completed)
-                            <span class="label-completed" style="position:absolute;top:4px;right:4px;background:var(--primary);color:#fff;font-size:10px;padding:2px 5px;border-radius:3px">{{ __('messages.catalog.status_completed') }}</span>
+                            <span class="label-completed" title="{{ __('messages.catalog.status_completed') }}" style="position:absolute;top:4px;right:4px;background:#2e9c5a;color:#fff;font-size:11px;font-weight:700;line-height:1;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.35)">C</span>
                         @endif
                     </div>
                     <div class="manga-list__info">
