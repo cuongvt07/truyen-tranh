@@ -309,7 +309,7 @@
                                 <div class="collection-meta__books">
                                     @foreach($collection->articles->take(3) as $article)
                                         <div class="image image-cover lazy-load-bg">
-                                            <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="">
+                                            <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                                         </div>
                                     @endforeach
                                 </div>

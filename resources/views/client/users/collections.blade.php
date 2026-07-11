@@ -23,7 +23,7 @@
                     <div class="collection-author meta-color clamp clamp-1"><i class="fa fa-book"></i> {{ __('messages.account.story_count', ['count' => $c->articles_count]) }}</div>
                     <div class="collection-meta__books">
                         @foreach($c->articles()->limit(3)->get() as $a)
-                            <div class="image image-cover lazy-load-bg"><img class="lazy-image" loading="eager" src="{{ novel_poster($a) }}" alt=""></div>
+                            <div class="image image-cover lazy-load-bg"><img class="lazy-image" loading="eager" src="{{ novel_poster($a) }}" alt="{{ $a->title }}"></div>
                         @endforeach
                     </div>
                 </div>
