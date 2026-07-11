@@ -44,7 +44,7 @@
                         <div class="team-photo-preview">
                             <img id="team-photo-img"
                                  src="{{ old('photo_url', $item->photo ?: asset('static/core/images/no_cover.webp')) }}"
-                                 alt="">
+                                 alt="{{ $item->name ?? '' }}">
                         </div>
                         <div class="team-photo-controls">
                             <label for="team-photo-input" class="btn btn-invincible" style="cursor:pointer">{{ __('messages.community.choose_image') }}</label>

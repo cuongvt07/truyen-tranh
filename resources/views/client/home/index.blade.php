@@ -332,7 +332,7 @@
                     <div class="comment-block__header">
                         <div class="left">
                             <div class="comment-header__ava image image-cover lazy-load-bg">
-                                <img class="lazy-image" loading="eager" src="{{ asset('static/account/images/no-ava.jpg') }}" alt="">
+                                <img class="lazy-image" loading="eager" src="{{ asset('static/account/images/no-ava.jpg') }}" alt="{{ $comment->user_name }}">
                             </div>
                             <div class="nickname">{{ $comment->user_name }}</div>
                         </div>

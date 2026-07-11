@@ -219,7 +219,7 @@
                                 <div class="comment-block__header">
                                     <div class="left">
                                         <div class="comment-header__ava image image-cover lazy-load-bg">
-                                            <img class="lazy-image" loading="eager" src="{{ optional($comment->user)->avatar ?: asset('static/account/images/no-ava.jpg') }}" alt="">
+                                            <img class="lazy-image" loading="eager" src="{{ optional($comment->user)->avatar ?: asset('static/account/images/no-ava.jpg') }}" alt="{{ optional($comment->user)->name ?? optional($comment->user)->username }}">
                                         </div>
                                         <div class="nickname">{{ optional($comment->user)->name ?? optional($comment->user)->username ?? __('messages.comments.anonymous') }}</div>
                                     </div>

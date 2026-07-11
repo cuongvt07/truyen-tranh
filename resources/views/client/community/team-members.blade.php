@@ -41,7 +41,7 @@
                                     onclick="selectMember({{ $m->id }}, '{{ e(optional($m->user)->username ?? '?') }}', '{{ $m->role }}')"
                                 @endif>
                             <span class="member-avatar">
-                                <img src="{{ optional($m->user)->avatar ?: asset('static/core/images/no_cover.webp') }}" alt="">
+                                <img src="{{ optional($m->user)->avatar ?: asset('static/core/images/no_cover.webp') }}" alt="{{ optional($m->user)->username }}">
                             </span>
                             <span>
                                 <span class="member-name">{{ optional($m->user)->username ?? '?' }}</span>
@@ -56,7 +56,7 @@
                         @foreach($pending as $m)
                             <div class="member-row">
                                 <span class="member-avatar">
-                                    <img src="{{ optional($m->user)->avatar ?: asset('static/core/images/no_cover.webp') }}" alt="">
+                                    <img src="{{ optional($m->user)->avatar ?: asset('static/core/images/no_cover.webp') }}" alt="{{ optional($m->user)->username }}">
                                 </span>
                                 <span>
                                     <span class="member-name">{{ optional($m->user)->username ?? '?' }}</span>

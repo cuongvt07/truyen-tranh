@@ -73,7 +73,7 @@
             @if(!empty($premium))
             <div class="price-item block">
                 <div class="price_item__icon image image-cover lazy-load-bg">
-                    <img class="lazy-image" loading="eager" src="{{ asset($premium['icon']) }}" alt="">
+                    <img class="lazy-image" loading="eager" src="{{ asset($premium['icon']) }}" alt="{{ $premium['name'] }}">
                 </div>
                 <div class="price-item__info">
                     <h2 class="price_item__title block-title">{{ $premium['name'] }}</h2>

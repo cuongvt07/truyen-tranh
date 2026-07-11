@@ -157,7 +157,7 @@
     <div class="achievement">
         <div class="achievement-info-wrapper">
             <div class="image">
-                <img class="lazy-image loaded" loading="lazy" src="{{ $iconUrl }}" alt="">
+                <img class="lazy-image loaded" loading="lazy" src="{{ $iconUrl }}" alt="{{ $ach->display_name }}">
             </div>
             <div class="achievement-info">
                 <div class="title clamp clamp-3">{{ $ach->display_name }}</div>

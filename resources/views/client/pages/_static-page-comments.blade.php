@@ -41,7 +41,7 @@
         @forelse($comments as $comment)
             <div class="sc-item" id="comment-{{ $comment->id }}">
                 <div class="sc-avatar {{ user_is_vip(optional($comment->user)->id) ? 'vip-ring' : '' }}">
-                    <img src="{{ optional($comment->user)->avatar ?: asset('static/account/images/no-ava.jpg') }}" alt="">
+                    <img src="{{ optional($comment->user)->avatar ?: asset('static/account/images/no-ava.jpg') }}" alt="{{ optional($comment->user)->name ?? optional($comment->user)->username }}">
                     @include('partials.vip-crown', ['userId' => optional($comment->user)->id])
                 </div>
                 <div class="sc-body">
@@ -87,7 +87,7 @@
                     @foreach($comment->replies as $reply)
                         <div class="sc-item sc-item--reply" id="comment-{{ $reply->id }}">
                             <div class="sc-avatar {{ user_is_vip(optional($reply->user)->id) ? 'vip-ring' : '' }}">
-                                <img src="{{ optional($reply->user)->avatar ?: asset('static/account/images/no-ava.jpg') }}" alt="">
+                                <img src="{{ optional($reply->user)->avatar ?: asset('static/account/images/no-ava.jpg') }}" alt="{{ optional($reply->user)->name ?? optional($reply->user)->username }}">
                                 @include('partials.vip-crown', ['userId' => optional($reply->user)->id])
                             </div>
                             <div class="sc-body">

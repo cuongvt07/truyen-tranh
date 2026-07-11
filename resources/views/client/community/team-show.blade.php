@@ -19,9 +19,9 @@
     <div class="team-panel team-public">
         <aside class="team-public-sidebar">
             <div class="team-photo-strip">
-                <img src="{{ $team->photo ?: asset('static/core/images/no_cover.webp') }}" alt="">
-                <img src="{{ $team->photo ?: asset('static/core/images/no_cover.webp') }}" alt="">
-                <img src="{{ $team->photo ?: asset('static/core/images/no_cover.webp') }}" alt="">
+                <img src="{{ $team->photo ?: asset('static/core/images/no_cover.webp') }}" alt="{{ $team->name }}">
+                <img src="{{ $team->photo ?: asset('static/core/images/no_cover.webp') }}" alt="{{ $team->name }}">
+                <img src="{{ $team->photo ?: asset('static/core/images/no_cover.webp') }}" alt="{{ $team->name }}">
             </div>
 
             @auth
@@ -92,7 +92,7 @@
                     @php $profileUrl = optional($m->user)->id ? route('users.show.profile', $m->user) : '#'; @endphp
                     <a href="{{ $profileUrl }}" class="team-member">
                         <span class="team-member-avatar">
-                            <img src="{{ optional($m->user)->avatar ?: asset('static/core/images/no_cover.webp') }}" alt="">
+                            <img src="{{ optional($m->user)->avatar ?: asset('static/core/images/no_cover.webp') }}" alt="{{ optional($m->user)->username }}">
                         </span>
                         <span>
                             <span class="team-member-name">{{ optional($m->user)->username ?? '?' }}</span>

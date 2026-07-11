@@ -24,7 +24,7 @@
         @forelse($items as $t)
             <div class="my-story">
                 <div class="my-story__poster">
-                    <img src="{{ $t->photo ?: asset('static/core/images/no_cover.webp') }}" alt="">
+                    <img src="{{ $t->photo ?: asset('static/core/images/no_cover.webp') }}" alt="{{ $t->name }}">
                 </div>
                 <div class="my-story__info">
                     <div class="my-story__title">
