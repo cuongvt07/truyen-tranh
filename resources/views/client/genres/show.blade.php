@@ -28,9 +28,6 @@
                 <a href="{{ route('articles.show', $article) }}" class="manga-item catalog-item">
                     <div class="poster image image-cover lazy-load-bg">
                         <img class="lazy-image" loading="lazy" src="{{ $poster }}" alt="{{ $article->title }}">
-                        @if($article->is_completed)
-                            <span title="{{ __('messages.ui.full') }}" style="position:absolute;top:4px;right:4px;background:#2e9c5a;color:#fff;font-size:11px;font-weight:700;line-height:1;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.35)">C</span>
-                        @endif
                     </div>
                     <div class="manga-list__info">
                         <div class="title clamp clamp-2">{{ $article->title }}</div>

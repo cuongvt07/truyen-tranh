@@ -57,6 +57,20 @@ class Article extends Model
         static::deleted(fn () => bump_sitemap_version());
     }
 
+    /**
+     * Một số tiêu đề được import kèm HTML entity (vd "A &amp; B") nên bị lưu double-encoded.
+     * Decode khi đọc để Blade {{ }} escape lại đúng, tránh hiển thị "&amp;" trên trang.
+     */
+    protected function getTitleAttribute(?string $value): ?string
+    {
+        return $value === null ? null : html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    }
+
+    protected function getAltTitleAttribute(?string $value): ?string
+    {
+        return $value === null ? null : html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    }
+
     protected function getCompletedTextAttribute()
     {
         $value = $this->is_completed;
