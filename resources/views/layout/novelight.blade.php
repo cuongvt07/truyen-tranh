@@ -6,7 +6,9 @@
         $seoSite  = seo_setting('site_name', config('app.name', __('messages.layout.default_site_name')));
         $seoDesc  = trim($__env->yieldContent('meta_description')) ?: seo_setting('default_description', __('messages.layout.default_meta_description'));
         $seoOg    = trim($__env->yieldContent('og_image')) ?: asset(ltrim(seo_setting('default_og_image', '/static/core/images/no_cover.webp'), '/'));
-        $seoTitle = trim($__env->yieldContent('template_title'));
+        // Inline @section('template_title', ...) đã e()-escape sẵn; decode về plain text
+        // để các {{ }} bên dưới (title/og/twitter) escape đúng 1 lần, tránh &amp;amp;.
+        $seoTitle = html_entity_decode(trim($__env->yieldContent('template_title')), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $seoFullTitle = ($seoTitle ? $seoTitle . $seoSep : '') . $seoSite;
         $seoCanonical = trim($__env->yieldContent('canonical_url')) ?: url()->current();
     @endphp
