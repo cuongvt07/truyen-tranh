@@ -1,0 +1,4556 @@
+:root {
+    --alpha-primary: #4535ff;
+    --alpha-primary-dark: #2f24c9;
+    --alpha-ink: #17152f;
+    --alpha-text: #27283d;
+    --alpha-muted: #73748a;
+    --alpha-line: #ececf6;
+    --alpha-soft: #f7f7ff;
+    --alpha-card: #ffffff;
+    --alpha-shadow: 0 10px 30px rgba(36, 31, 91, .08);
+    --body-color: #f7f7fb;
+    --color-site: #ffffff;
+    --color-light-site: #ffffff;
+    --btn-primary-color: var(--alpha-primary);
+    --btn-primary-color-hover: var(--alpha-primary-dark);
+    --btn-color-hover: var(--alpha-primary);
+    --link-color: var(--alpha-primary);
+    --link-color-hover: var(--alpha-primary-dark);
+    --text-color: var(--alpha-text);
+    --meta-color: var(--alpha-muted);
+    --border: var(--alpha-line);
+    --bg: #ffffff;
+}
+
+body.theme-alphanovel {
+    background: var(--body-color);
+    color: var(--alpha-text);
+    font-family: "Open Sans", "Roboto", Arial, sans-serif;
+}
+
+.theme-alphanovel *:not(.fa):not(.fab):not(.far):not(.fas),
+body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
+    font-family: inherit;
+}
+
+.theme-alphanovel .fa,
+.theme-alphanovel .fas,
+.theme-alphanovel .far,
+.theme-alphanovel-chapter .fa,
+.theme-alphanovel-chapter .fas,
+.theme-alphanovel-chapter .far {
+    font-family: "Font Awesome 5 Free" !important;
+}
+
+.theme-alphanovel .fab,
+.theme-alphanovel-chapter .fab {
+    font-family: "Font Awesome 5 Brands" !important;
+}
+
+.theme-alphanovel h1,
+.theme-alphanovel h2,
+.theme-alphanovel h3,
+.theme-alphanovel .title,
+.theme-alphanovel .page-title,
+.theme-alphanovel .logo,
+.theme-alphanovel-chapter h1,
+.theme-alphanovel-chapter h2,
+.theme-alphanovel-chapter h3 {
+    font-family: "Poppins", "Play", "Roboto", Arial, sans-serif;
+}
+
+.theme-alphanovel .container {
+    max-width: 1188px;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+.theme-alphanovel .page {
+    padding-top: 96px;
+}
+
+.alpha-install-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    background: #f1f1ff;
+    border-bottom: 1px solid #e3e1ff;
+}
+
+.alpha-install-bar__inner {
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.alpha-install-bar__brand {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--alpha-ink);
+}
+
+.alpha-install-bar__mark {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--alpha-primary);
+    color: #fff;
+    font-weight: 800;
+}
+
+.alpha-install-bar__brand strong,
+.alpha-install-bar__brand small {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.alpha-install-bar__brand strong {
+    font-size: 14px;
+    line-height: 1.2;
+}
+
+.alpha-install-bar__brand small {
+    max-width: 460px;
+    color: var(--alpha-muted);
+    font-size: 12px;
+}
+
+.alpha-install-bar__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alpha-install-bar__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 96px;
+    min-height: 34px;
+    padding: 7px 16px;
+    border: 1px solid var(--alpha-primary);
+    border-radius: 999px;
+    color: var(--alpha-primary);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.alpha-install-bar__close {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--alpha-ink);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.theme-alphanovel .header {
+    top: 0;
+    min-height: 80px;
+    padding: 0;
+    background: #fff;
+    color: var(--alpha-ink);
+    border-bottom: 1px solid var(--alpha-line);
+    box-shadow: 0 4px 18px rgba(31, 28, 68, .05);
+}
+
+.theme-alphanovel .header .container,
+.theme-alphanovel .header__inner {
+    height: 80px;
+}
+
+.theme-alphanovel .header__inner {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.theme-alphanovel .logo {
+    width: auto;
+    height: 38px;
+    min-width: 176px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--alpha-ink);
+    text-decoration: none;
+}
+
+.theme-alphanovel .logo img {
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    border-radius: 12px;
+    background: var(--alpha-primary);
+    object-fit: contain;
+}
+
+.theme-alphanovel .alpha-logo-text {
+    color: var(--alpha-ink);
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.theme-alphanovel .header-nav {
+    flex: 1;
+}
+
+.theme-alphanovel .header-nav ul {
+    gap: 4px;
+}
+
+.theme-alphanovel .header-btn,
+.theme-alphanovel .header-nav a,
+.theme-alphanovel .header-nav .header-btn {
+    color: var(--alpha-ink) !important;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 999px;
+}
+
+.theme-alphanovel .header-nav .header-btn,
+.theme-alphanovel .header-nav a {
+    padding: 11px 14px;
+}
+
+.theme-alphanovel .header-nav .header-btn:hover,
+.theme-alphanovel .header-nav a:hover {
+    background: var(--alpha-soft);
+    color: var(--alpha-primary) !important;
+}
+
+.theme-alphanovel .header-user {
+    gap: 10px;
+}
+
+.theme-alphanovel .header-user .btn,
+.theme-alphanovel .btn-primary,
+.theme-alphanovel button.btn-primary {
+    border: 0;
+    background: var(--alpha-primary);
+    color: #fff !important;
+    border-radius: 999px;
+    font-weight: 800;
+    box-shadow: 0 8px 18px rgba(69, 53, 255, .22);
+}
+
+.theme-alphanovel .header-user .login-btn {
+    background: transparent;
+    color: var(--alpha-primary) !important;
+    box-shadow: none;
+    border: 1px solid #d8d6ff;
+}
+
+.theme-alphanovel .header-avatar {
+    border-radius: 50%;
+    border-color: #dedcff;
+}
+
+.theme-alphanovel .header-sublist {
+    margin-top: 16px;
+    padding: 10px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: var(--alpha-shadow);
+}
+
+.theme-alphanovel .header-sublist a {
+    color: var(--alpha-text);
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.theme-alphanovel .header-sublist a:hover {
+    background: var(--alpha-soft);
+    color: var(--alpha-primary) !important;
+}
+
+.theme-alphanovel .alpha-home {
+    width: min(1188px, calc(100% - 36px));
+    margin: 0 auto;
+}
+
+.theme-alphanovel .alpha-hero {
+    position: relative;
+    min-height: 360px;
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr);
+    align-items: center;
+    gap: 34px;
+    margin: 0 0 34px;
+    padding: 38px;
+    overflow: hidden;
+    border-radius: 28px;
+    background:
+        linear-gradient(90deg, rgba(22, 18, 54, .96), rgba(31, 27, 80, .82)),
+        var(--alpha-hero-bg) center / cover;
+    color: #fff;
+    box-shadow: 0 22px 50px rgba(30, 27, 85, .18);
+}
+
+.theme-alphanovel .alpha-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 45%;
+    background: linear-gradient(0deg, rgba(69, 53, 255, .2), transparent);
+    pointer-events: none;
+}
+
+.theme-alphanovel .alpha-hero__media,
+.theme-alphanovel .alpha-hero__content {
+    position: relative;
+    z-index: 1;
+}
+
+.theme-alphanovel .alpha-hero__media {
+    aspect-ratio: 2 / 3;
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, .08);
+    box-shadow: 0 24px 44px rgba(0, 0, 0, .34);
+}
+
+.theme-alphanovel .alpha-hero__media img,
+.theme-alphanovel .alpha-book-card__cover img,
+.theme-alphanovel .alpha-reading-card img,
+.theme-alphanovel .alpha-update-row img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.theme-alphanovel .alpha-kicker {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    margin-bottom: 12px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .16);
+    color: #dedbff;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.theme-alphanovel .alpha-hero h1 {
+    max-width: 760px;
+    margin: 0 0 12px;
+    color: #fff;
+    font-size: clamp(34px, 4vw, 58px);
+    line-height: 1.05;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-hero p {
+    max-width: 680px;
+    margin: 0;
+    color: rgba(255, 255, 255, .78);
+    font-size: 16px;
+    line-height: 1.65;
+}
+
+.theme-alphanovel .alpha-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.theme-alphanovel .alpha-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-button--primary {
+    background: var(--alpha-primary);
+    color: #fff !important;
+    box-shadow: 0 14px 26px rgba(69, 53, 255, .28);
+}
+
+.theme-alphanovel .alpha-button--ghost {
+    background: rgba(255, 255, 255, .14);
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, .25);
+}
+
+.theme-alphanovel .alpha-genre-strip {
+    display: flex;
+    gap: 10px;
+    margin: 0 0 34px;
+    padding-bottom: 4px;
+    overflow-x: auto;
+}
+
+.theme-alphanovel .alpha-genre-pill {
+    flex: 0 0 auto;
+    padding: 10px 16px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--alpha-text);
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-genre-pill--active,
+.theme-alphanovel .alpha-genre-pill:hover {
+    background: var(--alpha-primary);
+    color: #fff !important;
+    border-color: var(--alpha-primary);
+}
+
+.theme-alphanovel .alpha-section {
+    margin-bottom: 38px;
+}
+
+.theme-alphanovel .alpha-section--flush {
+    margin-bottom: 0;
+}
+
+.theme-alphanovel .alpha-section__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.theme-alphanovel .alpha-section__head h2 {
+    margin: 0;
+    color: var(--alpha-ink);
+    font-size: 26px;
+    line-height: 1.2;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-section__head a {
+    color: var(--alpha-primary);
+    font-size: 14px;
+    font-weight: 900;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.theme-alphanovel .alpha-book-rail {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 22px 18px;
+}
+
+.theme-alphanovel .alpha-book-card {
+    min-width: 0;
+    color: var(--alpha-ink);
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-book-card__cover {
+    display: block;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 12px 26px rgba(24, 22, 64, .15);
+}
+
+.theme-alphanovel .alpha-book-card strong {
+    display: block;
+    margin-top: 10px;
+    color: var(--alpha-ink);
+    font-size: 15px;
+    line-height: 1.35;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-book-card small,
+.theme-alphanovel .alpha-reading-card small,
+.theme-alphanovel .alpha-mini-list small {
+    display: block;
+    margin-top: 5px;
+    color: var(--alpha-muted);
+    font-size: 12px;
+    line-height: 1.35;
+    font-weight: 700;
+}
+
+.theme-alphanovel .alpha-reading-card {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 18px;
+    background: #fff;
+    color: var(--alpha-ink);
+    text-decoration: none;
+    box-shadow: var(--alpha-shadow);
+}
+
+.theme-alphanovel .alpha-reading-card img {
+    aspect-ratio: 2 / 3;
+    border-radius: 10px;
+}
+
+.theme-alphanovel .alpha-reading-card strong {
+    color: var(--alpha-ink);
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 30px;
+    align-items: start;
+    margin-bottom: 38px;
+}
+
+.theme-alphanovel .alpha-update-list,
+.theme-alphanovel .alpha-side-card,
+.theme-alphanovel .alpha-comment-card,
+.theme-alphanovel .alpha-empty {
+    border: 1px solid var(--alpha-line);
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: var(--alpha-shadow);
+}
+
+.theme-alphanovel .alpha-update-list {
+    overflow: hidden;
+}
+
+.theme-alphanovel .alpha-update-row {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    color: var(--alpha-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--alpha-line);
+}
+
+.theme-alphanovel .alpha-update-row:last-child {
+    border-bottom: 0;
+}
+
+.theme-alphanovel .alpha-update-row:hover {
+    background: var(--alpha-soft);
+}
+
+.theme-alphanovel .alpha-update-row img {
+    aspect-ratio: 2 / 3;
+    border-radius: 10px;
+}
+
+.theme-alphanovel .alpha-update-row strong {
+    color: var(--alpha-ink);
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-update-row small,
+.theme-alphanovel .alpha-update-row em {
+    color: var(--alpha-muted);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+}
+
+.theme-alphanovel .alpha-sidebar {
+    display: grid;
+    gap: 18px;
+}
+
+.theme-alphanovel .alpha-side-card {
+    padding: 18px;
+}
+
+.theme-alphanovel .alpha-side-card--promo {
+    min-height: 112px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    background:
+        linear-gradient(90deg, rgba(13, 10, 37, .96), rgba(39, 28, 111, .78)),
+        url("/static/core/images/discord_background.webp") center / cover;
+    color: #fff;
+}
+
+.theme-alphanovel .alpha-side-card--promo strong {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-side-card--promo span {
+    margin-top: 4px;
+    color: rgba(255, 255, 255, .82);
+    font-size: 14px;
+}
+
+.theme-alphanovel .alpha-side-card .alpha-section__head h2 {
+    font-size: 20px;
+}
+
+.theme-alphanovel .alpha-mini-list {
+    display: grid;
+    gap: 8px;
+}
+
+.theme-alphanovel .alpha-mini-list a {
+    display: block;
+    padding: 10px;
+    border-radius: 14px;
+    color: var(--alpha-ink);
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-mini-list a:hover {
+    background: var(--alpha-soft);
+}
+
+.theme-alphanovel .alpha-mini-list strong {
+    color: var(--alpha-ink);
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-comment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.theme-alphanovel .alpha-comment-card {
+    padding: 18px;
+}
+
+.theme-alphanovel .alpha-comment-card div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.theme-alphanovel .alpha-comment-card strong {
+    color: var(--alpha-ink);
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-comment-card small {
+    color: var(--alpha-muted);
+    white-space: nowrap;
+}
+
+.theme-alphanovel .alpha-comment-card p {
+    margin: 0 0 12px;
+    color: var(--alpha-text);
+    line-height: 1.55;
+}
+
+.theme-alphanovel .alpha-comment-card a {
+    color: var(--alpha-primary);
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-empty {
+    grid-column: 1 / -1;
+    padding: 28px;
+    color: var(--alpha-muted);
+    text-align: center;
+    font-weight: 700;
+}
+
+.theme-alphanovel .alpha-empty--small {
+    padding: 18px;
+    box-shadow: none;
+}
+
+.theme-alphanovel .block,
+.theme-alphanovel .main.block,
+.theme-alphanovel .second-information.block,
+.theme-alphanovel .comment-block,
+.theme-alphanovel .collection__inner,
+.theme-alphanovel .news-post {
+    background: var(--alpha-card);
+    border: 1px solid var(--alpha-line);
+    border-radius: 20px;
+    box-shadow: var(--alpha-shadow);
+}
+
+.theme-alphanovel .section {
+    margin-bottom: 34px;
+}
+
+.theme-alphanovel .section > h2,
+.theme-alphanovel .section-title,
+.theme-alphanovel .page-title__catalog .page-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--alpha-ink);
+    font-size: 24px;
+    line-height: 1.25;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.theme-alphanovel .manga-item,
+.theme-alphanovel .manga-grid-list .item {
+    color: var(--alpha-ink);
+}
+
+.theme-alphanovel .manga-item .poster,
+.theme-alphanovel .manga-grid-list .item .poster,
+.theme-alphanovel .second-information > .poster {
+    border-radius: 14px;
+    box-shadow: 0 12px 24px rgba(24, 22, 64, .14);
+}
+
+.theme-alphanovel .manga-item .title,
+.theme-alphanovel .manga-grid-list .item .title {
+    margin-top: 9px;
+    color: var(--alpha-ink);
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.35;
+}
+
+.theme-alphanovel .manga-item span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    color: var(--alpha-muted);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.theme-alphanovel .popular.block,
+.theme-alphanovel .translation-requests,
+.theme-alphanovel .recently,
+.theme-alphanovel .comment-blocks {
+    padding: 18px;
+}
+
+.theme-alphanovel .new-realeses .swiper-slide {
+    overflow: hidden;
+    border-radius: 24px;
+    border: 1px solid var(--alpha-line);
+    box-shadow: var(--alpha-shadow);
+}
+
+.theme-alphanovel .new-realeses__item .right .title {
+    color: #fff;
+    font-size: 26px;
+}
+
+.theme-alphanovel .new-realeses__item .right .excerpt,
+.theme-alphanovel .new-realeses__item .right .author {
+    color: rgba(255, 255, 255, .82);
+}
+
+.theme-alphanovel .manga-line-item {
+    padding: 12px;
+    border-radius: 16px;
+    color: var(--alpha-ink);
+}
+
+.theme-alphanovel .manga-line-item:hover {
+    background: var(--alpha-soft);
+}
+
+.theme-alphanovel .manga-line-item .poster {
+    border-radius: 12px;
+}
+
+.theme-alphanovel .manga-line-item .info .title {
+    color: var(--alpha-ink);
+    font-weight: 800;
+}
+
+.theme-alphanovel .index-tags .tag {
+    border-radius: 18px !important;
+    box-shadow: var(--alpha-shadow);
+}
+
+.theme-alphanovel .index-tags .tag .title {
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.theme-alphanovel .promo-banner {
+    border-radius: 20px;
+    box-shadow: var(--alpha-shadow);
+}
+
+.theme-alphanovel .page-panel {
+    min-height: 300px;
+    border-bottom: 1px solid var(--alpha-line);
+}
+
+.theme-alphanovel .page-panel .background {
+    background: linear-gradient(180deg, rgba(69, 53, 255, .1), rgba(247, 247, 251, .96));
+}
+
+.theme-alphanovel .header-manga {
+    margin-top: -88px;
+}
+
+.theme-alphanovel .header-manga h1 {
+    color: #fff;
+    text-shadow: 0 4px 18px rgba(0, 0, 0, .35);
+    font-weight: 900;
+}
+
+.theme-alphanovel .article-detail-flex .main.block,
+.theme-alphanovel .article-detail-flex .second-information {
+    border-radius: 24px;
+}
+
+.theme-alphanovel .section-select {
+    display: inline-flex;
+    gap: 6px;
+    padding: 6px;
+    margin-bottom: 18px;
+    border-radius: 999px;
+    background: var(--alpha-soft);
+}
+
+.theme-alphanovel .section-select a {
+    border-radius: 999px;
+    color: var(--alpha-muted);
+    font-weight: 800;
+}
+
+.theme-alphanovel .section-select a.active {
+    background: #fff;
+    color: var(--alpha-primary);
+    box-shadow: 0 6px 14px rgba(69, 53, 255, .12);
+}
+
+.theme-alphanovel .tags a {
+    border-radius: 999px;
+    background: var(--alpha-soft);
+    color: var(--alpha-primary);
+    font-weight: 800;
+}
+
+.theme-alphanovel .chapters .chapter {
+    border-color: var(--alpha-line);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.theme-alphanovel .chapters .chapter:hover {
+    background: var(--alpha-soft);
+}
+
+.theme-alphanovel .catalog-flex .second-information {
+    border-radius: 20px;
+}
+
+.theme-alphanovel .manga-grid-list {
+    gap: 22px 18px;
+}
+
+.theme-alphanovel .filter-container .text-input,
+.theme-alphanovel .page-title__catalog select,
+.theme-alphanovel .comments-form__text,
+.theme-alphanovel textarea,
+.theme-alphanovel input,
+.theme-alphanovel select {
+    border-color: #dedff0 !important;
+    border-radius: 14px !important;
+    background: #fff !important;
+    color: var(--alpha-text) !important;
+}
+
+.theme-alphanovel footer {
+    margin-top: 48px;
+    padding: 30px 18px;
+    background: #fff;
+    border-top: 1px solid var(--alpha-line);
+    color: var(--alpha-muted);
+}
+
+.theme-alphanovel footer .footer-links {
+    gap: 18px;
+}
+
+.theme-alphanovel footer a {
+    color: var(--alpha-text);
+    font-weight: 700;
+}
+
+.theme-alphanovel .alpha-home {
+    width: min(100% - 36px, 1152px);
+    margin: 0 auto;
+}
+
+.theme-alphanovel .alpha-home > .alpha-section {
+    padding: 26px 32px 18px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: none;
+}
+
+.alpha-app-hero {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr) 150px;
+    align-items: center;
+    gap: 34px;
+    min-height: 254px;
+    margin: 0 0 24px;
+    padding: 32px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #4535ff;
+    color: #fff;
+}
+
+.alpha-app-hero__media img {
+    display: block;
+    width: 128px;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.alpha-app-hero__content h1 {
+    max-width: 640px;
+    margin: 0;
+    color: #fff;
+    font-size: 28px;
+    line-height: 1.25;
+    font-weight: 900;
+}
+
+.alpha-app-hero__content h1 span {
+    color: #f7ff34;
+}
+
+.alpha-app-hero__content p {
+    max-width: 600px;
+    margin: 18px 0 0;
+    color: rgba(255, 255, 255, .9);
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.alpha-app-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.alpha-button--light {
+    background: #fff;
+    color: var(--alpha-primary) !important;
+}
+
+.alpha-app-hero__qr {
+    justify-self: center;
+    display: grid;
+    place-items: center;
+    gap: 10px;
+    color: #fff;
+    text-align: center;
+    font-weight: 900;
+}
+
+.alpha-app-hero__qr span {
+    display: grid;
+    place-items: center;
+    width: 92px;
+    height: 92px;
+    border-radius: 8px;
+    background: #fff;
+    color: var(--alpha-primary);
+    font-size: 24px;
+}
+
+.alpha-app-hero__qr small {
+    color: rgba(255, 255, 255, .86);
+    font-size: 12px;
+}
+
+.alpha-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr);
+    align-items: end;
+    gap: 28px;
+    min-height: 360px;
+    margin: 0 0 34px;
+    padding: 34px;
+    overflow: hidden;
+    border-radius: 28px;
+    background: #100f22;
+    color: #fff;
+    box-shadow: var(--alpha-shadow);
+}
+
+.alpha-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(90deg, rgba(13, 12, 34, .95), rgba(20, 17, 48, .78) 48%, rgba(69, 53, 255, .45)),
+        var(--alpha-hero-bg) center / cover no-repeat;
+    filter: saturate(1.08);
+}
+
+.alpha-hero__media,
+.alpha-hero__content {
+    position: relative;
+    z-index: 1;
+}
+
+.alpha-hero__media img {
+    display: block;
+    width: 210px;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: 18px;
+    box-shadow: 0 24px 45px rgba(0, 0, 0, .34);
+}
+
+.alpha-kicker {
+    width: fit-content;
+    margin-bottom: 12px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .14);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.alpha-hero h1 {
+    max-width: 720px;
+    margin: 0;
+    color: #fff;
+    font-size: 44px;
+    line-height: 1.05;
+    font-weight: 900;
+}
+
+.alpha-hero p {
+    max-width: 680px;
+    margin: 16px 0 0;
+    color: rgba(255, 255, 255, .78);
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.alpha-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.alpha-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.alpha-button--primary {
+    background: var(--alpha-primary);
+    color: #fff !important;
+    box-shadow: 0 12px 24px rgba(69, 53, 255, .28);
+}
+
+.alpha-button--ghost {
+    background: rgba(255, 255, 255, .14);
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, .26);
+}
+
+.alpha-genre-strip {
+    display: flex;
+    gap: 10px;
+    margin: -8px 0 34px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+}
+
+.alpha-genre-pill {
+    flex: 0 0 auto;
+    padding: 9px 15px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--alpha-text);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.alpha-genre-pill--active,
+.alpha-genre-pill:hover {
+    background: var(--alpha-primary);
+    color: #fff !important;
+    border-color: var(--alpha-primary);
+}
+
+.alpha-section {
+    margin-bottom: 40px;
+}
+
+.alpha-section--flush {
+    margin-bottom: 0;
+}
+
+.alpha-section__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.alpha-section__head h2 {
+    margin: 0;
+    color: var(--alpha-ink);
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: 900;
+}
+
+.alpha-section__head a {
+    flex: 0 0 auto;
+    color: var(--alpha-primary);
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.alpha-book-rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 150px;
+    gap: 18px;
+    overflow-x: auto;
+    padding: 2px 2px 14px;
+    scroll-snap-type: x proximity;
+}
+
+.alpha-book-card {
+    min-width: 0;
+    color: var(--alpha-ink);
+    text-decoration: none;
+    scroll-snap-align: start;
+}
+
+.alpha-book-card__cover {
+    display: block;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 12px 24px rgba(24, 22, 64, .14);
+}
+
+.alpha-book-card__cover img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    transition: transform .18s ease;
+}
+
+.alpha-book-card:hover .alpha-book-card__cover img {
+    transform: scale(1.035);
+}
+
+.alpha-book-card strong {
+    display: block;
+    margin-top: 10px;
+    color: var(--alpha-ink);
+    font-size: 15px;
+    line-height: 1.35;
+    font-weight: 900;
+}
+
+.alpha-book-card small,
+.alpha-reading-card small,
+.alpha-update-row small,
+.alpha-mini-list small,
+.alpha-comment-card small {
+    color: var(--alpha-muted);
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.alpha-book-rail--compact {
+    grid-auto-columns: 260px;
+}
+
+.alpha-reading-card {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    min-height: 96px;
+    padding: 12px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 18px;
+    background: #fff;
+    color: var(--alpha-ink);
+    text-decoration: none;
+    box-shadow: var(--alpha-shadow);
+}
+
+.alpha-reading-card img {
+    width: 64px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.alpha-reading-card strong {
+    display: block;
+    color: var(--alpha-ink);
+    font-weight: 900;
+}
+
+.alpha-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 30px;
+    align-items: start;
+    margin-bottom: 40px;
+}
+
+.alpha-update-list,
+.alpha-side-card,
+.alpha-comment-card,
+.alpha-empty {
+    border: 1px solid var(--alpha-line);
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: var(--alpha-shadow);
+}
+
+.alpha-update-list {
+    overflow: hidden;
+}
+
+.alpha-update-row {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr) auto;
+    gap: 13px;
+    align-items: center;
+    padding: 12px;
+    color: var(--alpha-ink);
+    text-decoration: none;
+}
+
+.alpha-update-row + .alpha-update-row {
+    border-top: 1px solid var(--alpha-line);
+}
+
+.alpha-update-row:hover {
+    background: var(--alpha-soft);
+}
+
+.alpha-update-row img {
+    width: 58px;
+    height: 76px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.alpha-update-row strong {
+    display: block;
+    color: var(--alpha-ink);
+    font-weight: 900;
+}
+
+.alpha-update-row em {
+    color: var(--alpha-muted);
+    font-size: 12px;
+    font-style: normal;
+    white-space: nowrap;
+}
+
+.alpha-sidebar {
+    display: grid;
+    gap: 18px;
+    position: sticky;
+    top: 150px;
+}
+
+.alpha-side-card {
+    padding: 18px;
+}
+
+.alpha-side-card--promo {
+    min-height: 116px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    background:
+        linear-gradient(90deg, rgba(10, 8, 33, .98), rgba(31, 24, 90, .72)),
+        url("/static/core/images/discord_background.webp") center / cover no-repeat;
+    color: #fff;
+}
+
+.alpha-side-card--promo strong {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.alpha-side-card--promo span {
+    margin-top: 4px;
+    color: rgba(255, 255, 255, .82);
+}
+
+.alpha-side-card .alpha-section__head {
+    margin-bottom: 12px;
+}
+
+.alpha-side-card .alpha-section__head h2 {
+    font-size: 19px;
+}
+
+.alpha-mini-list {
+    display: grid;
+    gap: 4px;
+}
+
+.alpha-mini-list a {
+    display: block;
+    padding: 10px 0;
+    color: var(--alpha-ink);
+    text-decoration: none;
+}
+
+.alpha-mini-list a + a {
+    border-top: 1px solid var(--alpha-line);
+}
+
+.alpha-mini-list strong {
+    display: block;
+    color: var(--alpha-ink);
+    font-weight: 900;
+}
+
+.alpha-comment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.alpha-comment-card {
+    min-height: 160px;
+    padding: 16px;
+}
+
+.alpha-comment-card > div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.alpha-comment-card strong {
+    color: var(--alpha-ink);
+    font-weight: 900;
+}
+
+.alpha-comment-card p {
+    margin: 0 0 12px;
+    color: var(--alpha-text);
+    line-height: 1.55;
+}
+
+.alpha-comment-card a {
+    color: var(--alpha-primary);
+    font-weight: 900;
+}
+
+.alpha-empty {
+    padding: 34px 18px;
+    color: var(--alpha-muted);
+    text-align: center;
+    grid-column: 1 / -1;
+}
+
+.alpha-empty--small {
+    padding: 18px 8px;
+    box-shadow: none;
+    border-style: dashed;
+}
+
+.alpha-catalog-page {
+    width: min(100% - 64px, 1302px);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 32px;
+}
+
+.alpha-catalog-sidebar {
+    display: grid;
+    gap: 18px;
+    align-content: start;
+    position: sticky;
+    top: 104px;
+}
+
+.alpha-catalog-box,
+.alpha-catalog-main {
+    border: 1px solid var(--alpha-line);
+    border-radius: 6px;
+    background: #fff;
+}
+
+.alpha-catalog-box {
+    overflow: hidden;
+}
+
+.alpha-catalog-box h2 {
+    margin: 0;
+    padding: 20px 24px;
+    color: var(--alpha-ink);
+    font-size: 22px;
+    font-weight: 900;
+    border-bottom: 1px solid var(--alpha-line);
+}
+
+.alpha-genre-list {
+    display: grid;
+}
+
+.alpha-genre-select {
+    display: none;
+}
+
+.alpha-genre-list a {
+    padding: 20px 24px;
+    color: var(--alpha-ink);
+    font-size: 16px;
+    text-decoration: none;
+    border-bottom: 1px solid var(--alpha-line);
+}
+
+.alpha-genre-list a:last-child {
+    border-bottom: 0;
+}
+
+.alpha-genre-list a.active,
+.alpha-genre-list a:hover {
+    color: var(--alpha-primary) !important;
+    background: #f8f8ff;
+}
+
+.alpha-catalog-filter form {
+    display: grid;
+    gap: 14px;
+    padding: 18px;
+}
+
+.alpha-catalog-filter label {
+    display: grid;
+    gap: 7px;
+    color: var(--alpha-ink);
+    font-weight: 800;
+}
+
+.alpha-catalog-filter input,
+.alpha-catalog-filter select {
+    width: 100%;
+    min-height: 42px;
+    padding: 8px 12px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 8px !important;
+    background: #fff;
+}
+
+.alpha-catalog-filter__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.alpha-button--filter,
+.alpha-button--filter-ghost {
+    min-height: 40px;
+    padding: 9px 12px;
+    border: 1px solid var(--alpha-primary);
+    font-size: 14px;
+}
+
+.alpha-button--filter {
+    background: var(--alpha-primary);
+    color: #fff !important;
+}
+
+.alpha-button--filter-ghost {
+    background: #fff;
+    color: var(--alpha-primary) !important;
+}
+
+.alpha-catalog-main {
+    overflow: hidden;
+}
+
+.alpha-catalog-intro {
+    padding: 32px;
+    border-bottom: 1px solid var(--alpha-line);
+}
+
+.alpha-catalog-intro h1 {
+    margin: 0 0 12px;
+    color: var(--alpha-ink);
+    font-size: 28px;
+    line-height: 1.25;
+    font-weight: 900;
+}
+
+.alpha-catalog-intro p {
+    max-width: 780px;
+    margin: 0;
+    color: var(--alpha-text);
+    font-size: 16px;
+    line-height: 1.75;
+}
+
+.alpha-catalog-description[data-collapsed="true"] p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.alpha-catalog-description__toggle {
+    display: inline-flex;
+    margin-top: 4px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--alpha-primary);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.alpha-catalog-intro span {
+    display: inline-block;
+    margin-top: 12px;
+    color: var(--alpha-muted);
+    font-size: 13px;
+}
+
+.alpha-novel-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 42px;
+    row-gap: 0;
+    padding: 30px 32px 18px;
+}
+
+.alpha-novel-card {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 90px minmax(0, 1fr);
+    gap: 18px;
+    padding: 0 0 34px;
+    color: var(--alpha-ink);
+    text-decoration: none;
+}
+
+.alpha-novel-card__cover {
+    position: relative;
+    display: block;
+}
+
+.alpha-novel-card__cover img {
+    display: block;
+    width: 90px;
+    height: 120px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: #f2f1ff;
+}
+
+.alpha-novel-card__cover em {
+    position: absolute;
+    left: -4px;
+    top: 8px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    background: var(--alpha-primary);
+    color: #fff;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 900;
+}
+
+.alpha-novel-card__body {
+    min-width: 0;
+    display: block;
+}
+
+.alpha-novel-card__body strong {
+    display: block;
+    color: var(--alpha-ink);
+    font-size: 16px;
+    line-height: 1.35;
+    font-weight: 900;
+}
+
+.alpha-novel-card__body small {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+    color: var(--alpha-muted);
+    font-size: 12px;
+}
+
+.alpha-novel-card__stats {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 10px;
+    color: var(--alpha-ink);
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.alpha-novel-card__stats b {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.alpha-novel-card__body p {
+    margin: 10px 0 0;
+    color: var(--alpha-text);
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.alpha-more {
+    display: inline-block;
+    margin-top: 4px;
+    color: var(--alpha-primary);
+    font-size: 13px;
+}
+
+.alpha-pagination {
+    padding: 0 32px 28px;
+}
+
+.alpha-app-hero {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr) 150px;
+    align-items: center;
+    gap: 34px;
+    min-height: 254px;
+    margin: 0 0 24px;
+    padding: 32px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #4535ff;
+    color: #fff;
+}
+
+.alpha-app-hero__media img {
+    display: block;
+    width: 128px;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.alpha-app-hero h1 {
+    max-width: 640px;
+    margin: 0;
+    color: #fff;
+    font-size: 28px;
+    line-height: 1.25;
+    font-weight: 900;
+}
+
+.alpha-app-hero h1 span {
+    color: #f7ff34;
+}
+
+.alpha-app-hero p {
+    max-width: 600px;
+    margin: 18px 0 0;
+    color: rgba(255, 255, 255, .9);
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.alpha-app-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.alpha-button--light {
+    background: #fff;
+    color: var(--alpha-primary) !important;
+}
+
+.alpha-app-hero__qr {
+    justify-self: center;
+    display: grid;
+    place-items: center;
+    gap: 10px;
+    color: #fff;
+    text-align: center;
+    font-weight: 900;
+}
+
+.alpha-app-hero__qr span {
+    width: 92px;
+    height: 92px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #fff;
+    color: var(--alpha-primary);
+    font-size: 24px;
+}
+
+.alpha-app-hero__qr small {
+    color: rgba(255, 255, 255, .86);
+    font-size: 12px;
+}
+
+.theme-alphanovel .page-panel {
+    display: none;
+}
+
+.theme-alphanovel .header-manga {
+    margin: 0 0 18px;
+    padding: 0;
+}
+
+.theme-alphanovel .header-manga h1 {
+    display: none;
+}
+
+.theme-alphanovel .article-detail-flex {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 28px;
+    margin-bottom: 32px;
+    padding: 32px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: none;
+}
+
+.theme-alphanovel .article-detail-flex .main.block,
+.theme-alphanovel .article-detail-flex .second-information {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.theme-alphanovel .article-detail-flex .main.block {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0;
+}
+
+.theme-alphanovel .article-detail-flex .second-information {
+    flex: 0 0 235px;
+    width: 235px;
+    padding: 0;
+    transform: none;
+}
+
+.theme-alphanovel .article-detail-flex .second-information > .poster {
+    width: 210px;
+    height: 280px;
+    margin: 0 auto 16px;
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+.theme-alphanovel .article-detail-flex .second-information .read-btn,
+.theme-alphanovel .article-detail-flex .second-information .add-to-list-wrap,
+.theme-alphanovel .article-detail-flex .second-information .btn-add-to-list {
+    display: none;
+}
+
+.alpha-book-detail-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 22px;
+    margin-bottom: 22px;
+}
+
+.alpha-book-detail-card h1 {
+    margin: 0 0 16px;
+    color: var(--alpha-ink);
+    font-family: "Poppins", "Open Sans", Arial, sans-serif;
+    font-size: 38px;
+    line-height: 1.15;
+    font-weight: 900;
+}
+
+.alpha-book-detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    color: var(--alpha-muted);
+    font-size: 14px;
+}
+
+.alpha-book-detail-meta b {
+    color: var(--alpha-ink);
+    font-weight: 700;
+}
+
+.alpha-book-detail-stats {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-top: 22px;
+    color: var(--alpha-ink);
+    font-size: 26px;
+    font-weight: 900;
+}
+
+.alpha-book-detail-stats span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.alpha-book-detail-stats i {
+    color: var(--alpha-primary);
+    font-size: 19px;
+}
+
+.alpha-book-detail-stats .fa-star {
+    color: #f6c51d;
+}
+
+.alpha-book-detail-card p {
+    margin: 22px 0 0;
+    color: var(--alpha-text);
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.alpha-book-detail-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.alpha-book-detail-tags a {
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: #f7f7ff;
+    color: var(--alpha-ink);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.alpha-book-detail-card__actions {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.alpha-start-reading {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 160px;
+    min-height: 48px;
+    padding: 12px 22px;
+    border-radius: 8px;
+    background: var(--alpha-primary);
+    color: #fff !important;
+    font-weight: 900;
+    text-decoration: none;
+    box-shadow: 0 10px 20px rgba(69, 53, 255, .2);
+}
+
+.alpha-book-detail-card .add-to-list-wrap {
+    width: 170px;
+}
+
+.alpha-book-detail-card .btn-add-to-list,
+.alpha-book-detail-card .add-to-list-wrap .btn,
+.alpha-book-detail-card .add-to-list-wrap button,
+.alpha-book-detail-card .add-to-list-wrap a {
+    min-height: 48px;
+    border-radius: 8px;
+}
+
+.alpha-book-detail-card__actions > .btn-add-to-list,
+.alpha-book-detail-card .add-to-list-wrap .btn-add-to-list {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    min-width: 48px;
+    padding: 0;
+    border: 1px solid var(--alpha-line);
+    background: #fff;
+    color: var(--alpha-primary) !important;
+    box-shadow: none;
+}
+
+.alpha-book-detail-card__actions > .btn-add-to-list .text-add-to-list,
+.alpha-book-detail-card .add-to-list-wrap .text-add-to-list {
+    display: none;
+}
+
+.alpha-book-detail-card__actions > .btn-add-to-list .btn-list,
+.alpha-book-detail-card .add-to-list-wrap .btn-list {
+    width: auto;
+    margin: 0;
+    background: transparent;
+}
+
+.theme-alphanovel .alpha-book-detail-card + .section-select + #information > .text-info.section:first-child,
+.theme-alphanovel .alpha-book-detail-card + .section-select + #information > .tags.section {
+    display: none;
+}
+
+.theme-alphanovel .section-select {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 16px 0 18px;
+    overflow: hidden;
+    border: 1px solid var(--alpha-line);
+    border-radius: 8px;
+    background: #f7f7ff;
+}
+
+.theme-alphanovel .section-select a {
+    padding: 11px 8px;
+    color: var(--alpha-muted);
+    font-weight: 800;
+}
+
+.theme-alphanovel .section-select a.active,
+.theme-alphanovel .section-select a:hover {
+    background: #fff;
+    color: var(--alpha-primary);
+}
+
+.theme-alphanovel .article-detail-flex .section {
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+.theme-alphanovel .article-detail-flex .chapter {
+    border-radius: 8px;
+}
+
+body.theme-alphanovel-chapter {
+    background: #fbfbff;
+    color: var(--alpha-text);
+    font-family: "Open Sans", "Roboto", Arial, sans-serif;
+}
+
+.theme-alphanovel-chapter .header-chapter,
+.theme-alphanovel-chapter .chapter-control {
+    background: rgba(255, 255, 255, .94);
+    border-color: var(--alpha-line);
+    box-shadow: 0 4px 18px rgba(31, 28, 68, .06);
+}
+
+.theme-alphanovel-chapter .header-btn,
+.theme-alphanovel-chapter .btn {
+    border-radius: 999px;
+}
+
+.theme-alphanovel-chapter .chapter-text__place {
+    padding-top: 44px;
+}
+
+.theme-alphanovel-chapter .chapter-title-block h2 {
+    color: var(--alpha-ink);
+    font-family: "Poppins", "Play", "Roboto", Arial, sans-serif;
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.theme-alphanovel-chapter #chapter-c {
+    max-width: 820px;
+    background: #fff;
+    border: 1px solid var(--alpha-line);
+    border-radius: 24px;
+    box-shadow: var(--alpha-shadow);
+    padding: 34px 42px !important;
+}
+
+.theme-alphanovel-chapter #chapter-c p {
+    color: #33344a;
+    font-size: 18px;
+    line-height: 1.95;
+}
+
+.theme-alphanovel-chapter .chapter-info-end,
+.theme-alphanovel-chapter .chapter-comments .section,
+.theme-alphanovel-chapter .chapter-panel,
+.theme-alphanovel-chapter .ad-popup-content {
+    background: #fff;
+    border: 1px solid var(--alpha-line);
+    border-radius: 24px;
+    box-shadow: var(--alpha-shadow);
+}
+
+.theme-alphanovel-chapter .chapter-paywall .btn-primary,
+.theme-alphanovel-chapter .btn-primary {
+    background: var(--alpha-primary) !important;
+    color: #fff !important;
+    border-radius: 999px !important;
+}
+
+@media (max-width: 920px) {
+    .theme-alphanovel .page {
+        padding-top: 76px;
+    }
+
+    .theme-alphanovel .header {
+        min-height: 60px;
+    }
+
+    .theme-alphanovel .header .container,
+    .theme-alphanovel .header__inner {
+        height: 60px;
+    }
+
+    .theme-alphanovel .logo {
+        min-width: 132px;
+        height: 32px;
+    }
+
+    .theme-alphanovel .header-nav {
+        display: none;
+    }
+
+    .theme-alphanovel #header-mobile-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        color: var(--alpha-ink) !important;
+        background: var(--alpha-soft);
+        border-radius: 50%;
+    }
+
+    .alpha-install-bar__inner {
+        min-height: 52px;
+    }
+
+    .alpha-install-bar__brand small {
+        display: none;
+    }
+
+    .theme-alphanovel .section > h2,
+    .theme-alphanovel .section-title,
+    .theme-alphanovel .page-title__catalog .page-title {
+        font-size: 21px;
+    }
+
+    .alpha-hero {
+        grid-template-columns: 150px minmax(0, 1fr);
+        min-height: 300px;
+        padding: 24px;
+        gap: 20px;
+    }
+
+    .alpha-app-hero {
+        grid-template-columns: 110px minmax(0, 1fr);
+    }
+
+    .alpha-app-hero__qr {
+        display: none;
+    }
+
+    .alpha-hero__media img {
+        width: 150px;
+    }
+
+    .alpha-hero h1 {
+        font-size: 34px;
+    }
+
+    .alpha-split {
+        grid-template-columns: 1fr;
+    }
+
+    .alpha-sidebar {
+        position: static;
+    }
+
+    .alpha-comment-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .alpha-catalog-page {
+        width: min(100% - 36px, 1302px);
+        grid-template-columns: 1fr;
+    }
+
+    .alpha-catalog-sidebar {
+        position: static;
+    }
+
+    .alpha-genre-list {
+        max-height: 270px;
+        overflow: auto;
+    }
+
+    .alpha-novel-list {
+        grid-template-columns: 1fr;
+    }
+
+    .theme-alphanovel .article-detail-flex {
+        flex-direction: column;
+    }
+
+    .theme-alphanovel .article-detail-flex .second-information {
+        order: -1;
+        flex: auto;
+        width: 100%;
+    }
+
+    .theme-alphanovel .article-detail-flex .second-information > .poster {
+        width: 180px;
+        height: 240px;
+    }
+
+    .alpha-book-detail-card {
+        grid-template-columns: 1fr;
+    }
+
+    .alpha-book-detail-card__actions {
+        justify-content: flex-start;
+    }
+
+    .alpha-app-hero {
+        grid-template-columns: 170px minmax(0, 1fr);
+        min-height: 330px;
+        gap: 24px;
+        padding: 28px;
+    }
+
+    .alpha-app-hero__media {
+        width: 170px;
+    }
+
+    .alpha-app-hero__qr {
+        display: none;
+    }
+}
+
+@media (max-width: 620px) {
+    .theme-alphanovel .container {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .alpha-install-bar__button {
+        min-width: 74px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .theme-alphanovel .header-user .register-btn,
+    .theme-alphanovel .header-user .login-btn {
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
+    .theme-alphanovel .popular.block,
+    .theme-alphanovel .translation-requests,
+    .theme-alphanovel .recently,
+    .theme-alphanovel .comment-blocks {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .theme-alphanovel-chapter #chapter-c {
+        border-radius: 18px;
+        padding: 24px 18px !important;
+    }
+
+    .theme-alphanovel-chapter #chapter-c p {
+        font-size: 17px;
+    }
+
+    .theme-alphanovel .article-detail-flex {
+        padding: 18px;
+    }
+
+    .alpha-book-detail-card h1 {
+        font-size: 28px;
+    }
+
+    .alpha-book-detail-meta {
+        gap: 8px 12px;
+        font-size: 13px;
+    }
+
+    .alpha-book-detail-stats {
+        gap: 18px;
+        font-size: 22px;
+    }
+
+    .alpha-book-detail-card__actions {
+        flex-wrap: wrap;
+    }
+
+    .theme-alphanovel .section-select a {
+        min-width: 0;
+        padding-left: 6px;
+        padding-right: 6px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+    }
+
+    .theme-alphanovel .alpha-home {
+        width: min(100% - 28px, 1152px);
+    }
+
+    .alpha-hero {
+        grid-template-columns: 92px minmax(0, 1fr);
+        min-height: 260px;
+        padding: 18px;
+        border-radius: 22px;
+    }
+
+    .alpha-app-hero {
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 16px;
+        min-height: 230px;
+        padding: 18px;
+    }
+
+    .alpha-app-hero__media img {
+        width: 92px;
+    }
+
+    .alpha-app-hero__content h1 {
+        font-size: 22px;
+    }
+
+    .alpha-app-hero__content p {
+        display: none;
+    }
+
+    .alpha-hero__media img {
+        width: 92px;
+        border-radius: 12px;
+    }
+
+    .alpha-hero h1 {
+        font-size: 25px;
+    }
+
+    .alpha-hero p {
+        display: none;
+    }
+
+    .alpha-hero__actions {
+        margin-top: 16px;
+    }
+
+    .alpha-button {
+        min-height: 38px;
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .alpha-section__head h2 {
+        font-size: 21px;
+    }
+
+    .alpha-book-rail {
+        grid-auto-columns: 132px;
+        gap: 14px;
+    }
+
+    .alpha-book-rail--compact {
+        grid-auto-columns: 230px;
+    }
+
+    .alpha-update-row {
+        grid-template-columns: 52px minmax(0, 1fr);
+    }
+
+    .alpha-update-row img {
+        width: 52px;
+        height: 70px;
+    }
+
+    .alpha-update-row em {
+        grid-column: 2;
+    }
+
+    .alpha-comment-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .theme-alphanovel .alpha-split,
+    .alpha-split {
+        grid-template-columns: 1fr !important;
+    }
+
+    .theme-alphanovel .alpha-sidebar,
+    .alpha-sidebar {
+        position: static !important;
+        width: 100%;
+    }
+
+    .alpha-app-hero {
+        grid-template-columns: 92px minmax(0, 1fr);
+        min-height: 250px;
+        padding: 18px;
+        border-radius: 22px;
+    }
+
+    .alpha-app-hero__media {
+        width: 92px;
+        border-radius: 14px;
+    }
+
+    .alpha-app-hero h1 {
+        font-size: 25px;
+    }
+
+    .alpha-app-hero p {
+        display: none;
+    }
+
+    .alpha-app-hero__actions {
+        margin-top: 16px;
+    }
+
+    .alpha-catalog-page {
+        width: min(100% - 28px, 1302px);
+    }
+
+    .alpha-catalog-intro,
+    .alpha-novel-list {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .alpha-catalog-intro h1 {
+        font-size: 25px;
+    }
+
+    .alpha-novel-card {
+        grid-template-columns: 82px minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .alpha-novel-card__cover img {
+        width: 82px;
+        height: 110px;
+    }
+}
+
+/* Final AlphaNovel pass: list pages and tighter responsive behavior. */
+.theme-alphanovel .alpha-list-page {
+    width: min(100% - 64px, 1188px);
+    margin: 0 auto;
+}
+
+.theme-alphanovel .alpha-list-main .alpha-novel-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.theme-alphanovel .alpha-book-rail {
+    display: grid;
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 150px;
+    gap: 18px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 2px 2px 14px;
+    scroll-snap-type: x proximity;
+}
+
+.theme-alphanovel .alpha-book-rail--compact {
+    grid-auto-columns: 260px;
+}
+
+.theme-alphanovel .alpha-book-card {
+    scroll-snap-align: start;
+}
+
+.theme-alphanovel .alpha-book-card__cover {
+    aspect-ratio: 2 / 3;
+}
+
+.theme-alphanovel .alpha-book-card__cover img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: cover;
+}
+
+.theme-alphanovel .alpha-novel-card__stats .fa-star {
+    color: #f6c51d;
+}
+
+.theme-alphanovel .alpha-pagination .page-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.theme-alphanovel .alpha-pagination .page-pagination .page-num {
+    margin-right: 0 !important;
+    border: 1px solid var(--alpha-line);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--alpha-ink);
+    box-shadow: none;
+}
+
+.theme-alphanovel .alpha-pagination .page-pagination .page-num.active,
+.theme-alphanovel .alpha-pagination .page-pagination .page-num:hover {
+    border-color: var(--alpha-primary);
+    background: var(--alpha-primary);
+    color: #fff !important;
+}
+
+.theme-alphanovel .alpha-catalog-sidebar {
+    max-height: calc(100vh - 124px);
+    overflow: auto;
+    scrollbar-width: thin;
+}
+
+.theme-alphanovel .alpha-catalog-filter__actions .alpha-button {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.theme-alphanovel .article-detail-flex .second-information .mini-info .item {
+    border-radius: 8px;
+}
+
+.theme-alphanovel .article-detail-flex .second-information .appreciate {
+    display: none;
+}
+
+.theme-alphanovel .alpha-book-detail-card .add-to-list-wrap,
+.theme-alphanovel .alpha-book-detail-card > .btn-add-to-list {
+    flex: 0 0 170px;
+}
+
+.theme-alphanovel .alpha-book-detail-card .btn-add-to-list {
+    border: 1px solid #d8d6ff;
+    background: #fff;
+    color: var(--alpha-primary);
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-book-detail-card .btn-add-to-list .btn-list {
+    border-radius: 0 8px 8px 0;
+    background: #f1f0ff;
+}
+
+.theme-alphanovel-chapter .chapter-comments {
+    padding: 0 0 34px;
+}
+
+.theme-alphanovel-chapter .chapter-comments .section {
+    max-width: 820px !important;
+    padding: 24px !important;
+}
+
+.theme-alphanovel-chapter .chapter-control {
+    left: 50%;
+    width: min(820px, calc(100% - 32px));
+    transform: translateX(-50%);
+    border-radius: 999px;
+}
+
+.theme-alphanovel-chapter .chapter-control #table-of-contents-btn {
+    flex: 1 1 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.theme-alphanovel-chapter .chapter-control #table-of-contents-btn span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.theme-alphanovel-chapter .chapter-control #table-of-contents-btn span + span::before {
+    content: "•";
+    margin-right: 8px;
+    color: var(--alpha-muted);
+}
+
+@media (max-width: 1040px) {
+    .theme-alphanovel .alpha-list-page {
+        width: min(100% - 36px, 1188px);
+    }
+
+    .theme-alphanovel .alpha-list-main .alpha-novel-list,
+    .theme-alphanovel .alpha-catalog-main .alpha-novel-list {
+        grid-template-columns: 1fr;
+    }
+
+    .theme-alphanovel .alpha-catalog-sidebar {
+        max-height: none;
+        overflow: visible;
+    }
+}
+
+@media (max-width: 720px) {
+    .theme-alphanovel .alpha-home > .alpha-section {
+        padding: 20px 18px 12px;
+    }
+
+    .theme-alphanovel .alpha-section__head {
+        align-items: flex-start;
+    }
+
+    .theme-alphanovel .alpha-section__head h2 {
+        font-size: 20px;
+    }
+
+    .theme-alphanovel .alpha-app-hero {
+        grid-template-columns: 78px minmax(0, 1fr);
+        min-height: 0;
+        border-radius: 8px;
+    }
+
+    .theme-alphanovel .alpha-app-hero__media img {
+        width: 78px;
+    }
+
+    .theme-alphanovel .alpha-app-hero h1 {
+        font-size: 20px;
+    }
+
+    .theme-alphanovel .alpha-app-hero__actions {
+        gap: 8px;
+    }
+
+    .theme-alphanovel .alpha-book-rail {
+        grid-auto-columns: 124px;
+    }
+
+    .theme-alphanovel .alpha-book-rail--compact {
+        grid-auto-columns: 220px;
+    }
+
+    .theme-alphanovel .alpha-catalog-box h2 {
+        padding: 16px 18px;
+        font-size: 19px;
+    }
+
+    .theme-alphanovel .alpha-genre-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-height: none;
+    }
+
+    .theme-alphanovel .alpha-genre-list a {
+        padding: 13px 14px;
+        font-size: 14px;
+    }
+
+    .theme-alphanovel .alpha-catalog-intro,
+    .theme-alphanovel .alpha-novel-list,
+    .theme-alphanovel .alpha-pagination {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .theme-alphanovel .alpha-novel-list {
+        padding-top: 20px;
+    }
+
+    .theme-alphanovel .alpha-novel-card {
+        grid-template-columns: 72px minmax(0, 1fr);
+        gap: 12px;
+        padding-bottom: 22px;
+    }
+
+    .theme-alphanovel .alpha-novel-card__cover img {
+        width: 72px;
+        height: 98px;
+    }
+
+    .theme-alphanovel .alpha-novel-card__body p,
+    .theme-alphanovel .alpha-more {
+        display: none;
+    }
+
+    .theme-alphanovel .article-detail-flex {
+        margin-left: -4px;
+        margin-right: -4px;
+        padding: 16px;
+    }
+
+    .theme-alphanovel .alpha-book-detail-card__actions,
+    .theme-alphanovel .alpha-book-detail-card .add-to-list-wrap,
+    .theme-alphanovel .alpha-book-detail-card > .btn-add-to-list,
+    .theme-alphanovel .alpha-start-reading {
+        width: 100%;
+        flex-basis: 100%;
+    }
+
+    .theme-alphanovel-chapter .chapter-control {
+        bottom: 12px;
+        width: calc(100% - 20px);
+    }
+
+    .theme-alphanovel-chapter .chapter-title-block h2 {
+        font-size: 23px;
+    }
+}
+
+/* AlphaNovel discover page blocks. */
+.theme-alphanovel .alpha-discover {
+    width: min(100% - 64px, 1320px);
+}
+
+.theme-alphanovel .alpha-discover .alpha-app-hero {
+    grid-template-columns: 150px minmax(0, 1fr) 190px;
+    min-height: 236px;
+    margin-bottom: 24px;
+    border-radius: 6px;
+    background: #4535ff;
+    box-shadow: none;
+}
+
+.theme-alphanovel .alpha-discover .alpha-app-hero__media img {
+    width: 132px;
+    border-radius: 4px;
+    box-shadow: none;
+}
+
+.theme-alphanovel .alpha-discover .alpha-app-hero h1 {
+    max-width: 560px;
+    font-size: 28px;
+}
+
+.theme-alphanovel .alpha-discover .alpha-app-hero p {
+    max-width: 540px;
+}
+
+.theme-alphanovel .alpha-app-hero__stores {
+    display: flex;
+    gap: 18px;
+    margin-top: 18px;
+}
+
+.theme-alphanovel .alpha-app-hero__stores span {
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, .92);
+    color: var(--alpha-primary);
+    font-size: 12px;
+}
+
+.theme-alphanovel .alpha-discover-card {
+    margin-bottom: 24px;
+    padding: 24px;
+    border: 0;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: none;
+}
+
+.theme-alphanovel .alpha-discover-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.theme-alphanovel .alpha-discover-card__head h2 {
+    margin: 0;
+    color: var(--alpha-ink);
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-see-all {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 92px;
+    min-height: 36px;
+    padding: 7px 18px;
+    border: 1px solid var(--alpha-primary);
+    border-radius: 4px;
+    color: var(--alpha-primary);
+    font-size: 13px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-discover-rail {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.theme-alphanovel .alpha-discover-book {
+    min-width: 0;
+    color: var(--alpha-ink);
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-discover-book__cover {
+    position: relative;
+    display: block;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #f3f2ff;
+}
+
+.theme-alphanovel .alpha-discover-book__cover img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.theme-alphanovel .alpha-discover-book__cover em {
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    max-width: calc(100% - 8px);
+    padding: 3px 5px;
+    border-radius: 3px;
+    background: var(--alpha-primary);
+    color: #fff;
+    font-size: 9px;
+    line-height: 1.1;
+    font-style: normal;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.theme-alphanovel .alpha-discover-book strong {
+    display: block;
+    margin-top: 14px;
+    color: var(--alpha-ink);
+    font-size: 12px;
+    line-height: 1.35;
+    font-weight: 800;
+}
+
+.theme-alphanovel .alpha-trending-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 22px 30px;
+}
+
+.theme-alphanovel .alpha-trending-item {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 12px;
+    color: var(--alpha-ink);
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-trending-item__cover {
+    display: block;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #f3f2ff;
+}
+
+.theme-alphanovel .alpha-trending-item__cover img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.theme-alphanovel .alpha-trending-item__body {
+    min-width: 0;
+    display: block;
+}
+
+.theme-alphanovel .alpha-trending-item strong {
+    display: flex;
+    gap: 4px;
+    color: var(--alpha-ink);
+    font-size: 13px;
+    line-height: 1.35;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-trending-item strong em {
+    flex: 0 0 auto;
+    font-style: normal;
+}
+
+.theme-alphanovel .alpha-trending-item small {
+    display: inline-flex;
+    margin-top: 8px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #f1f0ff;
+    color: var(--alpha-muted);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.theme-alphanovel .alpha-trending-item__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    color: var(--alpha-ink);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.theme-alphanovel .alpha-trending-item__stats b {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.theme-alphanovel .alpha-trending-item__stats .fa-star {
+    color: #f6c51d;
+}
+
+@media (max-width: 1100px) {
+    .theme-alphanovel .alpha-discover {
+        width: min(100% - 36px, 1320px);
+    }
+
+    .theme-alphanovel .alpha-discover-rail {
+        grid-template-columns: none;
+        grid-auto-flow: column;
+        grid-auto-columns: 118px;
+        overflow-x: auto;
+        padding-bottom: 12px;
+        scroll-snap-type: x proximity;
+    }
+
+    .theme-alphanovel .alpha-discover-book {
+        scroll-snap-align: start;
+    }
+
+    .theme-alphanovel .alpha-trending-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 720px) {
+    .theme-alphanovel .alpha-discover {
+        width: min(100% - 28px, 1320px);
+    }
+
+    .theme-alphanovel .alpha-discover .alpha-app-hero {
+        grid-template-columns: 80px minmax(0, 1fr);
+        gap: 16px;
+        padding: 18px;
+    }
+
+    .theme-alphanovel .alpha-discover .alpha-app-hero__media img {
+        width: 80px;
+    }
+
+    .theme-alphanovel .alpha-discover .alpha-app-hero h1 {
+        font-size: 21px;
+    }
+
+    .theme-alphanovel .alpha-discover .alpha-app-hero__qr,
+    .theme-alphanovel .alpha-discover .alpha-app-hero p {
+        display: none;
+    }
+
+    .theme-alphanovel .alpha-discover-card {
+        padding: 18px;
+    }
+
+    .theme-alphanovel .alpha-discover-card__head h2 {
+        font-size: 20px;
+    }
+
+    .theme-alphanovel .alpha-see-all {
+        min-width: 76px;
+        min-height: 32px;
+        padding: 6px 12px;
+    }
+
+    .theme-alphanovel .alpha-discover-rail {
+        grid-auto-columns: 112px;
+        gap: 16px;
+    }
+
+    .theme-alphanovel .alpha-trending-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* AlphaNovel novels/category list page. */
+.theme-alphanovel .alpha-catalog-page {
+    align-items: start;
+}
+
+.theme-alphanovel .alpha-catalog-main {
+    min-height: 0;
+}
+
+.theme-alphanovel .alpha-catalog-main .alpha-pagination {
+    border-top: 1px solid var(--alpha-line);
+    padding-top: 28px;
+}
+
+.theme-alphanovel .alpha-novel-card__cover em {
+    left: 0;
+    top: 8px;
+    border-radius: 3px;
+    background: var(--alpha-primary);
+    text-transform: none;
+}
+
+.theme-alphanovel .alpha-novel-card__body a,
+.theme-alphanovel .alpha-novel-card__body strong {
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-novel-card__body .fa-star {
+    color: #f6c51d;
+}
+
+@media (max-width: 920px) {
+    .theme-alphanovel .alpha-catalog-page {
+        gap: 16px;
+    }
+
+    .theme-alphanovel .alpha-catalog-box h2 {
+        border-bottom: 0;
+    }
+
+    .theme-alphanovel .alpha-genre-list {
+        display: none;
+    }
+
+    .theme-alphanovel .alpha-genre-select {
+        display: block;
+        padding: 0 18px 18px;
+    }
+
+    .theme-alphanovel .alpha-genre-select select {
+        width: 100%;
+        min-height: 42px;
+        padding: 8px 12px;
+        border: 1px solid var(--alpha-line);
+        border-radius: 6px;
+        background: #fafaff;
+        color: var(--alpha-text);
+        font: inherit;
+    }
+}
+
+@media (max-width: 720px) {
+    .theme-alphanovel .alpha-catalog-page {
+        width: min(100% - 12px, 1302px);
+    }
+
+    .theme-alphanovel .alpha-catalog-intro {
+        padding: 18px;
+    }
+
+    .theme-alphanovel .alpha-catalog-intro h1 {
+        font-size: 20px;
+    }
+
+    .theme-alphanovel .alpha-catalog-intro p {
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    .theme-alphanovel .alpha-catalog-description__toggle {
+        font-size: 13px;
+    }
+
+    .theme-alphanovel .alpha-catalog-main .alpha-novel-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        padding: 18px;
+    }
+
+    .theme-alphanovel .alpha-novel-card {
+        grid-template-columns: 60px minmax(0, 1fr);
+        gap: 14px;
+        padding-bottom: 22px;
+    }
+
+    .theme-alphanovel .alpha-novel-card__cover img {
+        width: 60px;
+        height: 80px;
+    }
+
+    .theme-alphanovel .alpha-novel-card__cover em {
+        top: 3px;
+        font-size: 9px;
+    }
+
+    .theme-alphanovel .alpha-novel-card__body strong {
+        font-size: 13px;
+    }
+
+    .theme-alphanovel .alpha-novel-card__body small {
+        gap: 8px;
+        margin-top: 5px;
+        font-size: 11px;
+    }
+
+    .theme-alphanovel .alpha-novel-card__stats {
+        gap: 12px;
+        margin-top: 6px;
+        font-size: 12px;
+    }
+
+    .theme-alphanovel .alpha-novel-card__body p {
+        display: -webkit-box;
+        margin-top: 6px;
+        font-size: 12px;
+        line-height: 1.45;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .theme-alphanovel .alpha-more {
+        display: inline-block;
+        font-size: 12px;
+    }
+}
+
+/* AlphaNovel-style header. */
+.theme-alphanovel .alpha-mobile-install {
+    display: none;
+}
+
+.theme-alphanovel .header {
+    top: 0;
+    min-height: 72px;
+    background: #fff;
+    border-bottom: 1px solid var(--alpha-line);
+    box-shadow: none;
+}
+
+.theme-alphanovel .header .container {
+    max-width: 1320px;
+}
+
+.theme-alphanovel .header .container,
+.theme-alphanovel .header__inner {
+    height: 72px;
+}
+
+.theme-alphanovel .header__inner {
+    gap: 34px;
+}
+
+.theme-alphanovel .page {
+    padding-top: 104px;
+}
+
+.theme-alphanovel .logo {
+    min-width: 188px;
+    height: 40px;
+    gap: 12px;
+}
+
+.theme-alphanovel .logo img {
+    width: 32px;
+    height: 32px;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.theme-alphanovel .alpha-logo-text {
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.theme-alphanovel .header-nav {
+    display: none;
+}
+
+.theme-alphanovel .alpha-header-nav {
+    flex: 1 1 auto;
+}
+
+.theme-alphanovel .alpha-header-nav ul {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.theme-alphanovel .alpha-header-nav .header-btn,
+.theme-alphanovel .alpha-header-nav a {
+    padding: 0;
+    border-radius: 0;
+    background: transparent !important;
+    color: var(--alpha-ink) !important;
+    font-size: 14px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-header-nav .header-btn:hover,
+.theme-alphanovel .alpha-header-nav a:hover {
+    color: var(--alpha-primary) !important;
+}
+
+.theme-alphanovel .alpha-header-nav .fa:not(.fa-caret-down) {
+    display: none;
+}
+
+.theme-alphanovel .header-user {
+    gap: 16px;
+    margin-left: auto;
+}
+
+.theme-alphanovel .header-user .btn {
+    min-width: 116px;
+    min-height: 44px;
+    padding: 11px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.theme-alphanovel .header-user .login-btn {
+    display: none;
+}
+
+.theme-alphanovel .header-user .register-btn {
+    background: var(--alpha-primary);
+    box-shadow: none;
+}
+
+.theme-alphanovel .header-lang {
+    min-width: 66px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 999px;
+    background: #f8f8ff;
+    color: var(--alpha-ink) !important;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.theme-alphanovel .header-lang > span {
+    display: none;
+}
+
+.theme-alphanovel .header-lang::before {
+    content: "EN";
+}
+
+.theme-alphanovel .alpha-theme-toggle {
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: #f8f8ff;
+    box-shadow: none;
+}
+
+.theme-alphanovel .alpha-theme-toggle::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    display: block;
+    margin: auto;
+    border-radius: 50%;
+    background: #ecebff;
+}
+
+.theme-alphanovel #header-mobile-btn {
+    display: none;
+}
+
+@media (max-width: 920px) {
+    .theme-alphanovel .alpha-mobile-install {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1002;
+        min-height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 5px 12px;
+        background: var(--alpha-primary);
+        color: #fff;
+    }
+
+    .theme-alphanovel .alpha-mobile-install__brand {
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .theme-alphanovel .alpha-mobile-install__logo {
+        width: 28px;
+        height: 28px;
+        flex: 0 0 28px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, .16);
+    }
+
+    .theme-alphanovel .alpha-mobile-install strong,
+    .theme-alphanovel .alpha-mobile-install small {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .theme-alphanovel .alpha-mobile-install strong {
+        font-size: 12px;
+        line-height: 1.1;
+    }
+
+    .theme-alphanovel .alpha-mobile-install small {
+        color: rgba(255, 255, 255, .82);
+        font-size: 10px;
+    }
+
+    .theme-alphanovel .alpha-mobile-install a {
+        min-width: 82px;
+        min-height: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        background: #fff;
+        color: var(--alpha-primary);
+        font-size: 12px;
+        font-weight: 900;
+        text-decoration: none;
+    }
+
+    .theme-alphanovel .header {
+        top: 42px;
+        min-height: 54px;
+    }
+
+    .theme-alphanovel .header .container,
+    .theme-alphanovel .header__inner {
+        height: 54px;
+    }
+
+    .theme-alphanovel .page {
+        padding-top: 118px;
+    }
+
+    .theme-alphanovel #header-mobile-btn {
+        display: inline-flex;
+        order: 3;
+        width: 38px;
+        height: 38px;
+        margin-left: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--alpha-ink) !important;
+        font-size: 20px;
+    }
+
+    .theme-alphanovel .header__inner {
+        gap: 10px;
+    }
+
+    .theme-alphanovel .logo {
+        min-width: 0;
+        flex: 1 1 auto;
+        height: 36px;
+    }
+
+    .theme-alphanovel .logo img {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+    }
+
+    .theme-alphanovel .alpha-logo-text {
+        font-size: 18px;
+    }
+
+    .theme-alphanovel .alpha-header-nav {
+        display: none;
+    }
+
+    .theme-alphanovel .header-user {
+        order: 2;
+        margin-left: auto;
+        gap: 8px;
+    }
+
+    .theme-alphanovel .header-user .btn,
+    .theme-alphanovel .alpha-theme-toggle {
+        display: none;
+    }
+
+    .theme-alphanovel .header-lang {
+        min-width: 56px;
+        height: 34px;
+        background: #f8f8ff;
+    }
+}
+
+/* Header mobile fit: keep the logo from running under EN/menu controls. */
+@media (max-width: 920px) {
+    .theme-alphanovel .header__inner {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+
+    .theme-alphanovel .header .logo {
+        position: static !important;
+        transform: none !important;
+        display: inline-flex !important;
+        order: 1;
+        width: auto !important;
+        max-width: calc(100% - 112px);
+        margin: 0 auto 0 0;
+        overflow: hidden;
+    }
+
+    .theme-alphanovel .alpha-logo-text {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .theme-alphanovel .header-user {
+        flex: 0 0 auto;
+    }
+
+    .theme-alphanovel .header-user .alpha-theme-toggle {
+        display: none !important;
+    }
+
+    .theme-alphanovel #header-mobile-btn {
+        flex: 0 0 38px;
+    }
+}
+
+/* Novel detail page: closer to AlphaNovel book pages. */
+.theme-alphanovel .alpha-book-breadcrumb {
+    width: min(100% - 64px, 1376px);
+    margin: 0 auto 22px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: var(--alpha-muted);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.theme-alphanovel .alpha-book-breadcrumb a {
+    color: var(--alpha-muted);
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-book-breadcrumb a:hover {
+    color: var(--alpha-primary);
+}
+
+.theme-alphanovel .article-detail-flex.alpha-novel-detail {
+    width: min(100% - 64px, 1376px);
+    display: block;
+    margin: 0 auto 42px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+}
+
+.theme-alphanovel .alpha-novel-detail .main.block {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
+.theme-alphanovel .alpha-novel-detail .second-information {
+    display: none;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card {
+    grid-template-columns: 238px minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
+    margin-bottom: 28px;
+    padding: 0;
+}
+
+.theme-alphanovel .alpha-book-detail-cover {
+    grid-row: 1 / span 2;
+    width: 238px;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--alpha-primary);
+}
+
+.theme-alphanovel .alpha-book-detail-cover img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card__main {
+    grid-column: 2;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card__actions {
+    grid-column: 2;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card h1 {
+    max-width: 780px;
+    margin-bottom: 18px;
+    font-size: 40px;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card h4 {
+    margin: 24px 0 8px;
+    color: var(--alpha-ink);
+    font-family: "Poppins", "Open Sans", Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card p {
+    max-width: 780px;
+    margin-top: 0;
+}
+
+.theme-alphanovel .alpha-detail-tabs,
+.theme-alphanovel .alpha-latest-chapters,
+.theme-alphanovel .alpha-detail-legacy,
+.theme-alphanovel .alpha-translation-requests,
+.theme-alphanovel .alpha-related-collections {
+    display: none !important;
+}
+
+.theme-alphanovel .alpha-chapter-preview {
+    padding: 0 0 28px !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--alpha-line) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+}
+
+.theme-alphanovel .alpha-chapter-preview h2 {
+    margin: 0 0 18px;
+    color: var(--alpha-ink);
+    font-family: "Poppins", "Open Sans", Arial, sans-serif;
+    font-size: 26px;
+    line-height: 1.25;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-chapter-preview__content {
+    max-width: 820px;
+    color: var(--alpha-text);
+    font-size: 16px;
+    line-height: 1.85;
+}
+
+.theme-alphanovel .alpha-chapter-preview__actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.theme-alphanovel .alpha-read-more,
+.theme-alphanovel .alpha-next-chapter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-read-more {
+    background: var(--alpha-primary);
+    color: #fff !important;
+}
+
+.theme-alphanovel .alpha-next-chapter {
+    border: 1px solid var(--alpha-primary);
+    color: var(--alpha-primary) !important;
+}
+
+.theme-alphanovel .alpha-inline-reader {
+    padding: 0 0 30px !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--alpha-line) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    scroll-margin-top: 110px;
+}
+
+.theme-alphanovel .alpha-inline-reader__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.theme-alphanovel .alpha-inline-reader__head h2 {
+    margin: 0;
+    color: var(--alpha-ink);
+    font-family: "Poppins", "Open Sans", Arial, sans-serif;
+    font-size: 28px;
+    line-height: 1.2;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-inline-reader__head span {
+    color: var(--alpha-muted);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.theme-alphanovel .alpha-inline-chapter {
+    max-width: 850px;
+    padding: 28px 0;
+    border-top: 1px solid var(--alpha-line);
+}
+
+.theme-alphanovel .alpha-inline-chapter:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.theme-alphanovel .alpha-inline-chapter__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.theme-alphanovel .alpha-inline-chapter__header span {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--alpha-primary);
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.theme-alphanovel .alpha-inline-chapter__header h3 {
+    margin: 0;
+    color: var(--alpha-ink);
+    font-family: "Poppins", "Open Sans", Arial, sans-serif;
+    font-size: 24px;
+    line-height: 1.25;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-inline-chapter__legacy {
+    display: none;
+}
+
+.theme-alphanovel .alpha-inline-chapter__content {
+    color: var(--alpha-text);
+    font-size: 17px;
+    line-height: 1.9;
+}
+
+.theme-alphanovel .alpha-inline-chapter__content p {
+    margin: 0 0 1.2em;
+}
+
+.theme-alphanovel .alpha-inline-chapter__content img,
+.theme-alphanovel .alpha-inline-chapter__content figure {
+    max-width: 100%;
+    height: auto;
+}
+
+.theme-alphanovel .alpha-inline-chapter__content--locked {
+    position: relative;
+}
+
+.theme-alphanovel .alpha-inline-lock {
+    margin-top: 18px;
+    padding: 18px;
+    border: 1px solid #dedcff;
+    border-radius: 8px;
+    background: #f8f8ff;
+}
+
+.theme-alphanovel .alpha-inline-lock strong {
+    display: block;
+    margin-bottom: 12px;
+    color: var(--alpha-ink);
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-reviews-preview,
+.theme-alphanovel .alpha-suggestions {
+    margin-top: 32px;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.theme-alphanovel .alpha-reviews-preview .section-title,
+.theme-alphanovel .alpha-suggestions .section-title {
+    margin-bottom: 18px;
+    color: var(--alpha-ink);
+    font-family: "Poppins", "Open Sans", Arial, sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-reviews-preview .comment-preview {
+    margin-bottom: 14px;
+    padding: 18px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 8px;
+    background: #fff;
+}
+
+.theme-alphanovel .alpha-suggestions .swiper-container {
+    overflow: hidden;
+}
+
+.theme-alphanovel .alpha-suggestions .manga-item {
+    display: block;
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-suggestions .poster {
+    height: auto;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--alpha-primary);
+}
+
+.theme-alphanovel .alpha-suggestions .poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.theme-alphanovel .alpha-suggestions .title {
+    margin-top: 9px;
+    color: var(--alpha-ink);
+    font-size: 13px;
+    line-height: 1.35;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-suggestion-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.theme-alphanovel .alpha-suggestion-card {
+    min-width: 0;
+    display: block;
+    color: var(--alpha-ink);
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-suggestion-card__cover {
+    position: relative;
+    display: block;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--alpha-primary);
+}
+
+.theme-alphanovel .alpha-suggestion-card__cover img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.theme-alphanovel .alpha-suggestion-card__cover em {
+    position: absolute;
+    top: 7px;
+    left: 0;
+    padding: 4px 6px;
+    border-radius: 2px;
+    background: #fff948;
+    color: var(--alpha-primary);
+    font-size: 9px;
+    line-height: 1;
+    font-style: normal;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-suggestion-card strong {
+    display: block;
+    margin-top: 10px;
+    color: var(--alpha-ink);
+    font-size: 14px;
+    line-height: 1.35;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-suggestion-card small {
+    display: block;
+    margin-top: 4px;
+    color: var(--alpha-muted);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+@media (max-width: 920px) {
+    .theme-alphanovel .alpha-book-breadcrumb,
+    .theme-alphanovel .article-detail-flex.alpha-novel-detail {
+        width: min(100% - 28px, 1188px);
+    }
+
+    .theme-alphanovel .alpha-novel-detail .alpha-book-detail-card {
+        grid-template-columns: 112px minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .theme-alphanovel .alpha-book-detail-cover {
+        width: 112px;
+    }
+
+    .theme-alphanovel .alpha-novel-detail .alpha-book-detail-card h1 {
+        font-size: 25px;
+    }
+
+    .theme-alphanovel .alpha-novel-detail .alpha-book-detail-meta {
+        gap: 7px 12px;
+        font-size: 12px;
+    }
+
+    .theme-alphanovel .alpha-novel-detail .alpha-book-detail-stats {
+        gap: 14px;
+        margin-top: 14px;
+        font-size: 18px;
+    }
+
+    .theme-alphanovel .alpha-novel-detail .alpha-book-detail-card h4,
+    .theme-alphanovel .alpha-novel-detail .alpha-book-detail-card p,
+    .theme-alphanovel .alpha-novel-detail .alpha-book-detail-tags {
+        grid-column: 1 / -1;
+    }
+
+    .theme-alphanovel .alpha-novel-detail .alpha-book-detail-card__actions {
+        grid-column: 1 / -1;
+        flex-wrap: wrap;
+    }
+
+    .theme-alphanovel .alpha-chapter-preview h2 {
+        font-size: 22px;
+    }
+
+    .theme-alphanovel .alpha-chapter-preview__content {
+        font-size: 15px;
+        line-height: 1.75;
+    }
+
+    .theme-alphanovel .alpha-inline-reader {
+        scroll-margin-top: 124px;
+    }
+
+    .theme-alphanovel .alpha-inline-reader__head h2 {
+        font-size: 24px;
+    }
+
+    .theme-alphanovel .alpha-inline-chapter {
+        padding: 24px 0;
+    }
+
+    .theme-alphanovel .alpha-inline-chapter__header h3 {
+        font-size: 21px;
+    }
+
+    .theme-alphanovel .alpha-inline-chapter__content {
+        font-size: 16px;
+        line-height: 1.8;
+    }
+
+    .theme-alphanovel .alpha-suggestion-grid {
+        grid-auto-flow: column;
+        grid-auto-columns: 132px;
+        grid-template-columns: none;
+        overflow-x: auto;
+        padding-bottom: 10px;
+    }
+}
+
+/* AlphaNovel web reference: detail card followed by first chapter content. */
+.theme-alphanovel .content > .container:has(.alpha-novel-detail) {
+    width: 100%;
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card {
+    position: relative;
+    grid-template-columns: 226px minmax(0, 1fr) 112px;
+    gap: 32px;
+    min-height: 416px;
+    margin-bottom: 54px;
+    padding: 32px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 8px;
+    background: #fff;
+}
+
+.theme-alphanovel .alpha-book-detail-cover {
+    width: 226px;
+    height: 300px;
+    aspect-ratio: auto;
+    border-radius: 8px;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card__main {
+    grid-column: 2;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card__actions {
+    grid-column: 3;
+    grid-row: 1;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card h1 {
+    margin-top: 4px;
+    margin-bottom: 22px;
+    font-size: 31px;
+    line-height: 1.15;
+}
+
+.theme-alphanovel .alpha-book-description {
+    max-width: none !important;
+    margin: 28px 0 0 !important;
+    color: var(--alpha-ink);
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card h4 {
+    display: none;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-stats {
+    margin-top: 24px;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-tags {
+    margin-top: 24px;
+}
+
+.theme-alphanovel .alpha-novel-detail .alpha-book-detail-tags a {
+    padding: 9px 16px;
+    background: #f8f8ff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.theme-alphanovel .alpha-book-detail-card .add-to-list-wrap,
+.theme-alphanovel .alpha-share-button {
+    width: 48px !important;
+    height: 48px;
+    flex: 0 0 48px;
+}
+
+.theme-alphanovel .alpha-share-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--alpha-primary);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--alpha-primary);
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.theme-alphanovel .alpha-book-detail-card .btn-add-to-list .btn-list i::before {
+    content: "\f004";
+}
+
+.theme-alphanovel .alpha-share-button i {
+    display: none;
+}
+
+.theme-alphanovel .alpha-share-button::before {
+    content: "\f1e0";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-inline-reader {
+    max-width: none;
+    padding: 0 !important;
+    border-bottom: 0 !important;
+}
+
+.theme-alphanovel .alpha-inline-chapter {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0;
+    border-top: 0;
+}
+
+.theme-alphanovel .alpha-inline-chapter__header {
+    display: block;
+    margin-bottom: 36px;
+    text-align: center;
+}
+
+.theme-alphanovel .alpha-inline-chapter__header h3 {
+    font-size: 26px;
+}
+
+.theme-alphanovel .alpha-inline-chapter__content {
+    max-width: 1200px;
+    margin: 0 auto;
+    color: var(--alpha-ink);
+    font-size: 17px;
+    line-height: 1.72;
+}
+
+.theme-alphanovel .alpha-inline-chapter__content p {
+    margin: 0 0 20px;
+    text-indent: 22px;
+}
+
+@media (max-width: 920px) {
+    .theme-alphanovel .alpha-novel-detail .alpha-book-detail-card {
+        grid-template-columns: 112px minmax(0, 1fr);
+        gap: 16px;
+        min-height: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+    }
+
+    .theme-alphanovel .alpha-novel-detail .alpha-book-detail-card__main {
+        grid-column: 2;
+    }
+
+    .theme-alphanovel .alpha-novel-detail .alpha-book-detail-card__actions {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        justify-content: flex-start;
+        margin-top: 16px;
+    }
+
+    .theme-alphanovel .alpha-book-description,
+    .theme-alphanovel .alpha-novel-detail .alpha-book-detail-tags {
+        grid-column: 1 / -1;
+    }
+
+    .theme-alphanovel .alpha-novel-detail .alpha-book-detail-card h1 {
+        font-size: 25px;
+    }
+
+    .theme-alphanovel .alpha-inline-chapter__header {
+        margin-bottom: 24px;
+    }
+
+    .theme-alphanovel .alpha-inline-chapter__header h3 {
+        font-size: 22px;
+    }
+
+    .theme-alphanovel .alpha-inline-chapter__content p {
+        text-indent: 0;
+    }
+}
+
+/* AlphaNovel search page. */
+.theme-alphanovel .alpha-search-page {
+    width: min(100% - 64px, 1376px);
+    margin: 0 auto 64px;
+}
+
+.theme-alphanovel .alpha-search-panel,
+.theme-alphanovel .alpha-search-card {
+    border: 1px solid var(--alpha-line);
+    border-radius: 8px;
+    background: #fff;
+}
+
+.theme-alphanovel .alpha-search-panel {
+    padding: 32px;
+    margin-bottom: 26px;
+}
+
+.theme-alphanovel .alpha-search-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 48px;
+    gap: 32px;
+    margin-bottom: 30px;
+}
+
+.theme-alphanovel .alpha-search-form input {
+    width: 100%;
+    height: 48px;
+    padding: 0 50px;
+    border: 1px solid #dedfec;
+    border-radius: 8px;
+    background: #fbfbff;
+    color: var(--alpha-ink);
+    font: 600 16px/1 "Open Sans", Arial, sans-serif;
+    outline: none;
+}
+
+.theme-alphanovel .alpha-search-form input:focus {
+    border-color: var(--alpha-primary);
+}
+
+.theme-alphanovel .alpha-search-form button,
+.theme-alphanovel .alpha-search-bookmark {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--alpha-line);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--alpha-primary);
+    font-size: 16px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.theme-alphanovel .alpha-search-panel h1 {
+    margin: 0 0 18px;
+    color: var(--alpha-ink);
+    font-family: "Poppins", "Open Sans", Arial, sans-serif;
+    font-size: 26px;
+    line-height: 1.2;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-search-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.theme-alphanovel .alpha-search-tags a,
+.theme-alphanovel .alpha-search-tags span {
+    display: inline-flex;
+    min-height: 32px;
+    align-items: center;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: #f8f8ff;
+    color: var(--alpha-ink);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-search-results {
+    display: grid;
+    gap: 16px;
+}
+
+.theme-alphanovel .alpha-search-card {
+    display: grid;
+    grid-template-columns: 146px minmax(0, 1fr) 226px;
+    gap: 28px;
+    align-items: start;
+    min-height: 258px;
+    padding: 32px;
+}
+
+.theme-alphanovel .alpha-search-card__cover {
+    position: relative;
+    width: 132px;
+    height: 176px;
+    display: block;
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--alpha-primary);
+    color: #fff;
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-search-card__cover img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.theme-alphanovel .alpha-search-card__cover em,
+.theme-alphanovel .alpha-search-card__cover strong {
+    position: absolute;
+    left: 0;
+    z-index: 1;
+    padding: 4px 5px;
+    border-radius: 2px;
+    font-size: 9px;
+    line-height: 1;
+    font-style: normal;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-search-card__cover em {
+    top: 6px;
+    background: #fff948;
+    color: var(--alpha-primary);
+}
+
+.theme-alphanovel .alpha-search-card__cover strong {
+    top: 28px;
+    background: var(--alpha-primary);
+    color: #fff;
+}
+
+.theme-alphanovel .alpha-search-card__title {
+    display: inline-block;
+    margin: 4px 0 18px;
+    color: var(--alpha-ink);
+    font-family: "Poppins", "Open Sans", Arial, sans-serif;
+    font-size: 26px;
+    line-height: 1.2;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-search-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 24px;
+    color: var(--alpha-muted);
+    font-size: 14px;
+}
+
+.theme-alphanovel .alpha-search-card__meta b {
+    color: var(--alpha-ink);
+    font-weight: 600;
+}
+
+.theme-alphanovel .alpha-search-card__stats {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 24px;
+    color: var(--alpha-ink);
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.theme-alphanovel .alpha-search-card__stats span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.theme-alphanovel .alpha-search-card__stats .fa-eye,
+.theme-alphanovel .alpha-search-card__stats .fa-star {
+    color: var(--alpha-primary);
+}
+
+.theme-alphanovel .alpha-search-card__stats .fa-star {
+    color: #f6c51d;
+}
+
+.theme-alphanovel .alpha-search-card__body p {
+    margin: 20px 0 0;
+    color: var(--alpha-ink);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.theme-alphanovel .alpha-search-more {
+    display: inline-block;
+    margin-top: 5px;
+    color: var(--alpha-primary);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-search-card__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    padding-top: 0;
+}
+
+.theme-alphanovel .alpha-search-start {
+    min-width: 162px;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: var(--alpha-primary);
+    color: #fff !important;
+    font-size: 16px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.theme-alphanovel .alpha-search-empty {
+    padding: 40px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--alpha-muted);
+    text-align: center;
+    font-weight: 800;
+}
+
+@media (max-width: 920px) {
+    .theme-alphanovel .alpha-search-page {
+        width: min(100% - 28px, 1376px);
+    }
+
+    .theme-alphanovel .alpha-search-panel {
+        padding: 18px;
+    }
+
+    .theme-alphanovel .alpha-search-form {
+        grid-template-columns: minmax(0, 1fr) 44px;
+        gap: 12px;
+    }
+
+    .theme-alphanovel .alpha-search-form input {
+        height: 44px;
+        padding: 0 16px;
+        font-size: 14px;
+    }
+
+    .theme-alphanovel .alpha-search-form button,
+    .theme-alphanovel .alpha-search-bookmark {
+        width: 44px;
+        height: 44px;
+    }
+
+    .theme-alphanovel .alpha-search-tags {
+        gap: 10px;
+    }
+
+    .theme-alphanovel .alpha-search-card {
+        grid-template-columns: 86px minmax(0, 1fr);
+        gap: 14px;
+        min-height: 0;
+        padding: 18px;
+    }
+
+    .theme-alphanovel .alpha-search-card__cover {
+        width: 86px;
+        height: 116px;
+    }
+
+    .theme-alphanovel .alpha-search-card__title {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 20px;
+    }
+
+    .theme-alphanovel .alpha-search-card__meta {
+        gap: 6px 12px;
+        font-size: 12px;
+    }
+
+    .theme-alphanovel .alpha-search-card__stats {
+        gap: 16px;
+        margin-top: 12px;
+        font-size: 18px;
+    }
+
+    .theme-alphanovel .alpha-search-card__body p,
+    .theme-alphanovel .alpha-search-more {
+        display: none;
+    }
+
+    .theme-alphanovel .alpha-search-card__actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+        padding-top: 6px;
+    }
+
+    .theme-alphanovel .alpha-search-start {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+/* Header day/night switch. */
+.theme-alphanovel .alpha-theme-toggle::before {
+    content: "\f186";
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--alpha-primary);
+    font-family: "Font Awesome 5 Free" !important;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+body.theme-alphanovel.alpha-dark {
+    --alpha-ink: #f8f8ff;
+    --alpha-text: #d7d8ec;
+    --alpha-muted: #a5a7c4;
+    --alpha-line: #272947;
+    --alpha-soft: #191b31;
+    --alpha-card: #14162a;
+    --alpha-shadow: none;
+    --body-color: #0c0e1b;
+    --color-site: #14162a;
+    --color-light-site: #191b31;
+    --text-color: var(--alpha-text);
+    --meta-color: var(--alpha-muted);
+    --border: var(--alpha-line);
+    --bg: #101223;
+    background: var(--body-color);
+    color: var(--alpha-text);
+}
+
+.theme-alphanovel.alpha-dark .header,
+.theme-alphanovel.alpha-dark .alpha-mobile-install {
+    background: #101223;
+    border-color: var(--alpha-line);
+}
+
+.theme-alphanovel.alpha-dark .alpha-mobile-install {
+    background: var(--alpha-primary);
+}
+
+.theme-alphanovel.alpha-dark .logo,
+.theme-alphanovel.alpha-dark .alpha-header-nav .header-btn,
+.theme-alphanovel.alpha-dark .alpha-header-nav a,
+.theme-alphanovel.alpha-dark .header-lang,
+.theme-alphanovel.alpha-dark #header-mobile-btn {
+    color: var(--alpha-ink) !important;
+}
+
+.theme-alphanovel.alpha-dark .header-lang,
+.theme-alphanovel.alpha-dark .alpha-theme-toggle,
+.theme-alphanovel.alpha-dark #header-mobile-btn {
+    background: #191b31;
+}
+
+.theme-alphanovel.alpha-dark .alpha-theme-toggle::before {
+    content: "\f185";
+    color: #f6c51d;
+}
+
+.theme-alphanovel.alpha-dark .page,
+.theme-alphanovel.alpha-dark .content,
+.theme-alphanovel.alpha-dark footer {
+    background: var(--body-color);
+    color: var(--alpha-text);
+}
+
+.theme-alphanovel.alpha-dark .alpha-section,
+.theme-alphanovel.alpha-dark .alpha-update-list,
+.theme-alphanovel.alpha-dark .alpha-side-card,
+.theme-alphanovel.alpha-dark .alpha-comment-card,
+.theme-alphanovel.alpha-dark .alpha-empty,
+.theme-alphanovel.alpha-dark .alpha-catalog-box,
+.theme-alphanovel.alpha-dark .alpha-catalog-intro,
+.theme-alphanovel.alpha-dark .alpha-novel-list,
+.theme-alphanovel.alpha-dark .alpha-novel-card,
+.theme-alphanovel.alpha-dark .alpha-list-main,
+.theme-alphanovel.alpha-dark .alpha-search-panel,
+.theme-alphanovel.alpha-dark .alpha-search-card,
+.theme-alphanovel.alpha-dark .alpha-novel-detail .alpha-book-detail-card,
+.theme-alphanovel.alpha-dark .alpha-reviews-preview .comment-preview,
+.theme-alphanovel.alpha-dark .block,
+.theme-alphanovel.alpha-dark .section,
+.theme-alphanovel.alpha-dark .main.block,
+.theme-alphanovel.alpha-dark .comment-block,
+.theme-alphanovel.alpha-dark .collection__inner,
+.theme-alphanovel.alpha-dark .news-post {
+    background: var(--alpha-card) !important;
+    border-color: var(--alpha-line) !important;
+    box-shadow: none !important;
+}
+
+.theme-alphanovel.alpha-dark .alpha-inline-reader,
+.theme-alphanovel.alpha-dark .alpha-inline-chapter,
+.theme-alphanovel.alpha-dark .alpha-reviews-preview,
+.theme-alphanovel.alpha-dark .alpha-suggestions {
+    background: transparent !important;
+}
+
+.theme-alphanovel.alpha-dark h1,
+.theme-alphanovel.alpha-dark h2,
+.theme-alphanovel.alpha-dark h3,
+.theme-alphanovel.alpha-dark h4,
+.theme-alphanovel.alpha-dark .title,
+.theme-alphanovel.alpha-dark .section-title,
+.theme-alphanovel.alpha-dark .alpha-book-card strong,
+.theme-alphanovel.alpha-dark .alpha-reading-card strong,
+.theme-alphanovel.alpha-dark .alpha-update-row strong,
+.theme-alphanovel.alpha-dark .alpha-novel-card__body strong,
+.theme-alphanovel.alpha-dark .alpha-search-card__title,
+.theme-alphanovel.alpha-dark .alpha-search-card__meta b,
+.theme-alphanovel.alpha-dark .alpha-search-card__stats,
+.theme-alphanovel.alpha-dark .alpha-search-card__body p,
+.theme-alphanovel.alpha-dark .alpha-book-description,
+.theme-alphanovel.alpha-dark .alpha-inline-chapter__content,
+.theme-alphanovel.alpha-dark .alpha-suggestion-card strong {
+    color: var(--alpha-ink) !important;
+}
+
+.theme-alphanovel.alpha-dark p,
+.theme-alphanovel.alpha-dark small,
+.theme-alphanovel.alpha-dark .alpha-book-card small,
+.theme-alphanovel.alpha-dark .alpha-reading-card small,
+.theme-alphanovel.alpha-dark .alpha-mini-list small,
+.theme-alphanovel.alpha-dark .alpha-novel-card__body small,
+.theme-alphanovel.alpha-dark .alpha-book-detail-meta,
+.theme-alphanovel.alpha-dark .alpha-search-card__meta,
+.theme-alphanovel.alpha-dark .alpha-book-breadcrumb,
+.theme-alphanovel.alpha-dark .alpha-book-breadcrumb a,
+.theme-alphanovel.alpha-dark .alpha-suggestion-card small,
+.theme-alphanovel.alpha-dark footer,
+.theme-alphanovel.alpha-dark footer a {
+    color: var(--alpha-muted) !important;
+}
+
+.theme-alphanovel.alpha-dark .alpha-genre-pill,
+.theme-alphanovel.alpha-dark .alpha-book-detail-tags a,
+.theme-alphanovel.alpha-dark .alpha-search-tags a,
+.theme-alphanovel.alpha-dark .alpha-search-tags span,
+.theme-alphanovel.alpha-dark .alpha-novel-card__body small span,
+.theme-alphanovel.alpha-dark .alpha-search-form input,
+.theme-alphanovel.alpha-dark .alpha-search-form button,
+.theme-alphanovel.alpha-dark .alpha-search-bookmark,
+.theme-alphanovel.alpha-dark .alpha-share-button,
+.theme-alphanovel.alpha-dark .alpha-book-detail-card .btn-add-to-list {
+    background: #191b31 !important;
+    border-color: #303354 !important;
+    color: var(--alpha-ink) !important;
+}
+
+.theme-alphanovel.alpha-dark input,
+.theme-alphanovel.alpha-dark textarea,
+.theme-alphanovel.alpha-dark select {
+    background: #191b31 !important;
+    border-color: #303354 !important;
+    color: var(--alpha-ink) !important;
+}
+
+.theme-alphanovel.alpha-dark .alpha-app-hero,
+.theme-alphanovel.alpha-dark .alpha-hero {
+    background: var(--alpha-primary);
+}

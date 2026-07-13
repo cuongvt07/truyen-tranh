@@ -41,26 +41,67 @@
 
 @php
     $poster = novel_poster($article);
-    $bg = novel_bg($article);
     $firstChapter = $article->chapters()->orderBy('number')->first();
     $chapterCount = $article->chapters()->count();
+    $primaryGenre = $article->genres->first();
+    $authorName = optional($article->authors->first())->name ?? 'Updating';
+    $readChapterNumber = $firstChapter ? ($continueChapterNumber ?: $firstChapter->number) : null;
 @endphp
 
 @section('content')
-<div class="page-panel" style="background-image: url('{{ $bg }}');">
-    <span class="background"></span>
-</div>
-
 <div class="container">
-    <header class="header-manga">
-        <div class="container">
-            <h1 class="clamp clamp-2">{{ $article->title }}</h1>
-        </div>
-    </header>
+    <nav class="alpha-book-breadcrumb">
+        <a href="{{ route('catalog.index') }}">Novels</a>
+        @if($primaryGenre)
+            <span>/</span>
+            <a href="{{ route('genres.show', $primaryGenre) }}">{{ $primaryGenre->name }}</a>
+        @endif
+        <span>/</span>
+        <span>{{ $article->title }}</span>
+    </nav>
 
-    <div class="flex-content article-detail-flex">
+    <div class="flex-content article-detail-flex alpha-novel-detail">
         <main class="main block">
-            <div class="section-select">
+            <section class="alpha-book-detail-card">
+                <div class="alpha-book-detail-cover lazy-load-bg">
+                    <img class="lazy-image" loading="eager" src="{{ $poster }}" alt="{{ $article->title }} poster">
+                </div>
+                <div class="alpha-book-detail-card__main">
+                    <h1 class="clamp clamp-2">{{ $article->title }}</h1>
+                    <div class="alpha-book-detail-meta">
+                        @if($primaryGenre)<span>Genre: <b>{{ $primaryGenre->name }}</b></span>@endif
+                        <span>Author: <b>{{ $authorName }}</b></span>
+                        <span>Chapters: <b>{{ number_format($chapterCount) }}</b></span>
+                        <span>Status: <b>{{ $article->is_completed ? __('messages.ui.status_completed') : __('messages.ui.status_ongoing') }}</b></span>
+                        <span>Age Rating: <b>{{ ($article->adult ?? false) ? '18+' : '16+' }}</b></span>
+                    </div>
+                    <div class="alpha-book-detail-stats">
+                        <span><i class="fa fa-eye"></i> {{ number_format($article->view ?? 0) }}</span>
+                        <span><i class="fa fa-star"></i> {{ number_format($article->rating ?? 0, 1) }}</span>
+                        <span><i class="fa fa-comment"></i> {{ number_format($comments->total()) }}</span>
+                    </div>
+                    <p class="alpha-book-description">{{ \Illuminate\Support\Str::limit(strip_tags($article->description), 520) }}</p>
+                    @if($article->genres->count())
+                        <div class="alpha-book-detail-tags">
+                            @foreach($article->genres->take(10) as $genre)
+                                <a href="{{ route('genres.show', $genre) }}">{{ $genre->name }}</a>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+                <div class="alpha-book-detail-card__actions">
+                    @include('client.partials.add-to-list-button', [
+                        'article' => $article,
+                        'currentListStatus' => $currentListStatus,
+                        'hasStartedReading' => $hasStartedReading,
+                    ])
+                    <button type="button" class="alpha-share-button" aria-label="Share">
+                        <i class="fa fa-share-square"></i>
+                    </button>
+                </div>
+            </section>
+
+            <div class="section-select alpha-detail-tabs">
                 <a href="#" class="active" section-target="information">{{ __('messages.article.tab_info') }}</a>
                 <a href="#" section-target="chapters">{{ __('messages.article.tab_chapters') }}</a>
                 <a href="#" section-target="comments">{{ __('messages.article.tab_comments') }}</a>
@@ -80,7 +121,64 @@
                 </section>
                 @endif
 
-                <section class="section text-info">
+                <section class="alpha-inline-reader section" id="inline-reader">
+                    @if($firstChapter)
+                        @php
+                            $inlineChapter = $firstChapter;
+                            $inlineCreditCost = $inlineChapter->getEffectiveCreditCost($article);
+                            $inlineIsPaid = $inlineCreditCost > 0;
+                            $inlineIsUnlocked = $inlineIsPaid && ($unlockedChapterIds ?? collect())->contains($inlineChapter->id);
+                            $canReadInline = !$inlineIsPaid || $hasActiveVip || $inlineIsUnlocked;
+                            $rawInlineContent = trim((string) $inlineChapter->content);
+                            $rawInlineContent = preg_replace('#<script\b[^>]*>.*?</script>#is', '', $rawInlineContent) ?? $rawInlineContent;
+                            $inlineIsHtml = (bool) preg_match(
+                                '#<(?:p|br|div|h[1-6]|ul|ol|li|blockquote|strong|em|b|i|u|a|img|figure|figcaption|span|table|tr|td|th|thead|tbody|hr|pre|code|sub|sup|mark)\b[^>]*>#i',
+                                $rawInlineContent
+                            );
+                            $inlineBlocks = $inlineIsHtml
+                                ? (preg_split('/(?<=<\/p>)/i', $rawInlineContent, -1, PREG_SPLIT_NO_EMPTY) ?: [$rawInlineContent])
+                                : array_values(array_filter(preg_split('/(?:\r\n|\r|\n){2,}/', $rawInlineContent) ?: [], fn ($p) => trim($p) !== ''));
+                        @endphp
+                        <article class="alpha-inline-chapter" id="chapter-{{ $inlineChapter->number }}">
+                            <header class="alpha-inline-chapter__header">
+                                <h3>{{ $inlineChapter->title ?: __('messages.article.chapter') . ' ' . $inlineChapter->number }}</h3>
+                                <a href="{{ route('articles.chapters.show', [$article, $inlineChapter->number]) }}" class="alpha-inline-chapter__legacy">Open</a>
+                            </header>
+
+                            @if($canReadInline)
+                                <div class="alpha-inline-chapter__content">
+                                    @forelse($inlineBlocks as $block)
+                                        @if($inlineIsHtml){!! $block !!}@else<p>{!! nl2br(e($block)) !!}</p>@endif
+                                    @empty
+                                        <p>{{ __('messages.article.no_chapters') }}</p>
+                                    @endforelse
+                                </div>
+                            @else
+                                @php
+                                    $plainInline = trim(strip_tags($rawInlineContent));
+                                    $teaser = \Illuminate\Support\Str::limit($plainInline, 360);
+                                @endphp
+                                <div class="alpha-inline-chapter__content alpha-inline-chapter__content--locked">
+                                    <p>{{ $teaser }}</p>
+                                    <div class="alpha-inline-lock">
+                                        <strong><i class="fa fa-lock"></i> {{ __('messages.chapter.not_purchased') }}</strong>
+                                        @auth
+                                            <a href="{{ route('articles.chapters.show', [$article, $inlineChapter->number]) }}" class="alpha-next-chapter">
+                                                {{ __('messages.chapter.buy_for', ['cost' => number_format($inlineCreditCost)]) }}
+                                            </a>
+                                        @else
+                                            <a href="{{ route('login') }}" class="alpha-next-chapter">{{ __('messages.chapter.login_to_buy') }}</a>
+                                        @endauth
+                                    </div>
+                                </div>
+                            @endif
+                        </article>
+                    @else
+                        <div class="nothing">{{ __('messages.article.no_chapters') }}</div>
+                    @endif
+                </section>
+
+                <section class="alpha-latest-chapters section text-info">
                     <h2>
                         {{ __('messages.article.latest_chapters') }}
                         <a href="#" class="meta-color header-small-text" section-target="chapters" id="show-all-chapters">{{ __('messages.article.view_all') }}</a>
@@ -120,7 +218,7 @@
 
                 {{-- Teams --}}
                 @if($article->team_id && $article->team)
-                <section class="section translators">
+                <section class="section translators alpha-detail-legacy">
                     <h2>{{ __('messages.article.teams') }}</h2>
                     <div class="items">
                         <a href="{{ route('teams.show', $article->team->id) }}" class="translator">
@@ -135,34 +233,28 @@
 
                 {{-- Similar — swiper 4 per view + arrows --}}
                 @if(($suggestedArticles ?? collect())->count())
-                <section class="manga-list section swp swp-single swp-4">
+                <section class="section alpha-suggestions">
                     <h2 class="section-title">
-                        <span>{{ __('messages.article.similar') }}</span>
-                        <div class="arrows">
-                            <div class="btn btn-invincible swiper-left"><i class="fa fa-chevron-left"></i></div>
-                            <div class="btn btn-invincible swiper-right"><i class="fa fa-chevron-right"></i></div>
-                        </div>
+                        <span>You will also like</span>
                     </h2>
-                    <div class="swiper-container">
-                        <div class="swiper-wrapper">
-                            @foreach($suggestedArticles as $s)
-                                <div class="swiper-slide">
-                                    <a href="{{ route('articles.show', $s) }}" class="manga-item">
-                                        <div class="poster image image-cover lazy-load-bg">
-                                            <img class="lazy-image" loading="eager" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
-                                        </div>
-                                        <div class="title clamp clamp-2">{{ $s->title }}</div>
-                                    </a>
-                                </div>
-                            @endforeach
-                        </div>
+                    <div class="alpha-suggestion-grid">
+                        @foreach($suggestedArticles as $s)
+                            <a href="{{ route('articles.show', $s) }}" class="alpha-suggestion-card">
+                                <span class="alpha-suggestion-card__cover">
+                                    <img loading="lazy" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
+                                    @if($loop->first)<em>Recommended</em>@endif
+                                </span>
+                                <strong class="clamp clamp-2">{{ $s->title }}</strong>
+                                <small>{{ optional($s->authors->first())->name ?? 'Updating' }}</small>
+                            </a>
+                        @endforeach
                     </div>
                 </section>
                 @endif
 
                 {{-- Đề xuất dịch (Translation requests) — swiper 4 per view + arrows --}}
                 @if(($translationRequests ?? collect())->count())
-                <section class="manga-list section swp swp-single swp-4">
+                <section class="manga-list section swp swp-single swp-4 alpha-translation-requests">
                     <h2 class="section-title">
                         <span>{{ __('messages.article.translation_requests') }}</span>
                         <div class="arrows">
@@ -189,7 +281,7 @@
 
                 {{-- Related Collections --}}
                 @if(($relatedGenres ?? collect())->count())
-                <section class="section">
+                <section class="section alpha-related-collections">
                     <h2 class="section-title">{{ __('messages.article.related_collections') }}</h2>
                     <div class="collections"><div class="collection-mini-grid related-collections-6">
                         @foreach($relatedGenres as $genre)
@@ -208,10 +300,10 @@
                 @endif
 
                 {{-- Last Comments (preview) --}}
-                <section class="section comments-section">
+                <section class="section comments-section alpha-reviews-preview">
                     <h2 class="section-title">
-                        <span>{{ __('messages.article.latest_comments') }}</span>
-                        <a href="#" id="show-all-comments" class="meta-color header-small-text" section-target="comments">{{ __('messages.article.view_all') }}</a>
+                        <span>Reviews</span>
+                        <a href="#" id="show-all-comments" class="meta-color header-small-text" section-target="comments">See All</a>
                     </h2>
                     @forelse(collect($comments->items())->take(3) as $comment)
                         <div class="comment-preview">
@@ -251,6 +343,26 @@
                     @empty
                         <div class="nothing">{{ __('messages.article.no_comments') }}</div>
                     @endforelse
+                </section>
+
+                <section class="alpha-app-hero alpha-detail-app-hero">
+                    <div class="alpha-app-hero__media">
+                        <img loading="lazy" src="{{ $poster }}" alt="{{ $article->title }}">
+                    </div>
+                    <div class="alpha-app-hero__content">
+                        <h1>Read <span>{{ $article->title }}</span> online anytime</h1>
+                        <p>Follow new chapters, save your reading progress, and discover more novels from the same collection.</p>
+                        <div class="alpha-app-hero__actions">
+                            @if($readChapterNumber)
+                                <a href="#inline-reader" class="alpha-button alpha-button--light">Read Now</a>
+                            @endif
+                            <a href="{{ route('catalog.index') }}" class="alpha-button alpha-button--ghost">Browse Novels</a>
+                        </div>
+                    </div>
+                    <div class="alpha-app-hero__qr">
+                        <span>QR</span>
+                        <small>Scan the QR code, and go to the download app</small>
+                    </div>
                 </section>
             </div>
 
@@ -501,7 +613,7 @@
     font-weight:700;
 }
 @media only screen and (max-width: 768px){
-    .article-detail-flex{flex-direction:column-reverse!important}
+    .article-detail-flex{flex-direction:column!important;justify-content:flex-start!important}
     .article-detail-flex .main{margin-right:0!important;width:100%!important;max-width:100%!important}
     .article-detail-flex .second-information{width:100%!important;max-width:100%!important}
     .article-detail-flex .second-information .poster{width:210px;height:290px;max-height:none;margin:0 auto 13px}

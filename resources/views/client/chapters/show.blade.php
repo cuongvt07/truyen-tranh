@@ -13,15 +13,16 @@
     <link rel="icon" href="{{ asset('static/favicon.ico') }}" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=Roboto:wght@100;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Poppins:wght@600;700;800;900&family=Play:wght@400;700&family=Roboto:wght@100;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('static/core/css/reset.css') }}">
     <link rel="stylesheet" href="{{ asset('static/core/css/fontawesomeee8b.css') }}?ver=1.8.0">
     <link rel="stylesheet" href="{{ asset('static/core/css/styleee8b.css') }}?ver=1.8.0">
     <link rel="stylesheet" href="{{ asset('static/book/css/chapteree8b.css') }}?ver=1.8.0">
+    <link rel="stylesheet" href="{{ asset('static/core/css/alphanovel.css') }}?ver={{ file_exists(public_path('static/core/css/alphanovel.css')) ? filemtime(public_path('static/core/css/alphanovel.css')) : '1.0.0' }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @include('client.partials.ad-head')
 </head>
-<body chapter_ph="{{ (int) ($bookmarkParagraph ?? 0) }}">
+<body class="theme-alphanovel-chapter" chapter_ph="{{ (int) ($bookmarkParagraph ?? 0) }}">
 
 <header class="header-chapter">
     <a href="{{ route('articles.show', $article) }}" class="header-title btn header-btn">

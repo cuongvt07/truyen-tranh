@@ -2,104 +2,148 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Enums\ArticleCompleteStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
-use App\Models\Collection;
-use App\Models\ReadingHistory;
+use App\Models\Genre;
+use App\Models\Tag;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        // Cache dữ liệu chung (không phụ thuộc user) để giảm TTFB. Truyện mới/comment/
-        // collection chỉ trễ tối đa 3 phút. readingHistory tính riêng theo user (không cache).
-        $data = Cache::remember('home:index:v1', 180, function () {
-            $hotArticles         = Article::getHotArticles()->with('genres')->take(16)->get();
-            $newUpdateArticles   = Article::getNewUpdateArticles()->with(['genres', 'authors'])
-                // Ngày chương mới nhất ĐÃ PHÁT HÀNH (published_at nếu hẹn giờ, else created_at) -> last_chapter_at.
-                // Khớp với thứ tự sort để card hiển thị đúng ngày publish, không phải ngày tạo chương.
-                ->addSelect(['last_chapter_at' => function ($q) {
-                    $q->from('chapters')
-                        ->selectRaw('max(coalesce(published_at, created_at))')
-                        ->whereColumn('chapters.article_id', 'articles.id')
-                        ->where(function ($w) {
-                            $w->whereNull('published_at')->orWhere('published_at', '<=', now());
-                        });
-                }])
-                ->take(30)->get();
-            $completedArticles   = Article::getCompletedArticles()->take(12)->get();
-            // "Translation requests": truyện do USER tự gửi (/dang-truyen) đã được admin DUYỆT
-            // (ApprovedArticleScope tự lọc status=APPROVED), mới nhất.
-            $userSubmittedArticles = Article::where('is_user_submitted', true)
-                ->latest('id')->take(12)->get();
-            $lastComments        = DB::table('comments')
-                                     ->join('users', 'users.id', '=', 'comments.user_id')
-                                     ->join('articles', 'articles.id', '=', 'comments.article_id')
-                                     ->where('comments.is_hidden', false)
-                                     ->leftJoin('slugs', function ($join) {
-                                         $join->on('slugs.sluggable_id', '=', 'articles.id')
-                                             ->where('slugs.sluggable_type', Article::class)
-                                             ->where('slugs.type', 'article');
-                                     })
-                                     ->select('comments.*', 'users.name as user_name', 'articles.title as article_title', 'articles.id as article_id', 'slugs.slug as article_slug')
-                                     ->orderByDesc('comments.created_at')
-                                     ->limit(6)
-                                     ->get();
-            $lastCollections = Collection::query()
-                ->with(['user:id,name,username', 'articles.slug'])
-                ->withCount('articles')
-                ->where('is_private', false)
-                ->orderByDesc('created_at')
-                ->take(4)
-                ->get();
+        $data = Cache::remember('home:index:alphanovel:v1', 180, function () {
+            $take = 10;
+            $with = ['genres', 'authors', 'slug'];
 
-            $collectionIds = $lastCollections->pluck('id');
-            $collectionCommentCounts = $collectionIds->isNotEmpty()
-                ? DB::table('collection_article')
-                    ->join('comments', 'comments.article_id', '=', 'collection_article.article_id')
-                    ->whereIn('collection_article.collection_id', $collectionIds)
-                    ->where('comments.is_hidden', false)
-                    ->selectRaw('collection_article.collection_id, COUNT(comments.id) as total')
-                    ->groupBy('collection_article.collection_id')
-                    ->pluck('total', 'collection_id')
-                : collect();
+            $articleList = function ($query) use ($take, $with) {
+                return $query
+                    ->with($with)
+                    ->withCount('chapters')
+                    ->take($take)
+                    ->get();
+            };
 
-            $lastCollections->each(function ($collection) use ($collectionCommentCounts) {
-                $collection->setAttribute('comments_count', (int) ($collectionCommentCounts[$collection->id] ?? 0));
-            });
+            $hotArticles = $articleList(Article::getHotArticles());
+            $newUpdateArticles = $articleList(Article::getNewUpdateArticles());
+            $hottestNewArticles = $articleList(Article::query()->latest('created_at'));
+            $exclusiveArticles = $articleList(Article::where('is_user_submitted', true)->latest('id'));
 
-            return compact('hotArticles', 'newUpdateArticles', 'completedArticles', 'userSubmittedArticles', 'lastComments', 'lastCollections');
+            if ($exclusiveArticles->isEmpty()) {
+                $exclusiveArticles = $newUpdateArticles;
+            }
+
+            $genreBlock = function (array $names) use ($articleList, $hotArticles) {
+                $genre = Genre::query()
+                    ->whereIn('name', $names)
+                    ->orderBy('name')
+                    ->first();
+
+                if (!$genre) {
+                    return [
+                        'articles' => $hotArticles,
+                        'url' => route('catalog.index'),
+                    ];
+                }
+
+                $articles = $articleList(
+                    Article::query()
+                        ->whereHas('genres', fn ($q) => $q->where('genres.id', $genre->id))
+                        ->orderByDesc('view')
+                );
+
+                return [
+                    'articles' => $articles->isNotEmpty() ? $articles : $hotArticles,
+                    'url' => route('catalog.index', ['genre' => $genre->getRouteKey()]),
+                ];
+            };
+
+            $blocks = [
+                [
+                    'title' => 'Best match for you',
+                    'articles' => $hotArticles,
+                    'url' => route('home.show_hot_articles'),
+                    'variant' => 'rail',
+                    'showSeeAll' => false,
+                ],
+                [
+                    'title' => 'Top Trending',
+                    'articles' => $newUpdateArticles,
+                    'url' => route('home.show_new_update_articles'),
+                    'variant' => 'trending',
+                    'showSeeAll' => true,
+                ],
+                [
+                    'title' => 'Hottest New',
+                    'articles' => $hottestNewArticles,
+                    'url' => route('home.show_new_update_articles'),
+                    'variant' => 'rail',
+                    'showSeeAll' => true,
+                ],
+                [
+                    'title' => "Editors' Choice",
+                    'articles' => $hotArticles,
+                    'url' => route('home.show_hot_articles'),
+                    'variant' => 'rail',
+                    'showSeeAll' => true,
+                ],
+                [
+                    'title' => 'Only at '.config('app.name'),
+                    'articles' => $exclusiveArticles,
+                    'url' => route('catalog.index'),
+                    'variant' => 'rail',
+                    'showSeeAll' => true,
+                ],
+            ];
+
+            foreach ([
+                'Top Werewolf' => ['Werewolf'],
+                'Top Billionaire/CEO' => ['Billionaire/CEO', 'Billionaire', 'CEO'],
+                'Top Romance' => ['Romance', 'Tinh cam', 'Tình cảm'],
+                'Top Paranormal' => ['Paranormal', 'Supernatural'],
+                'Top Fantasy' => ['Fantasy', 'Tham hiem', 'Thám hiểm', 'Xuyen khong', 'Xuyên không'],
+                'Top YA/Teen' => ['YA/Teen', 'Young Adult', 'School Life'],
+                'Top LGBTQ+' => ['LGBTQ+', 'LGBTQ'],
+            ] as $title => $names) {
+                $block = $genreBlock($names);
+                $blocks[] = [
+                    'title' => $title,
+                    'articles' => $block['articles'],
+                    'url' => $block['url'],
+                    'variant' => 'rail',
+                    'showSeeAll' => true,
+                ];
+            }
+
+            return [
+                'hotArticles' => $hotArticles,
+                'newUpdateArticles' => $newUpdateArticles,
+                'discoverBlocks' => $blocks,
+            ];
         });
 
-        $readingHistory = Auth::check()
-            ? ReadingHistory::continueReading(Auth::id(), 6)
-            : collect();
-
-        return view('client.home.index', array_merge($data, [
-            'readingHistory' => $readingHistory,
-        ]));
+        return view('client.home.index', $data);
     }
 
     public function showHotArticles()
     {
-        $hotArticles = Article::getHotArticles()->paginate();
+        $hotArticles = Article::getHotArticles()->with(['authors', 'slug'])->paginate();
+
         return view('client.articles.index', [
             'articles' => $hotArticles,
-            'title' => 'Truyện đọc nhiều nhất',
-            'description' => 'Danh sách những truyện đang hot, có nhiều người đọc và quan tâm nhất trong tháng này',
+            'title' => 'Most Read Stories',
+            'description' => 'The most-read stories currently getting the strongest reader attention.',
         ]);
     }
 
     public function showNewUpdateArticles()
     {
         $newUpdateArticles = Article::getNewUpdateArticles()
-            ->whereHas('chapters', fn($q) => $q->where('created_at', '>=', now()->subDays(3)))
+            ->with(['authors', 'slug'])
+            ->whereHas('chapters', fn ($q) => $q->where('created_at', '>=', now()->subDays(3)))
             ->paginate();
+
         return view('client.articles.index', [
             'articles' => $newUpdateArticles,
             'title' => 'Recently Updated',
@@ -109,22 +153,58 @@ class HomeController extends Controller
 
     public function showCompletedArticles()
     {
-        $completedArticles = Article::getCompletedArticles()->paginate();
+        $completedArticles = Article::getCompletedArticles()->with(['authors', 'slug'])->paginate();
+
         return view('client.articles.index', [
             'articles' => $completedArticles,
-            'title' => 'Truyện đã hoàn thành',
-            'description' => 'Danh sách những truyện đã hoàn thành, ra đủ chương.',
+            'title' => 'Completed Stories',
+            'description' => 'Stories that are fully completed and ready to read from beginning to end.',
         ]);
     }
 
     public function search(Request $request)
     {
-        $keyword = $request->keyword;
-        $articles = Article::query()->where('title', 'like', '%' . $keyword . '%')->paginate();
-        return view('client.articles.index', [
+        $keyword = trim((string) ($request->input('keyword') ?: $request->input('q')));
+        $topTags = Tag::query()
+            ->withCount('articles')
+            ->orderByDesc('articles_count')
+            ->orderBy('name')
+            ->take(18)
+            ->get();
+
+        if ($topTags->isEmpty()) {
+            $topTags = Genre::query()
+                ->withCount('articles')
+                ->orderByDesc('articles_count')
+                ->orderBy('name')
+                ->take(18)
+                ->get();
+        }
+
+        $articles = Article::query()
+            ->with(['authors', 'genres', 'tags', 'slug'])
+            ->withCount('chapters')
+            ->when($keyword !== '', function ($query) use ($keyword) {
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('title', 'like', '%'.$keyword.'%')
+                        ->orWhere('description', 'like', '%'.$keyword.'%')
+                        ->orWhereHas('authors', fn ($author) => $author->where('name', 'like', '%'.$keyword.'%'))
+                        ->orWhereHas('genres', fn ($genre) => $genre->where('name', 'like', '%'.$keyword.'%'))
+                        ->orWhereHas('tags', fn ($tag) => $tag->where('name', 'like', '%'.$keyword.'%'));
+                });
+            }, function ($query) {
+                $query->orderByDesc('view');
+            })
+            ->latest('id')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('client.home.search', [
             'articles' => $articles,
-            'title' => 'Tìm kiếm cho từ khoá "' . $keyword . '"',
-            'description' => 'Danh sách truyện có liên quan tới từ khoá "' . $keyword . '"',
+            'keyword' => $keyword,
+            'topTags' => $topTags,
+            'title' => $keyword !== '' ? 'Search results for "'.$keyword.'"' : 'Search',
+            'description' => 'You can search for any novel name, author name, or novel tag you want to search.',
         ]);
     }
 }

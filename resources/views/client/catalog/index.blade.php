@@ -1,285 +1,94 @@
 @extends('layout.novelight')
 
-@section('template_title', $selectedGenreName ? __('messages.catalog.genre_label') . ': ' . $selectedGenreName : __('messages.catalog.page_title'))
+@section('template_title', $selectedGenreName ? $selectedGenreName . ' Novels' : __('messages.catalog.page_title'))
 
-@section('page_css')
-<link rel="stylesheet" href="{{ asset('static/core/css/catalogee8b.css') }}?ver=1.8.0">
-<link rel="stylesheet" href="{{ asset('static/core/css/indexee8b.css') }}?ver=1.8.0">
-@endsection
+@php
+    $activeGenreId = count($selectedGenres ?? []) === 1 ? (int) $selectedGenres[0] : null;
+    $pageTitle = $selectedGenreName ? $selectedGenreName . ' Novels' : __('messages.catalog.page_title');
+    $pageDescription = $selectedGenreName
+        ? 'Welcome ' . $selectedGenreName . ' Novels page on ' . config('app.name') . '! Enjoy a collection of ' . strtolower($selectedGenreName) . ' books with fresh chapters, popular stories, and reader favorites. Browse titles, compare status and ratings, and find your next story to read.'
+        : 'Read novels online. Browse popular stories, fresh chapters, and completed books from every genre.';
+@endphp
 
 @section('content')
-<div class="container">
-    <div class="flex-content catalog-flex">
-        {{-- Results --}}
-        <div class="main block">
-            <div class="page-title__catalog">
-                <h1 class="page-title">
-                    @if($selectedGenreName)
-                        <i class="fa fa-layer-group"></i> {{ $selectedGenreName }}
-                    @else
-                        {{ __('messages.catalog.page_title') }}
-                    @endif
-                </h1>
-                <div class="text-input checkbox-input select">
-                    <div class="text-input__wrapper">
-                        <select name="ordering" id="catalog-ordering"
-                                onchange="(function(v){var p=new URLSearchParams(window.location.search);p.set('ordering',v);p.delete('page');window.location.search=p.toString();})(this.value)">
-                            <option value="-time_updated" {{ ($filters['ordering'] ?? '-time_updated')=='-time_updated'?'selected':'' }}>{{ __('messages.catalog.order_recently_updated') }}</option>
-                            <option value="-time_created" {{ ($filters['ordering'] ?? '')=='-time_created'?'selected':'' }}>{{ __('messages.catalog.order_recently_added') }}</option>
-                            <option value="popularity"    {{ ($filters['ordering'] ?? '')=='popularity'?'selected':'' }}>{{ __('messages.catalog.order_popular') }}</option>
-                            <option value="title"         {{ ($filters['ordering'] ?? '')=='title'?'selected':'' }}>{{ __('messages.catalog.order_name_az') }}</option>
-                            <option value="-year_of_realese" {{ ($filters['ordering'] ?? '')=='-year_of_realese'?'selected':'' }}>{{ __('messages.catalog.order_release_year') }}</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            @if($articles->total() > 0)
-                <p class="meta-color" style="margin:0 0 12px;font-size:14px">{{ __('messages.catalog.found_results', ['count' => number_format($articles->total())]) }}</p>
-            @endif
-
-            <div class="manga-grid-list">
-                @forelse($articles as $article)
-                    <a href="{{ route('articles.show', $article) }}" class="item">
-                        <div class="poster image image-cover lazy-load-bg">
-                            <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
-                            @if($article->is_completed)<span class="grid-badge" title="{{ __('messages.ui.full') }}">C</span>@endif
-                        </div>
-                        <div class="title clamp clamp-2">{{ $article->title }}</div>
+<main class="alpha-catalog-page">
+    <aside class="alpha-catalog-sidebar">
+        <section class="alpha-catalog-box">
+            <h2>Genre</h2>
+            <label class="alpha-genre-select" aria-label="Genre">
+                <select onchange="if (this.value) window.location.href = this.value;">
+                    <option value="{{ route('catalog.index') }}" {{ $activeGenreId ? '' : 'selected' }}>All Novels</option>
+                    @foreach($genres as $genre)
+                        <option value="{{ route('catalog.index', ['genre' => $genre->getRouteKey()]) }}" {{ $activeGenreId === (int) $genre->id ? 'selected' : '' }}>
+                            {{ $genre->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </label>
+            <nav class="alpha-genre-list">
+                <a href="{{ route('catalog.index') }}" class="{{ $activeGenreId ? '' : 'active' }}">All Novels</a>
+                @foreach($genres as $genre)
+                    <a href="{{ route('catalog.index', ['genre' => $genre->getRouteKey()]) }}" class="{{ $activeGenreId === (int) $genre->id ? 'active' : '' }}">
+                        {{ $genre->name }}
                     </a>
-                @empty
-                    <div class="nothing" style="grid-column:1/-1;text-align:center;padding:40px 0">{{ __('messages.catalog.no_matching_results') }}</div>
-                @endforelse
-            </div>
+                @endforeach
+            </nav>
+        </section>
+    </aside>
 
+    <section class="alpha-catalog-main">
+        <header class="alpha-catalog-intro">
+            <h1>{{ $pageTitle }}</h1>
+            <div class="alpha-catalog-description" data-collapsed="true">
+                <p>{{ $pageDescription }}</p>
+                <button type="button" class="alpha-catalog-description__toggle">more</button>
+            </div>
+            @if($articles->total() > 0)
+                <span>{{ __('messages.catalog.found_results', ['count' => number_format($articles->total())]) }}</span>
+            @endif
+        </header>
+
+        <div class="alpha-novel-list">
+            @forelse($articles as $article)
+                <a href="{{ route('articles.show', $article) }}" class="alpha-novel-card">
+                    <span class="alpha-novel-card__cover">
+                        <img src="{{ novel_poster($article) }}" alt="{{ $article->title }}" loading="lazy">
+                        @if($article->is_completed)<em>Completed</em>@endif
+                    </span>
+                    <span class="alpha-novel-card__body">
+                        <strong class="clamp clamp-2">{{ $article->title }}</strong>
+                        <small>
+                            Author: {{ optional($article->authors->first())->name ?? 'Updating' }}
+                            <span>Status: {{ $article->is_completed ? __('messages.ui.status_completed') : __('messages.ui.status_ongoing') }}</span>
+                        </small>
+                        <span class="alpha-novel-card__stats">
+                            <b><i class="fa fa-eye"></i> {{ number_format($article->view ?? 0) }}</b>
+                            @if(($article->rating_count ?? 0) > 0)<b><i class="fa fa-star"></i> {{ number_format($article->rating ?? 0, 1) }}</b>@endif
+                        </span>
+                        <p class="clamp clamp-3">{{ \Illuminate\Support\Str::limit(strip_tags($article->description), 170) }}</p>
+                        <span class="alpha-more">more</span>
+                    </span>
+                </a>
+            @empty
+                <div class="alpha-empty">{{ __('messages.catalog.no_matching_results') }}</div>
+            @endforelse
+        </div>
+
+        <div class="alpha-pagination">
             {{ $articles->links('vendor.pagination.novelight') }}
         </div>
-
-        {{-- Filter sidebar --}}
-        <div class="second-information block">
-            {{-- Nút thu gọn/mở rộng filter — chỉ hiện trên mobile/tablet --}}
-            <button type="button" class="filter-toggle" aria-expanded="false">
-                <span><i class="fa fa-sliders-h"></i> {{ __('messages.catalog.filter') }}</span>
-                <i class="fa fa-chevron-down"></i>
-            </button>
-            <form class="filter-container" method="get" action="{{ route('catalog.index') }}">
-                <input type="hidden" name="ordering" value="{{ $filters['ordering'] ?? '-time_updated' }}">
-
-                <div class="search">
-                    <div class="text-input">
-                        <input type="text" name="search" placeholder="{{ __('messages.catalog.search_placeholder') }}" value="{{ $filters['search'] ?? '' }}">
-                        <button type="submit" class="right-icon"><i class="fa fa-search"></i></button>
-                    </div>
-                </div>
-
-                <div class="filters">
-                    <div class="expand">
-                        <div class="filter-name name open-close" p-target="genres-content" nolock>
-                            {{ __('messages.catalog.genres') }} <i class="fa fa-angle-down"></i>
-                        </div>
-                        <div id="genres-content" class="expand-content">
-                            <div class="checkbox">
-                                @foreach($genres as $genre)
-                                    <div>
-                                        <label>
-                                            <input type="checkbox" name="genres[]" value="{{ $genre->id }}"
-                                                   {{ in_array($genre->id, $selectedGenres ?? []) ? 'checked' : '' }}>
-                                            {{ $genre->name }}
-                                        </label>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="expand">
-                        <div class="filter-name name open-close" p-target="status-content" nolock>
-                            {{ __('messages.catalog.status') }} <i class="fa fa-angle-down"></i>
-                        </div>
-                        <div id="status-content" class="expand-content">
-                            <div class="checkbox">
-                                @php $curStatus = $filters['status'] ?? ''; @endphp
-                                <div>
-                                    <label>
-                                        <input type="radio" name="status" value="" {{ $curStatus==='' ? 'checked':'' }}>
-                                        {{ __('messages.catalog.all') }}
-                                    </label>
-                                </div>
-                                <div>
-                                    <label>
-                                        <input type="radio" name="status" value="0" {{ $curStatus==='0' ? 'checked':'' }}>
-                                        {{ __('messages.catalog.status_ongoing') }}
-                                    </label>
-                                </div>
-                                <div>
-                                    <label>
-                                        <input type="radio" name="status" value="1" {{ $curStatus==='1' ? 'checked':'' }}>
-                                        {{ __('messages.catalog.status_completed') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="expand">
-                        <div class="filter-name name open-close" p-target="type-content" nolock>
-                            {{ __('messages.catalog.type') }} <i class="fa fa-angle-down"></i>
-                        </div>
-                        <div id="type-content" class="expand-content">
-                            <div class="checkbox">
-                                <div>
-                                    <label>
-                                        <input type="checkbox" name="types[]" value="0" {{ in_array('0', $selectedTypes ?? []) ? 'checked':'' }}>
-                                        Web Novel
-                                    </label>
-                                </div>
-                                <div>
-                                    <label>
-                                        <input type="checkbox" name="types[]" value="1" {{ in_array('1', $selectedTypes ?? []) ? 'checked':'' }}>
-                                        Light Novel
-                                    </label>
-                                </div>
-                                <div>
-                                    <label>
-                                        <input type="checkbox" name="types[]" value="2" {{ in_array('2', $selectedTypes ?? []) ? 'checked':'' }}>
-                                        {{ __('messages.catalog.type_published') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="expand">
-                        <div class="filter-name name open-close" p-target="country-content" nolock>
-                            {{ __('messages.catalog.country') }} <i class="fa fa-angle-down"></i>
-                        </div>
-                        <div id="country-content" class="expand-content">
-                            <div class="checkbox">
-                                @foreach($countries as $c)
-                                <div>
-                                    <label>
-                                        <input type="checkbox" name="countries[]" value="{{ $c->id }}"
-                                               {{ in_array((string)$c->id, $selectedCountries ?? []) ? 'checked':'' }}>
-                                        {{ $c->display_name }}
-                                    </label>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="btns">
-                    <a href="{{ route('catalog.index') }}" class="btn btn-invincible">{{ __('messages.catalog.reset') }}</a>
-                    <button type="submit" class="btn btn-primary">{{ __('messages.catalog.filter') }}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<style>
-.catalog-flex { display:flex; gap:24px; align-items:flex-start; }
-.catalog-flex .main { width:calc(100% - 300px); min-width:0; }
-.page-title__catalog { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
-.page-title__catalog .page-title { font-size:28px; margin:0; }
-.page-title__catalog select { padding:8px 12px; border-radius:6px; border:1px solid var(--input-border-color,#2a2a3e); background:var(--bg,#fff); color:inherit; min-width:170px; cursor:pointer; }
-.catalog-flex .second-information { width:280px; flex-shrink:0; position:sticky; top:90px; padding:16px; border-radius:8px; }
-.grid-badge { background:#2e9c5a; color:#fff; font-size:11px; font-weight:700; line-height:1; width:18px; height:18px; display:flex; align-items:center; justify-content:center; border-radius:4px; position:absolute; top:4px; right:4px; box-shadow:0 1px 3px rgba(0,0,0,.35); }
-
-/* Grid layout: 5 columns on desktop, 2 on mobile */
-.manga-grid-list {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
-}
-.manga-grid-list .item {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    transition: transform 0.2s;
-}
-.manga-grid-list .item:hover {
-    transform: translateY(-4px);
-}
-.manga-grid-list .item .poster {
-    width: 100%;
-    padding-top: 140%;
-    position: relative;
-    border-radius: 6px;
-    overflow: hidden;
-    margin-bottom: 8px;
-}
-.manga-grid-list .item .poster img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.manga-grid-list .item .title {
-    font-size: 14px;
-    line-height: 1.4;
-    font-weight: 500;
-}
-
-.filter-container .search { margin-bottom:14px; }
-.filter-container .text-input { display:flex; align-items:center; border:1px solid var(--input-border-color,#2a2a3e); border-radius:5px; overflow:hidden; }
-.filter-container .search input { flex:1; border:none; background:transparent; padding:9px 10px; color:inherit; }
-.filter-container .search .right-icon { background:none; border:none; padding:0 10px; cursor:pointer; color:var(--meta-color); }
-.filter-container .filter-name { font-weight:600; margin:6px 0; font-size:14px; cursor:pointer; }
-.filter-container .option { margin-bottom:10px; }
-.filter-container select { width:100%; padding:8px 10px; border-radius:5px; border:1px solid var(--input-border-color,#2a2a3e); background:var(--bg,#fff); color:inherit; }
-.filter-container .checkbox { max-height:220px; overflow-y:auto; padding-right:4px; }
-.filter-container .checkbox label { display:flex; align-items:center; gap:8px; padding:4px 0; font-size:14px; cursor:pointer; }
-.filter-container .expand-content.hide { display:none; }
-.filter-container .btns { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px; }
-.filter-container .btns .btn { text-align:center; }
-
-/* Nút toggle filter: ẩn trên desktop (filter luôn hiện ở sidebar phải) */
-.filter-toggle { display:none; }
-
-/* Tablet: 3 columns + filter XUỐNG DƯỚI kết quả, dạng panel thu gọn/mở rộng */
-@media (max-width:1055px){
-    .catalog-flex { flex-direction:column; }
-    .catalog-flex .main, .catalog-flex .second-information { width:100%; position:static; }
-    .manga-grid-list { grid-template-columns: repeat(3, 1fr); }
-
-    .catalog-flex .filter-toggle {
-        display:flex; align-items:center; justify-content:space-between; width:100%;
-        padding:4px 2px; margin:0; font-weight:700; font-size:15px; cursor:pointer;
-        background:transparent; color:inherit; border:none;
-    }
-    .catalog-flex .filter-toggle .fa-chevron-down { transition:transform .2s; opacity:.7; }
-    /* Mặc định THU GỌN trên mobile; mở khi bấm nút */
-    .catalog-flex .second-information .filter-container { display:none; margin-top:12px; }
-    .catalog-flex .second-information.filter-open .filter-container { display:block; }
-    .catalog-flex .second-information.filter-open .filter-toggle .fa-chevron-down { transform:rotate(180deg); }
-}
-
-/* Mobile: 2 columns */
-@media (max-width:768px){ 
-    .manga-grid-list { 
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-    }
-    .manga-grid-list .item .title {
-        font-size: 13px;
-    }
-}
-</style>
+    </section>
+</main>
 
 <script>
-// Thu gọn/mở rộng panel filter trên mobile (event delegation)
-document.addEventListener('click', function (e) {
-    var btn = e.target.closest('.filter-toggle');
-    if (!btn) return;
-    var panel = btn.closest('.second-information');
-    if (!panel) return;
-    var open = panel.classList.toggle('filter-open');
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+document.addEventListener('click', function (event) {
+    var button = event.target.closest('.alpha-catalog-description__toggle');
+    if (!button) return;
+    var wrapper = button.closest('.alpha-catalog-description');
+    if (!wrapper) return;
+    var collapsed = wrapper.getAttribute('data-collapsed') !== 'false';
+    wrapper.setAttribute('data-collapsed', collapsed ? 'false' : 'true');
+    button.textContent = collapsed ? 'less' : 'more';
 });
 </script>
 @endsection

@@ -33,6 +33,10 @@ class ArticleController extends Controller
             ->take(self::CHAPTERS_PER_PAGE)
             ->get();
         $latestChapters = $article->chapters()->orderByDesc('number')->take(10)->get();
+        $inlineChapters = $article->chapters()
+            ->orderBy('number')
+            ->take(self::CHAPTERS_PER_PAGE)
+            ->get();
         // Show only the two scheduled chapters that will be published next.
         $upcomingChapters = $article->chapters()
             ->withoutGlobalScope(\App\Scopes\PublishedChapterScope::class)
@@ -46,6 +50,7 @@ class ArticleController extends Controller
         $comments = $article->getNewestCommentsPaginate();
         $displayChapterIds = $latestChapters->pluck('id')
             ->merge($chapters->pluck('id'))
+            ->merge($inlineChapters->pluck('id'))
             ->unique()
             ->values();
 
@@ -96,6 +101,16 @@ class ArticleController extends Controller
         if ($suggestedArticles->isEmpty()) {
             $suggestedArticles = $this->defaultSimilarArticles($article, $firstAuthor, $genreIds, 10);
         }
+        if ($suggestedArticles->isEmpty()) {
+            $suggestedArticles = Article::where('id', '!=', $article->id)
+                ->orderByDesc('view')
+                ->latest('id')
+                ->limit(10)
+                ->get();
+        }
+        if ($suggestedArticles->isEmpty()) {
+            $suggestedArticles = collect([$article->loadMissing(['authors', 'genres', 'slug'])]);
+        }
 
         // Translation requests: user-submitted articles like homepage, when no manual config is set.
         $translationRequests = $this->configuredArticles($article->translation_request_article_ids, $article->id, 10);
@@ -128,6 +143,7 @@ class ArticleController extends Controller
             'interestCount' => $interestCount,
             'wantThisMode' => $wantThisMode,
             'chapters' => $chapters,
+            'inlineChapters' => $inlineChapters,
             'upcomingChapters' => $upcomingChapters,
             'chapterPages' => $chapterPages,
             'latestChapters' => $latestChapters,

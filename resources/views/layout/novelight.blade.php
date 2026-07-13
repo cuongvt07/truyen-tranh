@@ -56,7 +56,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=Roboto:wght@100;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Poppins:wght@600;700;800;900&family=Play:wght@400;700&family=Roboto:wght@100;400;500&display=swap" rel="stylesheet">
 
     @php
         $assetVer = function ($p) { $f = public_path($p); return file_exists($f) ? filemtime($f) : '1.8.0'; };
@@ -68,6 +68,7 @@
     <link rel="stylesheet" href="{{ asset('plugins/flag-icon-css/css/flag-icons.min.css') }}">
     @yield('page_css')
     @stack('styles')
+    <link rel="stylesheet" href="{{ asset('static/core/css/alphanovel.css') }}?ver={{ $assetVer('static/core/css/alphanovel.css') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         /* Ensure lazy images are always visible regardless of JS lazy-load state */
@@ -128,11 +129,30 @@
     </style>
     @include('client.partials.ad-head')
 </head>
-<body>
+<body class="theme-alphanovel">
+<script>
+(function () {
+    try {
+        if (localStorage.getItem('alpha-theme-mode') === 'dark') {
+            document.body.classList.add('alpha-dark');
+        }
+    } catch (e) {}
+})();
+</script>
 @php
     // Dropdown thể loại header: CHỈ thể loại Hot. Chưa tick Hot cái nào -> không liệt kê genre (chỉ còn link "Tất cả").
     $navGenres = \App\Models\Genre::hot()->orderBy('name')->get();
 @endphp
+<div class="alpha-mobile-install">
+    <div class="alpha-mobile-install__brand">
+        <span class="alpha-mobile-install__logo"><i class="fa fa-book-open"></i></span>
+        <span>
+            <strong>{{ setting('site_name') ?: config('app.name') }}</strong>
+            <small>Best Romance Novels</small>
+        </span>
+    </div>
+    <a href="{{ route('catalog.index') }}">Install</a>
+</div>
 <header class="header">
     <div class="container">
         <div class="header__inner">
@@ -145,6 +165,7 @@
                 @else
                     <img src="{{ asset('static/core/images/logo.png') }}" alt="{{ $siteName }}">
                 @endif
+                <span class="alpha-logo-text">{{ $siteName }}</span>
             </a>
             <nav class="header-nav">
                 <ul>
@@ -152,14 +173,25 @@
                         @include('partials.menu-header-item', ['mi' => $mi])
                     @empty
                         {{-- Fallback: nav mặc định khi chưa cấu hình menu --}}
-                        <li><a href="{{ route('home.index') }}" class="header-btn no-link"><i class="fa fa-home"></i> {{ __('messages.nav.home') }}</a></li>
-                        <li class="header-nav__list"><div class="header-btn header-browse tippy-browse"><i class="fa fa-layer-group"></i> {{ __('messages.nav.browse') }} <i class="fa fa-caret-down"></i></div></li>
-                        <li><a href="#" id="open-live-search" class="header-btn no-link open-close" p-target="fullscreen-search"><i class="fa fa-search"></i> {{ __('messages.nav.search') }}</a></li>
-                        <li><a href="{{ route('pages.forum') }}" class="header-btn no-link"><i class="fa fa-comments"></i> {{ __('messages.nav.forum') }}</a></li>
-                        <li><a href="{{ route('pages.faq') }}" class="header-btn no-link"><i class="fa fa-question-circle"></i> {{ __('messages.nav.faq') }}</a></li>
-                        <li><a href="{{ route('home.show_new_update_articles') }}" class="header-btn no-link"><i class="fa fa-bolt"></i> {{ __('messages.nav.new') }}</a></li>
-                        <li><a href="{{ route('home.show_completed_articles') }}" class="header-btn no-link"><i class="fa fa-check-circle"></i> {{ __('messages.nav.completed') }}</a></li>
+                        <li><a href="{{ route('home.index') }}" class="header-btn no-link">Discover</a></li>
+                        <li class="header-nav__list"><div class="header-btn header-browse tippy-browse">Novels <i class="fa fa-caret-down"></i></div></li>
+                        <li><a href="{{ route('users.show') }}" class="header-btn no-link">Library</a></li>
+                        <li><a href="{{ route('pages.pricing') }}" class="header-btn no-link">Gifts</a></li>
+                        <li><a href="{{ route('my-articles.create') }}" class="header-btn no-link">Writer</a></li>
+                        <li><a href="{{ route('pages.forum') }}" class="header-btn no-link">Blog</a></li>
+                        <li><a href="#" id="open-live-search" class="header-btn no-link open-close" p-target="fullscreen-search">Search</a></li>
                     @endforelse
+                </ul>
+            </nav>
+            <nav class="alpha-header-nav">
+                <ul>
+                    <li><a href="{{ route('home.index') }}" class="header-btn no-link">Discover</a></li>
+                    <li class="header-nav__list"><div class="header-btn header-browse tippy-browse">Novels <i class="fa fa-caret-down"></i></div></li>
+                    <li><a href="{{ route('users.show') }}" class="header-btn no-link">Library</a></li>
+                    <li><a href="{{ route('pages.pricing') }}" class="header-btn no-link">Gifts</a></li>
+                    <li><a href="{{ route('my-articles.create') }}" class="header-btn no-link">Writer</a></li>
+                    <li><a href="{{ route('pages.forum') }}" class="header-btn no-link">Blog</a></li>
+                    <li><a href="{{ route('home.search') }}" class="header-btn no-link">Search</a></li>
                 </ul>
             </nav>
             <div class="header-user">
@@ -203,6 +235,7 @@
                         <i class="fa fa-caret-down" style="font-size:11px"></i>
                     </div>
                 @endif
+                <button type="button" class="header-btn alpha-theme-toggle" aria-label="Theme switch" aria-pressed="false"></button>
             </div>
         </div>
     </div>
@@ -417,6 +450,40 @@ window.addEventListener('load', forceLoadImages);
 <script>
     window.CSRF_TOKEN = "{{ csrf_token() }}";
     window.DAILY_REWARD_CLAIMED = 0;
+</script>
+<script>
+(function () {
+    var storageKey = 'alpha-theme-mode';
+
+    function currentMode() {
+        try {
+            return localStorage.getItem(storageKey) === 'dark' ? 'dark' : 'light';
+        } catch (e) {
+            return 'light';
+        }
+    }
+
+    function setMode(mode) {
+        var dark = mode === 'dark';
+        document.body.classList.toggle('alpha-dark', dark);
+        document.querySelectorAll('.alpha-theme-toggle').forEach(function (button) {
+            button.setAttribute('aria-pressed', dark ? 'true' : 'false');
+            button.setAttribute('title', dark ? 'Switch to day mode' : 'Switch to night mode');
+        });
+        try {
+            localStorage.setItem(storageKey, dark ? 'dark' : 'light');
+        } catch (e) {}
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        setMode(currentMode());
+        document.querySelectorAll('.alpha-theme-toggle').forEach(function (button) {
+            button.addEventListener('click', function () {
+                setMode(document.body.classList.contains('alpha-dark') ? 'light' : 'dark');
+            });
+        });
+    });
+})();
 </script>
 <script src="{{ asset('static/core/js/mainee8b.js') }}?ver={{ $assetVer('static/core/js/mainee8b.js') }}"></script>
 <script src="{{ asset('static/core/js/site-effects.js') }}?ver={{ $assetVer('static/core/js/site-effects.js') }}"></script>
