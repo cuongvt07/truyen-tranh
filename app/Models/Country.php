@@ -10,13 +10,13 @@ class Country extends Model
 
     public function getDisplayNameAttribute(): string
     {
-        // Thị trường không phải tiếng Anh: giữ tên bản địa.
-        if (app()->getLocale() !== 'en') {
+        // Chỉ thị trường tiếng Việt dùng tên tiếng Việt (cột name).
+        if (app()->getLocale() === 'vi') {
             return $this->name;
         }
 
-        // Site tiếng Anh: ưu tiên name_en; nếu admin để trống thì fallback nhãn
-        // tiếng Anh có sẵn (theo id) thay vì rơi về tên tiếng Việt.
+        // Các thị trường khác (fr, en, ...) chưa có bản dịch riêng -> dùng name_en
+        // (tiếng Anh); nếu admin để trống thì fallback nhãn tiếng Anh có sẵn theo id.
         if (!empty($this->name_en)) {
             return $this->name_en;
         }
