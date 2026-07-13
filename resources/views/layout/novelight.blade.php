@@ -15,7 +15,7 @@
     <title>{{ $seoFullTitle }}</title>
     <meta name="description" content="{{ \Illuminate\Support\Str::limit(strip_tags($seoDesc), 160) }}">
     <meta name="keywords" content="{{ seo_setting('default_keywords', __('messages.layout.default_keywords')) }}">
-    <meta name="robots" content="@yield('robots', 'index, follow')">
+    <meta name="robots" content="@yield('robots', is_noindex_route() ? 'noindex, nofollow' : 'index, follow')">
     <link rel="canonical" href="{{ $seoCanonical }}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

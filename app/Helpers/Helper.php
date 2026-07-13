@@ -25,6 +25,30 @@ if (!function_exists('is_route')) {
 }
 
 /**
+ * Trang "account" (đăng nhập/đăng ký, hồ sơ user, quản lý truyện, thanh toán, admin...)
+ * -> noindex. Mọi trang công khai còn lại -> index. Dùng cho meta robots ở layout.
+ */
+if (!function_exists('is_noindex_route')) {
+    function is_noindex_route(): bool
+    {
+        return Route::is(
+            // Auth flow
+            'login', 'register', 'logout', 'password.*', 'verification.*', 'auth.google*',
+            // Hồ sơ & tài khoản user (own + các tab profile công khai)
+            'users.*', 'notifications.*',
+            // Quản lý truyện của user
+            'my-articles.*',
+            // Thanh toán / ví / VIP
+            'checkout.*', 'purchase.*', 'client.paypoints', 'vip.*', 'paypal.*', 'sepay.*', 'generate.qr',
+            // Tạo/sửa nội dung cá nhân
+            'teams.create', 'forum.posts.create', 'forum.posts.edit',
+            // Admin (đã chặn bằng auth+role, thêm cho chắc)
+            'admin.*'
+        );
+    }
+}
+
+/**
  * Validate trạng thái bài viết.
  */
 if (!function_exists('validateArticleStatus')) {

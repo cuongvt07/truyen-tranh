@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=yes">
     <meta name="description" content="{{ __('messages.layout.default_meta_description') }}">
     <meta name="keywords" content="{{ __('messages.layout.default_keywords') }}">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="{{ is_noindex_route() ? 'noindex, nofollow' : 'index, follow' }}">
     <meta name="google-site-verification" content="your-google-verification-code"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
     <meta name="theme-color" content="#f8f9fa">
