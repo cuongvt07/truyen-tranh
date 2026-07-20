@@ -1,14 +1,14 @@
 :root {
     --alpha-primary: #4535ff;
     --alpha-primary-dark: #2f24c9;
-    --alpha-ink: #17152f;
-    --alpha-text: #27283d;
+    --alpha-ink: #04002d;
+    --alpha-text: #04002d;
     --alpha-muted: #73748a;
-    --alpha-line: #ececf6;
-    --alpha-soft: #f7f7ff;
+    --alpha-line: #f3f3f3;
+    --alpha-soft: #f9f9ff;
     --alpha-card: #ffffff;
     --alpha-shadow: 0 10px 30px rgba(36, 31, 91, .08);
-    --body-color: #f7f7fb;
+    --body-color: #fafbff;
     --color-site: #ffffff;
     --color-light-site: #ffffff;
     --btn-primary-color: var(--alpha-primary);
@@ -19,13 +19,21 @@
     --text-color: var(--alpha-text);
     --meta-color: var(--alpha-muted);
     --border: var(--alpha-line);
+    --background: #fafbff;
+    --surface: #ffffff;
+    --surface-light: #f9f9ff;
+    --surface-medium: #f1f1ff;
+    --primary-disabled: #f3f3f3;
     --bg: #ffffff;
 }
 
 body.theme-alphanovel {
     background: var(--body-color);
     color: var(--alpha-text);
-    font-family: "Open Sans", "Roboto", Arial, sans-serif;
+    font-family: "Open Sans", "Open Sans Fallback", "Roboto", Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.15;
 }
 
 .theme-alphanovel *:not(.fa):not(.fab):not(.far):not(.fas),
@@ -2989,19 +2997,20 @@ body.theme-alphanovel-chapter {
 
 .theme-alphanovel .alpha-discover-card {
     margin-bottom: 24px;
-    padding: 24px;
-    border: 0;
-    border-radius: 4px;
-    background: #fff;
+    padding: 24px 32px;
+    border: 1px solid var(--primary-disabled, #f3f3f3);
+    border-radius: 8px;
+    background: var(--surface, #fff);
     box-shadow: none;
 }
 
 .theme-alphanovel .alpha-new-realeses {
     margin-bottom: 24px;
-    padding: 24px;
+    padding: 24px 32px;
     overflow: hidden;
-    border-radius: 4px;
-    background: var(--alpha-surface);
+    border: 1px solid var(--primary-disabled, #f3f3f3);
+    border-radius: 8px;
+    background: var(--surface, #fff);
     color: var(--alpha-text);
 }
 
@@ -3070,17 +3079,18 @@ body.theme-alphanovel-chapter {
 .theme-alphanovel .alpha-new-realeses .new-realeses__item .title {
     margin-bottom: 12px;
     color: #fff !important;
-    font-family: var(--alpha-display, "Poppins", sans-serif);
-    font-size: 30px;
-    font-weight: 900;
-    line-height: 1.22;
+    font-family: var(--alpha-font-title);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 32px;
 }
 
 .theme-alphanovel .alpha-new-realeses .new-realeses__item .author {
     margin-bottom: 12px;
     color: rgba(255, 255, 255, .9) !important;
-    font-size: 16px;
-    font-weight: 800;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
 }
 
 .theme-alphanovel .alpha-new-realeses .new-realeses__item .excerpt {
@@ -3182,15 +3192,17 @@ body.theme-alphanovel-chapter {
 .theme-alphanovel .alpha-trending-item {
     min-width: 0;
     display: grid;
-    grid-template-columns: 56px minmax(0, 1fr);
-    gap: 12px;
+    grid-template-columns: 105px minmax(0, 1fr);
+    gap: 16px;
+    min-height: 140px;
     color: var(--alpha-ink);
     text-decoration: none;
 }
 
 .theme-alphanovel .alpha-trending-item__cover {
     display: block;
-    aspect-ratio: 2 / 3;
+    width: 105px;
+    height: 140px;
     overflow: hidden;
     border-radius: 4px;
     background: #f3f2ff;
@@ -3205,7 +3217,9 @@ body.theme-alphanovel-chapter {
 
 .theme-alphanovel .alpha-trending-item__body {
     min-width: 0;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .theme-alphanovel .alpha-trending-item strong {
@@ -3224,20 +3238,22 @@ body.theme-alphanovel-chapter {
 
 .theme-alphanovel .alpha-trending-item small {
     display: inline-flex;
-    margin-top: 8px;
-    padding: 3px 9px;
-    border-radius: 999px;
+    margin-top: 12px;
+    padding: 4px 16px;
+    border-radius: 16px;
     background: #f1f0ff;
     color: var(--alpha-muted);
-    font-size: 10px;
-    font-weight: 800;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
 }
 
 .theme-alphanovel .alpha-trending-item__stats {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 10px;
+    margin-top: auto;
+    padding-top: 14px;
     color: var(--alpha-ink);
     font-size: 11px;
     font-weight: 800;
@@ -3273,6 +3289,17 @@ body.theme-alphanovel-chapter {
 
     .theme-alphanovel .alpha-trending-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .theme-alphanovel .alpha-trending-item {
+        grid-template-columns: 78px minmax(0, 1fr);
+        gap: 12px;
+        min-height: 112px;
+    }
+
+    .theme-alphanovel .alpha-trending-item__cover {
+        width: 78px;
+        height: 112px;
     }
 }
 
@@ -3327,7 +3354,8 @@ body.theme-alphanovel-chapter {
     }
 
     .theme-alphanovel .alpha-new-realeses .new-realeses__item .title {
-        font-size: 21px;
+        font-size: 20px;
+        line-height: 28px;
     }
 
     .theme-alphanovel .alpha-new-realeses .new-realeses__item .author {
@@ -3351,6 +3379,27 @@ body.theme-alphanovel-chapter {
     .theme-alphanovel .alpha-discover-rail {
         grid-auto-columns: 112px;
         gap: 16px;
+    }
+
+    .theme-alphanovel .alpha-trending-item {
+        grid-template-columns: 68px minmax(0, 1fr);
+        gap: 10px;
+        min-height: 102px;
+    }
+
+    .theme-alphanovel .alpha-trending-item__cover {
+        width: 68px;
+        height: 102px;
+    }
+
+    .theme-alphanovel .alpha-trending-item small {
+        margin-top: 8px;
+        padding: 3px 10px;
+    }
+
+    .theme-alphanovel .alpha-trending-item__stats {
+        gap: 7px;
+        padding-top: 9px;
     }
 
     .theme-alphanovel .alpha-trending-grid {
@@ -5729,6 +5778,7 @@ body.theme-alphanovel-chapter {
 .theme-alphanovel .alpha-account-action,
 .theme-alphanovel .alpha-gift-button,
 .theme-alphanovel .alpha-store-card__bottom a {
+    appearance: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -5742,6 +5792,7 @@ body.theme-alphanovel-chapter {
     font-size: 14px;
     font-weight: 800;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .theme-alphanovel .alpha-account-action--primary,
@@ -8343,17 +8394,21 @@ body.theme-alphanovel.alpha-dark {
     --alpha-ink: #f8f8ff;
     --alpha-text: #d7d8ec;
     --alpha-muted: #a5a7c4;
-    --alpha-line: #272947;
-    --alpha-soft: #191b31;
-    --alpha-card: #14162a;
+    --alpha-line: #363636;
+    --alpha-soft: #2b2b2c;
+    --alpha-card: #202020;
+    --alpha-bg: #121212;
+    --alpha-surface: #202020;
+    --alpha-surface-soft: #2b2b2c;
+    --surface-medium: #464647;
     --alpha-shadow: none;
-    --body-color: #0c0e1b;
-    --color-site: #14162a;
-    --color-light-site: #191b31;
+    --body-color: #121212;
+    --color-site: #202020;
+    --color-light-site: #2b2b2c;
     --text-color: var(--alpha-text);
     --meta-color: var(--alpha-muted);
     --border: var(--alpha-line);
-    --bg: #101223;
+    --bg: #202020;
     background: var(--body-color);
     color: var(--alpha-text);
 }
@@ -8838,9 +8893,9 @@ body.theme-alphanovel-chapter.light-dark-theme .package-option {
 body.theme-alphanovel {
     --alpha-primary: #4535ff;
     --alpha-primary-dark: #2f24c9;
-    --alpha-bg: #f9f9ff;
-    --alpha-ink: #15142c;
-    --alpha-text: #27283d;
+    --alpha-bg: #fafbff;
+    --alpha-ink: #04002d;
+    --alpha-text: #04002d;
     --alpha-muted: #73748a;
     --alpha-line: #e7e7f5;
     --alpha-soft: #f1f1ff;
@@ -8860,15 +8915,21 @@ body.theme-alphanovel {
 }
 
 body.theme-alphanovel.alpha-dark {
-    --alpha-bg: #0f1018;
+    --alpha-bg: #121212;
     --alpha-ink: #f7f7ff;
     --alpha-text: #e4e5f2;
     --alpha-muted: #a9abc0;
-    --alpha-line: #303143;
-    --alpha-soft: #242536;
-    --alpha-card: #191a27;
-    --alpha-surface: #191a27;
-    --alpha-surface-soft: #222334;
+    --alpha-line: #363636;
+    --alpha-soft: #2b2b2c;
+    --alpha-card: #202020;
+    --alpha-surface: #202020;
+    --alpha-surface-soft: #2b2b2c;
+    --background: #121212;
+    --surface: #202020;
+    --surface-light: #2b2b2c;
+    --surface-medium: #464647;
+    --surface-dark: #2b2b2c;
+    --primary-disabled: #363636;
     --alpha-shadow: none;
     --body-color: var(--alpha-bg);
     --color-site: var(--alpha-surface);
@@ -8894,6 +8955,7 @@ body.theme-alphanovel.alpha-dark {
 .theme-alphanovel .header,
 .theme-alphanovel .header-sublist,
 .theme-alphanovel .alpha-discover-card,
+.theme-alphanovel .alpha-new-realeses,
 .theme-alphanovel .alpha-catalog-box,
 .theme-alphanovel .alpha-catalog-main,
 .theme-alphanovel .alpha-catalog-intro,
@@ -9104,11 +9166,14 @@ body.theme-alphanovel.alpha-dark {
 /* Final UI normalization: font and contrast for legacy frontend classes. */
 body.theme-alphanovel,
 body.theme-alphanovel-chapter {
-    --alpha-font-body: "Open Sans", "Roboto", Arial, sans-serif;
-    --alpha-font-title: "Poppins", "Open Sans", Arial, sans-serif;
+    --alpha-font-body: "Open Sans", "Open Sans Fallback", "Roboto", Arial, sans-serif;
+    --alpha-font-title: "Poppins", "Poppins Fallback", "Roboto", Arial, sans-serif;
     --alpha-icon-on-soft: var(--alpha-primary);
     --alpha-button-soft-bg: var(--alpha-surface-soft, #f1f1ff);
     font-family: var(--alpha-font-body) !important;
+    font-size: 16px !important;
+    font-weight: 500;
+    line-height: 1.15;
 }
 
 .theme-alphanovel :where(*:not(.fa):not(.fas):not(.far):not(.fab)),
@@ -9562,6 +9627,31 @@ body.theme-alphanovel.alpha-dark .alpha-trending-item__stats,
 body.theme-alphanovel.alpha-dark .alpha-discover-book small,
 body.theme-alphanovel.alpha-dark .alpha-suggestion-card small {
     color: #a9abc0 !important;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-trending-item small,
+body.theme-alphanovel.alpha-dark .DiscoverCard_item__genre__tafm5,
+body.theme-alphanovel.alpha-dark .alpha-discover-book small,
+body.theme-alphanovel.alpha-dark .alpha-novel-card__body small span,
+body.theme-alphanovel.alpha-dark .alpha-search-card__genre,
+body.theme-alphanovel.alpha-dark .alpha-genre-pill,
+body.theme-alphanovel.alpha-dark .alpha-book-detail-tags a,
+body.theme-alphanovel.alpha-dark .alpha-search-tags a,
+body.theme-alphanovel.alpha-dark .alpha-search-tags span,
+body.theme-alphanovel.alpha-dark .tags a {
+    background: var(--surface-medium, #464647) !important;
+    border-color: var(--surface-medium, #464647) !important;
+    color: var(--alpha-text, #e2e2e2) !important;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-trending-item small,
+body.theme-alphanovel.alpha-dark .DiscoverCard_item__genre__tafm5 {
+    padding: 4px 16px !important;
+    border-radius: 16px !important;
+    white-space: nowrap;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 20px !important;
 }
 
 body.theme-alphanovel.alpha-dark .alpha-catalog-description__toggle,
@@ -10312,8 +10402,243 @@ body.theme-alphanovel.alpha-dark .team-role-badge {
 body.theme-alphanovel .rules-page .page-title,
 body.theme-alphanovel .rules-page h1 {
     font-family: var(--alpha-font-title) !important;
-    font-weight: 900 !important;
+    font-weight: 600 !important;
     letter-spacing: 0 !important;
+}
+
+body.theme-alphanovel .LayoutTabs_wrapper__ZY5zg {
+    position: fixed;
+    z-index: 1039;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: none;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    min-height: 62px;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--primary-disabled, #f3f3f3);
+    background: var(--surface, #fff);
+    box-shadow: 0 -2px 12px rgba(4, 0, 45, .08);
+}
+
+body.theme-alphanovel .LayoutTabs_item__jAMjf {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
+    color: var(--surface-on-3, #a09eaf);
+    font-family: var(--alpha-font-title);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    text-align: center;
+    text-decoration: none;
+    transition: color .2s ease-in-out;
+}
+
+body.theme-alphanovel .LayoutTabs_item__jAMjf .AlphaIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: currentColor;
+    font-size: 21px;
+    line-height: 1;
+}
+
+body.theme-alphanovel .LayoutTabs_item__jAMjf .AlphaIcon i {
+    color: currentColor;
+}
+
+body.theme-alphanovel .LayoutTabs_item__active__7FHV6,
+body.theme-alphanovel .LayoutTabs_item__jAMjf:hover {
+    color: var(--primary-1, var(--alpha-primary));
+}
+
+body.theme-alphanovel.alpha-dark .LayoutTabs_wrapper__ZY5zg {
+    border-top-color: var(--alpha-line);
+    background: var(--alpha-surface);
+    box-shadow: 0 -2px 14px rgba(0, 0, 0, .32);
+}
+
+body.theme-alphanovel.alpha-dark .LayoutTabs_item__jAMjf {
+    color: var(--alpha-muted);
+}
+
+body.theme-alphanovel.alpha-dark .LayoutTabs_item__active__7FHV6,
+body.theme-alphanovel.alpha-dark .LayoutTabs_item__jAMjf:hover {
+    color: var(--alpha-primary);
+}
+
+@media (max-width: 991.98px) {
+    body.theme-alphanovel .LayoutTabs_wrapper__ZY5zg {
+        display: flex;
+    }
+
+    body.theme-alphanovel .page {
+        padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+}
+
+/* AlphaNovel live parity: shared color, font and home-card sizing tokens. */
+body.theme-alphanovel:not(.alpha-dark) {
+    --alpha-primary: #4535ff;
+    --alpha-primary-dark: #2f24c9;
+    --alpha-bg: #fafbff;
+    --alpha-ink: #04002d;
+    --alpha-text: #04002d;
+    --alpha-line: #f3f3f3;
+    --alpha-surface: #ffffff;
+    --alpha-surface-soft: #f9f9ff;
+    --body-color: #fafbff;
+    --text-color: #04002d;
+    --bg: #ffffff;
+    --background: #fafbff;
+    --surface: #ffffff;
+    --surface-light: #f9f9ff;
+    --surface-medium: #f1f1ff;
+    --surface-dark: #f1f1ff;
+    --surface-on-1: #04002d;
+    --surface-on-2: #686681;
+    --surface-on-3: #a09eaf;
+    --surface-on-4: #e6e6ea;
+    --primary-disabled: #f3f3f3;
+    background: #fafbff !important;
+    color: #04002d !important;
+    font-family: var(--alpha-font-body) !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    line-height: 1.15 !important;
+}
+
+body.theme-alphanovel:not(.alpha-dark) .page,
+body.theme-alphanovel:not(.alpha-dark) .content,
+body.theme-alphanovel:not(.alpha-dark) .alpha-home,
+body.theme-alphanovel:not(.alpha-dark) .alpha-discover,
+body.theme-alphanovel:not(.alpha-dark) .alpha-catalog-page,
+body.theme-alphanovel:not(.alpha-dark) .alpha-auth-page {
+    background: #fafbff !important;
+}
+
+body.theme-alphanovel:not(.alpha-dark) .alpha-discover-card,
+body.theme-alphanovel:not(.alpha-dark) .alpha-new-realeses,
+body.theme-alphanovel:not(.alpha-dark) .alpha-catalog-box,
+body.theme-alphanovel:not(.alpha-dark) .alpha-catalog-main,
+body.theme-alphanovel:not(.alpha-dark) .alpha-catalog-intro,
+body.theme-alphanovel:not(.alpha-dark) .alpha-novel-card,
+body.theme-alphanovel:not(.alpha-dark) .alpha-list-main,
+body.theme-alphanovel:not(.alpha-dark) .alpha-search-panel,
+body.theme-alphanovel:not(.alpha-dark) .alpha-search-card,
+body.theme-alphanovel:not(.alpha-dark) .alpha-book-detail-card,
+body.theme-alphanovel:not(.alpha-dark) .alpha-story-row,
+body.theme-alphanovel:not(.alpha-dark) .alpha-panel,
+body.theme-alphanovel:not(.alpha-dark) .block,
+body.theme-alphanovel:not(.alpha-dark) .section,
+body.theme-alphanovel:not(.alpha-dark) .main.block,
+body.theme-alphanovel:not(.alpha-dark) .second-information,
+body.theme-alphanovel:not(.alpha-dark) .comment-block,
+body.theme-alphanovel:not(.alpha-dark) .collection__inner,
+body.theme-alphanovel:not(.alpha-dark) .news-post {
+    background: #ffffff !important;
+    border-color: #f3f3f3 !important;
+}
+
+body.theme-alphanovel:not(.alpha-dark) .header {
+    height: 80px !important;
+    min-height: 80px !important;
+    background: #ffffff !important;
+    border-bottom-color: #f3f3f3 !important;
+    box-shadow: none !important;
+    color: #04002d !important;
+}
+
+body.theme-alphanovel:not(.alpha-dark) .header .container,
+body.theme-alphanovel:not(.alpha-dark) .header__inner {
+    height: 80px !important;
+}
+
+body.theme-alphanovel:not(.alpha-dark) .alpha-header-nav ul {
+    gap: 32px !important;
+}
+
+body.theme-alphanovel:not(.alpha-dark) .alpha-header-nav a,
+body.theme-alphanovel:not(.alpha-dark) .alpha-header-nav .header-btn,
+body.theme-alphanovel:not(.alpha-dark) .header-user .btn,
+body.theme-alphanovel:not(.alpha-dark) .header-user .header-btn,
+body.theme-alphanovel:not(.alpha-dark) .header-lang,
+body.theme-alphanovel:not(.alpha-dark) .alpha-theme-toggle {
+    font-family: var(--alpha-font-body) !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    line-height: 24px !important;
+}
+
+body.theme-alphanovel:not(.alpha-dark) .alpha-header-nav a,
+body.theme-alphanovel:not(.alpha-dark) .alpha-header-nav .header-btn {
+    color: #04002d !important;
+}
+
+body.theme-alphanovel:not(.alpha-dark) .alpha-discover-card__head h2 {
+    font-family: var(--alpha-font-title) !important;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    line-height: 32px !important;
+}
+
+body.theme-alphanovel:not(.alpha-dark) .alpha-discover-book strong {
+    margin-top: 8px !important;
+    font-family: var(--alpha-font-title) !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 20px !important;
+}
+
+body.theme-alphanovel:not(.alpha-dark) .alpha-trending-item strong {
+    font-family: var(--alpha-font-title) !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    line-height: 28px !important;
+}
+
+body.theme-alphanovel:not(.alpha-dark) .alpha-trending-item small {
+    font-family: var(--alpha-font-title) !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 20px !important;
+}
+
+body.theme-alphanovel:not(.alpha-dark) .alpha-trending-item__stats {
+    font-family: var(--alpha-font-title) !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 22px !important;
+}
+
+@media (max-width: 920px) {
+    body.theme-alphanovel:not(.alpha-dark) .header {
+        height: 60px !important;
+        min-height: 60px !important;
+    }
+
+    body.theme-alphanovel:not(.alpha-dark) .header .container,
+    body.theme-alphanovel:not(.alpha-dark) .header__inner {
+        height: 60px !important;
+    }
+
+    body.theme-alphanovel:not(.alpha-dark) .page {
+        padding-top: 76px !important;
+    }
+
+    body.theme-alphanovel:not(.alpha-dark) .alpha-discover-card__head h2 {
+        font-size: 16px !important;
+        line-height: 24px !important;
+    }
 }
 
 body.theme-alphanovel .alpha-footer-secondary,
@@ -10408,6 +10733,675 @@ body.theme-alphanovel .alpha-footer-logo img {
     object-fit: contain !important;
 }
 
+body.theme-alphanovel .alpha-daily-gift {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 10010;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 176px;
+    min-height: 64px;
+    padding: 10px 16px 10px 10px;
+    border: 1px solid rgba(69, 53, 255, .28);
+    border-radius: 18px;
+    background: var(--alpha-surface, #ffffff);
+    color: var(--alpha-ink, #04002d);
+    box-shadow: 0 18px 48px rgba(31, 25, 92, .18);
+    cursor: pointer;
+    transition: transform .2s ease, opacity .2s ease, box-shadow .2s ease;
+}
+
+body.theme-alphanovel .alpha-daily-gift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 22px 56px rgba(31, 25, 92, .24);
+}
+
+body.theme-alphanovel .alpha-daily-gift.is-hidden {
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(16px) scale(.92);
+}
+
+body.theme-alphanovel .alpha-daily-gift.is-shaking .alpha-daily-gift__icon {
+    animation: alphaDailyGiftShake 1.35s ease-in-out infinite;
+}
+
+body.theme-alphanovel .alpha-daily-gift__icon {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #4535ff 0%, #8278ff 100%);
+    color: #ffffff;
+    font-size: 22px;
+    box-shadow: 0 10px 22px rgba(69, 53, 255, .28);
+}
+
+body.theme-alphanovel .alpha-daily-gift__copy {
+    display: grid;
+    gap: 2px;
+    text-align: left;
+}
+
+body.theme-alphanovel .alpha-daily-gift__copy strong {
+    color: var(--alpha-ink, #04002d);
+    font-family: var(--alpha-font-title);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+}
+
+body.theme-alphanovel .alpha-daily-gift__copy small {
+    color: var(--alpha-primary);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 18px;
+}
+
+@keyframes alphaDailyGiftShake {
+    0%, 72%, 100% { transform: rotate(0deg) scale(1); }
+    8% { transform: rotate(-9deg) scale(1.04); }
+    16% { transform: rotate(8deg) scale(1.04); }
+    24% { transform: rotate(-6deg) scale(1.03); }
+    32% { transform: rotate(5deg) scale(1.03); }
+    40% { transform: rotate(0deg) scale(1); }
+}
+
+body.theme-alphanovel .alpha-daily-checkin {
+    position: fixed;
+    inset: 0;
+    z-index: 10020;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+}
+
+body.theme-alphanovel .alpha-daily-checkin.is-open {
+    display: flex;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__shade {
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 8, 18, .64);
+    backdrop-filter: blur(8px);
+}
+
+body.theme-alphanovel .alpha-daily-checkin__panel {
+    position: relative;
+    width: min(100%, 560px);
+    max-height: calc(100vh - 44px);
+    overflow: auto;
+    padding: 24px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 8px;
+    background: var(--alpha-surface);
+    color: var(--alpha-text);
+    box-shadow: 0 28px 90px rgba(0, 0, 0, .3);
+}
+
+body.theme-alphanovel .alpha-daily-checkin__close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--alpha-line);
+    border-radius: 50%;
+    background: var(--alpha-surface-soft);
+    color: var(--alpha-primary);
+    cursor: pointer;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__head {
+    padding-right: 42px;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__badge {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 12px;
+    border-radius: 16px;
+    background: var(--alpha-surface-soft, #f9f9ff);
+    color: var(--alpha-primary);
+    font-size: 25px;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__head small {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--alpha-primary);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__head h2 {
+    margin: 0;
+    color: var(--alpha-ink);
+    font-family: var(--alpha-font-title);
+    font-size: 28px;
+    line-height: 1.16;
+    font-weight: 900;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__head p {
+    margin: 10px 0 0;
+    color: var(--alpha-muted);
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 18px 0 16px;
+    padding: 13px 14px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 8px;
+    background: var(--alpha-surface-soft);
+}
+
+body.theme-alphanovel .alpha-daily-checkin__summary span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--alpha-muted);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__summary strong {
+    color: var(--alpha-ink);
+    font-family: var(--alpha-font-title);
+    font-size: 18px;
+    font-weight: 900;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__week,
+body.theme-alphanovel .alpha-daily-checkin__grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 7px;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__week {
+    margin-bottom: 7px;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__week span {
+    color: var(--alpha-muted);
+    font-size: 11px;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+body.theme-alphanovel .alpha-daily-day {
+    position: relative;
+    min-height: 58px;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 3px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 8px;
+    background: var(--alpha-surface);
+    color: var(--alpha-text);
+}
+
+body.theme-alphanovel .alpha-daily-day--empty {
+    visibility: hidden;
+}
+
+body.theme-alphanovel .alpha-daily-day b {
+    color: var(--alpha-ink);
+    font-size: 15px;
+    font-weight: 900;
+}
+
+body.theme-alphanovel .alpha-daily-day small {
+    color: var(--alpha-muted);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+body.theme-alphanovel .alpha-daily-day.is-special {
+    border-color: rgba(246, 197, 29, .62);
+    background: #fff8db;
+}
+
+body.theme-alphanovel .alpha-daily-day.is-today {
+    border-color: var(--alpha-primary);
+    box-shadow: 0 0 0 2px rgba(69, 53, 255, .14);
+}
+
+body.theme-alphanovel .alpha-daily-day.is-claimed {
+    border-color: rgba(22, 163, 74, .5);
+    background: #eaf9ee;
+}
+
+body.theme-alphanovel .alpha-daily-day.is-future {
+    opacity: .72;
+}
+
+body.theme-alphanovel .alpha-daily-day .fa-check {
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    color: #16a34a;
+    font-size: 11px;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__actions .alpha-button {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 18px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 999px;
+    background: var(--alpha-surface-soft);
+    color: var(--alpha-primary);
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__actions .alpha-button--primary {
+    border-color: var(--alpha-primary);
+    background: var(--alpha-primary);
+    color: #fff;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__actions .alpha-button:disabled {
+    cursor: default;
+    opacity: .68;
+}
+
+body.theme-alphanovel .alpha-daily-checkin__message {
+    min-height: 20px;
+    margin-top: 12px;
+    color: var(--alpha-primary);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-daily-checkin__panel,
+body.theme-alphanovel.alpha-dark .alpha-daily-day {
+    background: var(--alpha-surface);
+    border-color: var(--alpha-line);
+}
+
+body.theme-alphanovel.alpha-dark .alpha-daily-checkin__summary,
+body.theme-alphanovel.alpha-dark .alpha-daily-checkin__close,
+body.theme-alphanovel.alpha-dark .alpha-daily-checkin__actions .alpha-button {
+    background: var(--alpha-surface-soft);
+    border-color: var(--alpha-line);
+}
+
+body.theme-alphanovel.alpha-dark .alpha-daily-day.is-special {
+    background: rgba(246, 197, 29, .13);
+    border-color: rgba(246, 197, 29, .4);
+}
+
+body.theme-alphanovel.alpha-dark .alpha-daily-day.is-claimed {
+    background: rgba(22, 163, 74, .14);
+    border-color: rgba(22, 163, 74, .44);
+}
+
+body.theme-alphanovel .alpha-daily-toast {
+    position: fixed;
+    inset: 0;
+    z-index: 10030;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+body.theme-alphanovel .alpha-daily-toast.is-open {
+    display: flex;
+}
+
+body.theme-alphanovel .alpha-daily-toast__shade {
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 8, 18, .58);
+    backdrop-filter: blur(6px);
+}
+
+body.theme-alphanovel .alpha-daily-toast__card {
+    position: relative;
+    width: min(100%, 330px);
+    padding: 34px 18px 16px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 18px;
+    background: var(--alpha-surface, #ffffff);
+    color: var(--alpha-text);
+    text-align: center;
+    box-shadow: 0 26px 70px rgba(0, 0, 0, .28);
+}
+
+body.theme-alphanovel .alpha-daily-toast__icon {
+    width: 72px;
+    height: 72px;
+    display: grid;
+    place-items: center;
+    margin: -66px auto 12px;
+    border: 6px solid var(--alpha-surface, #ffffff);
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff6bc 0%, #f6c51d 100%);
+    color: #4535ff;
+    font-size: 34px;
+    box-shadow: 0 16px 28px rgba(246, 197, 29, .32);
+}
+
+body.theme-alphanovel .alpha-daily-toast__card small {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--alpha-muted);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 16px;
+}
+
+body.theme-alphanovel .alpha-daily-toast__card h3 {
+    margin: 0 auto 12px;
+    max-width: 260px;
+    color: var(--alpha-ink);
+    font-family: var(--alpha-font-title);
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 24px;
+}
+
+body.theme-alphanovel .alpha-daily-toast__amount {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: var(--alpha-primary);
+    font-family: var(--alpha-font-title);
+    font-size: 26px;
+    font-weight: 900;
+    line-height: 32px;
+}
+
+body.theme-alphanovel .alpha-daily-toast__amount .fa-coins {
+    color: #f6c51d;
+    font-size: 19px;
+}
+
+body.theme-alphanovel .alpha-daily-toast__card p {
+    margin: 0 0 16px;
+    color: var(--alpha-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+}
+
+body.theme-alphanovel .alpha-daily-toast__card .alpha-button {
+    width: 100%;
+    min-height: 44px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--alpha-primary);
+    color: #ffffff;
+    font-family: var(--alpha-font-title);
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+body.theme-alphanovel .alpha-daily-gifts-card {
+    display: grid;
+    grid-template-columns: 170px minmax(0, 1fr) auto;
+    gap: 24px;
+    align-items: center;
+    padding: 24px;
+    border: 1px solid var(--primary-disabled, #f3f3f3);
+    border-radius: 8px;
+    background: var(--surface, #ffffff);
+}
+
+body.theme-alphanovel .alpha-daily-gifts-card__visual {
+    position: relative;
+    min-height: 150px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4535ff 0%, #8278ff 100%);
+}
+
+body.theme-alphanovel .alpha-daily-gifts-card__visual img {
+    width: 112px;
+    height: 112px;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 24px rgba(0, 0, 0, .24));
+}
+
+body.theme-alphanovel .alpha-daily-gifts-card__visual span {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .92);
+    color: var(--alpha-primary);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+body.theme-alphanovel .alpha-daily-gifts-card__copy small {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--alpha-primary);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    line-height: 18px;
+    text-transform: uppercase;
+}
+
+body.theme-alphanovel .alpha-daily-gifts-card__copy h2 {
+    margin: 0 0 8px;
+    color: var(--alpha-ink);
+    font-family: var(--alpha-font-title);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+}
+
+body.theme-alphanovel .alpha-daily-gifts-card__copy p {
+    margin: 0 0 16px;
+    color: var(--alpha-muted);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 22px;
+}
+
+body.theme-alphanovel .alpha-daily-gifts-card__calendar {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+}
+
+body.theme-alphanovel .alpha-daily-gifts-card__calendar span {
+    min-height: 56px;
+    display: grid;
+    place-items: center;
+    gap: 2px;
+    padding: 7px 4px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 8px;
+    background: var(--alpha-surface-soft, #f9f9ff);
+}
+
+body.theme-alphanovel .alpha-daily-gifts-card__calendar span.is-today {
+    border-color: var(--alpha-primary);
+    background: rgba(69, 53, 255, .08);
+}
+
+body.theme-alphanovel .alpha-daily-gifts-card__calendar b {
+    color: var(--alpha-ink);
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 14px;
+}
+
+body.theme-alphanovel .alpha-daily-gifts-card__calendar small {
+    margin: 0;
+    color: var(--alpha-primary);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 14px;
+    text-transform: none;
+}
+
+body.theme-alphanovel .alpha-daily-gifts-card__action {
+    display: flex;
+    justify-content: flex-end;
+}
+
+body.theme-alphanovel .alpha-gift-button--disabled {
+    pointer-events: none;
+    border-color: rgba(22, 163, 74, .24) !important;
+    background: #eaf9ee !important;
+    color: #15803d !important;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-daily-gift,
+body.theme-alphanovel.alpha-dark .alpha-daily-toast__card,
+body.theme-alphanovel.alpha-dark .alpha-daily-gifts-card {
+    background: #202020;
+    border-color: #363636;
+    color: var(--alpha-text);
+}
+
+body.theme-alphanovel.alpha-dark .alpha-daily-gift__copy strong,
+body.theme-alphanovel.alpha-dark .alpha-daily-toast__card h3,
+body.theme-alphanovel.alpha-dark .alpha-daily-gifts-card__copy h2,
+body.theme-alphanovel.alpha-dark .alpha-daily-gifts-card__calendar b {
+    color: #f7f7ff;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-daily-checkin__badge,
+body.theme-alphanovel.alpha-dark .alpha-daily-gifts-card__calendar span {
+    background: #2b2b2c;
+    border-color: #363636;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-daily-toast__icon {
+    border-color: #202020;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-daily-gifts-card__calendar span.is-today {
+    background: rgba(122, 111, 255, .16);
+    border-color: var(--alpha-primary);
+}
+
+body.theme-alphanovel.alpha-dark .alpha-gift-button--disabled {
+    background: rgba(22, 163, 74, .18) !important;
+    border-color: rgba(22, 163, 74, .32) !important;
+    color: #7ee3a2 !important;
+}
+
+body.theme-alphanovel.alpha-dark .header-user {
+    gap: 16px !important;
+}
+
+body.theme-alphanovel.alpha-dark .header-user .btn,
+body.theme-alphanovel.alpha-dark .header-user .register-btn,
+body.theme-alphanovel.alpha-dark .header-user .login-btn {
+    min-width: 150px !important;
+    min-height: 48px !important;
+    padding: 11px 24px !important;
+    border: 1px solid var(--alpha-primary) !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border-color: var(--alpha-primary) !important;
+    color: var(--alpha-primary) !important;
+    box-shadow: none !important;
+    font-family: var(--alpha-font-title) !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    line-height: 24px !important;
+}
+
+body.theme-alphanovel.alpha-dark .header-user .btn:hover,
+body.theme-alphanovel.alpha-dark .header-user .register-btn:hover,
+body.theme-alphanovel.alpha-dark .header-user .login-btn:hover {
+    background: rgba(122, 111, 255, .12) !important;
+}
+
+body.theme-alphanovel.alpha-dark .header-user .header-lang,
+body.theme-alphanovel.alpha-dark .header-user .alpha-theme-toggle,
+body.theme-alphanovel.alpha-dark .alpha-theme-toggle {
+    border: 0 !important;
+    background: var(--alpha-surface-soft, #2b2b2c) !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+body.theme-alphanovel.alpha-dark .header-user .header-lang {
+    min-width: 68px !important;
+    height: 40px !important;
+    border-radius: 24px !important;
+    gap: 8px !important;
+    font-family: var(--alpha-font-title) !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 24px !important;
+}
+
+body.theme-alphanovel.alpha-dark .header-user .header-lang::before {
+    color: #ffffff !important;
+}
+
+body.theme-alphanovel.alpha-dark .header-user .header-lang i {
+    color: #ffffff !important;
+}
+
+body.theme-alphanovel.alpha-dark .header-user .alpha-theme-toggle,
+body.theme-alphanovel.alpha-dark .alpha-theme-toggle {
+    width: 40px !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-theme-toggle::before {
+    background: transparent !important;
+    color: #ffffff !important;
+}
+
 @media (max-width: 1040px) {
     body.theme-alphanovel .alpha-footer-shell {
         grid-template-columns: 1fr 1fr;
@@ -10449,6 +11443,79 @@ body.theme-alphanovel .alpha-footer-logo img {
     body.theme-alphanovel .alpha-footer-logo img {
         max-width: 160px !important;
         height: 42px !important;
+    }
+
+    body.theme-alphanovel .alpha-daily-checkin {
+        padding: 12px;
+    }
+
+    body.theme-alphanovel .alpha-daily-checkin__panel {
+        padding: 18px;
+    }
+
+    body.theme-alphanovel .alpha-daily-checkin__head h2 {
+        font-size: 23px;
+    }
+
+    body.theme-alphanovel .alpha-daily-day {
+        min-height: 50px;
+        border-radius: 7px;
+    }
+
+    body.theme-alphanovel .alpha-daily-checkin__actions .alpha-button {
+        flex: 1 1 150px;
+    }
+
+    body.theme-alphanovel .alpha-daily-gift {
+        right: 12px;
+        bottom: calc(74px + env(safe-area-inset-bottom));
+        min-width: 58px;
+        min-height: 58px;
+        padding: 8px;
+        border-radius: 18px;
+    }
+
+    body.theme-alphanovel .alpha-daily-gift__icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        font-size: 20px;
+    }
+
+    body.theme-alphanovel .alpha-daily-gift__copy {
+        display: none;
+    }
+
+    body.theme-alphanovel .alpha-daily-toast__card {
+        width: min(100%, 310px);
+        padding: 32px 14px 14px;
+    }
+
+    body.theme-alphanovel .alpha-daily-gifts-card {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    body.theme-alphanovel .alpha-daily-gifts-card__visual {
+        min-height: 132px;
+    }
+
+    body.theme-alphanovel .alpha-daily-gifts-card__copy h2 {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    body.theme-alphanovel .alpha-daily-gifts-card__calendar {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    body.theme-alphanovel .alpha-daily-gifts-card__action {
+        justify-content: stretch;
+    }
+
+    body.theme-alphanovel .alpha-daily-gifts-card__action .alpha-gift-button {
+        width: 100%;
     }
 
     body.theme-alphanovel .alpha-footer-nav {
