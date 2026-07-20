@@ -21,7 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if ($this->app->environment('production')) {
+        // Force https only when the canonical URL is https (behind TLS/Cloudflare).
+        // IP-only / plain-http deployments (no domain yet) keep http so assets resolve.
+        if ($this->app->environment('production')
+            && str_starts_with((string) config('app.url'), 'https://')) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
 
