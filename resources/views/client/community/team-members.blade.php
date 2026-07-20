@@ -100,7 +100,7 @@
                 {{ __('messages.community.member_coupon_note') }}
             </div>
 
-            <form method="POST" action="{{ route('teams.members.request', $team->id) }}" class="team-form" style="margin-top:18px">
+            <form method="POST" action="{{ route_path('teams.members.request', $team->id) }}" class="team-form" style="margin-top:18px">
                 @csrf
                 <div class="frow">
                     <label>{{ __('messages.community.request_member_by_username') }}</label>

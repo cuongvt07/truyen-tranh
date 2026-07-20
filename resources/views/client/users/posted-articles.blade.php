@@ -13,7 +13,7 @@
     <div class="block"><div class="user-list-grid">
         @foreach($articles as $article)
             <div class="item">
-                <a href="{{ route('articles.show', $article) }}" class="item-link">
+                <a href="{{ route_path('articles.show', $article) }}" class="item-link">
                     <div class="poster image image-cover lazy-load-bg">
                         <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                     </div>

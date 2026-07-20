@@ -3,24 +3,27 @@
 @section('template_title', $pageTitle)
 
 @section('content')
-<div class="container">
-    <header class="header-manga" style="margin-bottom:14px">
-        <div class="container"><h1>{!! $pageIcon !!} {{ $pageTitle }}</h1></div>
-    </header>
+<div class="alpha-static-page">
+    <section class="alpha-static-hero">
+        <div class="container">
+            <small>Information center</small>
+            <h1>{!! $pageIcon !!} {{ $pageTitle }}</h1>
+            <p>Read the latest site information, policies, and reader guidance in one place.</p>
+        </div>
+    </section>
 
-    <div class="static-page block">
-        {!! $pageContent !!}
+    <div class="container alpha-static-shell">
+        <aside class="alpha-static-nav">
+            <a href="{{ route_path('pages.help') }}"><i class="fa fa-question-circle"></i> {{ __('messages.footer.faq') }}</a>
+            <a href="{{ route_path('pages.terms') }}"><i class="fa fa-file-contract"></i> {{ __('messages.footer.terms') }}</a>
+            <a href="{{ route_path('pages.dmca') }}"><i class="fa fa-shield-alt"></i> {{ __('messages.footer.dmca') }}</a>
+            <a href="{{ route_path('pages.rules') }}"><i class="fa fa-gavel"></i> {{ __('messages.footer.rules') }}</a>
+            <a href="{{ route_path('pages.feedback') }}"><i class="fa fa-comment-dots"></i> {{ __('messages.footer.feedback') }}</a>
+        </aside>
+
+        <article class="alpha-static-content">
+            {!! $pageContent !!}
+        </article>
     </div>
 </div>
-
-<style>
-.static-page { max-width:860px; margin:0 auto; padding:24px; line-height:1.8; }
-.static-page h2 { font-size:20px; margin:22px 0 10px; }
-.static-page h3 { font-size:16px; margin:18px 0 8px; }
-.static-page p { margin-bottom:12px; color:var(--text,#333); }
-.static-page ul { margin:0 0 14px 22px; }
-.static-page li { margin-bottom:6px; }
-.static-page .faq-q { font-weight:600; margin-top:16px; }
-.static-page a { color:var(--primary,#e84040); }
-</style>
 @endsection

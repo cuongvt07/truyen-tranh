@@ -1,62 +1,45 @@
-@extends('layout.client')
-@section('template_title')
-    {{ __('Đặt lại mật khẩu') }}
-@endsection
+@extends('layout.novelight')
+
+@section('template_title', __('Reset password'))
+
 @section('content')
-    <div id="account-information">
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-sm-offset-3 col-sm-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <form method="POST" action="{{ route('password.store') }}">
-                                @csrf
+<div class="alpha-auth-page">
+    <div class="container">
+        <div class="alpha-auth-shell">
+            <section class="alpha-auth-copy">
+                <small>Account recovery</small>
+                <h1>Choose a new password</h1>
+                <p>Use a strong password to protect your reading account and wallet.</p>
+            </section>
+            <section class="alpha-auth-card">
+                <small>{{ config('app.name') }}</small>
+                <h2>{{ __('Reset password') }}</h2>
 
-                                <!-- Password Reset Token -->
-                                <input type="hidden" name="token" value="{{ $request->route('token') }}">
-
-                                <!-- Email Address -->
-                                <div class="form-group">
-                                    <label for="email" class="form-label">{{ __('Email') }}</label>
-                                    <input id="email" type="email" class="form-control" name="email"
-                                           value="{{ old('email', $request->email) }}" required autofocus
-                                           autocomplete="username" readonly>
-                                    @if ($errors->has('email'))
-                                        <span class="text-danger">{{ $errors->first('email') }}</span>
-                                    @endif
-                                </div>
-
-                                <!-- Password -->
-                                <div class="form-group mt-3">
-                                    <label for="password" class="form-label">{{ __('Mật khẩu mới') }}</label>
-                                    <input id="password" type="password" class="form-control" name="password" required
-                                           autocomplete="new-password">
-                                    @if ($errors->has('password'))
-                                        <span class="text-danger">{{ $errors->first('password') }}</span>
-                                    @endif
-                                </div>
-
-                                <!-- Confirm Password -->
-                                <div class="form-group mt-3">
-                                    <label for="password_confirmation"
-                                           class="form-label">{{ __('Nhập lại mật khẩu') }}</label>
-                                    <input id="password_confirmation" type="password" class="form-control"
-                                           name="password_confirmation" required autocomplete="new-password">
-                                    @if ($errors->has('password_confirmation'))
-                                        <span class="text-danger">{{ $errors->first('password_confirmation') }}</span>
-                                    @endif
-                                </div>
-
-                                <div class="d-flex justify-content-end mt-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        {{ __('Đặt lại mật khẩu') }}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                @if($errors->any())
+                    <div class="alpha-alert alpha-alert--danger">
+                        @foreach($errors->all() as $e)<div>{{ $e }}</div>@endforeach
                     </div>
-                </div>
-            </div>
+                @endif
+
+                <form method="POST" action="{{ route_path('password.store') }}" class="alpha-form">
+                    @csrf
+                    <input type="hidden" name="token" value="{{ $request->route_path('token') }}">
+                    <div class="alpha-field">
+                        <label>Email</label>
+                        <input type="email" name="email" value="{{ old('email', $request->email) }}" required autofocus autocomplete="username" readonly>
+                    </div>
+                    <div class="alpha-field">
+                        <label>{{ __('New password') }}</label>
+                        <input type="password" name="password" required autocomplete="new-password">
+                    </div>
+                    <div class="alpha-field">
+                        <label>{{ __('Confirm password') }}</label>
+                        <input type="password" name="password_confirmation" required autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="alpha-btn alpha-btn--primary">{{ __('Reset password') }}</button>
+                </form>
+            </section>
         </div>
     </div>
+</div>
 @endsection

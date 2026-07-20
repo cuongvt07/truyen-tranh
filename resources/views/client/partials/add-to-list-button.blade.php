@@ -116,7 +116,7 @@
 
         <div class="tinny-content__inner add-to-list__content">
             @foreach($statuses as $status => $label)
-                <form method="POST" action="{{ route('articles.bookmarks.store', $article->id) }}">
+                <form method="POST" action="{{ route_path('articles.bookmarks.store', $article->id) }}">
                     @csrf
                     <input type="hidden" name="name" value="{{ $article->title }} #{{ $article->id }}">
                     <input type="hidden" name="status" value="{{ $status }}">
@@ -127,7 +127,7 @@
             @endforeach
 
             <hr>
-            <form method="POST" action="{{ route('articles.bookmarks.store', $article->id) }}">
+            <form method="POST" action="{{ route_path('articles.bookmarks.store', $article->id) }}">
                 @csrf
                 <input type="hidden" name="status" value="remove">
                 <button type="submit" class="add-to-list-btn add-to-list-remove" data-list="remove">
@@ -137,7 +137,7 @@
         </div>
     </div>
 @else
-    <a href="{{ route('login') }}" class="btn btn-add-to-list {{ $wantThis ? 'want-this' : '' }}" aria-expanded="false">
+    <a href="{{ route_path('login') }}" class="btn btn-add-to-list {{ $wantThis ? 'want-this' : '' }}" aria-expanded="false">
         <span></span>
         <span class="text-add-to-list">{{ $defaultLabel }}</span>
         <span class="btn-list"><i class="fa fa-list"></i></span>

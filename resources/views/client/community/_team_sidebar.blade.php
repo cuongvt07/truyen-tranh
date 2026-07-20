@@ -1,18 +1,18 @@
 <aside class="team-side">
-    <a href="{{ route('teams.dashboard', $team->id) }}"
+    <a href="{{ route_path('teams.dashboard', $team->id) }}"
        class="team-nav-btn {{ request()->routeIs('teams.dashboard') ? 'is-active' : '' }}">
         {{ __('messages.community.dashboard') }}
     </a>
-    <a href="{{ route('teams.edit', $team->id) }}"
+    <a href="{{ route_path('teams.edit', $team->id) }}"
        class="team-nav-btn {{ request()->routeIs('teams.edit') ? 'is-active' : '' }}">
         {{ __('messages.community.update_information') }}
     </a>
-    <a href="{{ route('teams.members.manage', $team->id) }}"
+    <a href="{{ route_path('teams.members.manage', $team->id) }}"
        class="team-nav-btn {{ request()->routeIs('teams.members.manage') ? 'is-active' : '' }}">
         {{ __('messages.community.members') }}
     </a>
     <hr>
-    <a href="{{ route('teams.show', $team->id) }}" class="team-nav-btn">
+    <a href="{{ route_path('teams.show', $team->id) }}" class="team-nav-btn">
         {{ __('messages.community.team_page') }}
     </a>
 </aside>

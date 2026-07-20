@@ -2,121 +2,142 @@
 
 @section('template_title', __('messages.pay.store'))
 
-@section('page_css')
-<link rel="stylesheet" href="{{ asset('static/payments/css/buy_coupons.css') }}?ver=1.8.0">
-@endsection
-
 @section('content')
-<div class="container">
-    <h1 class="page-title">{{ __('messages.pay.store') }}</h1>
+@php
+    $featured = $featured ?? null;
+    $coinPacks = collect($coinPacks ?? []);
+    $storeCards = $coinPacks->values();
+    $balance = auth()->check() ? (auth()->user()->points ?? 0) : 0;
+@endphp
 
-    @if(session('reading_limit_notice'))
-        <div class="block" style="padding:14px 18px;margin-bottom:20px;border-left:4px solid #f0c040">
-            {{ session('reading_limit_notice') }}
-        </div>
-    @endif
-
-    {{-- Nổi bật --}}
-    <div class="huge-recomendations">
-        {{-- Gói xu nổi bật --}}
-        <div class="recommended-product block">
-            <a href="{{ !empty($featured['id']) ? route('checkout.show', $featured['id']) : route('client.paypoints') }}" class="image image-cover lazy-load-bg">
-                <img class="lazy-image" loading="eager" src="{{ asset($featured['icon']) }}" alt="{{ $featured['name'] }}">
-            </a>
-            <h2 class="price_item__title block-title">{{ $featured['name'] }}</h2>
-            <div class="recommended-product__desc-row">
-                <div class="recommended-coupons"><i class="fa fa-coins" style="color:#f0c040"></i> {{ number_format($featured['coins']) }} {{ coin_name() }}</div>
-                @auth
-                    @if(!empty($featured['id']))
-                        <a href="{{ route('checkout.show', $featured['id']) }}" class="btn btn-primary">{{ $featured['price'] }}</a>
-                    @else
-                        <a href="{{ route('client.paypoints') }}" class="btn btn-primary">{{ $featured['price'] }}</a>
-                    @endif
-                @else
-                    <a href="{{ route('login') }}" class="btn btn-primary">{{ $featured['price'] }}</a>
-                @endauth
+<div class="alpha-gifts-page">
+    <section class="alpha-gifts-hero">
+        <div class="container alpha-gifts-hero__inner">
+            <div class="alpha-gifts-hero__icon">
+                <img src="/static/core/images/alphanovel/present.png" alt="Gift">
             </div>
-        </div>
-
-        {{-- Premium (chỉ hiện khi có gói subscription thật) --}}
-        @if(!empty($premium))
-        <div class="recommended-product block">
-            <a href="{{ !empty($premium['id']) ? route('checkout.show', $premium['id']) : route('client.paypoints') }}" class="image image-cover lazy-load-bg">
-                <img class="lazy-image" loading="eager" src="{{ asset($premium['icon']) }}" alt="{{ $premium['name'] }}">
-            </a>
-            <h2 class="price_item__title block-title">{{ $premium['name'] }}</h2>
-            <div class="recommended-product__desc-row">
-                <div class="recommended-coupons">
-                    @foreach(explode(' · ', $premium['desc']) as $line)
-                        <div><i class="fa fa-check-circle" style="color:#1f9d55"></i> {{ $line }}</div>
-                    @endforeach
+            <div class="alpha-gifts-hero__copy">
+                <small>Rewards and bonuses</small>
+                <h1>Unlock more stories on {{ config('app.name', 'Romane auf Deutsch') }}</h1>
+                <p>Use coins for locked chapters, reader actions, and premium access while keeping every novel in your online library.</p>
+                <div class="alpha-gifts-hero__actions">
+                    <a href="#coin-packs" class="alpha-button alpha-gifts-hero__button alpha-gifts-hero__button--light"><i class="fa fa-coins"></i> View coin packs</a>
+                    <a href="{{ route_path('catalog.index', []) }}" class="alpha-button alpha-gifts-hero__button"><i class="fa fa-book-open"></i> Browse novels</a>
                 </div>
-                @auth
-                    @if(!empty($premium['id']))
-                        <a href="{{ route('checkout.show', $premium['id']) }}" class="btn btn-primary">{{ $premium['price'] }}</a>
-                    @else
-                        <a href="{{ route('client.paypoints') }}" class="btn btn-primary">{{ $premium['price'] }}</a>
-                    @endif
-                @else
-                    <a href="{{ route('login') }}" class="btn btn-primary">{{ $premium['price'] }}</a>
-                @endauth
+            </div>
+
+            <div class="alpha-gifts-summary">
+                <strong>{{ number_format($balance) }}</strong>
+                <span>{{ coin_name() }} balance</span>
+                <small>Top up once, unlock chapters anytime.</small>
             </div>
         </div>
+    </section>
+
+    <section class="container alpha-gifts-showcase">
+        @foreach(range(1, 5) as $giftImage)
+            <article>
+                <img src="/static/core/images/alphanovel/gifts-{{ $giftImage }}.png" alt="Gift reward {{ $giftImage }}" loading="lazy">
+            </article>
+        @endforeach
+    </section>
+
+    <div class="container alpha-gifts-content">
+        @if(session('reading_limit_notice'))
+            <div class="alpha-store-alert">{{ session('reading_limit_notice') }}</div>
         @endif
-    </div>
 
-    {{-- Tất cả sản phẩm --}}
-    <div class="section">
-        <h2>{{ __('messages.pay.all_products') }}</h2>
-        <div class="price-list">
-            {{-- Premium card (chỉ hiện khi có gói subscription thật) --}}
-            @if(!empty($premium))
-            <div class="price-item block">
-                <div class="price_item__icon image image-cover lazy-load-bg">
-                    <img class="lazy-image" loading="eager" src="{{ asset($premium['icon']) }}" alt="{{ $premium['name'] }}">
-                </div>
-                <div class="price-item__info">
-                    <h2 class="price_item__title block-title">{{ $premium['name'] }}</h2>
-                    <div class="price-item__cost-info">
-                        <div class="price-item__cost"><span>{{ $premium['desc'] }}</span><br>{{ $premium['price'] }}</div>
-                        @auth
-                            @if(!empty($premium['id']))
-                                <a href="{{ route('checkout.show', $premium['id']) }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>
-                            @else
-                                <a href="{{ route('client.paypoints') }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>
-                            @endif
-                        @else
-                            <a href="{{ route('login') }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>
-                        @endauth
+        <div class="alpha-store-wallet">
+            @auth
+                <span class="alpha-balance-pill"><i class="fa fa-coins"></i> {{ number_format($balance) }} {{ coin_name() }}</span>
+            @else
+                <a href="{{ route_path('login', []) }}" class="alpha-gift-button alpha-gift-button--primary">{{ __('messages.auth.login') }}</a>
+            @endauth
+            <a href="{{ route_path('catalog.index', []) }}" class="alpha-gift-button">Browse novels</a>
+        </div>
+
+        <section class="alpha-store-featured">
+            @if($featured)
+                <article class="alpha-store-spotlight">
+                    <div class="alpha-store-spotlight__media">
+                        <img src="{{ asset($featured['icon']) }}" alt="{{ $featured['name'] }}" loading="lazy">
                     </div>
-                </div>
-            </div>
+                    <div>
+                        <small>Recommended</small>
+                        <h2>{{ $featured['name'] }}</h2>
+                        <p>{{ number_format($featured['coins']) }} {{ coin_name() }} for unlocking chapters and reader actions.</p>
+                    </div>
+                    @auth
+                        <a href="{{ !empty($featured['id']) ? route_path('checkout.show', $featured['id']) : route_path('client.paypoints') }}" class="alpha-gift-button alpha-gift-button--primary">{{ $featured['price'] }}</a>
+                    @else
+                        <a href="{{ route_path('login', []) }}" class="alpha-gift-button alpha-gift-button--primary">{{ $featured['price'] }}</a>
+                    @endauth
+                </article>
             @endif
 
-            {{-- Coin packs --}}
-            @foreach($coinPacks as $pack)
-                <div class="price-item block">
-                    <div class="price_item__icon image image-cover lazy-load-bg">
-                        <img class="lazy-image" loading="eager" src="{{ asset($pack['icon']) }}" alt="{{ $pack['name'] }}">
+            @if(!empty($premium))
+                <article class="alpha-store-spotlight alpha-store-spotlight--premium">
+                    <div class="alpha-store-spotlight__media">
+                        <img src="{{ asset($premium['icon']) }}" alt="{{ $premium['name'] }}" loading="lazy">
                     </div>
-                    <div class="price-item__info">
-                        <h2 class="price_item__title block-title">{{ $pack['name'] }}</h2>
-                        <div class="price-item__cost-info">
-                            <div class="price-item__cost"><span>{{ number_format($pack['coins']) }} {{ coin_name() }}</span><br>{{ $pack['price'] }}</div>
+                    <div>
+                        <small>Premium access</small>
+                        <h2>{{ $premium['name'] }}</h2>
+                        <p>{{ $premium['desc'] }}</p>
+                    </div>
+                    @auth
+                        <a href="{{ !empty($premium['id']) ? route_path('checkout.show', $premium['id']) : route_path('client.paypoints') }}" class="alpha-gift-button alpha-gift-button--primary">{{ $premium['price'] }}</a>
+                    @else
+                        <a href="{{ route_path('login', []) }}" class="alpha-gift-button alpha-gift-button--primary">{{ $premium['price'] }}</a>
+                    @endauth
+                </article>
+            @endif
+        </section>
+
+        <section class="alpha-store-section" id="coin-packs">
+            <div class="alpha-section-heading">
+                <h2>{{ __('messages.pay.all_products') }}</h2>
+                <a href="{{ route_path('client.paypoints') }}">Manual top up</a>
+            </div>
+
+            <div class="alpha-store-grid">
+                @if(!empty($premium))
+                    <article class="alpha-store-card alpha-store-card--premium">
+                        <img src="{{ asset($premium['icon']) }}" alt="{{ $premium['name'] }}" loading="lazy">
+                        <small>Premium</small>
+                        <h3>{{ $premium['name'] }}</h3>
+                        <p>{{ $premium['desc'] }}</p>
+                        <div class="alpha-store-card__bottom">
+                            <strong>{{ $premium['price'] }}</strong>
                             @auth
-                                @if(!empty($pack['id']))
-                                    <a href="{{ route('checkout.show', $pack['id']) }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>
-                                @else
-                                    <a href="{{ route('client.paypoints') }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>
-                                @endif
+                                <a href="{{ !empty($premium['id']) ? route_path('checkout.show', $premium['id']) : route_path('client.paypoints') }}">{{ __('messages.pay.buy') }}</a>
                             @else
-                                <a href="{{ route('login') }}" class="btn btn-primary">{{ __('messages.pay.buy') }}</a>
+                                <a href="{{ route_path('login', []) }}">{{ __('messages.pay.buy') }}</a>
                             @endauth
                         </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
+                    </article>
+                @endif
+
+                @forelse($storeCards as $pack)
+                    <article class="alpha-store-card">
+                        <img src="{{ asset($pack['icon']) }}" alt="{{ $pack['name'] }}" loading="lazy">
+                        <small>Coin pack</small>
+                        <h3>{{ $pack['name'] }}</h3>
+                        <p>{{ number_format($pack['coins']) }} {{ coin_name() }} added to your reader wallet.</p>
+                        <div class="alpha-store-card__bottom">
+                            <strong>{{ $pack['price'] }}</strong>
+                            @auth
+                                <a href="{{ !empty($pack['id']) ? route_path('checkout.show', $pack['id']) : route_path('client.paypoints') }}">{{ __('messages.pay.buy') }}</a>
+                            @else
+                                <a href="{{ route_path('login', []) }}">{{ __('messages.pay.buy') }}</a>
+                            @endauth
+                        </div>
+                    </article>
+                @empty
+                    <div class="alpha-empty">No packages are available.</div>
+                @endforelse
+            </div>
+        </section>
     </div>
 </div>
 @endsection

@@ -9,7 +9,7 @@
                 <div class="col-xs-12">
                     <span class="glyphicon glyphicon-chevron-right"></span>
                     <h3>
-                        <a href="{{ route('articles.show', $item) }}" title="{{ $item->title }}">
+                        <a href="{{ route_path('articles.show', $item) }}" title="{{ $item->title }}">
                             {{ $item->title }}
                         </a>
                     </h3>
@@ -30,7 +30,7 @@
                 <div class="col-xs-12">
                     <span class="glyphicon glyphicon-chevron-right"></span>
                     <h3>
-                        <a href="{{ route('articles.show', $item) }}" title="{{ $item->title }}">
+                        <a href="{{ route_path('articles.show', $item) }}" title="{{ $item->title }}">
                             {{ $item->title }}
                         </a>
                     </h3>

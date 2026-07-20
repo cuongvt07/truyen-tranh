@@ -8,7 +8,7 @@
         <h1 style="font-size:22px;margin-bottom:16px">{{ __('messages.account.banned_heading') }}</h1>
         <p class="meta-color" style="margin-bottom:8px">{{ __('messages.account.banned_expires', ['days' => $bannedUser->remaining_days]) }}</p>
         <p class="meta-color" style="margin-bottom:24px">{{ __('messages.account.banned_reason', ['reason' => $bannedUser->reason]) }}</p>
-        <form method="POST" action="{{ route('logout') }}">
+        <form method="POST" action="{{ route_path('logout') }}">
             @csrf
             <button type="submit" class="btn btn-primary"><i class="fa fa-sign-out"></i> {{ __('messages.account.logout') }}</button>
         </form>

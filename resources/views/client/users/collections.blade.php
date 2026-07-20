@@ -5,7 +5,7 @@
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
     <h2 class="user-tab-title" style="margin:0">{{ __('messages.account.nav_collections') }}</h2>
     @if($isMine ?? false)
-        <a href="{{ route('collections.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ __('messages.account.create_collection') }}</a>
+        <a href="{{ route_path('collections.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ __('messages.account.create_collection') }}</a>
     @endif
 </div>
 
@@ -17,7 +17,7 @@
 @else
     <div class="collections"><div class="collection-mini-grid">
         @foreach($collections as $c)
-            <a href="{{ ($isMine ?? false) ? route('collections.edit', $c->id) : '#' }}" class="collection-item">
+            <a href="{{ ($isMine ?? false) ? route_path('collections.edit', $c->id) : '#' }}" class="collection-item">
                 <div class="collection__inner">
                     <div class="collection-name clamp clamp-1">{{ $c->name }} @if($c->is_private)<i class="fa fa-lock" style="font-size:11px"></i>@endif</div>
                     <div class="collection-author meta-color clamp clamp-1"><i class="fa fa-book"></i> {{ __('messages.account.story_count', ['count' => $c->articles_count]) }}</div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Bookmark;
 use App\Models\ChapterUnlock;
+use App\Models\Comment;
 use App\Models\Genre;
 use App\Models\ReadingHistory;
 use App\Models\UserVip;
@@ -157,6 +158,38 @@ class ArticleController extends Controller
             'suggestedArticles' => $suggestedArticles,
             'translationRequests' => $translationRequests,
             'relatedGenres' => $relatedGenres,
+        ]);
+    }
+
+    public function reviews(Request $request, Article $article)
+    {
+        if ($request->route()->originalParameter('article') !== $article->getRouteKey()) {
+            return redirect()->route('articles.reviews', $article, 301);
+        }
+
+        $article->loadMissing(['authors', 'genres', 'slug']);
+        $comments = $article->getNewestCommentsPaginate(12);
+
+        return view('client.articles.reviews', [
+            'article' => $article,
+            'comments' => $comments,
+        ]);
+    }
+
+    public function review(Request $request, Article $article, Comment $comment)
+    {
+        if ($request->route()->originalParameter('article') !== $article->getRouteKey()) {
+            return redirect()->route('articles.reviews.show', [$article, $comment], 301);
+        }
+
+        abort_unless($comment->article_id === $article->id && !$comment->is_hidden && $comment->parent_id === null, 404);
+
+        $article->loadMissing(['authors', 'genres', 'slug']);
+        $comment->loadMissing(['user', 'votes']);
+
+        return view('client.articles.review', [
+            'article' => $article,
+            'comment' => $comment,
         ]);
     }
 

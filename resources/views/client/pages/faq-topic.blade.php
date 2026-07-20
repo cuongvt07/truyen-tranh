@@ -11,7 +11,7 @@
     $topics = [
         'account' => [
             'title' => setting("page_faq_account_title_{$locale}", $locale === 'vi' ? 'Tài khoản' : 'Account'),
-            'url'   => route('pages.faq.topic', 'account'),
+            'url'   => route_path('pages.faq.topic', 'account'),
             'items' => [
                 $locale === 'vi' ? 'Làm sao biết mật khẩu sau khi đăng ký bằng Google?' : 'How can I find out my login password (after registering via Google)',
                 $locale === 'vi' ? 'Tôi không thể bình luận, đánh giá hoặc đăng truyện sau khi đăng ký' : 'I cannot post comments, reviews, or books after registering',
@@ -19,7 +19,7 @@
         ],
         'general' => [
             'title' => setting("page_faq_general_title_{$locale}", $locale === 'vi' ? 'Chung' : 'General'),
-            'url'   => route('pages.faq.topic', 'general'),
+            'url'   => route_path('pages.faq.topic', 'general'),
             'items' => [
                 $locale === 'vi' ? 'Làm sao liên hệ moderator hoặc quản trị viên?' : 'How can I contact a moderator or an administrator?',
                 $locale === 'vi' ? 'Vì sao một số truyện bị tắt bình luận?' : 'Why are comments disabled on some titles?',
@@ -48,7 +48,7 @@
         {{-- Main content --}}
         <div class="block faq-main">
             <div class="breadcumps">
-                <a href="{{ route('pages.faq') }}">FAQ</a>
+                <a href="{{ route_path('pages.faq') }}">FAQ</a>
                 <span>&gt;</span>
                 <span>{{ $pageTitle }}</span>
             </div>

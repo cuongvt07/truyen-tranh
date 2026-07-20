@@ -12,7 +12,7 @@
     @auth
     @if(auth()->id() === $user->id)
         <div class="btn-group-inline" style="margin-top:8px">
-            <a href="{{ route('pages.pricing') }}" class="btn btn-primary">
+            <a href="{{ route_path('pages.pricing') }}" class="btn btn-primary">
                 <i class="fa fa-store"></i> {{ __('messages.pay.store') }}
             </a>
         </div>

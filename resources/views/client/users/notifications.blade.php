@@ -17,7 +17,7 @@
                 $isNew = is_null($n->read_at);
                 $isGift = ($d['type'] ?? '') === 'gift';
             @endphp
-            <a href="{{ route('notifications.read', $n->id) }}" class="notif-item {{ $isNew ? 'is-new' : '' }} {{ $isGift ? 'notif-gift' : '' }}">
+            <a href="{{ route_path('notifications.read', $n->id) }}" class="notif-item {{ $isNew ? 'is-new' : '' }} {{ $isGift ? 'notif-gift' : '' }}">
                 <div class="notif-icon"><i class="fa {{ $isGift ? 'fa-gift' : (($d['mode'] ?? 'new') === 'soon' ? 'fa-clock' : 'fa-book-open') }}"></i></div>
                 <div class="notif-body">
                     <div class="notif-text">

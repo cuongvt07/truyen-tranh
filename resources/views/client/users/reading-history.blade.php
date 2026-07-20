@@ -16,14 +16,14 @@
             @php $article = $item->article; @endphp
             @if(!$article) @continue @endif
             <div class="item">
-                <a href="{{ route('articles.show', $article) }}" class="item-link">
+                <a href="{{ route_path('articles.show', $article) }}" class="item-link">
                     <div class="poster image image-cover lazy-load-bg">
                         <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                     </div>
                     <div class="title clamp clamp-2">{{ $article->title }}</div>
                 </a>
                 @if($item->chapter)
-                    <a href="{{ route('articles.chapters.show', [$article, $item->chapter_number]) }}"
+                    <a href="{{ route_path('articles.chapters.show', [$article, $item->chapter_number]) }}"
                        class="continue" style="font-size:12px;color:var(--meta-color)">
                         <i class="fa fa-book-open"></i> {{ __('messages.account.chapter_number', ['number' => $item->chapter_number]) }}
                     </a>

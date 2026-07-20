@@ -14,6 +14,26 @@ if (!function_exists('set_active')) {
     }
 }
 
+if (!function_exists('route_path')) {
+    function route_path(string $name, mixed $parameters = []): string
+    {
+        $url = route($name, $parameters, false);
+
+        if (str_starts_with($url, 'http:/') && !str_starts_with($url, 'http://')) {
+            return substr($url, 5) ?: '/';
+        }
+
+        $parts = parse_url($url);
+
+        if (isset($parts['host'])) {
+            $path = $parts['path'] ?? '/';
+            return isset($parts['query']) ? $path . '?' . $parts['query'] : $path;
+        }
+
+        return $url;
+    }
+}
+
 /**
  * Kiểm tra route hiện tại.
  */

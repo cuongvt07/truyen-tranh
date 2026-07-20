@@ -3,87 +3,57 @@
 @php
     $locale = app()->getLocale();
     $categoryTitle = $category->{"title_$locale"} ?? $category->title_en;
+    $description = $category->{"description_$locale"} ?? $category->description_en ?? '';
 @endphp
 
 @section('template_title', $categoryTitle . ' - ' . __('messages.nav.faq'))
 
-@section('page_css')
-<link rel="stylesheet" href="{{ asset('static/forum/css/forum.css') }}">
-<link rel="stylesheet" href="{{ asset('static/faq/css/faqee8b.css') }}?ver=1.8.0">
-@endsection
-
 @section('content')
-<div class="container">
-    <div class="faq-topic-page">
-        {{-- Sidebar --}}
-        <div class="block faq-sidebar">
-            @foreach($allCategories ?? [] as $cat)
-                @php
-                    $catTitle = $cat->{"title_$locale"} ?? $cat->title_en;
-                    $isActive = $cat->id === $category->id;
-                @endphp
-                <div class="faq-sidebar-topic {{ $isActive ? 'active' : '' }}">
-                    <a href="{{ route('pages.faq.topic', $cat->slug) }}" class="faq-sidebar-topic__name">
-                        {{ $catTitle }}
-                        <span class="badge">{{ $cat->articles_count ?? 0 }}</span>
-                    </a>
-                    @if($isActive)
-                        <ul class="faq-sidebar-topic__list">
-                            @foreach($articles as $art)
-                                @php
-                                    $artTitle = $art->{"title_$locale"} ?? $art->title_en;
-                                @endphp
-                                <li>
-                                    <a href="{{ route('pages.faq.article', [$category->slug, $art->slug]) }}">
-                                        {{ $artTitle }}
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @endif
-                </div>
-            @endforeach
-        </div>
+<div class="alpha-workspace alpha-help-page">
+    <div class="container">
+        <section class="alpha-workspace-hero alpha-workspace-hero--plain">
+            <small>FAQ topic</small>
+            <h1>{{ $categoryTitle }}</h1>
+            @if($description)<p>{{ $description }}</p>@endif
+        </section>
 
-        {{-- Main content --}}
-        <div class="block faq-main">
-            <div class="breadcumps">
-                <a href="{{ route('pages.faq') }}">{{ __('messages.nav.faq') }}</a>
-                <span>&gt;</span>
-                <span>{{ $categoryTitle }}</span>
-            </div>
-            <h1 class="page-title">{{ $categoryTitle }}</h1>
-            @php
-                $description = $category->{"description_$locale"} ?? $category->description_en ?? '';
-            @endphp
-            @if($description)
-                <div class="text-info" style="margin-bottom:16px">{{ $description }}</div>
-            @endif
-
-            <ul class="faq-article-list">
-                @forelse($articles as $article)
+        <div class="alpha-community-shell">
+            <aside class="alpha-community-sidebar">
+                @foreach($allCategories ?? [] as $cat)
                     @php
-                        $artTitle = $article->{"title_$locale"} ?? $article->title_en;
+                        $catTitle = $cat->{"title_$locale"} ?? $cat->title_en;
+                        $isActive = $cat->id === $category->id;
                     @endphp
-                    <li>
-                        <a href="{{ route('pages.faq.article', [$category->slug, $article->slug]) }}">
-                            {{ $artTitle }}
-                            @if($article->is_pinned)
-                                <i class="fa fa-thumbtack text-warning ml-1" title="{{ __('messages.faq.pinned') }}"></i>
-                            @endif
-                        </a>
-                        <span class="meta-color">
-                            <i class="fa fa-eye"></i> {{ number_format($article->view_count ?? 0) }}
-                        </span>
-                    </li>
-                @empty
-                    <li class="meta-color">
-                        {{ __('messages.faq.empty_articles') }}
-                    </li>
-                @endforelse
-            </ul>
+                    <a href="{{ route_path('pages.help.topic', $cat->slug) }}" class="alpha-community-card {{ $isActive ? 'active' : '' }}">
+                        <h3>{{ $catTitle }}</h3>
+                        <small>{{ __('messages.faq.articles_count', ['count' => $cat->articles_count ?? 0]) }}</small>
+                    </a>
+                @endforeach
+            </aside>
 
-            {{ $articles->links() }}
+            <main class="alpha-topic-list">
+                @forelse($articles as $article)
+                    @php $artTitle = $article->{"title_$locale"} ?? $article->title_en; @endphp
+                    <article class="alpha-topic-row">
+                        <div>
+                            <a href="{{ route_path('pages.help.article', [$category->slug, $article->slug]) }}">
+                                {{ $artTitle }}
+                                @if($article->is_pinned)<i class="fa fa-thumbtack" style="color:#d89000"></i>@endif
+                            </a>
+                        </div>
+                        <div class="alpha-topic-row__meta">
+                            <span><i class="fa fa-eye"></i> {{ number_format($article->view_count ?? 0) }}</span>
+                        </div>
+                    </article>
+                @empty
+                    <div class="alpha-panel alpha-empty-state">
+                        <i class="fa fa-newspaper"></i>
+                        {{ __('messages.faq.empty_articles') }}
+                    </div>
+                @endforelse
+
+                {{ $articles->links() }}
+            </main>
         </div>
     </div>
 </div>

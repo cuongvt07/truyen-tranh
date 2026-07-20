@@ -1,66 +1,52 @@
 @extends('layout.novelight')
 
-@section('template_title', ($article->{'title_' . app()->getLocale()} ?? $article->title_en) . ' - ' . __('messages.nav.faq'))
+@php
+    $locale = app()->getLocale();
+    $articleTitle = $article->{"title_$locale"} ?? $article->title_en;
+    $categoryTitle = $category->{"title_$locale"} ?? $category->title_en;
+    $content = $locale === 'vi' ? ($article->content_vi ?: $article->content_en) : $article->content_en;
+@endphp
 
-@section('page_css')
-<link rel="stylesheet" href="{{ asset('static/forum/css/forum.css') }}">
-<link rel="stylesheet" href="{{ asset('static/faq/css/faqee8b.css') }}?ver=1.8.0">
-@endsection
+@section('template_title', $articleTitle . ' - ' . __('messages.nav.faq'))
 
 @section('content')
-<div class="container">
-    <div class="faq-topic-page">
-        {{-- Sidebar --}}
-        <div class="block faq-sidebar">
-            @foreach($allCategories ?? [] as $cat)
-                @php
-                    $locale = app()->getLocale();
-                    $catTitle = $cat->{"title_$locale"} ?? $cat->title_en;
-                @endphp
-                <div class="faq-sidebar-topic {{ $cat->id === $category->id ? 'active' : '' }}">
-                    <a href="{{ route('pages.faq.topic', $cat->slug) }}" class="faq-sidebar-topic__name">
-                        {{ $catTitle }}
-                    </a>
-                    <ul class="faq-sidebar-topic__list">
-                        @foreach($cat->articles ?? [] as $art)
-                            @php
-                                $artTitle = $art->{"title_$locale"} ?? $art->title_en;
-                            @endphp
-                            <li class="{{ isset($article) && $art->id === $article->id ? 'active' : '' }}">
-                                <a href="{{ route('pages.faq.article', [$cat->slug, $art->slug]) }}">
-                                    {{ $artTitle }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endforeach
-        </div>
+<div class="alpha-workspace alpha-help-page">
+    <div class="container">
+        <div class="alpha-community-shell">
+            <aside class="alpha-community-sidebar">
+                @foreach($allCategories ?? [] as $cat)
+                    @php $catTitle = $cat->{"title_$locale"} ?? $cat->title_en; @endphp
+                    <div class="alpha-community-card {{ $cat->id === $category->id ? 'active' : '' }}">
+                        <a href="{{ route_path('pages.help.topic', $cat->slug) }}" style="color:inherit;text-decoration:none;font-weight:800">{{ $catTitle }}</a>
+                        @if(($cat->articles ?? collect())->isNotEmpty())
+                            <ul style="margin:8px 0 0 16px;padding:0">
+                                @foreach($cat->articles as $art)
+                                    @php $artTitle = $art->{"title_$locale"} ?? $art->title_en; @endphp
+                                    <li class="{{ $art->id === $article->id ? 'active' : '' }}" style="margin:6px 0">
+                                        <a href="{{ route_path('pages.help.article', [$cat->slug, $art->slug]) }}" style="color:inherit;text-decoration:none;font-size:13px">{{ $artTitle }}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
+                @endforeach
+            </aside>
 
-        {{-- Main --}}
-        <div class="faq-main">
-            <article class="block forum-single">
-                <div class="breadcumps">
-                    <a href="{{ route('pages.faq') }}">{{ __('messages.nav.faq') }}</a>
-                    <span>&gt;</span>
-                    <a href="{{ route('pages.faq.topic', $category->slug) }}">{{ $category->{"title_$locale"} ?? $category->title_en }}</a>
-                    <span>&gt;</span>
-                    <span>{{ $article->{"title_$locale"} ?? $article->title_en }}</span>
-                </div>
-                <div class="forum-single-header">
-                    <div class="forum-single-header__author meta-color">
-                        {{ $article->created_at ? $article->created_at->format('d M Y - H:i:s') : '' }}
+            <main>
+                <article class="alpha-article-content">
+                    <div class="alpha-book-breadcrumb">
+                        <a href="{{ route_path('pages.help', []) }}">{{ __('messages.nav.faq') }}</a>
+                        <span>/</span>
+                        <a href="{{ route_path('pages.help.topic', $category->slug) }}">{{ $categoryTitle }}</a>
                     </div>
-                    <div class="forum-single-header__stats meta-color">
+                    <div class="alpha-topic-row__meta" style="margin-top:10px">
                         <span><i class="fa fa-eye"></i> {{ number_format($article->view_count ?? 0) }}</span>
+                        <span>{{ $article->created_at ? $article->created_at->format('d M Y - H:i') : '' }}</span>
                     </div>
-                </div>
-                <h1 class="page-title">{{ $article->{"title_$locale"} ?? $article->title_en }}</h1>
-                @php
-                    $content = $locale === 'vi' ? ($article->content_vi ?: $article->content_en) : $article->content_en;
-                @endphp
-                <div class="text-info">{!! $content !!}</div>
-            </article>
+                    <h1>{{ $articleTitle }}</h1>
+                    <div class="text-info">{!! $content !!}</div>
+                </article>
+            </main>
         </div>
     </div>
 </div>

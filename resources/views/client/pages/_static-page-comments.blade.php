@@ -8,7 +8,7 @@
 
     @if($commentPage && $commentPage->comments_enabled)
         @auth
-            <form method="POST" action="{{ route('static-pages.comments.store', $commentPage) }}"
+            <form method="POST" action="{{ route_path('static-pages.comments.store', $commentPage) }}"
                   class="static-comment-form" id="main-comment-form">
                 @csrf
                 <input type="hidden" name="parent_id" id="reply-parent-id" value="">
@@ -31,7 +31,7 @@
             </form>
         @else
             <div class="sc-input sc-input--placeholder">
-                <a href="{{ route('login') }}">{{ __('messages.static_comments.login') }}</a>
+                <a href="{{ route_path('login') }}">{{ __('messages.static_comments.login') }}</a>
                 {{ __('messages.static_comments.login_suffix') }}
             </div>
         @endauth
@@ -46,7 +46,7 @@
                 </div>
                 <div class="sc-body">
                     <div class="sc-meta">
-                        <a href="{{ optional($comment->user)->id ? route('users.show.profile', $comment->user) : '#' }}" class="sc-name">
+                        <a href="{{ optional($comment->user)->id ? route_path('users.show.profile', $comment->user) : '#' }}" class="sc-name">
                             {{ optional($comment->user)->name ?? optional($comment->user)->username ?? __('messages.static_comments.anonymous') }}
                         </a>
                         <span class="sc-date meta-color">{{ $comment->created_at ? $comment->created_at->format('n/j/Y') : '' }}</span>
@@ -64,7 +64,7 @@
                             @if(auth()->id() === $comment->user_id || auth()->user()?->is_admin)
                                 <span class="sc-action-sep">·</span>
                                 <form method="POST"
-                                      action="{{ route('static-pages.comments.destroy', [$commentPage, $comment]) }}"
+                                      action="{{ route_path('static-pages.comments.destroy', [$commentPage, $comment]) }}"
                                       class="d-inline"
                                       onsubmit="return confirm(@js(__('messages.static_comments.delete_confirm')))">
                                     @csrf @method('DELETE')
@@ -92,7 +92,7 @@
                             </div>
                             <div class="sc-body">
                                 <div class="sc-meta">
-                                    <a href="{{ optional($reply->user)->id ? route('users.show.profile', $reply->user) : '#' }}" class="sc-name">
+                                    <a href="{{ optional($reply->user)->id ? route_path('users.show.profile', $reply->user) : '#' }}" class="sc-name">
                                         {{ optional($reply->user)->name ?? optional($reply->user)->username ?? __('messages.static_comments.anonymous') }}
                                     </a>
                                     <span class="sc-date meta-color">{{ $reply->created_at ? $reply->created_at->format('n/j/Y') : '' }}</span>
@@ -102,7 +102,7 @@
                                     @auth
                                         @if(auth()->id() === $reply->user_id || auth()->user()?->is_admin)
                                             <form method="POST"
-                                                  action="{{ route('static-pages.comments.destroy', [$commentPage, $reply]) }}"
+                                                  action="{{ route_path('static-pages.comments.destroy', [$commentPage, $reply]) }}"
                                                   class="d-inline"
                                                   onsubmit="return confirm(@js(__('messages.static_comments.delete_confirm')))">
                                                 @csrf @method('DELETE')

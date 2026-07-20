@@ -1,8 +1,8 @@
 @php
     $prevChapter = $article->chapters()->where('number', '<', $chapter->number)->orderByDesc('number')->first();
     $nextChapter = $article->chapters()->where('number', '>', $chapter->number)->orderBy('number')->first();
-    $prevUrl = $prevChapter ? route('articles.chapters.show', [$article, $prevChapter->number]) : null;
-    $nextUrl = $nextChapter ? route('articles.chapters.show', [$article, $nextChapter->number]) : null;
+    $prevUrl = $prevChapter ? route_path('articles.chapters.show', [$article, $prevChapter->number]) : null;
+    $nextUrl = $nextChapter ? route_path('articles.chapters.show', [$article, $nextChapter->number]) : null;
 @endphp
 <!doctype html>
 <html lang="vi">
@@ -25,7 +25,7 @@
 <body class="theme-alphanovel-chapter" chapter_ph="{{ (int) ($bookmarkParagraph ?? 0) }}">
 
 <header class="header-chapter">
-    <a href="{{ route('articles.show', $article) }}" class="header-title btn header-btn">
+    <a href="{{ route_path('articles.show', $article) }}" class="header-title btn header-btn">
         <span class="clamp clamp-1"><i class="fa fa-arrow-left"></i> {{ $article->title }}</span>
     </a>
     <div class="control-btns">
@@ -122,16 +122,16 @@
             @auth
                 @if(($userPoints ?? 0) >= $creditCost)
                     <button type="button" id="btn-buy-chapter" class="btn btn-primary"
-                            data-url="{{ route('articles.chapters.unlock', [$article, $chapter->number]) }}">
+                            data-url="{{ route_path('articles.chapters.unlock', [$article, $chapter->number]) }}">
                         {{ __('messages.chapter.buy_for', ['cost' => number_format($creditCost)]) }}
                     </button>
                 @else
                     <button type="button" class="btn" disabled>{{ __('messages.chapter.not_enough_credit') }}</button>
-                    <div class="paywall-topup"><a href="{{ route('pages.pricing') }}">{{ __('messages.chapter.topup_now') }}</a></div>
+                    <div class="paywall-topup"><a href="{{ route_path('pages.pricing') }}">{{ __('messages.chapter.topup_now') }}</a></div>
                 @endif
                 <div id="buy-msg"></div>
             @else
-                <a href="{{ route('login') }}" class="btn btn-primary">{{ __('messages.chapter.login_to_buy') }}</a>
+                <a href="{{ route_path('login') }}" class="btn btn-primary">{{ __('messages.chapter.login_to_buy') }}</a>
             @endauth
         </div>
     @else
@@ -198,18 +198,18 @@
         <div class="buttons">
             @auth
                 <button type="button" id="btn-like-chapter" class="btn btn-invincible {{ ($userLikedChapter ?? false) ? 'liked' : '' }}"
-                        data-url="{{ route('articles.chapters.like', [$article, $chapter->number]) }}">
+                        data-url="{{ route_path('articles.chapters.like', [$article, $chapter->number]) }}">
                     <i class="fa fa-heart"></i> {{ __('messages.chapter.give_thanks') }} | <span id="likes-count">{{ (int) ($chapterLikesCount ?? 0) }}</span>
                 </button>
                 <button type="button" id="btn-bookmark-chapter" class="btn btn-invincible bookmark {{ ($currentListStatus ?? null) ? 'active' : '' }}"
-                        data-url="{{ route('articles.bookmarks.store', $article) }}">
+                        data-url="{{ route_path('articles.bookmarks.store', $article) }}">
                     <i class="fa fa-bookmark"></i> <span class="bm-text">{{ ($currentListStatus ?? null) ? __('messages.chapter.bookmarked') : __('messages.chapter.bookmark') }}</span>
                 </button>
             @else
-                <a href="{{ route('login') }}" class="btn btn-invincible">
+                <a href="{{ route_path('login') }}" class="btn btn-invincible">
                     <i class="fa fa-heart"></i> {{ __('messages.chapter.give_thanks') }} | <span>{{ (int) ($chapterLikesCount ?? 0) }}</span>
                 </a>
-                <a href="{{ route('login') }}" class="btn btn-invincible bookmark">
+                <a href="{{ route_path('login') }}" class="btn btn-invincible bookmark">
                     <i class="fa fa-bookmark"></i> {{ __('messages.chapter.bookmark') }}
                 </a>
             @endauth
@@ -232,7 +232,7 @@
     <section class="section comments-section" style="max-width:900px;margin:0 auto;padding:0 16px">
         <h2>{{ __('messages.chapter.comments') }}</h2>
         @auth
-            <form method="POST" action="{{ route('articles.comments.store', $article->id) }}" style="margin-bottom:20px">
+            <form method="POST" action="{{ route_path('articles.comments.store', $article->id) }}" style="margin-bottom:20px">
                 @csrf
                 <div class="text-input">
                     <textarea name="content" placeholder="{{ __('messages.chapter.write_comment_placeholder') }}" required
@@ -241,7 +241,7 @@
                 <button type="submit" class="btn btn-primary" style="margin-top:8px">{{ __('messages.chapter.send') }}</button>
             </form>
         @else
-            <p class="meta-color">{{ __('messages.chapter.please') }} <a href="{{ route('login') }}">{{ __('messages.chapter.login') }}</a> {{ __('messages.chapter.to_comment') }}</p>
+            <p class="meta-color">{{ __('messages.chapter.please') }} <a href="{{ route_path('login') }}">{{ __('messages.chapter.login') }}</a> {{ __('messages.chapter.to_comment') }}</p>
         @endauth
 
         <ul class="comments" style="list-style:none;padding:0">
@@ -551,7 +551,7 @@ function chapterToast(msg, type) {
 // Vote bình luận (giảm chỉ bấm được khi đã tăng)
 (function() {
     const VOTE_BASE = @json(url('comments'));
-    const LOGIN_URL = @json(route('login'));
+    const LOGIN_URL = @json(route_path('login'));
     const IS_AUTH = {{ auth()->check() ? 'true' : 'false' }};
     const CSRF = window.CSRF_TOKEN || document.querySelector('meta[name="csrf-token"]')?.content;
 
@@ -582,8 +582,8 @@ function chapterToast(msg, type) {
 @auth
 // Bookmark đoạn đang đọc + Report chương
 (function() {
-    const BOOKMARK_URL = @json(route('articles.chapters.bookmarkParagraph', [$article, $chapter->number]));
-    const REPORT_URL   = @json(route('articles.chapters.report', [$article, $chapter->number]));
+    const BOOKMARK_URL = @json(route_path('articles.chapters.bookmarkParagraph', [$article, $chapter->number]));
+    const REPORT_URL   = @json(route_path('articles.chapters.report', [$article, $chapter->number]));
     const CSRF = window.CSRF_TOKEN || document.querySelector('meta[name="csrf-token"]')?.content;
     const body = document.body;
     const content = document.getElementById('chapter-c');
@@ -682,15 +682,15 @@ function chapterToast(msg, type) {
 const CHAPTER_SELECT_VIP_PACKAGE_MSG = @json(__('messages.chapter.select_vip_package_alert'));
 $(document).ready(function() {
     $('#adLink').on('click', function() {
-        $.post('{{ route('articles.chapters.markAdClicked', [$article, $chapter->number]) }}', {_token:'{{ csrf_token() }}'}, function(r) {
+        $.post('{{ route_path('articles.chapters.markAdClicked', [$article, $chapter->number]) }}', {_token:'{{ csrf_token() }}'}, function(r) {
             if (r.success) $('#adPopup').hide();
         });
     });
     $('#buyVipBtn').on('click', function() {
         const sel = $('input[name="vip_package"]:checked');
         if (!sel.length) { alert(CHAPTER_SELECT_VIP_PACKAGE_MSG); return; }
-        @guest window.location='{{ route('login') }}'; return; @endguest
-        fetch('{{ route('vip.buy') }}', {
+        @guest window.location='{{ route_path('login') }}'; return; @endguest
+        fetch('{{ route_path('vip.buy') }}', {
             method:'POST',
             headers:{'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}'},
             body: JSON.stringify({package_id: sel.val()})
@@ -700,7 +700,7 @@ $(document).ready(function() {
         });
     });
     $('#depositBtn').on('click', function() {
-        @guest window.location='{{ route('login') }}'; @endguest
+        @guest window.location='{{ route_path('login') }}'; @endguest
         $('#paymentInfo').show();
     });
     $('input[name="vip_package"]').on('change', function() {

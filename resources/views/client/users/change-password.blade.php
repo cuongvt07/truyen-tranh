@@ -9,7 +9,7 @@
         <div class="alert-success" style="background:#1e3a1e;border:1px solid #2e5e2e;padding:10px 14px;border-radius:6px;margin-bottom:14px;color:#9f9">{{ $message }}</div>
     @endif
 
-    <form action="{{ route('password.update') }}" method="post" class="auth-form">
+    <form action="{{ route_path('password.update') }}" method="post" class="auth-form">
         @csrf @method('put')
 
         <div class="text-input">

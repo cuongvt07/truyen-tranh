@@ -5,7 +5,7 @@
     </div>
     <div class="row" id="genre-content" style="display: none;">
         @foreach ($genres as $genre)
-            <div class="col-xs-6"><a href="{{ route('genres.show', $genre) }}" title="{{ $genre->name }}">{{ $genre->name }}</a></div>
+            <div class="col-xs-6"><a href="{{ route_path('genres.show', $genre) }}" title="{{ $genre->name }}">{{ $genre->name }}</a></div>
         @endforeach
     </div>
 </div>

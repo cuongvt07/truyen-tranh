@@ -2,13 +2,18 @@
 
 @section('template_title', $pageTitle)
 
-@section('page_css')
-<link rel="stylesheet" href="{{ asset('static/forum/css/forum.css') }}">
-@endsection
-
 @section('content')
-<div class="container">
-    <h1 class="page-title">{{ $pageTitle }}</h1>
-    {!! $pageContent !!}
+<div class="alpha-workspace alpha-forum-page">
+    <div class="container">
+        <section class="alpha-workspace-hero">
+            <small>Community</small>
+            <h1>{{ $pageTitle }}</h1>
+            <p>Follow updates, discussions, and reader announcements.</p>
+        </section>
+
+        <article class="alpha-article-content">
+            {!! $pageContent !!}
+        </article>
+    </div>
 </div>
 @endsection

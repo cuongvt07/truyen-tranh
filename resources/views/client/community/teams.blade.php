@@ -11,7 +11,7 @@
     <header class="header-manga" style="margin-bottom:14px">
         <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
             <h1><i class="fas fa-crown"></i> {{ __('messages.community.my_teams') }}</h1>
-            <a href="{{ route('teams.create') }}" class="btn btn-primary">
+            <a href="{{ route_path('teams.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> {{ __('messages.community.create_team_btn') }}
             </a>
         </div>
@@ -28,7 +28,7 @@
                 </div>
                 <div class="my-story__info">
                     <div class="my-story__title">
-                        <a href="{{ route('teams.show', $t->id) }}" style="color:inherit">{{ $t->name }}</a>
+                        <a href="{{ route_path('teams.show', $t->id) }}" style="color:inherit">{{ $t->name }}</a>
                         <span class="team-role-badge">{{ __('messages.community.team_leader') }}</span>
                     </div>
                     <div style="font-size:12px;color:var(--meta-color);margin-top:3px">
@@ -39,10 +39,10 @@
                     </div>
                 </div>
                 <div class="my-story__actions">
-                    <a href="{{ route('teams.edit', $t->id) }}" class="btn btn-invincible team-action-btn" title="{{ __('messages.community.update_team') }}" aria-label="{{ __('messages.community.update_team') }}">
+                    <a href="{{ route_path('teams.edit', $t->id) }}" class="btn btn-invincible team-action-btn" title="{{ __('messages.community.update_team') }}" aria-label="{{ __('messages.community.update_team') }}">
                         <i class="fas fa-pen" aria-hidden="true"></i>
                     </a>
-                    <form method="post" action="{{ route('teams.destroy', $t->id) }}" onsubmit="return confirm('{{ __('messages.community.delete_team_confirm') }}')" style="display:inline">
+                    <form method="post" action="{{ route_path('teams.destroy', $t->id) }}" onsubmit="return confirm('{{ __('messages.community.delete_team_confirm') }}')" style="display:inline">
                         @csrf
                         @method('delete')
                         <button class="btn btn-invincible team-action-btn team-action-btn--danger" title="{{ __('messages.community.delete_team') }}" aria-label="{{ __('messages.community.delete_team') }}">
@@ -54,7 +54,7 @@
         @empty
             <div class="nothing" style="padding:40px 0;text-align:center;color:var(--meta-color)">
                 <i class="fas fa-users" style="font-size:32px;opacity:.4;display:block;margin-bottom:10px"></i>
-                {{ __('messages.community.no_teams') }} <a href="{{ route('teams.create') }}">{{ __('messages.community.create_now') }}</a>
+                {{ __('messages.community.no_teams') }} <a href="{{ route_path('teams.create') }}">{{ __('messages.community.create_now') }}</a>
             </div>
         @endforelse
         <div style="margin-top:16px">{{ $items->links('vendor.pagination.novelight') }}</div>

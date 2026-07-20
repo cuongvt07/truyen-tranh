@@ -14,7 +14,22 @@ class GenreController extends Controller
             return redirect()->route('genres.show', $genre, 301);
         }
 
-        // Dùng slug cho URL dễ đọc: /catalog?genre=drama (thay vì ?genre=11).
-        return redirect()->to(route('catalog.index') . '?genre=' . $genre->getRouteKey());
+        $articles = $genre->articles()
+            ->with(['authors', 'genres', 'slug'])
+            ->withCount('chapters')
+            ->orderByRaw(
+                '(select max(coalesce(chapters.published_at, chapters.created_at)) from chapters '
+                . 'where chapters.article_id = articles.id '
+                . 'and (chapters.published_at is null or chapters.published_at <= ?)) desc',
+                [now()]
+            )
+            ->orderByDesc('articles.updated_at')
+            ->paginate(30);
+
+        return view('client.genres.show', [
+            'genre' => $genre,
+            'genres' => Genre::orderBy('name')->get(),
+            'articles' => $articles,
+        ]);
     }
 }

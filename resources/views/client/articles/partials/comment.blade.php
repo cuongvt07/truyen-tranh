@@ -4,7 +4,7 @@
     $isReply   = $isReply ?? (bool) $comment->parent_id;
     $myVote    = $comment->my_vote;                 // 1 | -1 | null
     $canDelete = auth()->check() && $comment->canBeDeletedBy(auth()->user());
-    $profile   = $u ? route('users.show.profile', $u->id) : '#';
+    $profile   = $u ? route_path('users.show.profile', $u->id) : '#';
 @endphp
 <li class="comment" id="comment-{{ $comment->id }}" data-id="{{ $comment->id }}">
     <div class="comment-header">

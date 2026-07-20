@@ -2,55 +2,74 @@
 
 @section('template_title', __('messages.auth.login'))
 
-@section('page_css')
-<link rel="stylesheet" href="{{ asset('static/account/css/login.css') }}?ver=1.8.0">
-@endsection
-
 @section('content')
-<div class="container">
-    <div class="container-login">
-        <div id="login" class="login-form block">
-            <h2>{{ __('messages.auth.login') }}</h2>
-
-            @if(session('reading_limit_notice'))
-                <div class="login-notice" style="color:#f0c040">
-                    <p>{{ session('reading_limit_notice') }}</p>
+<div class="alpha-auth-page">
+    <div class="container">
+        <div class="alpha-auth-shell">
+            <section class="alpha-auth-copy">
+                <div class="alpha-auth-copy__content">
+                    <small>Reader account</small>
+                    <h1>Continue your library</h1>
+                    <p>Sign in to keep reading, save books, unlock chapters, and follow new updates.</p>
+                    <div class="alpha-auth-metrics">
+                        <span><b>10K+</b> novels</span>
+                        <span><b>24/7</b> reading</span>
+                        <span><b>Sync</b> library</span>
+                    </div>
                 </div>
-            @endif
-
-            @if($errors->any())
-                <div class="login-notice" style="color:#f66">
-                    @foreach($errors->all() as $e)<p>{{ $e }}</p>@endforeach
+                <div class="alpha-auth-visual">
+                    <img src="{{ asset('static/core/images/alphanovel/heroes-with-app.png') }}" alt="Read novels online" loading="lazy">
                 </div>
-            @endif
+            </section>
 
-            <form method="post" action="{{ route('login') }}">
-                @csrf
-
-                <div class="text-input">
-                    <div class="left-icon"><i class="fa fa-user"></i></div>
-                    <input type="text" name="login" placeholder="{{ __('messages.auth.email_or_username') }}"
-                           value="{{ old('login') }}" required autofocus>
-                </div>
-
-                <div class="text-input">
-                    <div class="left-icon"><i class="fa fa-key"></i></div>
-                    <input type="password" name="password" placeholder="{{ __('messages.auth.password') }}" required>
+            <section class="alpha-auth-card">
+                <div class="alpha-auth-card__head">
+                    <small>{{ config('app.name') }}</small>
+                    <h2>{{ __('messages.auth.login') }}</h2>
+                    <p>Access your saved novels, comments, gifts, and reading progress.</p>
                 </div>
 
-                <div class="control-btn">
-                    <a class="forgot-password-link" href="{{ route('password.request') }}">{{ __('messages.auth.forgot') }}</a>
-                    <button class="btn btn-primary" type="submit">{{ __('messages.auth.login') }}</button>
-                </div>
-            </form>
+                @if(session('reading_limit_notice'))
+                    <div class="alpha-alert alpha-alert--warning">{{ session('reading_limit_notice') }}</div>
+                @endif
+                @if(session('status'))
+                    <div class="alpha-alert alpha-alert--success">{{ session('status') }}</div>
+                @endif
+                @if($errors->any())
+                    <div class="alpha-alert alpha-alert--danger">
+                        @foreach($errors->all() as $e)<div>{{ $e }}</div>@endforeach
+                    </div>
+                @endif
 
-            <hr>
-            <div class="alternative">
-                <a href="{{ route('auth.google') }}" class="btn btn-google"><i class="fab fa-google"></i><span> Google</span></a>
-            </div>
+                <form method="post" action="{{ route_path('login') }}" class="alpha-form">
+                    @csrf
+                    <div class="alpha-field">
+                        <label>{{ __('messages.auth.email_or_username') }}</label>
+                        <input type="text" name="login" value="{{ old('login') }}" required autofocus autocomplete="username" placeholder="Email or username">
+                    </div>
+                    <div class="alpha-field">
+                        <label>{{ __('messages.auth.password') }}</label>
+                        <input type="password" name="password" required autocomplete="current-password" placeholder="Password">
+                    </div>
+                    <div class="alpha-auth-options">
+                        <label class="alpha-check">
+                            <input type="checkbox" name="remember" value="1">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="{{ route_path('password.request') }}">{{ __('messages.auth.forgot') }}</a>
+                    </div>
+                    <button class="alpha-btn alpha-btn--primary alpha-auth-submit" type="submit">{{ __('messages.auth.login') }}</button>
+                </form>
+
+                <div class="alpha-auth-alt">
+                    <span>or continue with</span>
+                    <a href="{{ route_path('auth.google') }}" class="alpha-btn alpha-auth-google"><i class="fab fa-google"></i> Google</a>
+                </div>
+                <div class="alpha-auth-switch">
+                    {{ __('messages.auth.no_account') }} <a href="{{ route_path('register') }}">{{ __('messages.auth.register') }}</a>
+                </div>
+            </section>
         </div>
-
-        <span class="account-span">{{ __('messages.auth.no_account') }} <a href="{{ route('register') }}">{{ __('messages.auth.register') }}</a></span>
     </div>
 </div>
 @endsection

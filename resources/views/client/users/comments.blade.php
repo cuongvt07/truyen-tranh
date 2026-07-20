@@ -20,7 +20,7 @@
                         <div class="comment-header__ava image image-cover lazy-load-bg">
                             <img class="lazy-image" loading="eager" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                         </div>
-                        <a href="{{ route('articles.show', $article) }}" class="nickname">{{ $article->title }}</a>
+                        <a href="{{ route_path('articles.show', $article) }}" class="nickname">{{ $article->title }}</a>
                     </div>
                     <div class="right">
                         <div class="date meta-color">{{ optional($comment->created_at)->format('d.m.Y H:i') }}</div>
@@ -28,7 +28,7 @@
                 </div>
                 <div class="text-info">{!! nl2br(e($comment->content)) !!}</div>
                 @if(isMyAccount($currentUser ?? null, $commentUser))
-                    <form action="{{ route('articles.comments.destroy', [$comment->article_id, $comment->id]) }}" method="post" style="margin-top:6px">
+                    <form action="{{ route_path('articles.comments.destroy', [$comment->article_id, $comment->id]) }}" method="post" style="margin-top:6px">
                         @csrf @method('delete')
                         <button class="btn btn-invincible" style="font-size:12px;padding:2px 8px"><i class="fa fa-times"></i> {{ __('messages.account.delete') }}</button>
                     </form>

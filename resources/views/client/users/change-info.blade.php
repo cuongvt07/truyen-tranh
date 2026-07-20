@@ -4,8 +4,8 @@
 @section('user_content')
 {{-- Tabs: Thông tin / Bảo mật --}}
 <div class="block list-names" style="margin-bottom:14px">
-    <a href="{{ route('users.change_info') }}" class="btn">{{ __('messages.account.tab_info') }}</a>
-    <a href="{{ route('users.change_password') }}" class="btn btn-invincible">{{ __('messages.account.tab_security') }}</a>
+    <a href="{{ route_path('users.change_info') }}" class="btn">{{ __('messages.account.tab_info') }}</a>
+    <a href="{{ route_path('users.change_password') }}" class="btn btn-invincible">{{ __('messages.account.tab_security') }}</a>
 </div>
 
 <div class="block">
@@ -18,7 +18,7 @@
         </div>
     @endif
 
-    <form action="{{ route('users.update') }}" method="post" enctype="multipart/form-data" class="settings-form">
+    <form action="{{ route_path('users.update') }}" method="post" enctype="multipart/form-data" class="settings-form">
         @csrf @method('patch')
 
         {{-- Avatar --}}

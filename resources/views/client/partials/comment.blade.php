@@ -30,7 +30,7 @@
                                 {{ $errors->first('content') }}
                             </div>
                         @endif
-                        <form action="{{ route('articles.comments.store', $article->id) }}" method="post"
+                        <form action="{{ route_path('articles.comments.store', $article->id) }}" method="post"
                               id="commentForm">
                             @csrf
                             <div class="form-group">
@@ -65,7 +65,7 @@
                             </i>
                             <div class="info">
                                 <div class="comment-header">
-                                    <a href="{{ route('users.show', $commentUser->id) }}">
+                                    <a href="{{ route_path('users.show', $commentUser->id) }}">
                                         <span class="authorname">{!! $commentUser->renderUserName() !!}</span>
                                     </a>
                                     <abbr title="{{ $comment->created_at }}">
@@ -75,7 +75,7 @@
                                 <div class="comment-content">{!! nl2br($comment->content) !!}</div>
                                 @if(isMyAccount($currentUser, $commentUser))
                                     <form
-                                        action="{{ route('articles.comments.destroy', [$article->id, $comment->id]) }}"
+                                        action="{{ route_path('articles.comments.destroy', [$article->id, $comment->id]) }}"
                                         method="post"
                                         style="border-top: 1px solid rgb(216, 216, 216); background-color: whitesmoke; margin-top: 10px;"
                                         class="formDeleteComment">
@@ -101,7 +101,7 @@
             </div>
         </div>
         <div id="fb-comments" class="tabcontent" data-tab="tab2">
-            <div class="fb-comments" data-href="{{ url()->route('articles.show', $article) }}" data-width=""
+            <div class="fb-comments" data-href="{{ url()->route_path('articles.show', $article) }}" data-width=""
                  data-numposts="10"></div>
         </div>
     </div>

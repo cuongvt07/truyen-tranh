@@ -26,7 +26,7 @@
                 spaceBetween: 10,
                 loop: true,
                 autoplay: { delay: 3500, disableOnInteraction: false },
-                breakpoints: { 1040: { slidesPerView: 6 }, 550: { slidesPerView: 4 }, 350: { slidesPerView: 3 } }
+                breakpoints: { 1024: { slidesPerView: 5, spaceBetween: 20 }, 768: { slidesPerView: 3, spaceBetween: 18 } }
             });
         }
 
@@ -38,7 +38,7 @@
                 spaceBetween: 10,
                 loop: true,
                 autoplay: { delay: 2800, disableOnInteraction: false },
-                breakpoints: { 1040: { slidesPerView: 8 }, 550: { slidesPerView: 5 }, 320: { slidesPerView: 3 } }
+                breakpoints: { 1024: { slidesPerView: 5, spaceBetween: 20 }, 768: { slidesPerView: 3, spaceBetween: 18 } }
             });
         }
 
@@ -64,7 +64,7 @@
                     nextEl: el.closest('.manga-list').querySelector('.swiper-right'),
                     prevEl: el.closest('.manga-list').querySelector('.swiper-left'),
                 },
-                breakpoints: { 1040: { slidesPerView: 6 }, 550: { slidesPerView: 4 }, 350: { slidesPerView: 3 } }
+                breakpoints: { 1024: { slidesPerView: 5, spaceBetween: 20 }, 768: { slidesPerView: 3, spaceBetween: 18 } }
             });
         });
     }

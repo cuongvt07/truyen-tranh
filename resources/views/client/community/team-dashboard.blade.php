@@ -81,7 +81,7 @@
                     @else
                         <div class="dashboard-rank">
                             @foreach($topLikedArticles as $row)
-                                <a href="{{ route('articles.show', $row->id) }}" class="dashboard-rank-row">
+                                <a href="{{ route_path('articles.show', $row->id) }}" class="dashboard-rank-row">
                                     <span class="rank-title">{{ $row->title }}</span>
                                     <span class="rank-value">{{ number_format($row->total) }}</span>
                                 </a>
@@ -96,7 +96,7 @@
                     @else
                         <div class="dashboard-rank">
                             @foreach($topCouponArticles as $row)
-                                <a href="{{ route('articles.show', $row->id) }}" class="dashboard-rank-row">
+                                <a href="{{ route_path('articles.show', $row->id) }}" class="dashboard-rank-row">
                                     <span class="rank-title">{{ $row->title }}</span>
                                     <span class="rank-value">{{ number_format($row->total) }}</span>
                                 </a>

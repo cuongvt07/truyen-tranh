@@ -14,14 +14,14 @@
         <div class="block faq-sidebar">
             @foreach($allCategories ?? [] as $cat)
                 <div class="faq-sidebar-topic {{ $cat->id === $category->id ? 'active' : '' }}">
-                    <a href="{{ route('pages.faq.topic', $cat->slug) }}" class="faq-sidebar-topic__name">
+                    <a href="{{ route_path('pages.faq.topic', $cat->slug) }}" class="faq-sidebar-topic__name">
                         {{ $cat->localizedTitle() }}
                     </a>
                     @if($cat->id === $category->id)
                         <ul class="faq-sidebar-topic__list">
                             @foreach($articles as $art)
                                 <li>
-                                    <a href="{{ route('pages.faq.article', [$cat->slug, $art->slug]) }}">
+                                    <a href="{{ route_path('pages.faq.article', [$cat->slug, $art->slug]) }}">
                                         {{ $art->localizedTitle() }}
                                     </a>
                                 </li>
@@ -31,7 +31,7 @@
                         <ul class="faq-sidebar-topic__list">
                             @foreach($cat->children ?? [] as $art)
                                 <li>
-                                    <a href="{{ route('pages.faq.article', [$cat->slug, $art->slug]) }}">
+                                    <a href="{{ route_path('pages.faq.article', [$cat->slug, $art->slug]) }}">
                                         {{ $art->localizedTitle() }}
                                     </a>
                                 </li>
@@ -45,7 +45,7 @@
         {{-- Main content --}}
         <div class="block faq-main">
             <div class="breadcumps">
-                <a href="{{ route('pages.faq') }}">FAQ</a>
+                <a href="{{ route_path('pages.faq') }}">FAQ</a>
                 <span>&gt;</span>
                 <span>{{ $category->localizedTitle() }}</span>
             </div>
@@ -57,7 +57,7 @@
             <ul class="faq-article-list">
                 @forelse($articles as $article)
                     <li>
-                        <a href="{{ route('pages.faq.article', [$category->slug, $article->slug]) }}">
+                        <a href="{{ route_path('pages.faq.article', [$category->slug, $article->slug]) }}">
                             {{ $article->localizedTitle() }}
                         </a>
                     </li>

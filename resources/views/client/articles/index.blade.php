@@ -23,7 +23,7 @@
                         ? $article->chapters->sortByDesc('number')->first()
                         : null;
                 @endphp
-                <a href="{{ route('articles.show', $article) }}" class="alpha-novel-card">
+                <a href="{{ route_path('articles.show', $article) }}" class="alpha-novel-card">
                     <span class="alpha-novel-card__cover">
                         <img src="{{ novel_poster($article) }}" alt="{{ $article->title }}" loading="lazy">
                         @if($article->is_completed)<em>{{ __('messages.catalog.status_completed') }}</em>@endif

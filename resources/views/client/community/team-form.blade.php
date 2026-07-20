@@ -1,7 +1,7 @@
 @extends('layout.novelight')
 @section('template_title', $mode === 'create' ? __('messages.community.create_team_title') : __('messages.community.edit_team_title', ['name' => $item->name]))
 @php
-    $action = $mode === 'create' ? route('teams.store') : route('teams.update', $item->id);
+    $action = $mode === 'create' ? route_path('teams.store') : route_path('teams.update', $item->id);
 @endphp
 
 @push('styles')
@@ -80,7 +80,7 @@
 
                 <div class="team-form-actions">
                     <button type="submit" class="btn">{{ $mode === 'create' ? __('messages.community.create') : __('messages.community.update') }}</button>
-                    <a href="{{ $mode === 'edit' ? route('teams.show', $item->id) : route('teams.index') }}" class="btn btn-invincible">{{ __('messages.community.cancel') }}</a>
+                    <a href="{{ $mode === 'edit' ? route_path('teams.show', $item->id) : route_path('teams.index') }}" class="btn btn-invincible">{{ __('messages.community.cancel') }}</a>
                 </div>
             </form>
         </main>

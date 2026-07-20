@@ -228,6 +228,80 @@ class PageController extends Controller
         ]);
     }
 
+    public function blog()
+    {
+        $images = [
+            '/static/core/images/alphanovel/blog-dramatic-romance.png',
+            '/static/core/images/alphanovel/blog-lycans-queen.png',
+            '/static/core/images/alphanovel/blog-fated-mates.png',
+            '/static/core/images/alphanovel/blog-sweet-romance.png',
+            '/static/core/images/alphanovel/blog-fantasy-enemies.png',
+        ];
+        $editorAvatar = '/static/core/images/alphanovel/editor-evelyn-mitchell.png';
+
+        $posts = StaticPage::active()->approved()
+            ->where('page_type', 'forum_post')
+            ->with(['author:id,name,username', 'parent:id,slug'])
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get()
+            ->map(function (StaticPage $post, int $index) use ($images, $editorAvatar) {
+                $content = strip_tags($post->localizedContent());
+                $parent = $post->parent;
+
+                return [
+                    'title' => $post->localizedTitle(),
+                    'excerpt' => $post->localizedExcerpt(),
+                    'author' => optional($post->author)->name ?? optional($post->author)->username ?? 'Evelyn Mitchell',
+                    'date' => $post->created_at,
+                    'read_time' => max(5, (int) ceil(str_word_count($content) / 220)),
+                    'url' => $parent ? route('pages.forum.post', [$parent->slug, $post->slug], false) : route('pages.forum', [], false),
+                    'image' => $images[$index % count($images)],
+                    'author_avatar' => $editorAvatar,
+                ];
+            });
+
+        if ($posts->isEmpty()) {
+            $posts = collect([
+                [
+                    'title' => 'Dramatic romance books',
+                    'excerpt' => 'A curated reading list for dramatic romance stories with sharp tension, emotional turns, and page-turning conflicts.',
+                    'author' => 'Evelyn Mitchell',
+                    'date' => now()->subDays(7),
+                    'read_time' => 12,
+                    'url' => route('catalog.index', ['genre' => 'romance'], false),
+                    'image' => $images[0],
+                    'author_avatar' => $editorAvatar,
+                ],
+                [
+                    'title' => 'Fated mates romance books',
+                    'excerpt' => 'Explore bonded love stories, werewolf tension, and destiny-driven relationships for your next reading session.',
+                    'author' => 'Evelyn Mitchell',
+                    'date' => now()->subDays(14),
+                    'read_time' => 7,
+                    'url' => route('catalog.index', ['genre' => 'werewolf'], false),
+                    'image' => $images[1],
+                    'author_avatar' => $editorAvatar,
+                ],
+                [
+                    'title' => 'Sweet romance books',
+                    'excerpt' => 'Warm, addictive romance picks for readers who want chemistry, comfort, and a satisfying emotional arc.',
+                    'author' => 'Evelyn Mitchell',
+                    'date' => now()->subDays(21),
+                    'read_time' => 9,
+                    'url' => route('catalog.index', ['genre' => 'contemporary'], false),
+                    'image' => $images[2],
+                    'author_avatar' => $editorAvatar,
+                ],
+            ]);
+        }
+
+        return view('client.pages.blog', [
+            'pageTitle' => 'Blog',
+            'blogPosts' => $posts,
+        ]);
+    }
+
     public function forumCategory(string $category)
     {
         $categoryPage = $this->pageByTypeAndSlug('forum_category', $category);

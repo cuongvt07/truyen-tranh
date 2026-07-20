@@ -13,7 +13,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $data = Cache::remember('home:index:alphanovel:v1', 180, function () {
+        $data = Cache::remember('home:index:alphanovel:v3', 180, function () {
             $take = 10;
             $with = ['genres', 'authors', 'slug'];
 
@@ -43,7 +43,7 @@ class HomeController extends Controller
                 if (!$genre) {
                     return [
                         'articles' => $hotArticles,
-                        'url' => route('catalog.index'),
+                        'url' => route_path('catalog.index'),
                     ];
                 }
 
@@ -55,43 +55,36 @@ class HomeController extends Controller
 
                 return [
                     'articles' => $articles->isNotEmpty() ? $articles : $hotArticles,
-                    'url' => route('catalog.index', ['genre' => $genre->getRouteKey()]),
+                    'url' => route_path('catalog.index', ['genre' => $genre->getRouteKey()]),
                 ];
             };
 
             $blocks = [
                 [
-                    'title' => 'Best match for you',
-                    'articles' => $hotArticles,
-                    'url' => route('home.show_hot_articles'),
-                    'variant' => 'rail',
-                    'showSeeAll' => false,
-                ],
-                [
                     'title' => 'Top Trending',
                     'articles' => $newUpdateArticles,
-                    'url' => route('home.show_new_update_articles'),
+                    'url' => route_path('home.show_new_update_articles'),
                     'variant' => 'trending',
                     'showSeeAll' => true,
                 ],
                 [
                     'title' => 'Hottest New',
                     'articles' => $hottestNewArticles,
-                    'url' => route('home.show_new_update_articles'),
+                    'url' => route_path('home.show_new_update_articles'),
                     'variant' => 'rail',
                     'showSeeAll' => true,
                 ],
                 [
                     'title' => "Editors' Choice",
                     'articles' => $hotArticles,
-                    'url' => route('home.show_hot_articles'),
+                    'url' => route_path('home.show_hot_articles'),
                     'variant' => 'rail',
                     'showSeeAll' => true,
                 ],
                 [
                     'title' => 'Only at '.config('app.name'),
                     'articles' => $exclusiveArticles,
-                    'url' => route('catalog.index'),
+                    'url' => route_path('catalog.index'),
                     'variant' => 'rail',
                     'showSeeAll' => true,
                 ],

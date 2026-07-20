@@ -1,7 +1,7 @@
 @extends('layout.novelight')
 @section('template_title', $mode === 'create' ? __('messages.community.create_collection') : __('messages.community.edit_collection'))
 @php
-    $action = $mode === 'create' ? route('collections.store') : route('collections.update', $item->id);
+    $action = $mode === 'create' ? route_path('collections.store') : route_path('collections.update', $item->id);
     $selected = $item->exists ? $item->articles->pluck('id')->all() : [];
 @endphp
 
@@ -29,7 +29,7 @@
                     @endforeach
                 </div>
             </div>
-            <div style="display:flex;gap:10px"><button type="submit" class="btn btn-primary">{{ $mode === 'create' ? __('messages.community.create') : __('messages.community.save') }}</button><a href="{{ route('collections.index') }}" class="btn btn-invincible">{{ __('messages.community.cancel') }}</a></div>
+            <div style="display:flex;gap:10px"><button type="submit" class="btn btn-primary">{{ $mode === 'create' ? __('messages.community.create') : __('messages.community.save') }}</button><a href="{{ route_path('collections.index') }}" class="btn btn-invincible">{{ __('messages.community.cancel') }}</a></div>
         </form>
     </div>
 </div>

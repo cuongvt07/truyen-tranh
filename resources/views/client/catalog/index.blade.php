@@ -17,18 +17,18 @@
             <h2>Genre</h2>
             <label class="alpha-genre-select" aria-label="Genre">
                 <select onchange="if (this.value) window.location.href = this.value;">
-                    <option value="{{ route('catalog.index') }}" {{ $activeGenreId ? '' : 'selected' }}>All Novels</option>
+                    <option value="{{ route_path('catalog.index') }}" {{ $activeGenreId ? '' : 'selected' }}>All Novels</option>
                     @foreach($genres as $genre)
-                        <option value="{{ route('catalog.index', ['genre' => $genre->getRouteKey()]) }}" {{ $activeGenreId === (int) $genre->id ? 'selected' : '' }}>
+                        <option value="{{ route_path('catalog.index', ['genre' => $genre->getRouteKey()]) }}" {{ $activeGenreId === (int) $genre->id ? 'selected' : '' }}>
                             {{ $genre->name }}
                         </option>
                     @endforeach
                 </select>
             </label>
             <nav class="alpha-genre-list">
-                <a href="{{ route('catalog.index') }}" class="{{ $activeGenreId ? '' : 'active' }}">All Novels</a>
+                <a href="{{ route_path('catalog.index') }}" class="{{ $activeGenreId ? '' : 'active' }}">All Novels</a>
                 @foreach($genres as $genre)
-                    <a href="{{ route('catalog.index', ['genre' => $genre->getRouteKey()]) }}" class="{{ $activeGenreId === (int) $genre->id ? 'active' : '' }}">
+                    <a href="{{ route_path('catalog.index', ['genre' => $genre->getRouteKey()]) }}" class="{{ $activeGenreId === (int) $genre->id ? 'active' : '' }}">
                         {{ $genre->name }}
                     </a>
                 @endforeach
@@ -50,7 +50,7 @@
 
         <div class="alpha-novel-list">
             @forelse($articles as $article)
-                <a href="{{ route('articles.show', $article) }}" class="alpha-novel-card">
+                <a href="{{ route_path('articles.show', $article) }}" class="alpha-novel-card">
                     <span class="alpha-novel-card__cover">
                         <img src="{{ novel_poster($article) }}" alt="{{ $article->title }}" loading="lazy">
                         @if($article->is_completed)<em>Completed</em>@endif

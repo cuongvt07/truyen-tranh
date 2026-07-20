@@ -11,7 +11,7 @@
     '@context' => 'https://schema.org',
     '@type' => 'Book',
     'name' => $article->title,
-    'url' => route('articles.show', $article),
+    'url' => route_path('articles.show', $article),
     'description' => \Illuminate\Support\Str::limit(strip_tags($article->description), 250),
     'image' => novel_poster($article),
     'author' => ['@type' => 'Person', 'name' => optional($article->authors->first())->name ?? 'Updating'],
@@ -51,10 +51,10 @@
 @section('content')
 <div class="container">
     <nav class="alpha-book-breadcrumb">
-        <a href="{{ route('catalog.index') }}">Novels</a>
+        <a href="{{ route_path('catalog.index') }}">Novels</a>
         @if($primaryGenre)
             <span>/</span>
-            <a href="{{ route('genres.show', $primaryGenre) }}">{{ $primaryGenre->name }}</a>
+            <a href="{{ route_path('genres.show', $primaryGenre) }}">{{ $primaryGenre->name }}</a>
         @endif
         <span>/</span>
         <span>{{ $article->title }}</span>
@@ -84,7 +84,7 @@
                     @if($article->genres->count())
                         <div class="alpha-book-detail-tags">
                             @foreach($article->genres->take(10) as $genre)
-                                <a href="{{ route('genres.show', $genre) }}">{{ $genre->name }}</a>
+                                <a href="{{ route_path('genres.show', $genre) }}">{{ $genre->name }}</a>
                             @endforeach
                         </div>
                     @endif
@@ -116,7 +116,7 @@
                 @if($article->genres->count())
                 <section class="tags section">
                     @foreach($article->genres as $genre)
-                        <a href="{{ route('genres.show', $genre) }}">{{ $genre->name }}</a>
+                        <a href="{{ route_path('genres.show', $genre) }}">{{ $genre->name }}</a>
                     @endforeach
                 </section>
                 @endif
@@ -142,7 +142,7 @@
                         <article class="alpha-inline-chapter" id="chapter-{{ $inlineChapter->number }}">
                             <header class="alpha-inline-chapter__header">
                                 <h3>{{ $inlineChapter->title ?: __('messages.article.chapter') . ' ' . $inlineChapter->number }}</h3>
-                                <a href="{{ route('articles.chapters.show', [$article, $inlineChapter->number]) }}" class="alpha-inline-chapter__legacy">Open</a>
+                                <a href="{{ route_path('articles.chapters.show', [$article, $inlineChapter->number]) }}" class="alpha-inline-chapter__legacy">Open</a>
                             </header>
 
                             @if($canReadInline)
@@ -163,11 +163,11 @@
                                     <div class="alpha-inline-lock">
                                         <strong><i class="fa fa-lock"></i> {{ __('messages.chapter.not_purchased') }}</strong>
                                         @auth
-                                            <a href="{{ route('articles.chapters.show', [$article, $inlineChapter->number]) }}" class="alpha-next-chapter">
+                                            <a href="{{ route_path('articles.chapters.show', [$article, $inlineChapter->number]) }}" class="alpha-next-chapter">
                                                 {{ __('messages.chapter.buy_for', ['cost' => number_format($inlineCreditCost)]) }}
                                             </a>
                                         @else
-                                            <a href="{{ route('login') }}" class="alpha-next-chapter">{{ __('messages.chapter.login_to_buy') }}</a>
+                                            <a href="{{ route_path('login') }}" class="alpha-next-chapter">{{ __('messages.chapter.login_to_buy') }}</a>
                                         @endauth
                                     </div>
                                 </div>
@@ -190,7 +190,7 @@
                                 $chapterIsPaid = $chapterCreditCost > 0;
                                 $chapterIsUnlocked = $chapterIsPaid && ($unlockedChapterIds ?? collect())->contains($chapter->id);
                             @endphp
-                            <a href="{{ route('articles.chapters.show', [$article, $chapter->number]) }}" class="chapter ">
+                            <a href="{{ route_path('articles.chapters.show', [$article, $chapter->number]) }}" class="chapter ">
                                 <div class="title">
                                     {{ __('messages.article.chapter') }} {{ $chapter->number }} - <span>{{ $chapter->title }}</span>
                                 </div>
@@ -221,7 +221,7 @@
                 <section class="section translators alpha-detail-legacy">
                     <h2>{{ __('messages.article.teams') }}</h2>
                     <div class="items">
-                        <a href="{{ route('teams.show', $article->team->id) }}" class="translator">
+                        <a href="{{ route_path('teams.show', $article->team->id) }}" class="translator">
                             <div class="image image-cover">
                                 <img loading="lazy" src="{{ $article->team->photo ?: asset('static/core/images/no_cover.webp') }}" alt="{{ $article->team->name }}">
                             </div>
@@ -236,18 +236,26 @@
                 <section class="section alpha-suggestions">
                     <h2 class="section-title">
                         <span>You will also like</span>
+                        <div class="alpha-slider-actions">
+                            <button type="button" class="alpha-slider-prev" aria-label="Previous"><i class="fa fa-chevron-left"></i></button>
+                            <button type="button" class="alpha-slider-next" aria-label="Next"><i class="fa fa-chevron-right"></i></button>
+                        </div>
                     </h2>
-                    <div class="alpha-suggestion-grid">
+                    <div class="alpha-suggestion-grid alpha-slider swiper-container" data-alpha-slider="suggestions">
+                        <div class="swiper-wrapper">
                         @foreach($suggestedArticles as $s)
-                            <a href="{{ route('articles.show', $s) }}" class="alpha-suggestion-card">
-                                <span class="alpha-suggestion-card__cover">
-                                    <img loading="lazy" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
-                                    @if($loop->first)<em>Recommended</em>@endif
-                                </span>
-                                <strong class="clamp clamp-2">{{ $s->title }}</strong>
-                                <small>{{ optional($s->authors->first())->name ?? 'Updating' }}</small>
-                            </a>
+                            <div class="swiper-slide">
+                                <a href="{{ route_path('articles.show', $s) }}" class="alpha-suggestion-card">
+                                    <span class="alpha-suggestion-card__cover">
+                                        <img loading="lazy" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
+                                        @if($loop->first)<em>Recommended</em>@endif
+                                    </span>
+                                    <strong class="clamp clamp-2">{{ $s->title }}</strong>
+                                    <small>{{ optional($s->authors->first())->name ?? 'Updating' }}</small>
+                                </a>
+                            </div>
                         @endforeach
+                        </div>
                     </div>
                 </section>
                 @endif
@@ -266,7 +274,7 @@
                         <div class="swiper-wrapper">
                             @foreach($translationRequests as $s)
                                 <div class="swiper-slide">
-                                    <a href="{{ route('articles.show', $s) }}" class="manga-item">
+                                    <a href="{{ route_path('articles.show', $s) }}" class="manga-item">
                                         <div class="poster image image-cover lazy-load-bg">
                                             <img class="lazy-image" loading="eager" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
                                         </div>
@@ -285,7 +293,7 @@
                     <h2 class="section-title">{{ __('messages.article.related_collections') }}</h2>
                     <div class="collections"><div class="collection-mini-grid related-collections-6">
                         @foreach($relatedGenres as $genre)
-                            <a href="{{ route('genres.show', $genre) }}" class="collection-item">
+                            <a href="{{ route_path('genres.show', $genre) }}" class="collection-item">
                                 <div class="collection__inner">
                                     <div class="collection-name clamp clamp-1">{{ $genre->name }}</div>
                                     <div class="collection-author meta-color clamp clamp-1">
@@ -301,69 +309,69 @@
 
                 {{-- Last Comments (preview) --}}
                 <section class="section comments-section alpha-reviews-preview">
-                    <h2 class="section-title">
-                        <span>Reviews</span>
-                        <a href="#" id="show-all-comments" class="meta-color header-small-text" section-target="comments">See All</a>
-                    </h2>
-                    @forelse(collect($comments->items())->take(3) as $comment)
-                        <div class="comment-preview">
-                            <div class="comment-preview__main">
-                                <div class="comment-block__header">
-                                    <div class="left">
+                    @php
+                        $reviewItems = collect($comments->items())->take(3);
+                        $reviewStatusLabel = $article->is_completed ? 'Review after the novel completion' : 'Review after half of the novel';
+                    @endphp
+                    <div class="alpha-reviews-preview__header">
+                        <h2 class="section-title">Reviews</h2>
+                        <a href="{{ route_path('articles.reviews', $article) }}" id="show-all-comments" class="alpha-reviews-preview__see-all">See All</a>
+                    </div>
+
+                    <div class="alpha-reviews-preview__grid">
+                        @forelse($reviewItems as $comment)
+                            <article class="comment-preview alpha-review-card">
+                                <header class="alpha-review-card__header">
+                                    <div class="alpha-review-card__user">
                                         <div class="comment-header__ava image image-cover lazy-load-bg">
-                                            <img class="lazy-image" loading="eager" src="{{ optional($comment->user)->avatar ?: asset('static/account/images/no-ava.jpg') }}" alt="{{ optional($comment->user)->name ?? optional($comment->user)->username }}">
+                                            <img class="lazy-image" loading="eager" src="{{ optional($comment->user)->avatar ?: '/static/core/images/alphanovel/review-avatar_1.png' }}" alt="{{ optional($comment->user)->name ?? optional($comment->user)->username }}">
                                         </div>
-                                        <div class="nickname">{{ optional($comment->user)->name ?? optional($comment->user)->username ?? __('messages.comments.anonymous') }}</div>
+                                        <div>
+                                            <strong>{{ optional($comment->user)->name ?? optional($comment->user)->username ?? __('messages.comments.anonymous') }}</strong>
+                                            <span>{{ $reviewStatusLabel }}</span>
+                                        </div>
                                     </div>
-                                    <div class="right"><div class="date meta-color">{{ optional($comment->created_at)->format('d.m.Y') }}</div></div>
-                                </div>
-                                <div class="text-info clamp clamp-3">{{ $comment->content }}</div>
-                            </div>
+                                    <button type="button" class="alpha-review-card__report alpha-review-report-trigger" data-comment="{{ $comment->id }}" aria-label="Report review">
+                                        <i class="fa fa-shield-alt"></i>
+                                    </button>
+                                </header>
 
-                            @php $previewReplies = $comment->relationLoaded('replies') ? $comment->replies->take(2) : collect(); @endphp
-                            @if($previewReplies->count())
-                                <div class="comment-preview__replies">
-                                    @foreach($previewReplies as $reply)
-                                        <div class="comment-preview__reply">
-                                            <div class="comment-preview__reply-meta">
-                                                {{ optional($reply->user)->name ?? optional($reply->user)->username ?? __('messages.comments.anonymous') }}
-                                                <span class="meta-color">{{ optional($reply->created_at)->format('d.m.Y') }}</span>
+                                <p class="alpha-review-card__content clamp clamp-4">{{ $comment->content }}</p>
+
+                                @php $previewReplies = $comment->relationLoaded('replies') ? $comment->replies->take(2) : collect(); @endphp
+                                @if($previewReplies->count())
+                                    <div class="comment-preview__replies alpha-review-card__replies">
+                                        @foreach($previewReplies as $reply)
+                                            <div class="comment-preview__reply">
+                                                <div class="comment-preview__reply-meta">
+                                                    {{ optional($reply->user)->name ?? optional($reply->user)->username ?? __('messages.comments.anonymous') }}
+                                                    <span class="meta-color">{{ optional($reply->created_at)->format('d.m.Y') }}</span>
+                                                </div>
+                                                <div class="text-info clamp clamp-2">{{ $reply->content }}</div>
                                             </div>
-                                            <div class="text-info clamp clamp-2">{{ $reply->content }}</div>
-                                        </div>
-                                    @endforeach
+                                        @endforeach
+                                    </div>
+                                @endif
+
+                                <div class="alpha-review-card__footer">
+                                    <span>{{ optional($comment->created_at)->format('F j, Y') }}</span>
+                                    <a href="{{ route_path('articles.reviews.show', [$article, $comment]) }}">more</a>
                                 </div>
-                            @endif
-
-                            <a href="#" class="comment-preview__reply-link comment-append-btn" data-open-reply="{{ $comment->id }}">
-                                {{ __('messages.comments.reply') }}
-                            </a>
-                            <div class="comment-preview__append-to"></div>
-                        </div>
-                    @empty
-                        <div class="nothing">{{ __('messages.article.no_comments') }}</div>
-                    @endforelse
-                </section>
-
-                <section class="alpha-app-hero alpha-detail-app-hero">
-                    <div class="alpha-app-hero__media">
-                        <img loading="lazy" src="{{ $poster }}" alt="{{ $article->title }}">
-                    </div>
-                    <div class="alpha-app-hero__content">
-                        <h1>Read <span>{{ $article->title }}</span> online anytime</h1>
-                        <p>Follow new chapters, save your reading progress, and discover more novels from the same collection.</p>
-                        <div class="alpha-app-hero__actions">
-                            @if($readChapterNumber)
-                                <a href="#inline-reader" class="alpha-button alpha-button--light">Read Now</a>
-                            @endif
-                            <a href="{{ route('catalog.index') }}" class="alpha-button alpha-button--ghost">Browse Novels</a>
-                        </div>
-                    </div>
-                    <div class="alpha-app-hero__qr">
-                        <span>QR</span>
-                        <small>Scan the QR code, and go to the download app</small>
+                                <a href="#" class="comment-preview__reply-link comment-append-btn alpha-review-card__reply" data-open-reply="{{ $comment->id }}">
+                                    {{ __('messages.comments.reply') }}
+                                </a>
+                                <div class="comment-preview__append-to"></div>
+                            </article>
+                        @empty
+                            <div class="alpha-reviews-empty">
+                                <i class="fa fa-comment-dots"></i>
+                                <strong>No reviews yet</strong>
+                                <span>{{ __('messages.article.no_comments') }}</span>
+                            </div>
+                        @endforelse
                     </div>
                 </section>
+
             </div>
 
             {{-- All chapters --}}
@@ -421,21 +429,21 @@
             <div class="main-section hide" id="comments">
                 <section class="section comments comments-section" id="comments-section"
                          data-article="{{ $article->id }}"
-                         data-store-url="{{ route('articles.comments.store', $article->id) }}"
+                         data-store-url="{{ route_path('articles.comments.store', $article->id) }}"
                          data-auth="{{ auth()->check() ? 1 : 0 }}">
                     <h2 class="section-title">{{ __('messages.comments.title') }} <span class="meta-color header-small-text">{{ number_format($comments->total()) }}</span></h2>
 
                     @auth
-                        <form method="POST" action="{{ route('articles.comments.store', $article->id) }}" class="comments-form comments-form-view" id="main-comment-form">
+                        <form method="POST" action="{{ route_path('articles.comments.store', $article->id) }}" class="comments-form comments-form-view" id="main-comment-form">
                             @csrf
                             <textarea name="content" class="comments-form__text" placeholder="{{ __('messages.comments.placeholder') }}" required></textarea>
                             <div class="comments-form__actions">
-                                <a href="{{ route('pages.rules') }}" class="btn btn-invincible" target="_blank">{{ __('messages.comments.rules') }}</a>
+                                <a href="{{ route_path('pages.rules') }}" class="btn btn-invincible" target="_blank">{{ __('messages.comments.rules') }}</a>
                                 <button type="submit" class="btn btn-primary">{{ __('messages.comments.send') }}</button>
                             </div>
                         </form>
                     @else
-                        <p class="meta-color login-to-comment">{!! __('messages.comments.login_prompt', ['login' => '<a href="'.route('login').'">'.__('messages.comments.login_link').'</a>']) !!}</p>
+                        <p class="meta-color login-to-comment">{!! __('messages.comments.login_prompt', ['login' => '<a href="'.route_path('login').'">'.__('messages.comments.login_link').'</a>']) !!}</p>
                     @endauth
 
                     <ul class="comments main-comments" id="main-comments">
@@ -460,7 +468,7 @@
                 @php
                     $readChapterNumber = $continueChapterNumber ?: $firstChapter->number;
                 @endphp
-                <a href="{{ route('articles.chapters.show', [$article, $readChapterNumber]) }}" class="btn btn-primary read-btn">
+                <a href="{{ route_path('articles.chapters.show', [$article, $readChapterNumber]) }}" class="btn btn-primary read-btn">
                     {{ $hasStartedReading ? __('messages.article.continue_reading') : __('messages.article.read_from_start') }}
                 </a>
             @endif
@@ -496,12 +504,12 @@
                     <div class="info">{{ $article->alt_title }}</div>
                 </div>
                 @endif
-                <a href="{{ route('catalog.index', ['type' => $article->novel_type]) }}" class="item">
+                <a href="{{ route_path('catalog.index', ['type' => $article->novel_type]) }}" class="item">
                     <div class="sub-header">{{ __('messages.article.type') }}</div>
                     <div class="info">{{ $typeLabels[$article->novel_type] ?? 'Web Novel' }}</div>
                 </a>
                 @if(!empty($article->country))
-                <a href="{{ route('catalog.index', ['country' => $article->country]) }}" class="item">
+                <a href="{{ route_path('catalog.index', ['country' => $article->country]) }}" class="item">
                     <div class="sub-header">{{ __('messages.article.country') }}</div>
                     <div class="info">{{ $countryLabels[$article->country] ?? 'Other' }}</div>
                 </a>
@@ -511,7 +519,7 @@
                     <div class="info">{{ $article->year_of_release ?: optional($article->created_at)->format('Y') }}</div>
                 </div>
                 @if($article->authors->count())
-                <a href="{{ route('authors.show', $article->authors->first()->id) }}" class="item">
+                <a href="{{ route_path('authors.show', $article->authors->first()->id) }}" class="item">
                     <div class="sub-header">{{ __('messages.article.author') }}</div>
                     <div class="info">{{ $article->authors->first()->name }}</div>
                 </a>
@@ -526,7 +534,7 @@
                     <div class="sub-header">{{ __('messages.article.genres') }}</div>
                     <div class="info">
                         @foreach($article->genres as $genre)
-                            <a href="{{ route('genres.show', $genre) }}">{{ $genre->name }}</a>
+                            <a href="{{ route_path('genres.show', $genre) }}">{{ $genre->name }}</a>
                         @endforeach
                     </div>
                 </div>
@@ -560,6 +568,20 @@
         <div class="report-actions">
             <button type="button" class="btn btn-invincible" id="report-cancel">{{ __('messages.comments.cancel') }}</button>
             <button type="button" class="btn btn-primary" id="report-submit">{{ __('messages.comments.report_submit') }}</button>
+        </div>
+    </div>
+</div>
+
+<div class="alpha-review-modal" id="alpha-review-report-modal" hidden>
+    <div class="alpha-review-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="alpha-review-report-title">
+        <button type="button" class="alpha-review-modal__close" aria-label="Close"><i class="fa fa-times"></i></button>
+        <div class="alpha-review-modal__icon">!</div>
+        <h2 id="alpha-review-report-title">Report an inappropriate review</h2>
+        <p>Please describe exactly what you want to complain about in your feedback and include details so that we can process it faster. Thank you for your vigilance.</p>
+        <textarea id="alpha-review-report-reason" placeholder="Please describe the reason why you are filing a complaint."></textarea>
+        <div class="alpha-review-modal__actions">
+            <button type="button" class="alpha-review-modal__cancel">Cancel</button>
+            <button type="button" class="alpha-review-modal__submit" disabled>Send Request</button>
         </div>
     </div>
 </div>
@@ -619,19 +641,7 @@
     .article-detail-flex .second-information .poster{width:210px;height:290px;max-height:none;margin:0 auto 13px}
 
     /* Similar / Translation requests: bỏ slider -> lưới 2 cột, tên truyện ở dưới ảnh */
-    .article-detail-flex .swp-single .arrows{display:none!important}
-    .article-detail-flex .swp-single .swiper-container{overflow:visible!important}
-    .article-detail-flex .swp-single .swiper-wrapper{
-        display:grid!important;
-        grid-template-columns:repeat(2,1fr)!important;
-        gap:14px 12px!important;
-        transform:none!important;
-    }
-    .article-detail-flex .swp-single .swiper-slide{
-        width:auto!important;
-        margin:0!important;
-        height:auto!important;
-    }
+    .article-detail-flex .swp-single .arrows{display:flex!important}
     .article-detail-flex .swp-single .swiper-slide .image{width:100%}
     .article-detail-flex .swp-single .swiper-slide .manga-list__info .title{
         white-space:normal;
@@ -757,7 +767,7 @@ li.comment:last-child{border-bottom:none}
     }
     function needLogin(){
         if (!IS_AUTH){
-            window.location.href = "{{ route('login') }}";
+            window.location.href = "{{ route_path('login') }}";
             return true;
         }
         return false;
@@ -827,7 +837,7 @@ li.comment:last-child{border-bottom:none}
         var content = $form.find('textarea').val().trim();
         if (!content) return;
         var $submit = $form.find('[type="submit"]').prop('disabled', true);
-        ajax("{{ route('articles.comments.store', $article->id) }}", {content: content, parent_id: parentId})
+        ajax("{{ route_path('articles.comments.store', $article->id) }}", {content: content, parent_id: parentId})
             .done(function(res){
                 if (!res.ok) return;
                 var $preview = $form.closest('.comment-preview');
@@ -855,7 +865,7 @@ li.comment:last-child{border-bottom:none}
         var content = $form.find('textarea').val().trim();
         if (!content) return;
         var $submit = $form.find('[type="submit"]').prop('disabled', true);
-        ajax("{{ route('articles.comments.store', $article->id) }}", {content: content, parent_id: parentId})
+        ajax("{{ route_path('articles.comments.store', $article->id) }}", {content: content, parent_id: parentId})
             .done(function(res){
                 if (!res.ok) return;
                 var $replyList = $li.children('.comments-reply').first();
@@ -956,10 +966,79 @@ li.comment:last-child{border-bottom:none}
 document.querySelectorAll('.swp-4 .swiper-container').forEach(function(el){
     var section = el.closest('.swp-4');
     new Swiper(el, {
-        slidesPerView: 2, spaceBetween: 10, loop: false,
+        slidesPerView: 2, spaceBetween: 16, loop: false,
         navigation: { nextEl: section.querySelector('.swiper-right'), prevEl: section.querySelector('.swiper-left') },
-        breakpoints: { 768: { slidesPerView: 4, spaceBetween: 12 }, 480: { slidesPerView: 3 } }
+        breakpoints: {
+            768: { slidesPerView: 3, spaceBetween: 18 },
+            1024: { slidesPerView: 5, spaceBetween: 20 }
+        }
     });
 });
+</script>
+<script>
+(function () {
+    var modal = document.getElementById('alpha-review-report-modal');
+    if (!modal) return;
+    var textarea = document.getElementById('alpha-review-report-reason');
+    var submit = modal.querySelector('.alpha-review-modal__submit');
+    var currentComment = null;
+
+    function openModal(commentId) {
+        currentComment = commentId;
+        textarea.value = '';
+        submit.disabled = true;
+        modal.hidden = false;
+        textarea.focus();
+    }
+
+    function closeModal() {
+        modal.hidden = true;
+        currentComment = null;
+    }
+
+    document.addEventListener('click', function (event) {
+        var report = event.target.closest('.alpha-review-report-trigger');
+        if (report) {
+            event.preventDefault();
+            openModal(report.getAttribute('data-comment'));
+            return;
+        }
+
+        if (event.target === modal || event.target.closest('.alpha-review-modal__close') || event.target.closest('.alpha-review-modal__cancel')) {
+            closeModal();
+        }
+    });
+
+    textarea.addEventListener('input', function () {
+        submit.disabled = textarea.value.trim().length < 3;
+    });
+
+    submit.addEventListener('click', function () {
+        if (!currentComment || submit.disabled) return;
+        submit.disabled = true;
+        fetch('/comments/' + currentComment + '/report', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': window.CSRF_TOKEN || document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+            },
+            body: JSON.stringify({ reason: textarea.value.trim() })
+        }).then(function (response) {
+            if (response.status === 401) {
+                window.location.href = @json(route_path('login', []));
+                return null;
+            }
+            return response.json();
+        }).then(function (data) {
+            if (!data) return;
+            alert(data.message || 'Your report has been sent.');
+            closeModal();
+        }).catch(function () {
+            alert('Could not send the report. Please try again.');
+            submit.disabled = false;
+        });
+    });
+})();
 </script>
 @endpush

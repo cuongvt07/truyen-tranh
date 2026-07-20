@@ -10,7 +10,7 @@
         $chapterIsPaid = $chapterCreditCost > 0;
         $chapterIsUnlocked = $chapterIsPaid && ($unlockedChapterIds ?? collect())->contains($chapter->id);
     @endphp
-    <a href="{{ route('articles.chapters.show', [$article, $chapter->number]) }}"
+    <a href="{{ route_path('articles.chapters.show', [$article, $chapter->number]) }}"
        class="chapter {{ ($currentChapterId ?? null) === $chapter->id ? 'active' : '' }}">
         <div class="title">
             {{ __('messages.article.chapter') }} {{ $chapter->number }}@unless($compactTitle ?? false) - <span>{{ $chapter->title }}</span>@endunless

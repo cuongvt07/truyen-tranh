@@ -8,7 +8,7 @@
             <div class="search-name">{{ __('messages.catalog.results_count', ['count' => $results->count()]) }}</div>
             <div class="search-results__inner">
                 @foreach($results as $article)
-                    <a href="{{ route('articles.show', $article) }}" class="manga-list-item">
+                    <a href="{{ route_path('articles.show', $article) }}" class="manga-list-item">
                         <div class="image image-cover">
                             <img src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                         </div>
@@ -21,7 +21,7 @@
                         </div>
                     </a>
                 @endforeach
-                <a href="{{ route('catalog.index', ['search' => $term]) }}" class="manga-list-item" style="justify-content:center;font-weight:600">
+                <a href="{{ route_path('catalog.index', ['search' => $term]) }}" class="manga-list-item" style="justify-content:center;font-weight:600">
                     <div class="manga-list__info" style="text-align:center">
                         <div class="title"><i class="fa fa-search"></i> {{ __('messages.catalog.view_all_results') }}</div>
                     </div>

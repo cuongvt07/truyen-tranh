@@ -371,11 +371,16 @@ Route::get('/ajax/search-live',
     [App\Http\Controllers\Client\CatalogController::class, 'liveSearch'])
     ->name('catalog.live_search');
 // trang tĩnh
+Route::get('/help', [App\Http\Controllers\Client\Faq\CategoryController::class, 'index'])->name('pages.help');
+Route::get('/help/{faqCategory}', [App\Http\Controllers\Client\Faq\CategoryController::class, 'show'])->name('pages.help.topic');
+Route::get('/help/{faqCategory}/{faqArticle}', [App\Http\Controllers\Client\Faq\ArticleController::class, 'show'])
+    ->name('pages.help.article');
 Route::get('/faq', [App\Http\Controllers\Client\Faq\CategoryController::class, 'index'])->name('pages.faq');
 Route::get('/faq/{faqCategory}', [App\Http\Controllers\Client\Faq\CategoryController::class, 'show'])->name('pages.faq.topic');
 Route::get('/faq/{faqCategory}/{faqArticle}', [App\Http\Controllers\Client\Faq\ArticleController::class, 'show'])
     ->name('pages.faq.article');
 Route::get('/forum', [App\Http\Controllers\Client\PageController::class, 'forum'])->name('pages.forum');
+Route::get('/blog', [App\Http\Controllers\Client\PageController::class, 'blog'])->name('pages.blog');
 Route::get('/forum/{category}/{post}', [App\Http\Controllers\Client\PageController::class, 'forumPost'])
     ->name('pages.forum.post');
 Route::get('/forum/{category}', [App\Http\Controllers\Client\PageController::class, 'forumCategory'])
@@ -385,6 +390,7 @@ Route::get('/dmca', [App\Http\Controllers\Client\PageController::class, 'dmca'])
 Route::get('/terms', [App\Http\Controllers\Client\PageController::class, 'terms'])->name('pages.terms');
 Route::get('/feedback', [App\Http\Controllers\Client\PageController::class, 'feedback'])->name('pages.feedback');
 Route::get('/pricing', [App\Http\Controllers\Client\PageController::class, 'pricing'])->name('pages.pricing');
+Route::get('/gifts', [App\Http\Controllers\Client\PageController::class, 'pricing'])->name('pages.gifts');
 
 // PayPal webhook (no auth, no CSRF — excluded in VerifyCsrfToken)
 Route::post('/paypal/webhook', [App\Http\Controllers\PaypalController::class, 'webhook'])->name('paypal.webhook');
@@ -416,6 +422,12 @@ Route::get('/genres/{genre}',
 Route::get('/book/ajax/chapter-pagination',
     [App\Http\Controllers\Client\ArticleController::class, 'chapterPagination'])
     ->name('articles.chapter_pagination');
+Route::get('/articles/{article}/reviews',
+    [App\Http\Controllers\Client\ArticleController::class, 'reviews'])
+    ->name('articles.reviews');
+Route::get('/articles/{article}/reviews/{comment}',
+    [App\Http\Controllers\Client\ArticleController::class, 'review'])
+    ->name('articles.reviews.show');
 Route::get('/articles/{article}',
     [App\Http\Controllers\Client\ArticleController::class, 'show'])
     ->name('articles.show');

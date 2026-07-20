@@ -34,14 +34,14 @@
                         $continue = $continueMap[$article->id] ?? optional($article->newest_chapter)->number;
                     @endphp
                     <div class="rl-card block" data-status="{{ $st }}"
-                         data-store-url="{{ route('articles.bookmarks.store', $article->id) }}">
-                        <a href="{{ route('articles.show', $article) }}" class="rl-poster image image-cover lazy-load-bg">
+                         data-store-url="{{ route_path('articles.bookmarks.store', $article->id) }}">
+                        <a href="{{ route_path('articles.show', $article) }}" class="rl-poster image image-cover lazy-load-bg">
                             <img class="lazy-image" loading="lazy" src="{{ novel_poster($article) }}" alt="{{ $article->title }}">
                         </a>
                         <div class="rl-info">
-                            <a href="{{ route('articles.show', $article) }}" class="rl-title clamp clamp-2">{{ $article->title }}</a>
+                            <a href="{{ route_path('articles.show', $article) }}" class="rl-title clamp clamp-2">{{ $article->title }}</a>
                             @if($continue)
-                                <a href="{{ route('articles.chapters.show', [$article, $continue]) }}" class="rl-continue">
+                                <a href="{{ route_path('articles.chapters.show', [$article, $continue]) }}" class="rl-continue">
                                     {{ __('messages.article.continue_reading') }} ({{ __('messages.account.chapter_number', ['number' => $continue]) }})
                                 </a>
                             @endif

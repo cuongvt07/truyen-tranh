@@ -2,13 +2,18 @@
 
 @section('template_title', 'FAQ')
 
-@section('page_css')
-<link rel="stylesheet" href="{{ asset('static/faq/css/faqee8b.css') }}?ver=1.8.0">
-@endsection
-
 @section('content')
-<div class="container">
-    <h1 class="page-title" style="text-align: center;">{{ $pageTitle }}</h1>
-    {!! $pageContent !!}
+<div class="alpha-workspace alpha-help-page">
+    <div class="container">
+        <section class="alpha-workspace-hero">
+            <small>Help center</small>
+            <h1>{{ $pageTitle }}</h1>
+            <p>Find answers and platform guidance.</p>
+        </section>
+
+        <article class="alpha-article-content">
+            {!! $pageContent !!}
+        </article>
+    </div>
 </div>
 @endsection

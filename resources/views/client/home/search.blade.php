@@ -15,7 +15,7 @@
 @section('content')
 <main class="alpha-search-page">
     <section class="alpha-search-panel">
-        <form action="{{ route('home.search') }}" method="GET" class="alpha-search-form">
+        <form action="{{ route_path('home.search') }}" method="GET" class="alpha-search-form">
             <input
                 type="search"
                 name="keyword"
@@ -29,7 +29,7 @@
         <h1>Top Tags</h1>
         <div class="alpha-search-tags">
             @forelse($topTags as $tag)
-                <a href="{{ route('home.search', ['keyword' => $tag->name]) }}">{{ $tag->name }}</a>
+                <a href="{{ route_path('home.search', ['keyword' => $tag->name]) }}">{{ $tag->name }}</a>
             @empty
                 <span>No tags yet.</span>
             @endforelse
@@ -40,17 +40,17 @@
         @forelse($articles as $article)
             @php
                 $author = optional($article->authors->first())->name ?? 'Updating';
-                $readUrl = route('articles.show', $article);
+                $readUrl = route_path('articles.show', $article);
             @endphp
             <article class="alpha-search-card">
-                <a href="{{ route('articles.show', $article) }}" class="alpha-search-card__cover">
+                <a href="{{ route_path('articles.show', $article) }}" class="alpha-search-card__cover">
                     <img src="{{ novel_poster($article) }}" alt="{{ $article->title }}" loading="lazy">
                     @if(($loop->index % 3) === 0)<em>Recommended</em>@endif
                     <strong>{{ $article->is_completed ? 'Completed' : 'Updated' }}</strong>
                 </a>
 
                 <div class="alpha-search-card__body">
-                    <a href="{{ route('articles.show', $article) }}" class="alpha-search-card__title">
+                    <a href="{{ route_path('articles.show', $article) }}" class="alpha-search-card__title">
                         {{ $article->title }}
                     </a>
                     <div class="alpha-search-card__meta">
@@ -63,11 +63,11 @@
                         <span><i class="fa fa-star"></i> {{ number_format($article->rating ?? 0, 1) }}</span>
                     </div>
                     <p>{{ \Illuminate\Support\Str::limit(strip_tags($article->description), 270) }}</p>
-                    <a href="{{ route('articles.show', $article) }}" class="alpha-search-more">more</a>
+                    <a href="{{ route_path('articles.show', $article) }}" class="alpha-search-more">more</a>
                 </div>
 
                 <div class="alpha-search-card__actions">
-                    <a href="{{ route('login') }}" class="alpha-search-bookmark" aria-label="Bookmark">
+                    <a href="{{ route_path('login') }}" class="alpha-search-bookmark" aria-label="Bookmark">
                         <i class="fa fa-heart"></i>
                     </a>
                     <a href="{{ $readUrl }}" class="alpha-search-start">Start Reading</a>

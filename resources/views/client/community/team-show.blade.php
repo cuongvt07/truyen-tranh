@@ -26,13 +26,13 @@
 
             @auth
                 @if($isLeader)
-                    <a href="{{ route('teams.dashboard', $team->id) }}">{{ __('messages.community.dashboard') }}</a>
+                    <a href="{{ route_path('teams.dashboard', $team->id) }}">{{ __('messages.community.dashboard') }}</a>
                 @elseif($isMember)
                     <span class="btn-invincible">{{ __('messages.community.joined') }}</span>
                 @elseif($team->isPending())
                     <span class="btn-invincible">{{ __('messages.community.under_review') }}</span>
                 @else
-                    <form method="POST" action="{{ route('teams.join', $team->id) }}">
+                    <form method="POST" action="{{ route_path('teams.join', $team->id) }}">
                         @csrf
                         <button type="submit" class="primary-action">
                             <i class="fa fa-heart"></i> {{ __('messages.community.subscribe') }}
@@ -40,7 +40,7 @@
                     </form>
                 @endif
             @else
-                <a href="{{ route('login') }}" class="primary-action">
+                <a href="{{ route_path('login') }}" class="primary-action">
                     <i class="fa fa-heart"></i> {{ __('messages.community.subscribe') }}
                 </a>
             @endauth
@@ -89,7 +89,7 @@
             <h2 class="team-section-title">{{ __('messages.community.members') }}</h2>
             <div class="team-members-simple">
                 @foreach($team->approvedMembers->sortBy(fn($m) => array_search($m->role, ['leader','admin','editor','member'])) as $m)
-                    @php $profileUrl = optional($m->user)->id ? route('users.show.profile', $m->user) : '#'; @endphp
+                    @php $profileUrl = optional($m->user)->id ? route_path('users.show.profile', $m->user) : '#'; @endphp
                     <a href="{{ $profileUrl }}" class="team-member">
                         <span class="team-member-avatar">
                             <img src="{{ optional($m->user)->avatar ?: asset('static/core/images/no_cover.webp') }}" alt="{{ optional($m->user)->username }}">
@@ -106,7 +106,7 @@
                 <h2 class="team-section-title" style="margin-top:18px">{{ __('messages.community.books') }}</h2>
                 <div class="team-members-simple">
                     @foreach($articles as $art)
-                        <a href="{{ route('articles.show', $art) }}" class="team-member">
+                        <a href="{{ route_path('articles.show', $art) }}" class="team-member">
                             <span class="team-member-avatar">
                                 <img src="{{ novel_poster($art) }}" alt="{{ $art->title }}">
                             </span>

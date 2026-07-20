@@ -14,13 +14,13 @@
         <div class="block faq-sidebar">
             @foreach($allCategories ?? [] as $cat)
                 <div class="faq-sidebar-topic {{ $cat->id === $category->id ? 'active' : '' }}">
-                    <a href="{{ route('pages.faq.topic', $cat->slug) }}" class="faq-sidebar-topic__name">
+                    <a href="{{ route_path('pages.faq.topic', $cat->slug) }}" class="faq-sidebar-topic__name">
                         {{ $cat->localizedTitle() }}
                     </a>
                     <ul class="faq-sidebar-topic__list">
                         @foreach($cat->children ?? [] as $art)
                             <li class="{{ isset($article) && $art->id === $article->id ? 'active' : '' }}">
-                                <a href="{{ route('pages.faq.article', [$cat->slug, $art->slug]) }}">
+                                <a href="{{ route_path('pages.faq.article', [$cat->slug, $art->slug]) }}">
                                     {{ $art->localizedTitle() }}
                                 </a>
                             </li>
@@ -34,9 +34,9 @@
         <div class="faq-main">
             <article class="block forum-single">
                 <div class="breadcumps">
-                    <a href="{{ route('pages.faq') }}">FAQ</a>
+                    <a href="{{ route_path('pages.faq') }}">FAQ</a>
                     <span>&gt;</span>
-                    <a href="{{ route('pages.faq.topic', $category->slug) }}">{{ $category->localizedTitle() }}</a>
+                    <a href="{{ route_path('pages.faq.topic', $category->slug) }}">{{ $category->localizedTitle() }}</a>
                     <span>&gt;</span>
                     <span>{{ $article->localizedTitle() }}</span>
                 </div>

@@ -6,7 +6,7 @@
 <div class="btn-group">
     @if ($previousChapter)
         <a class="btn btn-success btn-chapter-nav" id="prev_chap"
-           href="{{ route('articles.chapters.show', [$article, $previousChapter->number]) }}">
+           href="{{ route_path('articles.chapters.show', [$article, $previousChapter->number]) }}">
             <span class="glyphicon glyphicon-chevron-left"></span> {{ __('messages.chapter.previous_chapter') }}
         </a>
     @else
@@ -29,7 +29,7 @@
 
     @if ($nextChapter)
         <a class="btn btn-success btn-chapter-nav" id="next_chap"
-           href="{{ route('articles.chapters.show', [$article, $nextChapter->number]) }}"
+           href="{{ route_path('articles.chapters.show', [$article, $nextChapter->number]) }}"
            data-affiliate-link="{{ $redirectAffiliateLink ?? '' }}">
             {{ __('messages.chapter.next_chapter') }} <span class="glyphicon glyphicon-chevron-right"></span>
         </a>

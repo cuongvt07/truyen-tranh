@@ -2,33 +2,39 @@
 
 @section('template_title', $pageTitle)
 
-@section('page_css')
-<link rel="stylesheet" href="{{ asset('static/forum/css/forum.css') }}">
-<link rel="stylesheet" href="{{ asset('static/faq/css/faqee8b.css') }}?ver=1.8.0">
-@endsection
-
 @section('content')
-<div class="container">
-    <h1 class="page-title" style="text-align:center">{{ $pageTitle }}</h1>
+<main class="alpha-help-page">
+    <section class="alpha-help-hero">
+        <div class="container">
+            <small>Help center</small>
+            <h1>{{ $pageTitle }}</h1>
+            <p>Find quick answers about accounts, books, bonuses, top ups, subscriptions, and reader settings.</p>
+        </div>
+    </section>
 
-    @if(trim(strip_tags($pageContent ?? '')) !== '')
-        <div class="block text-info">{!! $pageContent !!}</div>
-    @endif
+    <div class="container alpha-help-shell">
+        @if(trim(strip_tags($pageContent ?? '')) !== '')
+            <article class="alpha-help-intro">
+                {!! $pageContent !!}
+            </article>
+        @endif
 
-    <div class="faq-theme-blocks">
-        @foreach($categories as $category)
-            @php
-                $count = $category->children_count
-                    ?? $category->children()->active()->where('page_type','faq_article')->count();
-            @endphp
-            <a href="{{ route('pages.faq.topic', $category->slug) }}" class="block faq-theme-card">
-                <h2 class="faq-theme-card__title">{{ $category->localizedTitle() }}</h2>
-                <div class="meta-color faq-theme-card__meta">
-                    <i class="fa fa-newspaper"></i>
-                    {{ __('messages.faq.articles_count', ['count' => $count]) }}
-                </div>
-            </a>
-        @endforeach
+        <section class="alpha-help-grid">
+            @foreach($categories as $category)
+                @php
+                    $count = $category->children_count
+                        ?? $category->children()->active()->where('page_type', 'faq_article')->count();
+                @endphp
+                <a href="{{ route_path('pages.help.topic', $category->slug) }}" class="alpha-help-card">
+                    <span class="alpha-help-card__icon"><i class="fa fa-question-circle"></i></span>
+                    <strong>{{ $category->localizedTitle() }}</strong>
+                    @if($category->localizedExcerpt())
+                        <p>{{ $category->localizedExcerpt() }}</p>
+                    @endif
+                    <em>{{ __('messages.faq.articles_count', ['count' => $count]) }}</em>
+                </a>
+            @endforeach
+        </section>
     </div>
-</div>
+</main>
 @endsection

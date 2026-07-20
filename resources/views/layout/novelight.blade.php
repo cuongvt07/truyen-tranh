@@ -17,10 +17,10 @@
     <link rel="canonical" href="{{ $seoCanonical }}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    @php $favicon = setting('favicon_file') ? asset('storage/' . setting('favicon_file')) : asset('static/favicon.ico'); @endphp
+    @php $favicon = setting('favicon_file') ? asset('storage/' . setting('favicon_file')) : '/static/core/images/alphanovel/favicon-32x32.png'; @endphp
     <link rel="icon" href="{{ $favicon }}">
-    <link rel="apple-touch-icon" href="{{ $favicon }}">
-    <meta name="theme-color" content="#1e2a3a">
+    <link rel="apple-touch-icon" href="/static/core/images/alphanovel/alpha-app-icon.png">
+    <meta name="theme-color" content="#4535ff">
 
     {{-- Open Graph --}}
     <meta property="og:type" content="@yield('og_type', 'website')">
@@ -143,29 +143,17 @@
     // Dropdown thể loại header: CHỈ thể loại Hot. Chưa tick Hot cái nào -> không liệt kê genre (chỉ còn link "Tất cả").
     $navGenres = \App\Models\Genre::hot()->orderBy('name')->get();
 @endphp
-<div class="alpha-mobile-install">
-    <div class="alpha-mobile-install__brand">
-        <span class="alpha-mobile-install__logo"><i class="fa fa-book-open"></i></span>
-        <span>
-            <strong>{{ setting('site_name') ?: config('app.name') }}</strong>
-            <small>Best Romance Novels</small>
-        </span>
-    </div>
-    <a href="{{ route('catalog.index') }}">Install</a>
-</div>
 <header class="header">
     <div class="container">
         <div class="header__inner">
             <div id="header-mobile-btn" class="header-btn open-close" p-target="fullscreen-mobile-menu"
                  p-target-class="active" p-event="burgerMenuOpenClose"><i class="fa fa-bars"></i></div>
-            @php $siteName = setting('site_name') ?: config('app.name'); @endphp
-            <a href="{{ route('home.index') }}" class="logo">
-                @if(setting('logo_file'))
-                    <img src="{{ asset('storage/' . setting('logo_file')) }}" alt="{{ $siteName }}">
-                @else
-                    <img src="{{ asset('static/core/images/logo.png') }}" alt="{{ $siteName }}">
-                @endif
-                <span class="alpha-logo-text">{{ $siteName }}</span>
+            @php
+                $siteName = setting('site_name') ?: config('app.name');
+                $siteLogo = setting('logo_file') ? asset('storage/' . setting('logo_file')) : '/static/core/images/alphanovel/alpha-app-icon.png';
+            @endphp
+            <a href="{{ route_path('home.index', []) }}" class="logo">
+                <img src="{{ $siteLogo }}" alt="{{ $siteName }}">
             </a>
             <nav class="header-nav">
                 <ul>
@@ -173,25 +161,25 @@
                         @include('partials.menu-header-item', ['mi' => $mi])
                     @empty
                         {{-- Fallback: nav mặc định khi chưa cấu hình menu --}}
-                        <li><a href="{{ route('home.index') }}" class="header-btn no-link">Discover</a></li>
-                        <li class="header-nav__list"><div class="header-btn header-browse tippy-browse">Novels <i class="fa fa-caret-down"></i></div></li>
-                        <li><a href="{{ route('users.show') }}" class="header-btn no-link">Library</a></li>
-                        <li><a href="{{ route('pages.pricing') }}" class="header-btn no-link">Gifts</a></li>
-                        <li><a href="{{ route('my-articles.create') }}" class="header-btn no-link">Writer</a></li>
-                        <li><a href="{{ route('pages.forum') }}" class="header-btn no-link">Blog</a></li>
-                        <li><a href="#" id="open-live-search" class="header-btn no-link open-close" p-target="fullscreen-search">Search</a></li>
+                        <li><a href="{{ route_path('home.index', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Discover</span></a></li>
+                        <li class="header-nav__list"><div class="header-btn header-browse tippy-browse"><span class="alpha-nav-label">Novels</span> <i class="fa fa-caret-down"></i></div></li>
+                        <li><a href="{{ route_path('users.show', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Library</span></a></li>
+                        <li><a href="{{ route_path('pages.gifts', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Gifts</span></a></li>
+                        <li><a href="{{ route_path('my-articles.create', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Writer</span></a></li>
+                        <li><a href="{{ route_path('pages.blog', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Blog</span></a></li>
+                        <li><a href="#" id="open-live-search" class="header-btn no-link open-close" p-target="fullscreen-search"><span class="alpha-nav-label">Search</span></a></li>
                     @endforelse
                 </ul>
             </nav>
             <nav class="alpha-header-nav">
                 <ul>
-                    <li><a href="{{ route('home.index') }}" class="header-btn no-link">Discover</a></li>
-                    <li class="header-nav__list"><div class="header-btn header-browse tippy-browse">Novels <i class="fa fa-caret-down"></i></div></li>
-                    <li><a href="{{ route('users.show') }}" class="header-btn no-link">Library</a></li>
-                    <li><a href="{{ route('pages.pricing') }}" class="header-btn no-link">Gifts</a></li>
-                    <li><a href="{{ route('my-articles.create') }}" class="header-btn no-link">Writer</a></li>
-                    <li><a href="{{ route('pages.forum') }}" class="header-btn no-link">Blog</a></li>
-                    <li><a href="{{ route('home.search') }}" class="header-btn no-link">Search</a></li>
+                    <li><a href="{{ route_path('home.index', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Discover</span></a></li>
+                    <li class="header-nav__list"><div class="header-btn header-browse tippy-browse"><span class="alpha-nav-label">Novels</span> <i class="fa fa-caret-down"></i></div></li>
+                    <li><a href="{{ route_path('users.show', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Library</span></a></li>
+                    <li><a href="{{ route_path('pages.gifts', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Gifts</span></a></li>
+                    <li><a href="{{ route_path('my-articles.create', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Writer</span></a></li>
+                    <li><a href="{{ route_path('pages.blog', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Blog</span></a></li>
+                    <li><a href="{{ route_path('home.search', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Search</span></a></li>
                 </ul>
             </nav>
             <div class="header-user">
@@ -204,13 +192,13 @@
                     @endif
 
                     {{-- Chuông thông báo --}}
-                    <a href="{{ route('users.notifications', Auth::id()) }}" class="header-btn header-bell" title="{{ __('messages.account.nav_notifications') }}">
+                    <a href="{{ route_path('users.notifications', Auth::id()) }}" class="header-btn header-bell" title="{{ __('messages.account.nav_notifications') }}">
                         <i class="fa fa-bell"></i>
                         @if(($unreadNotifCount ?? 0) > 0)<span class="notif-count">{{ $unreadNotifCount > 99 ? '99+' : $unreadNotifCount }}</span>@endif
                     </a>
 
                     {{-- Số xu --}}
-                    <a href="{{ route('users.transactions', Auth::id()) }}" class="header-btn header-coins">
+                    <a href="{{ route_path('users.transactions', Auth::id()) }}" class="header-btn header-coins">
                         {{ number_format($authUser->points ?? 0) }}<i class="fa fa-coins"></i>
                     </a>
 
@@ -219,8 +207,8 @@
                         <div class="header-avatar {{ user_is_vip($authUser->id) ? 'vip-ring' : '' }}"><img src="{{ $userAvatar }}" alt="{{ $authUser->username }}">@include('partials.vip-crown', ['userId' => $authUser->id])</div>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="btn login-btn">{{ __('messages.auth.login') }}</a>
-                    <a href="{{ route('register') }}" class="btn register-btn">{{ __('messages.auth.register') }}</a>
+                    <a href="{{ route_path('login', []) }}" class="btn login-btn" data-auth-open="login">{{ __('messages.auth.login') }}</a>
+                    <a href="{{ route_path('register', []) }}" class="btn register-btn" data-auth-open="register">{{ __('messages.auth.register') }}</a>
                 @endauth
 
                 {{-- Language switcher --}}
@@ -245,27 +233,84 @@
     <div class="content">
         @yield('content')
 
-        <footer>
-            <div class="footer-links">
-                @forelse(menu_items('footer') as $mi)
-                    <a href="{{ $mi->href }}"@if($mi->target === '_blank') target="_blank"@endif>{{ $mi->display_label }}</a>
-                @empty
-                    <a href="{{ route('pages.feedback') }}">{{ __('messages.footer.feedback') }}</a>
-                    <a href="{{ route('pages.terms') }}">{{ __('messages.footer.terms') }}</a>
-                    <a href="{{ route('pages.dmca') }}">{{ __('messages.footer.dmca') }}</a>
-                    <a href="{{ route('pages.rules') }}">{{ __('messages.footer.rules') }}</a>
-                    <a href="{{ route('pages.faq') }}">{{ __('messages.footer.faq') }}</a>
-                @endforelse
+        <footer class="alpha-footer alpha-footer-redesign">
+            <div class="alpha-footer-shell">
+                <section class="alpha-footer-brand" aria-label="{{ $siteName }}">
+                    <a href="{{ route_path('home.index', []) }}" class="alpha-footer-logo">
+                        <img src="{{ $siteLogo }}" alt="{{ $siteName }}">
+                    </a>
+                    <p>A clean reading space for romance, fantasy and serialized online novels.</p>
+                    <div class="alpha-footer-actions">
+                        <a href="{{ route_path('catalog.index', []) }}" class="alpha-footer-primary">
+                            <i class="fa fa-book-open"></i>
+                            <span>Browse novels</span>
+                        </a>
+                        <a href="{{ route_path('home.search', []) }}" class="alpha-footer-secondary">
+                            <i class="fa fa-search"></i>
+                            <span>Search</span>
+                        </a>
+                    </div>
+                </section>
+
+                <nav class="alpha-footer-nav" aria-label="Footer navigation">
+                    <div class="alpha-footer-col">
+                        <h3>Read</h3>
+                        <a href="{{ route_path('home.index', []) }}">Discover</a>
+                        <a href="{{ route_path('catalog.index', []) }}">Novels</a>
+                        <a href="{{ route_path('home.show_new_update_articles', []) }}">New releases</a>
+                        <a href="{{ route_path('home.show_completed_articles', []) }}">Completed</a>
+                    </div>
+                    <div class="alpha-footer-col">
+                        <h3>Community</h3>
+                        <a href="{{ route_path('pages.blog', []) }}">Blog</a>
+                        <a href="{{ route_path('pages.help', []) }}">Help center</a>
+                        <a href="{{ route_path('pages.feedback', []) }}">Contact us</a>
+                        <a href="{{ route_path('my-articles.create', []) }}">Writer</a>
+                    </div>
+                    <div class="alpha-footer-col">
+                        <h3>Account</h3>
+                        @auth
+                            <a href="{{ route_path('users.show', []) }}">Library</a>
+                            <a href="{{ route_path('users.show_bookmarks', Auth::id()) }}">Bookmarks</a>
+                            <a href="{{ route_path('users.notifications', Auth::id()) }}">Notifications</a>
+                            <a href="{{ route_path('users.transactions', Auth::id()) }}">Coins</a>
+                        @else
+                            <a href="{{ route_path('login', []) }}" data-auth-open="login">Log in</a>
+                            <a href="{{ route_path('register', []) }}" data-auth-open="register">Create account</a>
+                            <a href="{{ route_path('pages.help', []) }}">Reader support</a>
+                            <a href="{{ route_path('pages.terms', []) }}">Terms</a>
+                        @endauth
+                    </div>
+                </nav>
+
+                <aside class="alpha-footer-site-card" aria-label="About Romane auf Deutsch">
+                    <div>
+                        <span class="alpha-footer-kicker">Romane auf Deutsch</span>
+                        <strong>New chapters, popular series and reader lists in one place.</strong>
+                    </div>
+                    <div class="alpha-footer-site-points" aria-label="Site features">
+                        <span><i class="fa fa-bolt"></i> Updates</span>
+                        <span><i class="fa fa-bookmark"></i> Library</span>
+                        <span><i class="fa fa-star"></i> Reviews</span>
+                    </div>
+                </aside>
             </div>
-            <hr>
-            <span>© {{ date('Y') }} {{ config('app.name') }}</span>
+
+            <div class="alpha-footer-bottom">
+                <span>2026 &copy; {{ config('app.name', 'Romane auf Deutsch') }}. All Rights Reserved.</span>
+                <nav aria-label="Legal links">
+                    <a href="{{ route_path('pages.terms', []) }}">Terms of Use</a>
+                    <a href="{{ route_path('pages.rules', []) }}">Privacy Policy</a>
+                    <a href="{{ route_path('pages.dmca', []) }}">DMCA</a>
+                </nav>
+            </div>
         </footer>
     </div>
 
     {{-- Fullscreen search overlay --}}
     <div id="fullscreen-search" class="fullscreen hide">
         <div class="fullscreen-container">
-            <form action="{{ route('catalog.index') }}" method="GET">
+            <form action="{{ route_path('catalog.index', []) }}" method="GET">
                 <div class="text-input">
                     <button id="close-fullscreen-search" type="button" class="open-close left-icon"
                             p-target="fullscreen-search"><i class="fa fa-close"></i></button>
@@ -284,12 +329,12 @@
                 @forelse(menu_items('mobile') as $mi)
                     @include('partials.menu-mobile-item', ['mi' => $mi])
                 @empty
-                    <li><a href="{{ route('home.index') }}"><i class="fa fa-home"></i> {{ __('messages.nav.home') }}</a></li>
+                    <li><a href="{{ route_path('home.index', []) }}"><i class="fa fa-home"></i> {{ __('messages.nav.home') }}</a></li>
                     <li><div class="tippy-browse"><span><i class="fa fa-layer-group"></i> {{ __('messages.nav.browse') }}</span> <i class="fa fa-caret-down"></i></div></li>
-                    <li><a href="{{ route('pages.forum') }}"><i class="fa fa-comments"></i> {{ __('messages.nav.forum') }}</a></li>
-                    <li><a href="{{ route('pages.faq') }}"><i class="fa fa-question-circle"></i> {{ __('messages.nav.faq') }}</a></li>
-                    <li><a href="{{ route('home.show_new_update_articles') }}"><i class="fa fa-bolt"></i> {{ __('messages.nav.new') }}</a></li>
-                    <li><a href="{{ route('home.show_completed_articles') }}"><i class="fa fa-check-circle"></i> {{ __('messages.nav.completed') }}</a></li>
+                    <li><a href="{{ route_path('pages.forum', []) }}"><i class="fa fa-comments"></i> {{ __('messages.nav.forum') }}</a></li>
+                    <li><a href="{{ route_path('pages.help', []) }}"><i class="fa fa-question-circle"></i> {{ __('messages.nav.faq') }}</a></li>
+                    <li><a href="{{ route_path('home.show_new_update_articles', []) }}"><i class="fa fa-bolt"></i> {{ __('messages.nav.new') }}</a></li>
+                    <li><a href="{{ route_path('home.show_completed_articles', []) }}"><i class="fa fa-check-circle"></i> {{ __('messages.nav.completed') }}</a></li>
                 @endforelse
             </ul>
 
@@ -301,27 +346,27 @@
                     <div class="mma-ava"><img src="{{ $mAva }}" alt="{{ $mAuth->username }}"></div>
                     <div class="mma-info">
                         <span class="mma-name">{{ $mAuth->username }}</span>
-                        <a href="{{ route('users.transactions', Auth::id()) }}" class="mma-coins"><i class="fa fa-coins"></i> {{ number_format($mAuth->points ?? 0) }}</a>
+                        <a href="{{ route_path('users.transactions', Auth::id()) }}" class="mma-coins"><i class="fa fa-coins"></i> {{ number_format($mAuth->points ?? 0) }}</a>
                     </div>
                     <i class="fa fa-caret-down mma-caret"></i>
                 </div>
                 <div class="mma-collapse">
                     <ul>
-                        <li><a href="{{ route('users.show') }}"><i class="fa fa-user"></i> {{ __('messages.ui.menu_profile') }}</a></li>
-                        <li><a href="{{ route('my-articles.index') }}"><i class="fa fa-book"></i> {{ __('messages.ui.menu_my_articles') }}</a></li>
-                        <li><a href="{{ route('users.notifications', Auth::id()) }}"><i class="fa fa-bell"></i> {{ __('messages.ui.menu_notifications') }}</a></li>
-                        <li><a href="{{ route('users.show_comments', Auth::id()) }}"><i class="fa fa-comment"></i> {{ __('messages.ui.menu_comments') }}</a></li>
-                        <li><a href="{{ route('users.show_bookmarks', Auth::id()) }}"><i class="fa fa-heart"></i> {{ __('messages.ui.menu_following') }}</a></li>
-                        <li><a href="{{ route('users.collections', Auth::id()) }}"><i class="fa fa-layer-group"></i> {{ __('messages.ui.menu_collections') }}</a></li>
-                        <li><a href="{{ route('users.teams', Auth::id()) }}"><i class="fa fa-user-friends"></i> {{ __('messages.ui.menu_teams') }}</a></li>
-                        <li><a href="{{ route('users.change_info') }}"><i class="fa fa-cog"></i> {{ __('messages.ui.menu_settings') }}</a></li>
+                        <li><a href="{{ route_path('users.show', []) }}"><i class="fa fa-user"></i> {{ __('messages.ui.menu_profile') }}</a></li>
+                        <li><a href="{{ route_path('my-articles.index', []) }}"><i class="fa fa-book"></i> {{ __('messages.ui.menu_my_articles') }}</a></li>
+                        <li><a href="{{ route_path('users.notifications', Auth::id()) }}"><i class="fa fa-bell"></i> {{ __('messages.ui.menu_notifications') }}</a></li>
+                        <li><a href="{{ route_path('users.show_comments', Auth::id()) }}"><i class="fa fa-comment"></i> {{ __('messages.ui.menu_comments') }}</a></li>
+                        <li><a href="{{ route_path('users.show_bookmarks', Auth::id()) }}"><i class="fa fa-heart"></i> {{ __('messages.ui.menu_following') }}</a></li>
+                        <li><a href="{{ route_path('users.collections', Auth::id()) }}"><i class="fa fa-layer-group"></i> {{ __('messages.ui.menu_collections') }}</a></li>
+                        <li><a href="{{ route_path('users.teams', Auth::id()) }}"><i class="fa fa-user-friends"></i> {{ __('messages.ui.menu_teams') }}</a></li>
+                        <li><a href="{{ route_path('users.change_info', []) }}"><i class="fa fa-cog"></i> {{ __('messages.ui.menu_settings') }}</a></li>
                     </ul>
                     @if($authUser->hasPurchased())
                     <div class="mobile-menu-label"><i class="fa fa-plus"></i> {{ __('messages.add.menu') }}</div>
                     <ul>
-                        <li><a href="{{ route('my-articles.create') }}"><i class="fa fa-book"></i> {{ __('messages.add.book') }}</a></li>
-                        <li><a href="{{ route('teams.create') }}"><i class="fa fa-user-friends"></i> {{ __('messages.add.team') }}</a></li>
-                        <li><a href="{{ route('collections.create') }}"><i class="fa fa-layer-group"></i> {{ __('messages.add.collection') }}</a></li>
+                        <li><a href="{{ route_path('my-articles.create', []) }}"><i class="fa fa-book"></i> {{ __('messages.add.book') }}</a></li>
+                        <li><a href="{{ route_path('teams.create', []) }}"><i class="fa fa-user-friends"></i> {{ __('messages.add.team') }}</a></li>
+                        <li><a href="{{ route_path('collections.create', []) }}"><i class="fa fa-layer-group"></i> {{ __('messages.add.collection') }}</a></li>
                     </ul>
                     @endif
                 </div>
@@ -331,8 +376,8 @@
                 </ul>
             @else
                 <ul>
-                    <li><a href="{{ route('login') }}"><i class="fa fa-sign-in"></i> {{ __('messages.auth.login') }}</a></li>
-                    <li><a href="{{ route('register') }}"><i class="fa fa-user-plus"></i> {{ __('messages.auth.register') }}</a></li>
+                    <li><a href="{{ route_path('login', []) }}" data-auth-open="login"><i class="fa fa-sign-in"></i> {{ __('messages.auth.login') }}</a></li>
+                    <li><a href="{{ route_path('register', []) }}" data-auth-open="register"><i class="fa fa-user-plus"></i> {{ __('messages.auth.register') }}</a></li>
                 </ul>
             @endauth
         </nav>
@@ -376,10 +421,10 @@
             @else
                 {{-- Chỉ liệt kê thể loại Hot (admin tick). Chưa có Hot -> chỉ hiện link Tất cả. --}}
                 @foreach($navGenres as $genre)
-                    <li><a href="{{ route('genres.show', $genre) }}">{{ $genre->name }}</a></li>
+                    <li><a href="{{ route_path('genres.show', $genre) }}">{{ $genre->name }}</a></li>
                 @endforeach
                 @if($navGenres->isNotEmpty())<hr>@endif
-                <li><a href="{{ route('catalog.index') }}">{{ __('messages.nav.all') }}</a></li>
+                <li><a href="{{ route_path('catalog.index', []) }}">{{ __('messages.nav.all') }}</a></li>
             @endif
         </ul>
 
@@ -387,7 +432,7 @@
         {{-- Language dropdown --}}
         <ul id="header-lang-list" class="header-sublist">
             @foreach(config('locales.supported', []) as $code => $loc)
-                <li><a href="{{ route('locale.switch', $code) }}">
+                <li><a href="{{ route_path('locale.switch', $code) }}">
                     @if(!empty($loc['flag_code']))<span class="flag-icon flag-icon-{{ $loc['flag_code'] }}"></span> @endif{{ $loc['name'] }}
                 </a></li>
             @endforeach
@@ -398,24 +443,24 @@
             {{-- Menu nút + (thêm) — chỉ user đã từng mua gói --}}
             @if(auth()->user()->hasPurchased())
             <ul id="header-add-list" class="header-sublist">
-                <li><a href="{{ route('my-articles.create') }}"><i class="fa fa-book"></i> {{ __('messages.add.book') }}</a></li>
-                <li><a href="{{ route('teams.create') }}"><i class="fa fa-user-friends"></i> {{ __('messages.add.team') }}</a></li>
-                <li><a href="{{ route('collections.create') }}"><i class="fa fa-layer-group"></i> {{ __('messages.add.collection') }}</a></li>
+                <li><a href="{{ route_path('my-articles.create', []) }}"><i class="fa fa-book"></i> {{ __('messages.add.book') }}</a></li>
+                <li><a href="{{ route_path('teams.create', []) }}"><i class="fa fa-user-friends"></i> {{ __('messages.add.team') }}</a></li>
+                <li><a href="{{ route_path('collections.create', []) }}"><i class="fa fa-layer-group"></i> {{ __('messages.add.collection') }}</a></li>
             </ul>
             @endif
 
             {{-- Menu avatar --}}
             <ul id="header-user-list" class="header-sublist">
-                <li><a href="{{ route('users.show') }}"><i class="fa fa-user"></i> {{ __('messages.ui.menu_profile') }}</a></li>
-                <li><a href="{{ route('my-articles.index') }}"><i class="fa fa-book"></i> {{ __('messages.ui.menu_my_articles') }}</a></li>
-                <li><a href="#"><i class="fa fa-bell"></i> {{ __('messages.ui.menu_notifications') }}</a></li>
-                <li><a href="{{ route('users.show_comments', Auth::id()) }}"><i class="fa fa-comment"></i> {{ __('messages.ui.menu_comments') }}</a></li>
-                <li><a href="{{ route('users.show_bookmarks', Auth::id()) }}"><i class="fa fa-heart"></i> {{ __('messages.ui.menu_following') }}</a></li>
-                <li><a href="#"><i class="fa fa-layer-group"></i> {{ __('messages.ui.menu_collections') }}</a></li>
-                <li><a href="#"><i class="fa fa-user-friends"></i> {{ __('messages.ui.menu_teams') }}</a></li>
-                <li><a href="{{ route('users.change_info') }}"><i class="fa fa-cog"></i> {{ __('messages.ui.menu_settings') }}</a></li>
+                <li><a href="{{ route_path('users.show', []) }}"><i class="fa fa-user"></i> {{ __('messages.ui.menu_profile') }}</a></li>
+                <li><a href="{{ route_path('my-articles.index', []) }}"><i class="fa fa-book"></i> {{ __('messages.ui.menu_my_articles') }}</a></li>
+                <li><a href="{{ route_path('users.notifications', Auth::id()) }}"><i class="fa fa-bell"></i> {{ __('messages.ui.menu_notifications') }}</a></li>
+                <li><a href="{{ route_path('users.show_comments', Auth::id()) }}"><i class="fa fa-comment"></i> {{ __('messages.ui.menu_comments') }}</a></li>
+                <li><a href="{{ route_path('users.show_bookmarks', Auth::id()) }}"><i class="fa fa-heart"></i> {{ __('messages.ui.menu_following') }}</a></li>
+                <li><a href="{{ route_path('users.collections', Auth::id()) }}"><i class="fa fa-layer-group"></i> {{ __('messages.ui.menu_collections') }}</a></li>
+                <li><a href="{{ route_path('users.teams', Auth::id()) }}"><i class="fa fa-user-friends"></i> {{ __('messages.ui.menu_teams') }}</a></li>
+                <li><a href="{{ route_path('users.change_info', []) }}"><i class="fa fa-cog"></i> {{ __('messages.ui.menu_settings') }}</a></li>
                 <hr>
-                <li><a href="{{ route('users.transactions', Auth::id()) }}"><i class="fa fa-money-bill"></i> {{ __('messages.ui.menu_topup') }}</a></li>
+                <li><a href="{{ route_path('users.transactions', Auth::id()) }}"><i class="fa fa-money-bill"></i> {{ __('messages.ui.menu_topup') }}</a></li>
                 <hr>
                 <li>
                     <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-header').submit();">
@@ -426,10 +471,95 @@
         @endauth
     </div>
 
+    @guest
+        @include('auth.drawer')
+    @endguest
+
     @auth
-        <form id="logout-form-header" method="POST" action="{{ route('logout') }}" style="display:none">@csrf</form>
+        <form id="logout-form-header" method="POST" action="{{ route_path('logout', []) }}" style="display:none">@csrf</form>
     @endauth
 </div>
+
+@guest
+<script>
+(function () {
+    var drawer = document.getElementById('alpha-auth-drawer');
+    if (!drawer) return;
+
+    var loginUrl = @json(route_path('login', []));
+    var registerUrl = @json(route_path('register', []));
+    var shouldAutoOpen = @json($errors->any() || session('reading_limit_notice') || session('status'));
+
+    function setTab(tab) {
+        tab = tab === 'register' ? 'register' : 'login';
+        drawer.querySelectorAll('[data-auth-tab]').forEach(function (button) {
+            button.classList.toggle('active', button.getAttribute('data-auth-tab') === tab);
+        });
+        drawer.querySelectorAll('[data-auth-pane]').forEach(function (pane) {
+            pane.classList.toggle('active', pane.getAttribute('data-auth-pane') === tab);
+        });
+    }
+
+    function openDrawer(tab) {
+        setTab(tab || drawer.getAttribute('data-default-tab') || 'login');
+        drawer.classList.add('is-open');
+        drawer.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('alpha-auth-open');
+        var focusTarget = drawer.querySelector('.alpha-auth-pane.active input');
+        if (focusTarget) window.setTimeout(function () { focusTarget.focus(); }, 160);
+    }
+
+    function closeDrawer() {
+        drawer.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('alpha-auth-open');
+    }
+
+    drawer.querySelectorAll('[data-auth-tab]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            setTab(button.getAttribute('data-auth-tab'));
+        });
+    });
+
+    drawer.querySelectorAll('[data-auth-close]').forEach(function (button) {
+        button.addEventListener('click', closeDrawer);
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && drawer.classList.contains('is-open')) closeDrawer();
+    });
+
+    document.addEventListener('click', function (event) {
+        var trigger = event.target.closest('[data-auth-open]');
+        if (!trigger) {
+            var link = event.target.closest('a[href]');
+            if (!link) return;
+            var href = link.getAttribute('href') || '';
+            var path;
+            try {
+                path = new URL(href, window.location.origin).pathname;
+            } catch (e) {
+                return;
+            }
+            if (path === loginUrl) trigger = { getAttribute: function () { return 'login'; } };
+            if (path === registerUrl) trigger = { getAttribute: function () { return 'register'; } };
+        }
+
+        if (!trigger) return;
+        event.preventDefault();
+        openDrawer(trigger.getAttribute('data-auth-open'));
+    });
+
+    window.AlphaAuthDrawer = { open: openDrawer, close: closeDrawer, setTab: setTab };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (shouldAutoOpen || location.pathname === loginUrl || location.pathname === registerUrl) {
+            openDrawer(location.pathname === registerUrl ? 'register' : drawer.getAttribute('data-default-tab'));
+        }
+    });
+})();
+</script>
+@endguest
 
 <script>
 /* Force all lazy images to load immediately — src is already set by blade */
@@ -444,6 +574,35 @@ document.addEventListener('DOMContentLoaded', forceLoadImages);
 window.addEventListener('load', forceLoadImages);
 </script>
 <script src="{{ asset('static/core/js/swiper.bundle.js') }}"></script>
+<script>
+function initAlphaSliders(root) {
+    root = root || document;
+    if (typeof Swiper === 'undefined') return;
+
+    root.querySelectorAll('.alpha-slider.swiper-container:not([data-alpha-slider-ready])').forEach(function (el) {
+        var type = el.getAttribute('data-alpha-slider') || 'books';
+        var section = el.closest('section') || el.parentElement;
+        var next = section ? section.querySelector('.alpha-slider-next') : null;
+        var prev = section ? section.querySelector('.alpha-slider-prev') : null;
+        var options = {
+            slidesPerView: 2,
+            spaceBetween: 16,
+            loop: false,
+            watchOverflow: true,
+            navigation: next && prev ? { nextEl: next, prevEl: prev } : undefined,
+            breakpoints: {
+                768: { slidesPerView: 3, spaceBetween: 18 },
+                1024: { slidesPerView: 5, spaceBetween: 20 }
+            }
+        };
+
+        el.setAttribute('data-alpha-slider-ready', '1');
+        new Swiper(el, options);
+    });
+}
+document.addEventListener('DOMContentLoaded', function () { initAlphaSliders(document); });
+window.addEventListener('load', function () { initAlphaSliders(document); });
+</script>
 <script src="{{ asset('static/core/js/popper.js') }}"></script>
 <script src="{{ asset('static/core/js/tippy.js') }}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

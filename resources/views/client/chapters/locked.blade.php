@@ -1,8 +1,8 @@
 @php
     $prevChapter = $article->chapters()->where('number', '<', $chapter->number)->orderByDesc('number')->first();
     $nextChapter = $article->chapters()->where('number', '>', $chapter->number)->orderBy('number')->first();
-    $prevUrl = $prevChapter ? route('articles.chapters.show', [$article, $prevChapter->number]) : null;
-    $nextUrl = $nextChapter ? route('articles.chapters.show', [$article, $nextChapter->number]) : null;
+    $prevUrl = $prevChapter ? route_path('articles.chapters.show', [$article, $prevChapter->number]) : null;
+    $nextUrl = $nextChapter ? route_path('articles.chapters.show', [$article, $nextChapter->number]) : null;
 @endphp
 <!doctype html>
 <html lang="vi">
@@ -83,7 +83,7 @@
 <body chapter_ph="">
 
 <header class="header-chapter">
-    <a href="{{ route('articles.show', $article) }}" class="header-title btn header-btn">
+    <a href="{{ route_path('articles.show', $article) }}" class="header-title btn header-btn">
         <span class="clamp clamp-1"><i class="fa fa-arrow-left"></i> {{ $article->title }}</span>
     </a>
 </header>
@@ -118,19 +118,19 @@
 
             @if($userPoints >= $creditCost)
                 <button class="btn-unlock" id="btn-unlock"
-                        data-url="{{ route('articles.chapters.unlock', [$article, $chapter->number]) }}">
+                        data-url="{{ route_path('articles.chapters.unlock', [$article, $chapter->number]) }}">
                     {{ __('messages.chapter.unlock_this_chapter') }}
                 </button>
             @else
                 <button class="btn-unlock" disabled>{{ __('messages.chapter.not_enough_credit') }}</button>
                 <div class="topup-link">
-                    <a href="{{ route('pages.pricing') }}">{{ __('messages.chapter.topup_now') }}</a>
+                    <a href="{{ route_path('pages.pricing') }}">{{ __('messages.chapter.topup_now') }}</a>
                 </div>
             @endif
             <div id="unlock-msg"></div>
         @else
             <p style="color:var(--text-muted,#888);margin-bottom:16px">{{ __('messages.chapter.login_to_buy_read') }}</p>
-            <a href="{{ route('login') }}" class="btn-login">{{ __('messages.chapter.login') }}</a>
+            <a href="{{ route_path('login') }}" class="btn-login">{{ __('messages.chapter.login') }}</a>
         @endauth
     </div>
 </div>
