@@ -187,6 +187,7 @@ return array_replace_recursive($messages, [
         'user' => 'Utilisateur',
         'admin' => 'Par admin',
         'types' => [
+            'daily_checkin' => 'Recompense de presence quotidienne',
             'purchase' => 'Recharge / achat',
             'daily_subscription' => 'Crédit quotidien (abonnement)',
             'subscription_init' => 'Crédit du forfait',

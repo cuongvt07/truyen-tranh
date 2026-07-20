@@ -8,6 +8,17 @@
     $coinPacks = collect($coinPacks ?? []);
     $storeCards = $coinPacks->values();
     $balance = auth()->check() ? (auth()->user()->points ?? 0) : 0;
+    $dailyService = app(\App\Services\DailyCheckinService::class);
+    $dailyEnabled = $dailyService->enabled();
+    $dailyClaimed = auth()->check() ? $dailyService->hasClaimed(auth()->user()) : false;
+    $dailyRewards = collect(range(0, 6))->map(function ($offset) use ($dailyService) {
+        $date = now()->copy()->addDays($offset);
+        return [
+            'label' => $offset === 0 ? 'Today' : $date->format('D'),
+            'amount' => $dailyService->rewardForDate($date),
+            'today' => $offset === 0,
+        ];
+    });
 @endphp
 
 <div class="alpha-gifts-page">
@@ -45,6 +56,41 @@
     <div class="container alpha-gifts-content">
         @if(session('reading_limit_notice'))
             <div class="alpha-store-alert">{{ session('reading_limit_notice') }}</div>
+        @endif
+
+        @if($dailyEnabled)
+            <section class="alpha-daily-gifts-card">
+                <div class="alpha-daily-gifts-card__visual">
+                    <img src="/static/core/images/alphanovel/present.png" alt="Daily bonus" loading="lazy">
+                    <span><i class="fa fa-gift"></i> Daily Bonus</span>
+                </div>
+                <div class="alpha-daily-gifts-card__copy">
+                    <small>Daily check-in</small>
+                    <h2>Collect free {{ coin_name() }} every day</h2>
+                    <p>Log in, open the reward calendar, and claim today's bonus before you continue reading.</p>
+                    <div class="alpha-daily-gifts-card__calendar" aria-label="Daily bonus preview">
+                        @foreach($dailyRewards as $reward)
+                            <span class="{{ $reward['today'] ? 'is-today' : '' }}">
+                                <b>{{ $reward['label'] }}</b>
+                                <small>+{{ number_format($reward['amount']) }}</small>
+                            </span>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="alpha-daily-gifts-card__action">
+                    @auth
+                        @if($dailyClaimed)
+                            <span class="alpha-gift-button alpha-gift-button--disabled"><i class="fa fa-check"></i> Claimed today</span>
+                        @else
+                            <button type="button" class="alpha-gift-button alpha-gift-button--primary" data-daily-open>
+                                <i class="fa fa-coins"></i> Claim now
+                            </button>
+                        @endif
+                    @else
+                        <a href="{{ route_path('login', []) }}" class="alpha-gift-button alpha-gift-button--primary">Login to claim</a>
+                    @endauth
+                </div>
+            </section>
         @endif
 
         <div class="alpha-store-wallet">

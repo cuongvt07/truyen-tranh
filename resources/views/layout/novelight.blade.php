@@ -229,6 +229,37 @@
     </div>
 </header>
 
+@php
+    $bottomTabClass = 'LayoutTabs_item__jAMjf';
+    $bottomTabActiveClass = ' LayoutTabs_item__active__7FHV6';
+    $bottomLibraryUrl = auth()->check() ? route_path('users.show_bookmarks', Auth::id()) : route_path('login', []);
+    $bottomProfileUrl = auth()->check() ? route_path('users.show', []) : route_path('login', []);
+    $bottomLibraryActive = request()->routeIs('users.show_bookmarks', 'users.reading_history', 'users.collections', 'users.favourites', 'users.teams');
+    $bottomProfileActive = request()->routeIs('users.show', 'users.show.profile', 'users.change_info', 'users.change_password', 'users.transactions', 'users.achievements', 'users.notifications');
+@endphp
+<nav data-testid="layout-tabs" class="LayoutTabs_wrapper__ZY5zg" aria-label="Mobile navigation">
+    <a class="{{ $bottomTabClass }}{{ request()->routeIs('home.index') ? $bottomTabActiveClass : '' }}" href="{{ route_path('home.index', []) }}">
+        <span class="AlphaIcon"><i class="fa fa-list"></i></span>
+        Discover
+    </a>
+    <a class="{{ $bottomTabClass }}{{ request()->routeIs('catalog.*', 'articles.index') ? $bottomTabActiveClass : '' }}" href="{{ route_path('catalog.index', []) }}">
+        <span class="AlphaIcon"><i class="fa fa-book"></i></span>
+        Novels
+    </a>
+    <a class="{{ $bottomTabClass }}{{ request()->routeIs('home.search', 'catalog.live_search') ? $bottomTabActiveClass : '' }}" href="{{ route_path('home.search', []) }}">
+        <span class="AlphaIcon"><i class="fa fa-search"></i></span>
+        Search
+    </a>
+    <a class="{{ $bottomTabClass }}{{ $bottomLibraryActive ? $bottomTabActiveClass : '' }}" href="{{ $bottomLibraryUrl }}" @guest data-auth-open="login" @endguest>
+        <span class="AlphaIcon"><i class="fa fa-heart"></i></span>
+        Library
+    </a>
+    <a class="{{ $bottomTabClass }}{{ $bottomProfileActive ? $bottomTabActiveClass : '' }}" href="{{ $bottomProfileUrl }}" @guest data-auth-open="login" @endguest>
+        <span class="AlphaIcon"><i class="fa fa-user"></i></span>
+        Profile
+    </a>
+</nav>
+
 <div class="page">
     <div class="content">
         @yield('content')
@@ -477,6 +508,8 @@
 
     @auth
         <form id="logout-form-header" method="POST" action="{{ route_path('logout', []) }}" style="display:none">@csrf</form>
+        @php session()->pull('daily_checkin_prompt', false); @endphp
+        @include('client.partials.daily-checkin')
     @endauth
 </div>
 
@@ -585,16 +618,26 @@ function initAlphaSliders(root) {
         var next = section ? section.querySelector('.alpha-slider-next') : null;
         var prev = section ? section.querySelector('.alpha-slider-prev') : null;
         var options = {
-            slidesPerView: 2,
+            slidesPerView: 3,
             spaceBetween: 16,
             loop: false,
             watchOverflow: true,
             navigation: next && prev ? { nextEl: next, prevEl: prev } : undefined,
             breakpoints: {
-                768: { slidesPerView: 3, spaceBetween: 18 },
-                1024: { slidesPerView: 5, spaceBetween: 20 }
+                768: { slidesPerView: 5, spaceBetween: 18 },
+                1200: { slidesPerView: 9, spaceBetween: 24 }
             }
         };
+
+        if (type === 'trending') {
+            options.slidesPerView = 2;
+            options.slidesPerGroup = 2;
+            options.grid = { rows: 2, fill: 'row' };
+            options.breakpoints = {
+                768: { slidesPerView: 3, slidesPerGroup: 3, spaceBetween: 18, grid: { rows: 2, fill: 'row' } },
+                1024: { slidesPerView: 4, slidesPerGroup: 4, spaceBetween: 24, grid: { rows: 2, fill: 'row' } }
+            };
+        }
 
         el.setAttribute('data-alpha-slider-ready', '1');
         new Swiper(el, options);

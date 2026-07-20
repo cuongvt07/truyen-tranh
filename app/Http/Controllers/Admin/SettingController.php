@@ -20,6 +20,8 @@ class SettingController extends Controller
             'guest_articles_per_day' => ['sometimes', 'required', 'integer', 'min:1', 'max:10000'],
             'guest_chapters_per_day' => ['sometimes', 'required', 'integer', 'min:1', 'max:10000'],
             'unpaid_user_chapters' => ['sometimes', 'required', 'integer', 'min:1', 'max:1000000'],
+            'daily_checkin_enabled' => ['sometimes', 'required', 'in:0,1'],
+            'daily_checkin_default_reward' => ['sometimes', 'required', 'integer', 'min:0', 'max:1000000'],
         ]);
 
         $data = $request->except([
@@ -38,6 +40,21 @@ class SettingController extends Controller
         }
 
         // site_name (đồng bộ cả settings + seo_settings để title SEO dùng chung)
+        if ($request->has('daily_checkin_rewards')) {
+            $rewardMap = [];
+            foreach ((array) $request->input('daily_checkin_rewards', []) as $day => $amount) {
+                $day = (int) $day;
+                if ($day < 1 || $day > 31 || $amount === null || $amount === '') {
+                    continue;
+                }
+                $rewardMap[$day] = max(0, (int) $amount);
+            }
+            DB::table('settings')->updateOrInsert(
+                ['meta_key' => 'daily_checkin_rewards'],
+                ['meta_value' => json_encode($rewardMap)]
+            );
+        }
+
         if ($request->filled('site_name')) {
             DB::table('settings')->updateOrInsert(['meta_key' => 'site_name'], ['meta_value' => $request->input('site_name')]);
             DB::table('seo_settings')->updateOrInsert(['key' => 'site_name'], ['value' => $request->input('site_name'), 'updated_at' => now()]);

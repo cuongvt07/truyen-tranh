@@ -54,6 +54,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/generate-qr', [PaymentController::class, 'createDeposit'])->name('generate.qr');
     Route::post('/transactions/check', [PaymentController::class, 'checkTransactionStatus'])
         ->name('sepay.transactions.check');
+    Route::get('/daily-checkin/status', [\App\Http\Controllers\Client\DailyCheckinController::class, 'status'])
+        ->name('daily-checkin.status');
+    Route::post('/daily-checkin/claim', [\App\Http\Controllers\Client\DailyCheckinController::class, 'claim'])
+        ->middleware('throttle:10,1')
+        ->name('daily-checkin.claim');
 
     // Đăng & quản lý truyện của user (scoped own, giao diện novelight)
     Route::get('/upload', [\App\Http\Controllers\Client\MyArticleController::class, 'create'])->name('my-articles.create');

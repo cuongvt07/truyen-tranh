@@ -287,6 +287,7 @@ return [
         'user' => 'Người dùng',
         'admin' => 'Bởi admin',
         'types' => [
+            'daily_checkin' => 'Thuong diem danh hang ngay',
             'purchase' => 'Nạp / mua xu',
             'daily_subscription' => 'Credit gói hằng ngày',
             'subscription_init' => 'Credit gói (mua/gia hạn)',

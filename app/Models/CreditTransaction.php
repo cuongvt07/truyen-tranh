@@ -19,6 +19,7 @@ class CreditTransaction extends Model
 
     /** Các nguồn biến động credit. Nhãn dịch ở messages.credit_log.types.* */
     public const TYPES = [
+        'daily_checkin'      => 'daily_checkin',
         'purchase'           => 'purchase',            // nạp xu (PayPal/SePay) cộng vào
         'daily_subscription' => 'daily_subscription',  // credit hằng ngày của gói subscription
         'subscription_init'  => 'subscription_init',   // credit ngày đầu khi mua subscription

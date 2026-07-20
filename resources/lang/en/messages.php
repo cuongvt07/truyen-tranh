@@ -315,6 +315,7 @@ return array (
     array (
       'purchase' => 'Top-up / purchase',
       'daily_subscription' => 'Daily subscription credit',
+      'daily_checkin' => 'Daily check-in reward',
       'subscription_init' => 'Subscription package credit',
       'chapter_unlock' => 'Chapter unlock',
       'vip_purchase' => 'VIP purchase',

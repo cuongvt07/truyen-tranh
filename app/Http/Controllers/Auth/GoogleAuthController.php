@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Throwable;
+use App\Services\DailyCheckinService;
 
 class GoogleAuthController extends Controller
 {
@@ -100,6 +101,7 @@ class GoogleAuthController extends Controller
         }
 
         Auth::login($user, true);
+        app(DailyCheckinService::class)->promptAfterLogin();
 
         return redirect()->intended(route('home.index'));
     }

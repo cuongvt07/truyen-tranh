@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Services\DailyCheckinService;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -48,8 +49,9 @@ class AuthenticatedSessionController extends Controller
             \Log::info('🔑 User logged in', ['user_id' => $user->id]);
 
             $request->session()->regenerate();
+            app(DailyCheckinService::class)->promptAfterLogin();
 
-            return redirect()->intended(RouteServiceProvider::HOME);
+            return redirect()->to(RouteServiceProvider::HOME);
         }
 
         \Log::warning('❌ Basic login failed', ['login' => $login]);

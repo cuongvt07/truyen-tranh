@@ -33,6 +33,10 @@
 
     <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data">
         @csrf
+        @php
+            $dailyRewardMap = json_decode($settings['daily_checkin_rewards'] ?? '{}', true);
+            $dailyRewardMap = is_array($dailyRewardMap) ? $dailyRewardMap : [];
+        @endphp
 
         <button class="btn btn-primary mb-3 float-end">Lưu thay đổi</button>
 
@@ -116,6 +120,45 @@
         </div>
 
         <!-- KHỐI THƯỞNG ĐĂNG KÝ -->
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                Daily check-in reward
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="form-group col-md-3">
+                        <label>Status</label>
+                        <select name="daily_checkin_enabled" class="form-control">
+                            <option value="1" {{ ($settings['daily_checkin_enabled'] ?? '1') === '1' ? 'selected' : '' }}>Enabled</option>
+                            <option value="0" {{ ($settings['daily_checkin_enabled'] ?? '1') === '0' ? 'selected' : '' }}>Disabled</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Default credit/day</label>
+                        <input type="number" min="0" name="daily_checkin_default_reward" class="form-control"
+                               value="{{ old('daily_checkin_default_reward', $settings['daily_checkin_default_reward'] ?? 5) }}">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Rule</label>
+                        <div class="text-muted small">
+                            Empty day cells use the default reward. Fill a day cell to make that day special every month.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    @for($day = 1; $day <= 31; $day++)
+                        <div class="form-group col-6 col-sm-4 col-md-2 mb-2">
+                            <label class="small mb-1">Day {{ $day }}</label>
+                            <input type="number" min="0" name="daily_checkin_rewards[{{ $day }}]" class="form-control form-control-sm"
+                                   placeholder="Default"
+                                   value="{{ old('daily_checkin_rewards.' . $day, $dailyRewardMap[$day] ?? '') }}">
+                        </div>
+                    @endfor
+                </div>
+            </div>
+        </div>
+
         <div class="card mb-4">
             <div class="card-header bg-warning text-dark">
                 🎁 THƯỞNG ĐĂNG KÝ
