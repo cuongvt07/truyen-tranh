@@ -59,6 +59,8 @@
                     @if($block['showSeeAll'] ?? true)
                         <a href="{{ $block['url'] }}" class="alpha-see-all">See All</a>
                     @endif
+                    <button type="button" class="alpha-slider-prev" aria-label="Previous"><i class="fa fa-chevron-left"></i></button>
+                    <button type="button" class="alpha-slider-next" aria-label="Next"><i class="fa fa-chevron-right"></i></button>
                 </div>
             </div>
 

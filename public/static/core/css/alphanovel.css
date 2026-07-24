@@ -11625,3 +11625,11 @@ body.theme-alphanovel .alpha-header-nav ul {
         line-height: 24px !important;
     }
 }
+
+/* Hide slider prev/next arrows but keep them in the DOM so Swiper still binds
+   navigation (querySelector finds display:none nodes) — slider config unchanged,
+   arrows just invisible. */
+body.theme-alphanovel .alpha-slider-prev,
+body.theme-alphanovel .alpha-slider-next {
+    display: none !important;
+}
