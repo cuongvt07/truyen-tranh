@@ -11530,3 +11530,98 @@ body.theme-alphanovel.alpha-dark .alpha-theme-toggle::before {
         padding-inline: 4px;
     }
 }
+
+/* ============================================================
+   Typography normalization (theme-agnostic)
+   The redesigned type scale was originally scoped to
+   `:not(.alpha-dark)`, so DARK mode fell back to legacy sizes/
+   fonts (e.g. trending titles rendered Open Sans 13px/900 instead
+   of Poppins 16px/600). These rules re-apply the AlphaNovel scale
+   to BOTH themes — dark should differ only in COLOR, never in
+   font-family / size / weight / line-height.
+   Reference: alphanovel.io (Open Sans body / Poppins titles).
+   ============================================================ */
+
+/* Header nav + actions */
+body.theme-alphanovel .alpha-header-nav a,
+body.theme-alphanovel .alpha-header-nav .header-btn,
+body.theme-alphanovel .header-user .btn,
+body.theme-alphanovel .header-user .header-btn,
+body.theme-alphanovel .header-lang,
+body.theme-alphanovel .alpha-theme-toggle {
+    font-family: var(--alpha-font-body) !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    line-height: 24px !important;
+}
+
+/* Section titles — Poppins 600 */
+body.theme-alphanovel .alpha-discover-card__head h2 {
+    font-family: var(--alpha-font-title) !important;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    line-height: 32px !important;
+}
+
+/* Discover card title */
+body.theme-alphanovel .alpha-discover-book strong {
+    margin-top: 8px !important;
+    font-family: var(--alpha-font-title) !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 20px !important;
+}
+
+/* Trending card — title / genre / stats */
+body.theme-alphanovel .alpha-trending-item strong {
+    font-family: var(--alpha-font-title) !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    line-height: 28px !important;
+}
+
+body.theme-alphanovel .alpha-trending-item small {
+    font-family: var(--alpha-font-title) !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 20px !important;
+}
+
+body.theme-alphanovel .alpha-trending-item__stats {
+    font-family: var(--alpha-font-title) !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 22px !important;
+}
+
+/* Shared layout (identical in both themes) */
+body.theme-alphanovel .header {
+    height: 80px !important;
+    min-height: 80px !important;
+}
+
+body.theme-alphanovel .header .container,
+body.theme-alphanovel .header__inner {
+    height: 80px !important;
+}
+
+body.theme-alphanovel .alpha-header-nav ul {
+    gap: 32px !important;
+}
+
+@media (max-width: 920px) {
+    body.theme-alphanovel .header {
+        height: 60px !important;
+        min-height: 60px !important;
+    }
+
+    body.theme-alphanovel .header .container,
+    body.theme-alphanovel .header__inner {
+        height: 60px !important;
+    }
+
+    body.theme-alphanovel .alpha-discover-card__head h2 {
+        font-size: 16px !important;
+        line-height: 24px !important;
+    }
+}
