@@ -62,6 +62,62 @@
             </div>
         </div>
 
+        <!-- FOOTER: APP & MẠNG XÃ HỘI -->
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">
+                <i class="fas fa-share-alt"></i> FOOTER — APP & MẠNG XÃ HỘI
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-3">Để trống thì mục tương ứng sẽ ẩn khỏi footer. Nhập link tài khoản/của bạn.</p>
+                <div class="row">
+                    <div class="form-group col-md-6 mb-2">
+                        <label>App Store (URL)</label>
+                        <input type="url" name="app_store_url" class="form-control" placeholder="https://apps.apple.com/..." value="{{ $settings['app_store_url'] ?? '' }}">
+                    </div>
+                    <div class="form-group col-md-6 mb-2">
+                        <label>Google Play (URL)</label>
+                        <input type="url" name="google_play_url" class="form-control" placeholder="https://play.google.com/..." value="{{ $settings['google_play_url'] ?? '' }}">
+                    </div>
+                    <div class="form-group col-md-6 mb-2">
+                        <label>Facebook</label>
+                        <input type="url" name="social_facebook" class="form-control" value="{{ $settings['social_facebook'] ?? '' }}">
+                    </div>
+                    <div class="form-group col-md-6 mb-2">
+                        <label>Instagram</label>
+                        <input type="url" name="social_instagram" class="form-control" value="{{ $settings['social_instagram'] ?? '' }}">
+                    </div>
+                    <div class="form-group col-md-6 mb-2">
+                        <label>TikTok</label>
+                        <input type="url" name="social_tiktok" class="form-control" value="{{ $settings['social_tiktok'] ?? '' }}">
+                    </div>
+                    <div class="form-group col-md-6 mb-2">
+                        <label>Reddit</label>
+                        <input type="url" name="social_reddit" class="form-control" value="{{ $settings['social_reddit'] ?? '' }}">
+                    </div>
+                    <div class="form-group col-md-6 mb-2">
+                        <label>Quora</label>
+                        <input type="url" name="social_quora" class="form-control" value="{{ $settings['social_quora'] ?? '' }}">
+                    </div>
+                    <div class="form-group col-md-6 mb-2">
+                        <label>Medium</label>
+                        <input type="url" name="social_medium" class="form-control" value="{{ $settings['social_medium'] ?? '' }}">
+                    </div>
+                    <div class="form-group col-md-6 mb-2">
+                        <label>YouTube</label>
+                        <input type="url" name="social_youtube" class="form-control" value="{{ $settings['social_youtube'] ?? '' }}">
+                    </div>
+                    <div class="form-group col-md-6 mb-2">
+                        <label>Email liên hệ (Contact us)</label>
+                        <input type="email" name="footer_contact_email" class="form-control" placeholder="support@yoursite.com" value="{{ $settings['footer_contact_email'] ?? '' }}">
+                    </div>
+                    <div class="form-group col-md-12 mb-2">
+                        <label>Dòng pháp nhân / địa chỉ (copyright)</label>
+                        <input type="text" name="footer_company" class="form-control" placeholder="Tên công ty, địa chỉ..." value="{{ $settings['footer_company'] ?? '' }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- GIỚI HẠN ĐỌC MIỄN PHÍ -->
         <div class="card mb-4">
             <div class="card-header bg-danger text-white">

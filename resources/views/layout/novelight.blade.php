@@ -264,76 +264,79 @@
     <div class="content">
         @yield('content')
 
-        <footer class="alpha-footer alpha-footer-redesign">
-            <div class="alpha-footer-shell">
-                <section class="alpha-footer-brand" aria-label="{{ $siteName }}">
-                    <a href="{{ route_path('home.index', []) }}" class="alpha-footer-logo">
-                        <img src="{{ $siteLogo }}" alt="{{ $siteName }}">
-                    </a>
-                    <p>A clean reading space for romance, fantasy and serialized online novels.</p>
-                    <div class="alpha-footer-actions">
-                        <a href="{{ route_path('catalog.index', []) }}" class="alpha-footer-primary">
-                            <i class="fa fa-book-open"></i>
-                            <span>Browse novels</span>
-                        </a>
-                        <a href="{{ route_path('home.search', []) }}" class="alpha-footer-secondary">
-                            <i class="fa fa-search"></i>
-                            <span>Search</span>
-                        </a>
-                    </div>
-                </section>
+        @php
+            $appStoreUrl   = setting('app_store_url');
+            $googlePlayUrl = setting('google_play_url');
+            $hasApp        = $appStoreUrl || $googlePlayUrl;
+            $socials = array_filter([
+                'facebook'  => setting('social_facebook'),
+                'instagram' => setting('social_instagram'),
+                'tiktok'    => setting('social_tiktok'),
+                'reddit'    => setting('social_reddit'),
+                'quora'     => setting('social_quora'),
+                'medium'    => setting('social_medium'),
+                'youtube'   => setting('social_youtube'),
+            ]);
+            $footerContact = setting('footer_contact_email');
+            $footerCompany = setting('footer_company');
+        @endphp
+        <footer class="alpha-site-footer" aria-label="{{ $siteName }} footer">
+            <div class="alpha-site-footer__container">
+                <div class="alpha-site-footer__body">
+                    @if($hasApp)
+                        <div class="alpha-site-footer__group">
+                            <span class="alpha-site-footer__title">Download app</span>
+                            <nav class="alpha-site-footer__download" aria-label="Download app">
+                                @if($appStoreUrl)
+                                    <a href="{{ $appStoreUrl }}" class="alpha-site-footer__link" aria-label="Download on the App Store" rel="noreferrer" target="_blank">
+                                        <span class="AlphaIcon"><svg width="22" height="28" viewBox="0 0 22 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.375 14.8903C18.4019 12.7288 19.5229 10.6836 21.3013 9.55149C20.1794 7.89236 18.3002 6.84043 16.3451 6.77709C14.2599 6.55045 12.2384 8.06913 11.1758 8.06913C10.0926 8.06913 8.45655 6.79959 6.69481 6.83712C4.39845 6.91395 2.25766 8.26584 1.14044 10.3447C-1.26116 14.6502 0.530216 20.9778 2.83074 24.458C3.98175 26.1622 5.32694 28.0658 7.0871 27.9983C8.80951 27.9243 9.4528 26.861 11.5319 26.861C13.5917 26.861 14.1953 27.9983 15.9911 27.9553C17.8394 27.9243 19.0038 26.2436 20.1145 24.5233C20.9415 23.309 21.5778 21.967 22 20.5469C19.828 19.5956 18.3775 17.3323 18.375 14.8903Z" fill="currentColor"></path><path d="M14.9828 4.48832C15.9906 3.23566 16.487 1.62558 16.3668 0C14.8272 0.167441 13.4051 0.929367 12.3837 2.13397C11.385 3.31092 10.8652 4.89268 10.9635 6.45612C12.5036 6.47254 14.0177 5.73127 14.9828 4.48832Z" fill="currentColor"></path></svg></span>
+                                    </a>
+                                @endif
+                                @if($googlePlayUrl)
+                                    <a href="{{ $googlePlayUrl }}" class="alpha-site-footer__link" aria-label="Get it on Google Play" rel="noreferrer" target="_blank">
+                                        <span class="AlphaIcon"><svg width="21" height="24" viewBox="0 0 21 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.4211 0.370606C0.156435 0.657999 0 1.10402 0 1.6816V22.3179C0 22.8964 0.156435 23.3415 0.4211 23.6289L0.488402 23.6961L11.7562 12.136V11.9997V11.8635L0.488402 0.30249L0.4211 0.370606Z" fill="#4285F4"></path><path d="M15.5092 15.9905L11.7539 12.1359V11.9997V11.8634L15.5101 8.00977L15.5947 8.05922L20.0449 10.6532C21.3155 11.3941 21.3155 12.6062 20.0449 13.348L15.5947 15.942L15.5092 15.9905Z" fill="#FBBC05"></path><path d="M15.5978 15.9411L11.7561 11.9998L0.421876 23.6289C0.840246 24.0842 1.53238 24.1402 2.31182 23.6867L15.5978 15.9411Z" fill="#EA4335"></path><path d="M15.5978 8.05826L2.31182 0.31359C1.53238 -0.140827 0.840246 -0.083908 0.421876 0.371442L11.757 12.0006L15.5978 8.05826Z" fill="#34A853"></path></svg></span>
+                                    </a>
+                                @endif
+                                <a href="{{ $appStoreUrl ?: $googlePlayUrl }}" rel="noreferrer" target="_blank" class="alpha-site-footer__install">Install App</a>
+                            </nav>
+                        </div>
+                    @endif
 
-                <nav class="alpha-footer-nav" aria-label="Footer navigation">
-                    <div class="alpha-footer-col">
-                        <h3>Read</h3>
-                        <a href="{{ route_path('home.index', []) }}">Discover</a>
-                        <a href="{{ route_path('catalog.index', []) }}">Novels</a>
-                        <a href="{{ route_path('home.show_new_update_articles', []) }}">New releases</a>
-                        <a href="{{ route_path('home.show_completed_articles', []) }}">Completed</a>
-                    </div>
-                    <div class="alpha-footer-col">
-                        <h3>Community</h3>
-                        <a href="{{ route_path('pages.blog', []) }}">Blog</a>
-                        <a href="{{ route_path('pages.help', []) }}">Help center</a>
-                        <a href="{{ route_path('pages.feedback', []) }}">Contact us</a>
-                        <a href="{{ route_path('my-articles.create', []) }}">Writer</a>
-                    </div>
-                    <div class="alpha-footer-col">
-                        <h3>Account</h3>
-                        @auth
-                            <a href="{{ route_path('users.show', []) }}">Library</a>
-                            <a href="{{ route_path('users.show_bookmarks', Auth::id()) }}">Bookmarks</a>
-                            <a href="{{ route_path('users.notifications', Auth::id()) }}">Notifications</a>
-                            <a href="{{ route_path('users.transactions', Auth::id()) }}">Coins</a>
+                    @if(count($socials))
+                        <div class="alpha-site-footer__group">
+                            <span class="alpha-site-footer__title">Follow us</span>
+                            <nav class="alpha-site-footer__socials" aria-label="Social links">
+                                @foreach($socials as $network => $url)
+                                    <a href="{{ $url }}" class="alpha-site-footer__link" aria-label="{{ $network }}" target="_blank" rel="nofollow noreferrer">
+                                        <span class="AlphaIcon">@include('partials.social-icon', ['network' => $network])</span>
+                                    </a>
+                                @endforeach
+                            </nav>
+                        </div>
+                    @endif
+
+                    <nav class="alpha-site-footer__nav" aria-label="Footer navigation">
+                        <a class="alpha-site-footer__link" href="{{ route_path('pages.blog', []) }}">Blog</a>
+                        <a class="alpha-site-footer__link" href="{{ route_path('pages.help', []) }}">Help</a>
+                        <a class="alpha-site-footer__link" href="{{ $footerContact ? 'mailto:'.$footerContact : route_path('pages.feedback', []) }}">Contact us</a>
+                    </nav>
+                </div>
+
+                <div class="alpha-site-footer__bottom">
+                    <div class="alpha-site-footer__copyright">
+                        <span class="alpha-site-footer__text">{{ date('Y') }} &copy; All Rights Reserved.</span>
+                        @if($footerCompany)
+                            <span class="alpha-site-footer__text">{{ $footerCompany }}</span>
                         @else
-                            <a href="{{ route_path('login', []) }}" data-auth-open="login">Log in</a>
-                            <a href="{{ route_path('register', []) }}" data-auth-open="register">Create account</a>
-                            <a href="{{ route_path('pages.help', []) }}">Reader support</a>
-                            <a href="{{ route_path('pages.terms', []) }}">Terms</a>
-                        @endauth
+                            <span class="alpha-site-footer__text">{{ $siteName }}</span>
+                        @endif
                     </div>
-                </nav>
-
-                <aside class="alpha-footer-site-card" aria-label="About Romane auf Deutsch">
-                    <div>
-                        <span class="alpha-footer-kicker">Romane auf Deutsch</span>
-                        <strong>New chapters, popular series and reader lists in one place.</strong>
-                    </div>
-                    <div class="alpha-footer-site-points" aria-label="Site features">
-                        <span><i class="fa fa-bolt"></i> Updates</span>
-                        <span><i class="fa fa-bookmark"></i> Library</span>
-                        <span><i class="fa fa-star"></i> Reviews</span>
-                    </div>
-                </aside>
-            </div>
-
-            <div class="alpha-footer-bottom">
-                <span>2026 &copy; {{ config('app.name', 'Romane auf Deutsch') }}. All Rights Reserved.</span>
-                <nav aria-label="Legal links">
-                    <a href="{{ route_path('pages.terms', []) }}">Terms of Use</a>
-                    <a href="{{ route_path('pages.rules', []) }}">Privacy Policy</a>
-                    <a href="{{ route_path('pages.dmca', []) }}">DMCA</a>
-                </nav>
+                    <nav class="alpha-site-footer__nav" aria-label="Legal navigation">
+                        <a class="alpha-site-footer__link" href="{{ route_path('pages.terms', []) }}">Terms of Use</a>
+                        <a class="alpha-site-footer__link" href="{{ route_path('pages.rules', []) }}">Privacy Policy</a>
+                        <a class="alpha-site-footer__link" href="{{ route_path('pages.dmca', []) }}">DMCA</a>
+                    </nav>
+                </div>
             </div>
         </footer>
     </div>

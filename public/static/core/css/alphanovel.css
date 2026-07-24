@@ -11633,3 +11633,162 @@ body.theme-alphanovel .alpha-slider-prev,
 body.theme-alphanovel .alpha-slider-next {
     display: none !important;
 }
+
+/* ============================================================
+   Site footer — matches alphanovel.io LayoutFooter structure.
+   Theme-agnostic layout/typography; colors via theme tokens so it
+   adapts to light/dark automatically.
+   ============================================================ */
+body.theme-alphanovel .alpha-site-footer {
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px 40px;
+    font-family: var(--alpha-font-title) !important;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+body.theme-alphanovel .alpha-site-footer__container {
+    width: 100%;
+    max-width: 1440px;
+    border: 1px solid var(--alpha-line, #f3f3f3);
+    border-radius: 8px;
+    background-color: var(--alpha-surface, #ffffff);
+}
+
+body.theme-alphanovel .alpha-site-footer__body {
+    display: grid;
+    grid-template-columns: minmax(160px, 260px) 1fr auto;
+    gap: 32px;
+    align-items: start;
+    padding: 32px;
+}
+
+body.theme-alphanovel .alpha-site-footer__title {
+    display: inline-flex;
+    margin-bottom: 16px;
+    font-family: var(--alpha-font-title) !important;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    color: var(--alpha-text, #04002d);
+}
+
+body.theme-alphanovel .alpha-site-footer__link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--alpha-text, #04002d);
+    white-space: nowrap;
+    transition: color .3s ease-in-out;
+}
+
+body.theme-alphanovel .alpha-site-footer__link:hover {
+    color: var(--alpha-primary, #4535ff);
+}
+
+body.theme-alphanovel .alpha-site-footer__download {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+body.theme-alphanovel .alpha-site-footer__download .AlphaIcon {
+    display: inline-flex;
+    height: 26px;
+    align-items: center;
+}
+
+body.theme-alphanovel .alpha-site-footer__download .AlphaIcon svg {
+    height: 26px;
+    width: auto;
+}
+
+body.theme-alphanovel .alpha-site-footer__install {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 140px;
+    height: 40px;
+    padding: 0 20px;
+    border-radius: 8px;
+    background: var(--alpha-primary, #4535ff);
+    color: #ffffff !important;
+    font-family: var(--alpha-font-title) !important;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    transition: background .3s ease-in-out;
+}
+
+body.theme-alphanovel .alpha-site-footer__install:hover {
+    background: var(--alpha-primary-dark, #2f24c9);
+}
+
+body.theme-alphanovel .alpha-site-footer__socials {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+body.theme-alphanovel .alpha-site-footer__socials .AlphaIcon {
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+}
+
+body.theme-alphanovel .alpha-site-footer__socials .AlphaIcon svg {
+    width: 20px;
+    height: 20px;
+}
+
+body.theme-alphanovel .alpha-site-footer__nav {
+    display: flex;
+    gap: 40px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+body.theme-alphanovel .alpha-site-footer__bottom {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 32px;
+    align-items: center;
+    padding: 16px 32px;
+    border-top: 1px solid var(--alpha-line, #f3f3f3);
+}
+
+body.theme-alphanovel .alpha-site-footer__copyright {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+}
+
+body.theme-alphanovel .alpha-site-footer__text {
+    color: var(--surface-on-2, #686681);
+}
+
+@media (max-width: 900px) {
+    body.theme-alphanovel .alpha-site-footer__body {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 24px 20px;
+    }
+
+    body.theme-alphanovel .alpha-site-footer__nav {
+        justify-content: flex-start;
+        gap: 16px 28px;
+    }
+
+    body.theme-alphanovel .alpha-site-footer__bottom {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 16px 20px;
+    }
+
+    body.theme-alphanovel .alpha-site-footer__copyright {
+        justify-content: flex-start;
+    }
+}
