@@ -217,7 +217,13 @@ class HomeController extends Controller
         }
 
         $articles = Article::query()
-            ->with(['authors', 'genres', 'tags', 'slug'])
+            ->with([
+                'authors',
+                'genres',
+                'tags',
+                'slug',
+                'bookmarks' => fn ($query) => $query->where('user_id', auth()->id()),
+            ])
             ->withCount('chapters')
             ->when($keyword !== '', function ($query) use ($keyword) {
                 $query->where(function ($q) use ($keyword) {

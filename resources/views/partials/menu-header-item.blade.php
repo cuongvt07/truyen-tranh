@@ -1,4 +1,13 @@
-@php $href = $mi->href; $label = $mi->display_label; $icon = $mi->icon; $kids = $mi->activeChildren ?? collect(); @endphp
+@php
+    $href = $mi->href;
+    $label = $mi->display_label;
+    $icon = $mi->icon;
+    $kids = $mi->activeChildren ?? collect();
+
+    if (strtolower(trim((string) $label)) === 'library') {
+        $href = auth()->check() ? route_path('users.reading_history', Auth::id()) : route_path('login', []);
+    }
+@endphp
 @if($kids->count())
     {{-- Mục có con -> dropdown (tippy) --}}
     <li class="header-nav__list">
@@ -14,6 +23,6 @@
     </li>
 @else
     <li>
-        <a href="{{ $href }}" class="header-btn no-link"@if($mi->target === '_blank') target="_blank"@endif>@if($icon)<i class="{{ $icon }}"></i> @endif{{ $label }}</a>
+        <a href="{{ $href }}" class="header-btn no-link"@if($mi->target === '_blank') target="_blank"@endif @if(strtolower(trim((string) $label)) === 'library') @guest data-auth-open="login" @endguest @endif>@if($icon)<i class="{{ $icon }}"></i> @endif{{ $label }}</a>
     </li>
 @endif

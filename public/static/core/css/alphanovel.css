@@ -3,6 +3,7 @@
     --alpha-primary-dark: #2f24c9;
     --alpha-ink: #04002d;
     --alpha-text: #04002d;
+    --text: #04002d;
     --alpha-muted: #73748a;
     --alpha-line: #f3f3f3;
     --alpha-soft: #f9f9ff;
@@ -30,7 +31,7 @@
 body.theme-alphanovel {
     background: var(--body-color);
     color: var(--alpha-text);
-    font-family: "Open Sans", "Open Sans Fallback", "Roboto", Arial, sans-serif;
+    font-family: "Poppins", "Poppins Fallback";
     font-size: 16px;
     font-weight: 500;
     line-height: 1.15;
@@ -65,6 +66,7 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 .theme-alphanovel-chapter h2,
 .theme-alphanovel-chapter h3 {
     font-family: "Poppins", "Play", "Roboto", Arial, sans-serif;
+    font-family: "Poppins", "Poppins Fallback";
 }
 
 .theme-alphanovel .container {
@@ -3254,15 +3256,19 @@ body.theme-alphanovel-chapter {
     gap: 10px;
     margin-top: auto;
     padding-top: 14px;
+    padding-left: 0;
+    list-style: none;
     color: var(--alpha-ink);
     font-size: 11px;
     font-weight: 800;
 }
 
-.theme-alphanovel .alpha-trending-item__stats b {
+.theme-alphanovel .alpha-trending-item__stats b,
+.theme-alphanovel .alpha-trending-item__stats li {
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    margin: 0;
 }
 
 .theme-alphanovel .alpha-trending-item__stats .fa-star {
@@ -8393,6 +8399,7 @@ body.theme-alphanovel-chapter {
 body.theme-alphanovel.alpha-dark {
     --alpha-ink: #f8f8ff;
     --alpha-text: #d7d8ec;
+    --text: #e2e2e2;
     --alpha-muted: #a5a7c4;
     --alpha-line: #363636;
     --alpha-soft: #2b2b2c;
@@ -8896,6 +8903,7 @@ body.theme-alphanovel {
     --alpha-bg: #fafbff;
     --alpha-ink: #04002d;
     --alpha-text: #04002d;
+    --text: #04002d;
     --alpha-muted: #73748a;
     --alpha-line: #e7e7f5;
     --alpha-soft: #f1f1ff;
@@ -8918,6 +8926,7 @@ body.theme-alphanovel.alpha-dark {
     --alpha-bg: #121212;
     --alpha-ink: #f7f7ff;
     --alpha-text: #e4e5f2;
+    --text: #e2e2e2;
     --alpha-muted: #a9abc0;
     --alpha-line: #363636;
     --alpha-soft: #2b2b2c;
@@ -9166,8 +9175,10 @@ body.theme-alphanovel.alpha-dark {
 /* Final UI normalization: font and contrast for legacy frontend classes. */
 body.theme-alphanovel,
 body.theme-alphanovel-chapter {
-    --alpha-font-body: "Open Sans", "Open Sans Fallback", "Roboto", Arial, sans-serif;
-    --alpha-font-title: "Poppins", "Poppins Fallback", "Roboto", Arial, sans-serif;
+    --font-poppins: "Poppins", "Poppins Fallback";
+    --alpha-font-body: "Poppins", "Poppins Fallback";
+    --alpha-font-title: "Poppins", "Poppins Fallback";
+    --alpha-display: "Poppins", "Poppins Fallback";
     --alpha-icon-on-soft: var(--alpha-primary);
     --alpha-button-soft-bg: var(--alpha-surface-soft, #f1f1ff);
     font-family: var(--alpha-font-body) !important;
@@ -9744,7 +9755,6 @@ body.theme-alphanovel.alpha-dark a.alpha-blog-card:link,
 body.theme-alphanovel.alpha-dark a.alpha-blog-card:visited,
 body.theme-alphanovel.alpha-dark a.alpha-suggestion-card:link,
 body.theme-alphanovel.alpha-dark a.alpha-suggestion-card:visited {
-    background-color: #191a27 !important;
     border-color: #303143 !important;
     color: #e4e5f2 !important;
 }
@@ -10493,6 +10503,7 @@ body.theme-alphanovel:not(.alpha-dark) {
     --alpha-bg: #fafbff;
     --alpha-ink: #04002d;
     --alpha-text: #04002d;
+    --text: #04002d;
     --alpha-line: #f3f3f3;
     --alpha-surface: #ffffff;
     --alpha-surface-soft: #f9f9ff;
@@ -11594,6 +11605,11 @@ body.theme-alphanovel .alpha-trending-item__stats {
     line-height: 22px !important;
 }
 
+body.theme-alphanovel .alpha-trending-item__stats li {
+    font: inherit !important;
+    color: inherit !important;
+}
+
 /* Shared layout (identical in both themes) */
 body.theme-alphanovel .header {
     height: 80px !important;
@@ -11804,5 +11820,195 @@ body.theme-alphanovel .alpha-site-footer__text {
 
     body.theme-alphanovel .alpha-site-footer__copyright {
         justify-content: flex-start;
+    }
+}
+
+/* User overrides: site font and genre list card sizing. */
+body.theme-alphanovel,
+body.theme-alphanovel-chapter {
+    --alpha-font-body: "Poppins", "Poppins Fallback";
+    --alpha-font-title: "Poppins", "Poppins Fallback";
+    --alpha-display: "Poppins", "Poppins Fallback";
+    font-family: "Poppins", "Poppins Fallback" !important;
+}
+
+body.theme-alphanovel :where(*:not(.fa):not(.fas):not(.far):not(.fab):not([class^="fa-"]):not([class*=" fa-"])),
+body.theme-alphanovel-chapter :where(*:not(.fa):not(.fas):not(.far):not(.fab):not([class^="fa-"]):not([class*=" fa-"])) {
+    font-family: "Poppins", "Poppins Fallback" !important;
+}
+
+body.theme-alphanovel.alpha-dark {
+    --text: #e2e2e2;
+}
+
+body.theme-alphanovel .alpha-genre-page .alpha-novel-card {
+    grid-template-columns: 105px minmax(0, 1fr) !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
+
+body.theme-alphanovel .alpha-genre-page .alpha-novel-card__cover {
+    flex-shrink: 0;
+    width: 105px;
+    height: 140px;
+}
+
+body.theme-alphanovel .alpha-genre-page .alpha-novel-card__cover img {
+    flex-shrink: 0;
+    width: 105px !important;
+    height: 140px !important;
+}
+
+body.theme-alphanovel .alpha-genre-page .alpha-novel-card__body p {
+    display: -webkit-box;
+    width: 100%;
+    margin-top: 8px;
+    color: var(--text, #e2e2e2) !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 20px !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+body.theme-alphanovel .Layout_container__lyw0Z {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 32px;
+}
+
+body.theme-alphanovel .Layout_container__lyw0Z > .alpha-home,
+body.theme-alphanovel .Layout_container__lyw0Z > .alpha-search-page,
+body.theme-alphanovel .Layout_container__lyw0Z > .alpha-catalog-page,
+body.theme-alphanovel .Layout_container__lyw0Z > .alpha-list-page,
+body.theme-alphanovel .Layout_container__lyw0Z > .alpha-site-footer,
+body.theme-alphanovel .Layout_container__lyw0Z > .container {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+body.theme-alphanovel .Layout_container__lyw0Z > .alpha-site-footer {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+body.theme-alphanovel .Layout_container__lyw0Z > .alpha-site-footer .alpha-site-footer__container {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+body.theme-alphanovel .logo .alpha-logo-img--dark {
+    display: none !important;
+}
+
+body.theme-alphanovel.alpha-dark .logo .alpha-logo-img--light {
+    display: none !important;
+}
+
+body.theme-alphanovel.alpha-dark .logo .alpha-logo-img--dark {
+    display: block !important;
+}
+
+body.theme-alphanovel .alpha-search-card__cover strong {
+    left: auto;
+    right: 6px;
+    top: 6px;
+    max-width: calc(100% - 12px);
+    white-space: nowrap;
+}
+
+body.theme-alphanovel .alpha-search-card__cover:has(em) strong {
+    top: 6px;
+}
+
+body.theme-alphanovel .alpha-search-bookmark-form {
+    margin: 0;
+}
+
+body.theme-alphanovel .alpha-search-bookmark {
+    padding: 0;
+}
+
+body.theme-alphanovel .alpha-search-bookmark:not(.is-followed) i {
+    color: transparent !important;
+    -webkit-text-stroke: 1.5px var(--alpha-primary);
+}
+
+body.theme-alphanovel .alpha-search-bookmark.is-followed i {
+    color: var(--alpha-primary) !important;
+    -webkit-text-stroke: 0;
+}
+
+body.theme-alphanovel .add-to-list-wrap form {
+    margin: 0;
+}
+
+body.theme-alphanovel .btn-add-to-list.direct-library-toggle:not(.active) .btn-list i {
+    color: transparent !important;
+    -webkit-text-stroke: 1.5px var(--alpha-primary);
+}
+
+body.theme-alphanovel .btn-add-to-list.direct-library-toggle.active .btn-list i {
+    color: var(--alpha-primary) !important;
+    -webkit-text-stroke: 0;
+}
+
+body.theme-alphanovel .alpha-book-summary-more {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent !important;
+    color: var(--alpha-primary) !important;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+body.theme-alphanovel .alpha-novel-detail .main.block,
+body.theme-alphanovel .alpha-novel-detail .main-section {
+    background: var(--alpha-bg) !important;
+}
+
+body.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card {
+    margin-bottom: 0 !important;
+    background: var(--alpha-bg) !important;
+}
+
+body.theme-alphanovel .alpha-novel-detail .main-section {
+    margin-top: 32px;
+}
+
+body.theme-alphanovel .alpha-suggestion-card strong,
+body.theme-alphanovel .alpha-suggestion-card h4,
+body.theme-alphanovel .DiscoverCard_item__counter__wzw8H,
+body.theme-alphanovel .DiscoverCard_item__title__HqKaZ {
+    font-family: var(--font-poppins), "Poppins Fallback" !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 20px !important;
+    transition: color .3s ease-in-out;
+}
+
+@media (max-width: 920px) {
+    body.theme-alphanovel .Layout_container__lyw0Z {
+        gap: 24px;
+        padding: 20px 14px;
+    }
+
+    body.theme-alphanovel .alpha-search-card__cover:has(em) strong {
+        top: 6px;
     }
 }

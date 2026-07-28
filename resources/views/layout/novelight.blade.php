@@ -56,7 +56,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800;900&family=Play:wght@400;700&family=Roboto:wght@100;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     @php
         $assetVer = function ($p) { $f = public_path($p); return file_exists($f) ? filemtime($f) : '1.8.0'; };
@@ -150,10 +150,15 @@
                  p-target-class="active" p-event="burgerMenuOpenClose"><i class="fa fa-bars"></i></div>
             @php
                 $siteName = setting('site_name') ?: config('app.name');
-                $siteLogo = setting('logo_file') ? asset('storage/' . setting('logo_file')) : '/static/core/images/alphanovel/alpha-app-icon.png';
+                $defaultLogo = setting('logo_file');
+                $siteLogoLight = setting('logo_light_file') ?: $defaultLogo;
+                $siteLogoDark = setting('logo_dark_file') ?: $defaultLogo ?: $siteLogoLight;
+                $siteLogoLight = $siteLogoLight ? asset('storage/' . $siteLogoLight) : '/static/core/images/alphanovel/alpha-app-icon.png';
+                $siteLogoDark = $siteLogoDark ? asset('storage/' . $siteLogoDark) : $siteLogoLight;
             @endphp
             <a href="{{ route_path('home.index', []) }}" class="logo">
-                <img src="{{ $siteLogo }}" alt="{{ $siteName }}">
+                <img src="{{ $siteLogoLight }}" alt="{{ $siteName }}" class="alpha-logo-img alpha-logo-img--light">
+                <img src="{{ $siteLogoDark }}" alt="{{ $siteName }}" class="alpha-logo-img alpha-logo-img--dark" hidden>
             </a>
             <nav class="header-nav">
                 <ul>
@@ -163,7 +168,7 @@
                         {{-- Fallback: nav mặc định khi chưa cấu hình menu --}}
                         <li><a href="{{ route_path('home.index', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Discover</span></a></li>
                         <li class="header-nav__list"><div class="header-btn header-browse tippy-browse"><span class="alpha-nav-label">Novels</span> <i class="fa fa-caret-down"></i></div></li>
-                        <li><a href="{{ route_path('users.show', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Library</span></a></li>
+                        <li><a href="{{ auth()->check() ? route_path('users.reading_history', Auth::id()) : route_path('login', []) }}" class="header-btn no-link" @guest data-auth-open="login" @endguest><span class="alpha-nav-label">Library</span></a></li>
                         <li><a href="{{ route_path('pages.gifts', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Gifts</span></a></li>
                         <li><a href="{{ route_path('my-articles.create', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Writer</span></a></li>
                         <li><a href="{{ route_path('pages.blog', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Blog</span></a></li>
@@ -175,7 +180,7 @@
                 <ul>
                     <li><a href="{{ route_path('home.index', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Discover</span></a></li>
                     <li class="header-nav__list"><div class="header-btn header-browse tippy-browse"><span class="alpha-nav-label">Novels</span> <i class="fa fa-caret-down"></i></div></li>
-                    <li><a href="{{ route_path('users.show', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Library</span></a></li>
+                    <li><a href="{{ auth()->check() ? route_path('users.reading_history', Auth::id()) : route_path('login', []) }}" class="header-btn no-link" @guest data-auth-open="login" @endguest><span class="alpha-nav-label">Library</span></a></li>
                     <li><a href="{{ route_path('pages.gifts', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Gifts</span></a></li>
                     <li><a href="{{ route_path('my-articles.create', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Writer</span></a></li>
                     <li><a href="{{ route_path('pages.blog', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Blog</span></a></li>
@@ -232,9 +237,9 @@
 @php
     $bottomTabClass = 'LayoutTabs_item__jAMjf';
     $bottomTabActiveClass = ' LayoutTabs_item__active__7FHV6';
-    $bottomLibraryUrl = auth()->check() ? route_path('users.show_bookmarks', Auth::id()) : route_path('login', []);
+    $bottomLibraryUrl = auth()->check() ? route_path('users.reading_history', Auth::id()) : route_path('login', []);
     $bottomProfileUrl = auth()->check() ? route_path('users.show', []) : route_path('login', []);
-    $bottomLibraryActive = request()->routeIs('users.show_bookmarks', 'users.reading_history', 'users.collections', 'users.favourites', 'users.teams');
+    $bottomLibraryActive = request()->routeIs('users.show_bookmarks', 'users.reading_history', 'users.collections', 'users.favourites');
     $bottomProfileActive = request()->routeIs('users.show', 'users.show.profile', 'users.change_info', 'users.change_password', 'users.transactions', 'users.achievements', 'users.notifications');
 @endphp
 <nav data-testid="layout-tabs" class="LayoutTabs_wrapper__ZY5zg" aria-label="Mobile navigation">
@@ -261,7 +266,7 @@
 </nav>
 
 <div class="page">
-    <div class="content">
+    <div class="content Layout_container__lyw0Z">
         @yield('content')
 
         @php
@@ -384,14 +389,12 @@
                         <li><a href="{{ route_path('users.show_comments', Auth::id()) }}"><i class="fa fa-comment"></i> {{ __('messages.ui.menu_comments') }}</a></li>
                         <li><a href="{{ route_path('users.show_bookmarks', Auth::id()) }}"><i class="fa fa-heart"></i> {{ __('messages.ui.menu_following') }}</a></li>
                         <li><a href="{{ route_path('users.collections', Auth::id()) }}"><i class="fa fa-layer-group"></i> {{ __('messages.ui.menu_collections') }}</a></li>
-                        <li><a href="{{ route_path('users.teams', Auth::id()) }}"><i class="fa fa-user-friends"></i> {{ __('messages.ui.menu_teams') }}</a></li>
                         <li><a href="{{ route_path('users.change_info', []) }}"><i class="fa fa-cog"></i> {{ __('messages.ui.menu_settings') }}</a></li>
                     </ul>
                     @if($authUser->hasPurchased())
                     <div class="mobile-menu-label"><i class="fa fa-plus"></i> {{ __('messages.add.menu') }}</div>
                     <ul>
                         <li><a href="{{ route_path('my-articles.create', []) }}"><i class="fa fa-book"></i> {{ __('messages.add.book') }}</a></li>
-                        <li><a href="{{ route_path('teams.create', []) }}"><i class="fa fa-user-friends"></i> {{ __('messages.add.team') }}</a></li>
                         <li><a href="{{ route_path('collections.create', []) }}"><i class="fa fa-layer-group"></i> {{ __('messages.add.collection') }}</a></li>
                     </ul>
                     @endif
@@ -470,7 +473,6 @@
             @if(auth()->user()->hasPurchased())
             <ul id="header-add-list" class="header-sublist">
                 <li><a href="{{ route_path('my-articles.create', []) }}"><i class="fa fa-book"></i> {{ __('messages.add.book') }}</a></li>
-                <li><a href="{{ route_path('teams.create', []) }}"><i class="fa fa-user-friends"></i> {{ __('messages.add.team') }}</a></li>
                 <li><a href="{{ route_path('collections.create', []) }}"><i class="fa fa-layer-group"></i> {{ __('messages.add.collection') }}</a></li>
             </ul>
             @endif
@@ -483,7 +485,6 @@
                 <li><a href="{{ route_path('users.show_comments', Auth::id()) }}"><i class="fa fa-comment"></i> {{ __('messages.ui.menu_comments') }}</a></li>
                 <li><a href="{{ route_path('users.show_bookmarks', Auth::id()) }}"><i class="fa fa-heart"></i> {{ __('messages.ui.menu_following') }}</a></li>
                 <li><a href="{{ route_path('users.collections', Auth::id()) }}"><i class="fa fa-layer-group"></i> {{ __('messages.ui.menu_collections') }}</a></li>
-                <li><a href="{{ route_path('users.teams', Auth::id()) }}"><i class="fa fa-user-friends"></i> {{ __('messages.ui.menu_teams') }}</a></li>
                 <li><a href="{{ route_path('users.change_info', []) }}"><i class="fa fa-cog"></i> {{ __('messages.ui.menu_settings') }}</a></li>
                 <hr>
                 <li><a href="{{ route_path('users.transactions', Auth::id()) }}"><i class="fa fa-money-bill"></i> {{ __('messages.ui.menu_topup') }}</a></li>
@@ -663,6 +664,12 @@ window.addEventListener('load', function () { initAlphaSliders(document); });
     function setMode(mode) {
         var dark = mode === 'dark';
         document.body.classList.toggle('alpha-dark', dark);
+        document.querySelectorAll('.alpha-logo-img--light').forEach(function (img) {
+            img.hidden = dark;
+        });
+        document.querySelectorAll('.alpha-logo-img--dark').forEach(function (img) {
+            img.hidden = !dark;
+        });
         document.querySelectorAll('.alpha-theme-toggle').forEach(function (button) {
             button.setAttribute('aria-pressed', dark ? 'true' : 'false');
             button.setAttribute('title', dark ? 'Switch to day mode' : 'Switch to night mode');

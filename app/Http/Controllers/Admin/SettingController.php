@@ -25,7 +25,7 @@ class SettingController extends Controller
         ]);
 
         $data = $request->except([
-            '_token', '_method', 'logo_file', 'favicon_file', 'site_name', 'bank1_qr_image',
+            '_token', '_method', 'logo_file', 'logo_light_file', 'logo_dark_file', 'favicon_file', 'site_name', 'bank1_qr_image',
             'chapter_footer_image',
         ]);
 
@@ -61,13 +61,14 @@ class SettingController extends Controller
         }
 
         // --- Lưu ảnh logo ---
-        if ($request->hasFile('logo_file')) {
-            $logo = $request->file('logo_file');
-            $logoPath = $logo->store('logo', 'public');
-            DB::table('settings')->updateOrInsert(
-                ['meta_key' => 'logo_file'],
-                ['meta_value' => $logoPath]
-            );
+        foreach (['logo_file', 'logo_light_file', 'logo_dark_file'] as $logoKey) {
+            if ($request->hasFile($logoKey)) {
+                $logoPath = $request->file($logoKey)->store('logo', 'public');
+                DB::table('settings')->updateOrInsert(
+                    ['meta_key' => $logoKey],
+                    ['meta_value' => $logoPath]
+                );
+            }
         }
 
         // --- Lưu favicon ---
@@ -99,7 +100,7 @@ class SettingController extends Controller
         }
 
         // --- Xoá ảnh khi bấm "Xoá ảnh" (cờ {field}_remove = 1, không upload mới) ---
-        foreach (['logo_file', 'favicon_file', 'chapter_footer_image', 'bank1_qr_image'] as $imgKey) {
+        foreach (['logo_file', 'logo_light_file', 'logo_dark_file', 'favicon_file', 'chapter_footer_image', 'bank1_qr_image'] as $imgKey) {
             if (!$request->hasFile($imgKey) && $request->input($imgKey . '_remove') === '1') {
                 DB::table('settings')->where('meta_key', $imgKey)->delete();
             }

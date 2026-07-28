@@ -5,15 +5,20 @@
     $avatar = $user->avatar ?: asset('static/account/images/no-ava.jpg');
     $panelBg = $user->background ?: $avatar;
     $isMine = $isMine ?? isMyAccount($currentUser, $user);
-    $libraryCount = method_exists($user, 'bookmarks') ? $user->bookmarks()->count() : 0;
+    $bookmarkStatsQuery = method_exists($user, 'bookmarks')
+        ? $user->bookmarks()->whereHas('article')
+        : null;
+    if ($bookmarkStatsQuery && !$isMine) {
+        $bookmarkStatsQuery->where('is_public', true);
+    }
+    $libraryCount = $bookmarkStatsQuery ? (clone $bookmarkStatsQuery)->count() : 0;
+    $readingStoriesCount = $bookmarkStatsQuery ? (clone $bookmarkStatsQuery)->count() : 0;
     $commentCount = method_exists($user, 'comments') ? $user->comments()->count() : 0;
-    $articleCount = method_exists($user, 'articles') ? $user->articles()->count() : 0;
     $navItems = [
         ['route' => route_path('users.show.profile', $user->id), 'active' => ['users.show', 'users.show.profile', 'users.show_posted_articles'], 'icon' => 'fa-list', 'label' => __('messages.account.nav_profile')],
         ['route' => route_path('users.show_bookmarks', $user->id), 'active' => ['users.show_bookmarks'], 'icon' => 'fa-bookmark', 'label' => __('messages.account.nav_bookmarks')],
         ['route' => route_path('users.reading_history', $user->id), 'active' => ['users.reading_history'], 'icon' => 'fa-history', 'label' => __('messages.account.nav_reading_history')],
         ['route' => route_path('users.collections', $user->id), 'active' => ['users.collections'], 'icon' => 'fa-layer-group', 'label' => __('messages.account.nav_collections')],
-        ['route' => route_path('users.teams', $user->id), 'active' => ['users.teams'], 'icon' => 'fa-user-friends', 'label' => __('messages.account.nav_teams')],
         ['route' => route_path('users.favourites', $user->id), 'active' => ['users.favourites'], 'icon' => 'fa-heart', 'label' => __('messages.account.nav_following')],
         ['route' => route_path('users.achievements', $user->id), 'active' => ['users.achievements'], 'icon' => 'fa-award', 'label' => __('messages.account.nav_achievements')],
         ['route' => route_path('users.suggestions', $user->id), 'active' => ['users.suggestions'], 'icon' => 'fa-lightbulb', 'label' => __('messages.account.nav_suggestions')],
@@ -48,7 +53,7 @@
                 @endif
                 <div class="alpha-account-stats">
                     <span><b>{{ number_format($libraryCount) }}</b> Library</span>
-                    <span><b>{{ number_format($articleCount) }}</b> Stories</span>
+                    <span><b>{{ number_format($readingStoriesCount) }}</b> Reading</span>
                     <span><b>{{ number_format($commentCount) }}</b> Reviews</span>
                     @if(!empty($activeVipDays) && $activeVipDays > 0)
                         <span class="alpha-account-vip"><i class="fa fa-crown"></i> VIP {{ $activeVipDays }}d</span>

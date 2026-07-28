@@ -50,9 +50,20 @@
                     <label>Tên website</label>
                     <input type="text" name="site_name" class="form-control" value="{{ $settings['site_name'] ?? '' }}">
                 </div>
-                <div class="form-group mb-3">
-                    <x-admin.image-upload name="logo_file" label="Tải ảnh logo"
-                        :current="!empty($settings['logo_file']) ? asset('storage/'.$settings['logo_file']) : null" />
+                <div class="row">
+                    <div class="form-group col-md-4 mb-3">
+                        <x-admin.image-upload name="logo_file" label="Logo mặc định"
+                            :current="!empty($settings['logo_file']) ? asset('storage/'.$settings['logo_file']) : null"
+                            hint="Fallback nếu chưa import logo light/dark." />
+                    </div>
+                    <div class="form-group col-md-4 mb-3">
+                        <x-admin.image-upload name="logo_light_file" label="Logo theme light"
+                            :current="!empty($settings['logo_light_file']) ? asset('storage/'.$settings['logo_light_file']) : null" />
+                    </div>
+                    <div class="form-group col-md-4 mb-3">
+                        <x-admin.image-upload name="logo_dark_file" label="Logo theme dark"
+                            :current="!empty($settings['logo_dark_file']) ? asset('storage/'.$settings['logo_dark_file']) : null" />
+                    </div>
                 </div>
                 <div class="form-group mb-2">
                     <x-admin.image-upload name="favicon_file" label="Favicon (32×32 hoặc .ico)"

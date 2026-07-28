@@ -4,7 +4,7 @@
 @section('meta_description', $genre->description ?: 'Read ' . $genre->name . ' novels online.')
 
 @section('content')
-<main class="alpha-catalog-page">
+<main class="alpha-catalog-page alpha-genre-page">
     <aside class="alpha-catalog-sidebar">
         <section class="alpha-catalog-box">
             <h2>Genre</h2>
@@ -61,7 +61,7 @@
                                 <b><i class="fa fa-star"></i> {{ number_format($article->rating ?? 0, 1) }}</b>
                             @endif
                         </span>
-                        <p class="clamp clamp-3">{{ \Illuminate\Support\Str::limit(strip_tags($article->description), 170) }}</p>
+                        <p class="clamp clamp-2">{{ \Illuminate\Support\Str::limit(strip_tags($article->description), 140) }}</p>
                         <span class="alpha-more">more</span>
                     </span>
                 </a>

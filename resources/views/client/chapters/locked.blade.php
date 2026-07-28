@@ -13,13 +13,16 @@
     <link rel="icon" href="{{ asset('static/favicon.ico') }}" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=Roboto:wght@100;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('static/core/css/reset.css') }}">
     <link rel="stylesheet" href="{{ asset('static/core/css/fontawesomeee8b.css') }}?ver=1.8.0">
     <link rel="stylesheet" href="{{ asset('static/core/css/styleee8b.css') }}?ver=1.8.0">
     <link rel="stylesheet" href="{{ asset('static/book/css/chapteree8b.css') }}?ver=1.8.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
+        body, button, input, textarea, select {
+            font-family: 'Poppins', 'Poppins Fallback' !important;
+        }
         .lock-wall {
             max-width: 480px;
             margin: 60px auto;

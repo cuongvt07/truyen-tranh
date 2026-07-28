@@ -44,8 +44,15 @@
     $firstChapter = $article->chapters()->orderBy('number')->first();
     $chapterCount = $article->chapters()->count();
     $primaryGenre = $article->genres->first();
-    $authorName = optional($article->authors->first())->name ?? 'Updating';
+    $primaryAuthor = $article->authors->first();
+    $authorName = optional($primaryAuthor)->name ?? 'Updating';
     $readChapterNumber = $firstChapter ? ($continueChapterNumber ?: $firstChapter->number) : null;
+    $descriptionPlain = trim(preg_replace('/\s+/', ' ', strip_tags((string) $article->description)));
+    $summaryLimit = 520;
+    $summaryNeedsMore = \Illuminate\Support\Str::length($descriptionPlain) > $summaryLimit;
+    $summaryPreview = $summaryNeedsMore
+        ? \Illuminate\Support\Str::limit($descriptionPlain, $summaryLimit, '')
+        : $descriptionPlain;
 @endphp
 
 @section('content')
@@ -80,7 +87,9 @@
                         <span><i class="fa fa-star"></i> {{ number_format($article->rating ?? 0, 1) }}</span>
                         <span><i class="fa fa-comment"></i> {{ number_format($comments->total()) }}</span>
                     </div>
-                    <p class="alpha-book-description">{{ \Illuminate\Support\Str::limit(strip_tags($article->description), 520) }}</p>
+                    <p class="alpha-book-description" data-summary>
+                        <span data-summary-preview>{{ $summaryPreview }}</span><span data-summary-full hidden>{{ $descriptionPlain }}</span>@if($summaryNeedsMore) <button type="button" class="alpha-book-summary-more" data-summary-more>more...</button>@endif
+                    </p>
                     @if($article->genres->count())
                         <div class="alpha-book-detail-tags">
                             @foreach($article->genres->take(10) as $genre)
@@ -518,11 +527,16 @@
                     <div class="sub-header">{{ __('messages.article.release_year') }}</div>
                     <div class="info">{{ $article->year_of_release ?: optional($article->created_at)->format('Y') }}</div>
                 </div>
-                @if($article->authors->count())
-                <a href="{{ route_path('authors.show', $article->authors->first()->id) }}" class="item">
-                    <div class="sub-header">{{ __('messages.article.author') }}</div>
-                    <div class="info">{{ $article->authors->first()->name }}</div>
-                </a>
+                @if($primaryAuthor)
+                    <a href="{{ route_path('authors.show', $primaryAuthor->id) }}" class="item">
+                        <div class="sub-header">{{ __('messages.article.author') }}</div>
+                        <div class="info">{{ $authorName }}</div>
+                    </a>
+                @else
+                    <div class="item">
+                        <div class="sub-header">{{ __('messages.article.author') }}</div>
+                        <div class="info">{{ $authorName }}</div>
+                    </div>
                 @endif
                 @if(!empty($article->illustrator))
                 <div class="item">
@@ -726,6 +740,27 @@ li.comment:last-child{border-bottom:none}
 @endpush
 
 @push('scripts')
+<script>
+(function () {
+    document.addEventListener('click', function (event) {
+        var button = event.target.closest('[data-summary-more]');
+        if (!button) return;
+
+        var wrapper = button.closest('[data-summary]');
+        if (!wrapper) return;
+
+        var preview = wrapper.querySelector('[data-summary-preview]');
+        var full = wrapper.querySelector('[data-summary-full]');
+        if (!preview || !full) return;
+
+        var expanded = button.getAttribute('data-expanded') === 'true';
+        preview.hidden = !expanded;
+        full.hidden = expanded;
+        button.textContent = expanded ? 'more...' : 'less';
+        button.setAttribute('data-expanded', expanded ? 'false' : 'true');
+    });
+})();
+</script>
 <script>
 (function($){
     'use strict';

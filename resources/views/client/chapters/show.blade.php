@@ -13,7 +13,7 @@
     <link rel="icon" href="{{ asset('static/favicon.ico') }}" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Poppins:wght@600;700;800;900&family=Play:wght@400;700&family=Roboto:wght@100;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('static/core/css/reset.css') }}">
     <link rel="stylesheet" href="{{ asset('static/core/css/fontawesomeee8b.css') }}?ver=1.8.0">
     <link rel="stylesheet" href="{{ asset('static/core/css/styleee8b.css') }}?ver=1.8.0">
@@ -789,7 +789,7 @@ $(document).ready(function() {
     border-radius:8px; resize:vertical; font:inherit; outline:none; }
 .chapter-report-actions { display:flex; justify-content:flex-end; gap:10px; }
 .chapter-inline-ad { display:flex; justify-content:center; margin:42px auto; line-height:1.15; }
-.chapter-inline-ad__inner { width:min(100%, 300px); text-align:left; color:#111; font-family:Roboto, sans-serif; font-size:16px; font-weight:700; }
+.chapter-inline-ad__inner { width:min(100%, 300px); text-align:left; color:#111; font-family:'Poppins', 'Poppins Fallback'; font-size:16px; font-weight:700; }
 .chapter-inline-ad__inner a { color:inherit; text-decoration:none; }
 .chapter-inline-ad__inner img { display:block; width:100%; height:198px; object-fit:cover; }
 .chapter-inline-ad__title { padding:6px 4px 0; }

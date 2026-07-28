@@ -189,12 +189,14 @@ function addToListEvent(instance) {
 }
 let btnAddtoList = document.querySelector('.btn-add-to-list');
 let addToListContent = document.querySelector('.add-to-list__content');
-new TippyMenu({
-    'element': btnAddtoList,
-    'content': addToListContent,
-    'position': 'bottom',
-    'onLoaded': addToListEvent
-})
+if (btnAddtoList && addToListContent) {
+    new TippyMenu({
+        'element': btnAddtoList,
+        'content': addToListContent,
+        'position': 'bottom',
+        'onLoaded': addToListEvent
+    })
+}
 
 function appreciateEvent(instance) {
     let rates = document.querySelectorAll(".tippy-rate");

@@ -41,6 +41,8 @@
             @php
                 $author = optional($article->authors->first())->name ?? 'Updating';
                 $readUrl = route_path('articles.show', $article);
+                $currentBookmark = $article->relationLoaded('bookmarks') ? $article->bookmarks->first() : null;
+                $isFollowed = (bool) $currentBookmark;
             @endphp
             <article class="alpha-search-card">
                 <a href="{{ route_path('articles.show', $article) }}" class="alpha-search-card__cover">
@@ -67,9 +69,20 @@
                 </div>
 
                 <div class="alpha-search-card__actions">
-                    <a href="{{ route_path('login') }}" class="alpha-search-bookmark" aria-label="Bookmark">
-                        <i class="fa fa-heart"></i>
-                    </a>
+                    @auth
+                        <form method="POST" action="{{ route_path('articles.bookmarks.store', $article->id) }}" class="alpha-search-bookmark-form">
+                            @csrf
+                            <input type="hidden" name="name" value="{{ $article->title }} #{{ $article->id }}">
+                            <input type="hidden" name="status" value="{{ $isFollowed ? 'remove' : 'reading' }}">
+                            <button type="submit" class="alpha-search-bookmark {{ $isFollowed ? 'is-followed' : '' }}" aria-label="{{ $isFollowed ? 'Remove from library' : 'Add to library' }}">
+                                <i class="fa fa-heart"></i>
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route_path('login') }}" class="alpha-search-bookmark" aria-label="Bookmark">
+                            <i class="fa fa-heart"></i>
+                        </a>
+                    @endauth
                     <a href="{{ $readUrl }}" class="alpha-search-start">Start Reading</a>
                 </div>
             </article>
