@@ -147,6 +147,12 @@
                             $inlineBlocks = $inlineIsHtml
                                 ? (preg_split('/(?<=<\/p>)/i', $rawInlineContent, -1, PREG_SPLIT_NO_EMPTY) ?: [$rawInlineContent])
                                 : array_values(array_filter(preg_split('/(?:\r\n|\r|\n){2,}/', $rawInlineContent) ?: [], fn ($p) => trim($p) !== ''));
+                            // Chương kế tiếp: trang chi tiết ĐÓNG VAI TRÒ chương 1 (giống alphanovel.io),
+                            // nên cuối nội dung cần nút Next Chapter dẫn sang reader ?chapter=2.
+                            $inlineNextChapter = $article->chapters()
+                                ->where('number', '>', $inlineChapter->number)
+                                ->orderBy('number')
+                                ->first();
                         @endphp
                         <article class="alpha-inline-chapter" id="chapter-{{ $inlineChapter->number }}">
                             <header class="alpha-inline-chapter__header">
@@ -162,6 +168,15 @@
                                         <p>{{ __('messages.article.no_chapters') }}</p>
                                     @endforelse
                                 </div>
+
+                                @if($inlineNextChapter)
+                                    <footer class="alpha-inline-chapter__footer">
+                                        <a href="{{ route_path('articles.chapters.show', [$article, $inlineNextChapter->number]) }}"
+                                           class="alpha-next-chapter alpha-next-chapter--primary">
+                                            {{ __('messages.chapter.next_chapter') }}
+                                        </a>
+                                    </footer>
+                                @endif
                             @else
                                 @php
                                     $plainInline = trim(strip_tags($rawInlineContent));

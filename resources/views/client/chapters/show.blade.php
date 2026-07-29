@@ -3,6 +3,7 @@
     $nextChapter = $article->chapters()->where('number', '>', $chapter->number)->orderBy('number')->first();
     $prevUrl = $prevChapter ? route_path('articles.chapters.show', [$article, $prevChapter->number]) : null;
     $nextUrl = $nextChapter ? route_path('articles.chapters.show', [$article, $nextChapter->number]) : null;
+    $primaryGenre = $article->genres->first();
 @endphp
 <!doctype html>
 <html lang="vi">
@@ -60,6 +61,30 @@
         <span class="btn header-btn disabled"><i class="fa fa-angle-right"></i></span>
     @endif
 </div>
+
+{{-- Breadcrumb: Novels / Genre / Novel / Chapter N — hiển thị ở MỌI chương,
+     giống alphanovel.io reader (từ chương 2 trở đi trang chỉ còn breadcrumb + nội dung). --}}
+<nav class="alpha-chapter-breadcrumb" aria-label="{{ __('messages.chapter.chapter') }}">
+    <div class="alpha-chapter-breadcrumb__item">
+        {{-- "Novels" giữ nguyên như breadcrumb trang chi tiết truyện (articles/show.blade.php). --}}
+        <a href="{{ route_path('catalog.index') }}">Novels</a>
+        <span class="alpha-chapter-breadcrumb__divider">/</span>
+    </div>
+    @if($primaryGenre)
+        <div class="alpha-chapter-breadcrumb__item">
+            <a href="{{ route_path('genres.show', $primaryGenre) }}">{{ $primaryGenre->name }}</a>
+            <span class="alpha-chapter-breadcrumb__divider">/</span>
+        </div>
+    @endif
+    <div class="alpha-chapter-breadcrumb__item">
+        <a href="{{ route_path('articles.show', $article) }}">{{ $article->title }}</a>
+        <span class="alpha-chapter-breadcrumb__divider">/</span>
+    </div>
+    <div class="alpha-chapter-breadcrumb__item alpha-chapter-breadcrumb__item--active">
+        <a href="{{ route_path('articles.chapters.show', [$article, $chapter->number]) }}"
+           aria-current="page">{{ __('messages.chapter.chapter') }} {{ $chapter->number }}</a>
+    </div>
+</nav>
 
 {{-- Chapter text --}}
 <div class="chapter-text__place">
@@ -215,12 +240,13 @@
             @endauth
         </div>
     </div>
+    {{-- Footer reader: Previous = AlphaButton--outlined, Next Chapter = AlphaButton--primary. --}}
     <div class="pagination">
         @if($prevUrl)
-            <a href="{{ $prevUrl }}" class="btn"><i class="fa fa-angle-left"></i> {{ __('messages.chapter.previous_chapter') }}</a>
+            <a href="{{ $prevUrl }}" class="btn btn-outlined">{{ __('messages.chapter.previous_chapter') }}</a>
         @endif
         @if($nextUrl)
-            <a href="{{ $nextUrl }}" class="btn">{{ __('messages.chapter.next_chapter') }} <i class="fa fa-angle-right"></i></a>
+            <a href="{{ $nextUrl }}" class="btn btn-primary">{{ __('messages.chapter.next_chapter') }}</a>
         @endif
     </div>
 </div>

@@ -11553,7 +11553,9 @@ body.theme-alphanovel.alpha-dark .alpha-theme-toggle::before {
    Reference: alphanovel.io (Open Sans body / Poppins titles).
    ============================================================ */
 
-/* Header nav + actions */
+/* Header nav + actions.
+   Reference: `.LayoutHeader_nav__link` declares NO font-weight, so nav links
+   inherit the body weight (500). Only the header AlphaButtons are 600. */
 body.theme-alphanovel .alpha-header-nav a,
 body.theme-alphanovel .alpha-header-nav .header-btn,
 body.theme-alphanovel .header-user .btn,
@@ -11564,6 +11566,15 @@ body.theme-alphanovel .alpha-theme-toggle {
     font-size: 16px !important;
     font-weight: 600 !important;
     line-height: 24px !important;
+}
+
+body.theme-alphanovel .alpha-header-nav a,
+body.theme-alphanovel .alpha-header-nav .header-btn,
+body.theme-alphanovel .header-nav a,
+body.theme-alphanovel .header-nav .header-btn,
+body.theme-alphanovel .header-lang,
+body.theme-alphanovel .alpha-theme-toggle {
+    font-weight: 500 !important;
 }
 
 /* Section titles — Poppins 600 */
@@ -12002,6 +12013,39 @@ body.theme-alphanovel .DiscoverCard_item__title__HqKaZ {
     transition: color .3s ease-in-out;
 }
 
+body.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card h1,
+body.theme-alphanovel .alpha-novel-detail .NovelDetailsCard_title__v5Zec {
+    position: relative;
+    font-family: var(--font-poppins), "Poppins Fallback" !important;
+    font-size: 31px !important;
+    font-weight: 600 !important;
+    line-height: 40px !important;
+}
+
+body.theme-alphanovel .alpha-novel-detail .alpha-book-description,
+body.theme-alphanovel .alpha-novel-detail .NovelDetailsCard_description__A7VnD {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    line-height: 22px !important;
+}
+
+body.theme-alphanovel .alpha-novel-detail .alpha-book-detail-tags,
+body.theme-alphanovel .alpha-novel-detail .alpha-book-detail-tags a {
+    font-weight: 400 !important;
+}
+
+body.theme-alphanovel .alpha-novel-detail .alpha-book-detail-stats,
+body.theme-alphanovel .alpha-novel-detail .alpha-book-detail-stats span,
+body.theme-alphanovel .alpha-novel-detail .alpha-book-detail-stats b {
+    font-weight: 400 !important;
+}
+
+body.theme-alphanovel .alpha-novel-detail .alpha-book-detail-stats strong,
+body.theme-alphanovel .alpha-novel-detail .alpha-book-detail-stats .is-emphasis,
+body.theme-alphanovel .alpha-novel-detail .alpha-book-detail-stats .is-bold {
+    font-weight: 600 !important;
+}
+
 @media (max-width: 920px) {
     body.theme-alphanovel .Layout_container__lyw0Z {
         gap: 24px;
@@ -12010,5 +12054,154 @@ body.theme-alphanovel .DiscoverCard_item__title__HqKaZ {
 
     body.theme-alphanovel .alpha-search-card__cover:has(em) strong {
         top: 6px;
+    }
+}
+
+/* ============================================================
+   Button scale — mirrors alphanovel.io `.AlphaButton`.
+   Base:   Poppins, font-weight 600 (NOT 700/800/900 — the legacy
+           theme rules were visibly heavier than the reference).
+   --sm:   14px / 18px, radius 6px, padding 7px 24px
+   --lg:   16px / 24px, radius 8px, padding 11px 24px
+   ============================================================ */
+
+/* "See All" / section-head links — AlphaButton--sm outlined */
+body.theme-alphanovel .alpha-see-all,
+body.theme-alphanovel .alpha-section__head a,
+body.theme-alphanovel .alpha-reviews-preview__see-all,
+body.theme-alphanovel .alpha-review-board__back {
+    padding: 7px 24px !important;
+    border-radius: 6px !important;
+    font-family: var(--alpha-font-body) !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 18px !important;
+}
+
+/* ------------------------------------------------------------
+   Chapter reader breadcrumb — mirrors alphanovel.io
+   `.AlphaBreadcrumbs` / `.AlphaBreadcrumbsItem`. Present on EVERY
+   chapter; from chapter 2 on, the reader is breadcrumb + content
+   only (no novel info block above the text).
+   ------------------------------------------------------------ */
+body.theme-alphanovel-chapter .alpha-chapter-breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: min(100% - 40px, 820px);
+    margin: 0 auto 12px;
+    color: var(--alpha-muted);
+    font-family: var(--alpha-font-body);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+body.theme-alphanovel-chapter .alpha-chapter-breadcrumb__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+body.theme-alphanovel-chapter .alpha-chapter-breadcrumb a {
+    max-width: 320px;
+    overflow: hidden;
+    color: var(--alpha-muted);
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color .3s ease-in-out;
+}
+
+body.theme-alphanovel-chapter .alpha-chapter-breadcrumb a:hover {
+    color: var(--alpha-primary);
+}
+
+body.theme-alphanovel-chapter .alpha-chapter-breadcrumb__item--active a {
+    color: var(--alpha-ink);
+}
+
+body.theme-alphanovel-chapter .alpha-chapter-breadcrumb__divider {
+    color: var(--alpha-muted);
+}
+
+@media (max-width: 620px) {
+    body.theme-alphanovel-chapter .alpha-chapter-breadcrumb {
+        width: min(100% - 28px, 820px);
+        font-size: 12px;
+    }
+
+    body.theme-alphanovel-chapter .alpha-chapter-breadcrumb a {
+        max-width: 180px;
+    }
+}
+
+/* Trang chi tiết đóng vai trò chương 1: nút "Next Chapter" cuối nội dung inline,
+   theo AlphaButton--lg primary của alphanovel.io (.NovelReader_footer). */
+body.theme-alphanovel .alpha-inline-chapter__footer {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+body.theme-alphanovel .alpha-next-chapter {
+    min-height: 0;
+    padding: 11px 24px !important;
+    border-radius: 8px !important;
+    font-family: var(--alpha-font-body) !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    line-height: 24px !important;
+}
+
+body.theme-alphanovel .alpha-inline-chapter__footer .alpha-next-chapter {
+    min-width: 240px;
+}
+
+body.theme-alphanovel .alpha-next-chapter--primary {
+    border-color: var(--alpha-primary) !important;
+    background: var(--alpha-primary) !important;
+    color: #fff !important;
+}
+
+@media (max-width: 620px) {
+    body.theme-alphanovel .alpha-inline-chapter__footer .alpha-next-chapter {
+        min-width: 0;
+        flex: 1 1 0;
+    }
+}
+
+/* Chapter reader footer prev/next — AlphaButton--lg */
+body.theme-alphanovel-chapter .pagination .btn {
+    min-width: 240px;
+    padding: 11px 24px !important;
+    border-radius: 8px !important;
+    font-family: var(--alpha-font-body) !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    line-height: 24px !important;
+}
+
+body.theme-alphanovel-chapter .pagination {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+/* AlphaButton--outlined: viền primary trên nền surface (không phải nền soft). */
+body.theme-alphanovel-chapter .pagination .btn-outlined {
+    border: 1px solid var(--alpha-primary) !important;
+    background: var(--alpha-surface, #fff) !important;
+    color: var(--alpha-primary) !important;
+}
+
+@media (max-width: 620px) {
+    body.theme-alphanovel-chapter .pagination .btn {
+        min-width: 0;
+        flex: 1 1 0;
     }
 }

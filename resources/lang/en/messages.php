@@ -747,7 +747,7 @@ return array (
     'bookmarked' => 'Bookmarked',
     'follow' => 'Follow',
     'previous_chapter' => 'Previous',
-    'next_chapter' => 'Next',
+    'next_chapter' => 'Next Chapter',
     'comments' => 'Comments',
     'write_comment_placeholder' => 'Write a comment...',
     'send' => 'Send',
