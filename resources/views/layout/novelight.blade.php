@@ -140,99 +140,11 @@
 })();
 </script>
 @php
-    // Dropdown thể loại header: CHỈ thể loại Hot. Chưa tick Hot cái nào -> không liệt kê genre (chỉ còn link "Tất cả").
-    $navGenres = \App\Models\Genre::hot()->orderBy('name')->get();
+    // Cũng dùng lại ở footer bên dưới; partials.site-header tự định nghĩa riêng
+    // để còn nhúng được vào trang đọc chương (không đi qua layout này).
+    $siteName = setting('site_name') ?: config('app.name');
 @endphp
-<header class="header">
-    <div class="container">
-        <div class="header__inner">
-            <div id="header-mobile-btn" class="header-btn open-close" p-target="fullscreen-mobile-menu"
-                 p-target-class="active" p-event="burgerMenuOpenClose"><i class="fa fa-bars"></i></div>
-            @php
-                $siteName = setting('site_name') ?: config('app.name');
-                $defaultLogo = setting('logo_file');
-                $siteLogoLight = setting('logo_light_file') ?: $defaultLogo;
-                $siteLogoDark = setting('logo_dark_file') ?: $defaultLogo ?: $siteLogoLight;
-                $siteLogoLight = $siteLogoLight ? asset('storage/' . $siteLogoLight) : '/static/core/images/alphanovel/alpha-app-icon.png';
-                $siteLogoDark = $siteLogoDark ? asset('storage/' . $siteLogoDark) : $siteLogoLight;
-            @endphp
-            <a href="{{ route_path('home.index', []) }}" class="logo">
-                <img src="{{ $siteLogoLight }}" alt="{{ $siteName }}" class="alpha-logo-img alpha-logo-img--light">
-                <img src="{{ $siteLogoDark }}" alt="{{ $siteName }}" class="alpha-logo-img alpha-logo-img--dark" hidden>
-            </a>
-            <nav class="header-nav">
-                <ul>
-                    @forelse(menu_items('header') as $mi)
-                        @include('partials.menu-header-item', ['mi' => $mi])
-                    @empty
-                        {{-- Fallback: nav mặc định khi chưa cấu hình menu --}}
-                        <li><a href="{{ route_path('home.index', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Discover</span></a></li>
-                        <li class="header-nav__list"><div class="header-btn header-browse tippy-browse"><span class="alpha-nav-label">Novels</span> <i class="fa fa-caret-down"></i></div></li>
-                        <li><a href="{{ auth()->check() ? route_path('users.reading_history', Auth::id()) : route_path('login', []) }}" class="header-btn no-link" @guest data-auth-open="login" @endguest><span class="alpha-nav-label">Library</span></a></li>
-                        <li><a href="{{ route_path('pages.gifts', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Gifts</span></a></li>
-                        <li><a href="{{ route_path('my-articles.create', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Writer</span></a></li>
-                        <li><a href="{{ route_path('pages.blog', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Blog</span></a></li>
-                        <li><a href="#" id="open-live-search" class="header-btn no-link open-close" p-target="fullscreen-search"><span class="alpha-nav-label">Search</span></a></li>
-                    @endforelse
-                </ul>
-            </nav>
-            <nav class="alpha-header-nav">
-                <ul>
-                    <li><a href="{{ route_path('home.index', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Discover</span></a></li>
-                    <li class="header-nav__list"><div class="header-btn header-browse tippy-browse"><span class="alpha-nav-label">Novels</span> <i class="fa fa-caret-down"></i></div></li>
-                    <li><a href="{{ auth()->check() ? route_path('users.reading_history', Auth::id()) : route_path('login', []) }}" class="header-btn no-link" @guest data-auth-open="login" @endguest><span class="alpha-nav-label">Library</span></a></li>
-                    <li><a href="{{ route_path('pages.gifts', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Gifts</span></a></li>
-                    <li><a href="{{ route_path('my-articles.create', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Writer</span></a></li>
-                    <li><a href="{{ route_path('pages.blog', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Blog</span></a></li>
-                    <li><a href="{{ route_path('home.search', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Search</span></a></li>
-                </ul>
-            </nav>
-            <div class="header-user">
-                @auth
-                    @php $authUser = Auth::user(); $userAvatar = $authUser->avatar ?: asset('static/account/images/no-ava.jpg'); @endphp
-
-                    {{-- Nút + (thêm) — chỉ user đã từng mua gói (có lịch sử thanh toán) --}}
-                    @if($authUser->hasPurchased())
-                    <div id="add-item-btn" class="header-btn header-add"><i class="fa fa-plus"></i></div>
-                    @endif
-
-                    {{-- Chuông thông báo --}}
-                    <a href="{{ route_path('users.notifications', Auth::id()) }}" class="header-btn header-bell" title="{{ __('messages.account.nav_notifications') }}">
-                        <i class="fa fa-bell"></i>
-                        @if(($unreadNotifCount ?? 0) > 0)<span class="notif-count">{{ $unreadNotifCount > 99 ? '99+' : $unreadNotifCount }}</span>@endif
-                    </a>
-
-                    {{-- Số xu --}}
-                    <a href="{{ route_path('users.transactions', Auth::id()) }}" class="header-btn header-coins">
-                        {{ number_format($authUser->points ?? 0) }}<i class="fa fa-coins"></i>
-                    </a>
-
-                    {{-- Avatar (mở menu) --}}
-                    <div class="header-btn header-profile tippy-profile">
-                        <div class="header-avatar {{ user_is_vip($authUser->id) ? 'vip-ring' : '' }}"><img src="{{ $userAvatar }}" alt="{{ $authUser->username }}">@include('partials.vip-crown', ['userId' => $authUser->id])</div>
-                    </div>
-                @else
-                    <a href="{{ route_path('login', []) }}" class="btn login-btn" data-auth-open="login">{{ __('messages.auth.login') }}</a>
-                    <a href="{{ route_path('register', []) }}" class="btn register-btn" data-auth-open="register">{{ __('messages.auth.register') }}</a>
-                @endauth
-
-                {{-- Language switcher --}}
-                @if(config('locales.user_multilingual', true) && config('locales.switchable', true))
-                    @php $curLocale = app()->getLocale(); $locales = config('locales.supported', []); @endphp
-                    <div class="header-btn header-lang tippy-lang" title="{{ __('messages.layout.language') }}">
-                        @if(!empty($locales[$curLocale]['flag_code']))
-                            <span class="flag-icon flag-icon-{{ $locales[$curLocale]['flag_code'] }}"></span>
-                        @else
-                            🌐
-                        @endif
-                        <i class="fa fa-caret-down" style="font-size:11px"></i>
-                    </div>
-                @endif
-                <button type="button" class="header-btn alpha-theme-toggle" aria-label="Theme switch" aria-pressed="false"></button>
-            </div>
-        </div>
-    </div>
-</header>
+@include('partials.site-header')
 
 @php
     $bottomTabClass = 'LayoutTabs_item__jAMjf';
@@ -427,76 +339,7 @@
     })();
     </script>
 
-    {{-- Browse dropdown template used by tippy --}}
-    <div class="templates-html">
-        {{-- Submenu (cha-con) cho các mục header có con --}}
-        @foreach(menu_items('header') as $hmi)
-            @if(($hmi->activeChildren ?? collect())->count())
-                <ul id="submenu-{{ $hmi->id }}" class="header-sublist">
-                    @foreach($hmi->activeChildren as $c)
-                        <li><a href="{{ $c->href }}"@if($c->target === '_blank') target="_blank"@endif>@if($c->icon)<i class="{{ $c->icon }}"></i> @endif{{ $c->display_label }}</a></li>
-                    @endforeach
-                </ul>
-            @endif
-        @endforeach
-
-        <ul id="header-browse-list" class="header-sublist">
-            @php $browseItems = menu_items('browse'); @endphp
-            @if($browseItems->count())
-                {{-- Admin đã cấu hình menu Browse --}}
-                @foreach($browseItems as $mi)
-                    <li><a href="{{ $mi->href }}"@if($mi->target === '_blank') target="_blank"@endif>{{ $mi->display_label }}</a></li>
-                @endforeach
-            @else
-                {{-- Chỉ liệt kê thể loại Hot (admin tick). Chưa có Hot -> chỉ hiện link Tất cả. --}}
-                @foreach($navGenres as $genre)
-                    <li><a href="{{ route_path('genres.show', $genre) }}">{{ $genre->name }}</a></li>
-                @endforeach
-                @if($navGenres->isNotEmpty())<hr>@endif
-                <li><a href="{{ route_path('catalog.index', []) }}">{{ __('messages.nav.all') }}</a></li>
-            @endif
-        </ul>
-
-        @if(config('locales.user_multilingual', true) && config('locales.switchable', true))
-        {{-- Language dropdown --}}
-        <ul id="header-lang-list" class="header-sublist">
-            @foreach(config('locales.supported', []) as $code => $loc)
-                <li><a href="{{ route_path('locale.switch', $code) }}">
-                    @if(!empty($loc['flag_code']))<span class="flag-icon flag-icon-{{ $loc['flag_code'] }}"></span> @endif{{ $loc['name'] }}
-                </a></li>
-            @endforeach
-        </ul>
-        @endif
-
-        @auth
-            {{-- Menu nút + (thêm) — chỉ user đã từng mua gói --}}
-            @if(auth()->user()->hasPurchased())
-            <ul id="header-add-list" class="header-sublist">
-                <li><a href="{{ route_path('my-articles.create', []) }}"><i class="fa fa-book"></i> {{ __('messages.add.book') }}</a></li>
-                <li><a href="{{ route_path('collections.create', []) }}"><i class="fa fa-layer-group"></i> {{ __('messages.add.collection') }}</a></li>
-            </ul>
-            @endif
-
-            {{-- Menu avatar --}}
-            <ul id="header-user-list" class="header-sublist">
-                <li><a href="{{ route_path('users.show', []) }}"><i class="fa fa-user"></i> {{ __('messages.ui.menu_profile') }}</a></li>
-                <li><a href="{{ route_path('my-articles.index', []) }}"><i class="fa fa-book"></i> {{ __('messages.ui.menu_my_articles') }}</a></li>
-                <li><a href="{{ route_path('users.notifications', Auth::id()) }}"><i class="fa fa-bell"></i> {{ __('messages.ui.menu_notifications') }}</a></li>
-                <li><a href="{{ route_path('users.show_comments', Auth::id()) }}"><i class="fa fa-comment"></i> {{ __('messages.ui.menu_comments') }}</a></li>
-                <li><a href="{{ route_path('users.show_bookmarks', Auth::id()) }}"><i class="fa fa-heart"></i> {{ __('messages.ui.menu_following') }}</a></li>
-                <li><a href="{{ route_path('users.collections', Auth::id()) }}"><i class="fa fa-layer-group"></i> {{ __('messages.ui.menu_collections') }}</a></li>
-                <li><a href="{{ route_path('users.change_info', []) }}"><i class="fa fa-cog"></i> {{ __('messages.ui.menu_settings') }}</a></li>
-                <hr>
-                <li><a href="{{ route_path('users.transactions', Auth::id()) }}"><i class="fa fa-money-bill"></i> {{ __('messages.ui.menu_topup') }}</a></li>
-                <hr>
-                <li>
-                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-header').submit();">
-                        <i class="fa fa-sign-out"></i> {{ __('messages.ui.menu_logout') }}
-                    </a>
-                </li>
-            </ul>
-        @endauth
-    </div>
+    @include('partials.site-header-menus')
 
     @guest
         @include('auth.drawer')
@@ -649,46 +492,7 @@ window.addEventListener('load', function () { initAlphaSliders(document); });
     window.CSRF_TOKEN = "{{ csrf_token() }}";
     window.DAILY_REWARD_CLAIMED = 0;
 </script>
-<script>
-(function () {
-    var storageKey = 'alpha-theme-mode';
-
-    function currentMode() {
-        try {
-            return localStorage.getItem(storageKey) === 'dark' ? 'dark' : 'light';
-        } catch (e) {
-            return 'light';
-        }
-    }
-
-    function setMode(mode) {
-        var dark = mode === 'dark';
-        document.body.classList.toggle('alpha-dark', dark);
-        document.querySelectorAll('.alpha-logo-img--light').forEach(function (img) {
-            img.hidden = dark;
-        });
-        document.querySelectorAll('.alpha-logo-img--dark').forEach(function (img) {
-            img.hidden = !dark;
-        });
-        document.querySelectorAll('.alpha-theme-toggle').forEach(function (button) {
-            button.setAttribute('aria-pressed', dark ? 'true' : 'false');
-            button.setAttribute('title', dark ? 'Switch to day mode' : 'Switch to night mode');
-        });
-        try {
-            localStorage.setItem(storageKey, dark ? 'dark' : 'light');
-        } catch (e) {}
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        setMode(currentMode());
-        document.querySelectorAll('.alpha-theme-toggle').forEach(function (button) {
-            button.addEventListener('click', function () {
-                setMode(document.body.classList.contains('alpha-dark') ? 'light' : 'dark');
-            });
-        });
-    });
-})();
-</script>
+@include('partials.site-header-theme')
 <script src="{{ asset('static/core/js/mainee8b.js') }}?ver={{ $assetVer('static/core/js/mainee8b.js') }}"></script>
 <script src="{{ asset('static/core/js/site-effects.js') }}?ver={{ $assetVer('static/core/js/site-effects.js') }}"></script>
 @yield('page_js')

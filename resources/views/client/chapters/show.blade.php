@@ -23,23 +23,24 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @include('client.partials.ad-head')
 </head>
-<body class="theme-alphanovel-chapter" chapter_ph="{{ (int) ($bookmarkParagraph ?? 0) }}">
+{{-- `theme-alphanovel` cần cho site header (CSS header scope theo class này);
+     `theme-alphanovel-chapter` vẫn giữ để style riêng của trang đọc còn hiệu lực. --}}
+<body class="theme-alphanovel-chapter theme-alphanovel" chapter_ph="{{ (int) ($bookmarkParagraph ?? 0) }}">
+<script>
+(function () {
+    try {
+        if (localStorage.getItem('alpha-theme-mode') === 'dark') {
+            document.body.classList.add('alpha-dark');
+        }
+    } catch (e) {}
+})();
+</script>
 
-<header class="header-chapter">
-    <a href="{{ route_path('articles.show', $article) }}" class="header-title btn header-btn">
-        <span class="clamp clamp-1"><i class="fa fa-arrow-left"></i> {{ $article->title }}</span>
-    </a>
-    <div class="control-btns">
-        @auth
-            <button type="button" id="bookmark-ph-btn" class="btn header-btn bookmark-paragraph"
-                    title="{{ __('messages.chapter.bookmark_paragraph') }}"><i class="fa fa-bookmark"></i></button>
-            <button type="button" id="report-chapter-btn" data-id="{{ $chapter->id }}" class="btn header-btn"
-                    title="{{ __('messages.chapter.report_chapter') }}"><i class="fa fa-warning"></i></button>
-        @endauth
-        <button type="button" id="settings-open-btn" class="btn header-btn open-close"
-                p-target="chapter-settings"><i class="fa fa-cog"></i></button>
-    </div>
-</header>
+{{-- Site header đầy đủ, giống alphanovel.io: reader dùng chung header với
+     phần còn lại của site. Thanh `header-chapter` cũ đã bỏ — breadcrumb bên
+     dưới đã lo phần điều hướng về truyện, còn 3 nút chức năng của nó được
+     dồn xuống `chapter-control` ở đáy màn hình. --}}
+@include('partials.site-header')
 
 <div class="bookmark-ph-alert">{{ __('messages.chapter.select_paragraph_to_bookmark') }}</div>
 
@@ -54,6 +55,15 @@
         <span>{{ __('messages.chapter.chapter') }} {{ $chapter->number }}</span>
         <span>{{ __('messages.chapter.table_of_contents') }}</span>
     </div>
+
+    @auth
+        <button type="button" id="bookmark-ph-btn" class="btn header-btn bookmark-paragraph"
+                title="{{ __('messages.chapter.bookmark_paragraph') }}"><i class="fa fa-bookmark"></i></button>
+        <button type="button" id="report-chapter-btn" data-id="{{ $chapter->id }}" class="btn header-btn"
+                title="{{ __('messages.chapter.report_chapter') }}"><i class="fa fa-warning"></i></button>
+    @endauth
+    <button type="button" id="settings-open-btn" class="btn header-btn open-close"
+            p-target="chapter-settings"><i class="fa fa-cog"></i></button>
 
     @if($nextUrl)
         <a href="{{ $nextUrl }}" class="btn header-btn"><i class="fa fa-angle-right"></i></a>
@@ -423,8 +433,15 @@
 </div>
 @endauth
 
+{{-- Template dropdown (Novels / ngôn ngữ / avatar) mà tippy trong mainee8b.js
+     đọc theo id — không có khối này thì các nút header bấm không ra gì. --}}
+@include('partials.site-header-menus')
+
 <script src="{{ asset('static/core/js/swiper.bundle.js') }}"></script>
 <script src="{{ asset('static/core/js/popper.js') }}"></script>
+{{-- tippy phải nạp TRƯỚC mainee8b.js vì mainee8b khởi tạo dropdown header. --}}
+<script src="{{ asset('static/core/js/tippy.js') }}"></script>
+@include('partials.site-header-theme')
 <script src="{{ asset('static/core/js/mainee8b.js') }}?ver=1.8.0"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>

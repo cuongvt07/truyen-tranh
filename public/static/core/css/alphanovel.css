@@ -11721,6 +11721,11 @@ body.theme-alphanovel .alpha-genre-page .alpha-novel-card__body p {
     overflow: hidden;
 }
 
+/* Same shape as the reference `.Layout_container`: capped at 1440px with its
+   own 32px padding. The header sits outside this element (our extra `.page`
+   wrapper only adds padding-top, so it does not affect the horizontal track),
+   and is given a matching cap + padding further down so both content boxes
+   resolve to the same 1376px. */
 body.theme-alphanovel .Layout_container__lyw0Z {
     position: relative;
     display: flex;
@@ -11733,28 +11738,9 @@ body.theme-alphanovel .Layout_container__lyw0Z {
     padding: 32px;
 }
 
-body.theme-alphanovel .Layout_container__lyw0Z > .alpha-home,
-body.theme-alphanovel .Layout_container__lyw0Z > .alpha-search-page,
-body.theme-alphanovel .Layout_container__lyw0Z > .alpha-catalog-page,
-body.theme-alphanovel .Layout_container__lyw0Z > .alpha-list-page,
-body.theme-alphanovel .Layout_container__lyw0Z > .alpha-site-footer,
-body.theme-alphanovel .Layout_container__lyw0Z > .container {
-    width: 100% !important;
-    max-width: none !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-
 body.theme-alphanovel .Layout_container__lyw0Z > .alpha-site-footer {
     padding-left: 0 !important;
     padding-right: 0 !important;
-}
-
-body.theme-alphanovel .Layout_container__lyw0Z > .alpha-site-footer .alpha-site-footer__container {
-    width: 100% !important;
-    max-width: none !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
 }
 
 body.theme-alphanovel .logo .alpha-logo-img--dark {
@@ -11885,7 +11871,6 @@ body.theme-alphanovel .alpha-novel-detail .alpha-book-detail-stats .is-bold {
 @media (max-width: 920px) {
     body.theme-alphanovel .Layout_container__lyw0Z {
         gap: 24px;
-        padding: 20px 14px;
     }
 
     body.theme-alphanovel .alpha-search-card__cover:has(em) strong {
@@ -12040,4 +12025,99 @@ body.theme-alphanovel-chapter .pagination .btn-outlined {
         min-width: 0;
         flex: 1 1 0;
     }
+}
+
+/* ============================================================
+   One shared page column.
+   `.Layout_container__lyw0Z` caps at 1440px and carries the 32px
+   padding, exactly like the reference. Everything inside it fills
+   that content box, and the header — which sits outside it — gets
+   the same cap + padding, so all left/right edges resolve to the
+   same 1376px track.
+   Component-level widths (modals, toasts, the 820px reader
+   column) are deliberately NOT included here.
+   ============================================================ */
+body.theme-alphanovel .header .container {
+    width: 100% !important;
+    max-width: 1440px !important;
+    margin-inline: auto !important;
+    padding-inline: 32px !important;
+}
+
+body.theme-alphanovel .alpha-home,
+body.theme-alphanovel .alpha-catalog-page,
+body.theme-alphanovel .alpha-list-page,
+body.theme-alphanovel .alpha-discover,
+body.theme-alphanovel .alpha-search-page,
+body.theme-alphanovel .alpha-review-page,
+body.theme-alphanovel .alpha-book-breadcrumb,
+body.theme-alphanovel .article-detail-flex.alpha-novel-detail,
+body.theme-alphanovel .alpha-site-footer__container {
+    width: 100% !important;
+    max-width: none !important;
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+}
+
+@media (max-width: 1100px) {
+    body.theme-alphanovel .Layout_container__lyw0Z {
+        padding: 32px 18px;
+    }
+
+    body.theme-alphanovel .header .container {
+        padding-inline: 18px !important;
+    }
+}
+
+@media (max-width: 720px) {
+    body.theme-alphanovel .Layout_container__lyw0Z {
+        padding: 20px 14px;
+    }
+
+    body.theme-alphanovel .header .container {
+        padding-inline: 14px !important;
+    }
+}
+
+/* `<b>` / `<strong>` default to UA bold, so removing an explicit weight
+   leaves them bolder than the surrounding text rather than matching it.
+   Pin them to 400; class-scoped rules that genuinely want 600 still win. */
+body.theme-alphanovel b,
+body.theme-alphanovel strong,
+body.theme-alphanovel-chapter b,
+body.theme-alphanovel-chapter strong {
+    font-weight: 400;
+}
+
+/* ============================================================
+   Chapter reader now shares the site header (alphanovel.io does
+   the same). The header is position:fixed and the reader has no
+   `.page` wrapper to carry the offset, so reserve the space here.
+   ============================================================ */
+body.theme-alphanovel-chapter .alpha-chapter-breadcrumb {
+    margin-top: 104px;
+}
+
+body.theme-alphanovel-chapter .bookmark-ph-alert {
+    top: 104px;
+}
+
+@media (max-width: 920px) {
+    body.theme-alphanovel-chapter .alpha-chapter-breadcrumb {
+        margin-top: 76px;
+    }
+
+    body.theme-alphanovel-chapter .bookmark-ph-alert {
+        top: 76px;
+    }
+}
+
+/* The three reader actions moved into the bottom control bar when the old
+   fixed `header-chapter` strip was removed. */
+body.theme-alphanovel-chapter .chapter-control #bookmark-ph-btn,
+body.theme-alphanovel-chapter .chapter-control #report-chapter-btn,
+body.theme-alphanovel-chapter .chapter-control #settings-open-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
