@@ -114,7 +114,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     border-radius: 12px;
     background: var(--alpha-primary);
     color: #fff;
-    font-weight: 800;
 }
 
 .alpha-install-bar__brand strong,
@@ -152,7 +151,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     border: 1px solid var(--alpha-primary);
     border-radius: 999px;
     color: var(--alpha-primary);
-    font-weight: 700;
     text-decoration: none;
 }
 
@@ -212,7 +210,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 .theme-alphanovel .alpha-logo-text {
     color: var(--alpha-ink);
     font-size: 18px;
-    font-weight: 900;
     line-height: 1;
     white-space: nowrap;
 }
@@ -230,7 +227,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 .theme-alphanovel .header-nav .header-btn {
     color: var(--alpha-ink) !important;
     font-size: 15px;
-    font-weight: 700;
     border-radius: 999px;
 }
 
@@ -256,7 +252,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     background: var(--alpha-primary);
     color: #fff !important;
     border-radius: 999px;
-    font-weight: 800;
     box-shadow: 0 8px 18px rgba(69, 53, 255, .22);
 }
 
@@ -358,7 +353,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     background: rgba(255, 255, 255, .16);
     color: #dedbff;
     font-size: 13px;
-    font-weight: 800;
 }
 
 .theme-alphanovel .alpha-hero h1 {
@@ -367,7 +361,7 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: #fff;
     font-size: clamp(34px, 4vw, 58px);
     line-height: 1.05;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-hero p {
@@ -392,7 +386,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     min-height: 44px;
     padding: 10px 20px;
     border-radius: 999px;
-    font-weight: 900;
     text-decoration: none;
 }
 
@@ -424,7 +417,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     background: #fff;
     color: var(--alpha-text);
     font-size: 14px;
-    font-weight: 800;
     text-decoration: none;
 }
 
@@ -456,13 +448,12 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: var(--alpha-ink);
     font-size: 26px;
     line-height: 1.2;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-section__head a {
     color: var(--alpha-primary);
     font-size: 14px;
-    font-weight: 900;
     text-decoration: none;
     white-space: nowrap;
 }
@@ -494,7 +485,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: var(--alpha-ink);
     font-size: 15px;
     line-height: 1.35;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-book-card small,
@@ -505,7 +495,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: var(--alpha-muted);
     font-size: 12px;
     line-height: 1.35;
-    font-weight: 700;
 }
 
 .theme-alphanovel .alpha-reading-card {
@@ -529,7 +518,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 
 .theme-alphanovel .alpha-reading-card strong {
     color: var(--alpha-ink);
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-split {
@@ -580,7 +568,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 
 .theme-alphanovel .alpha-update-row strong {
     color: var(--alpha-ink);
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-update-row small,
@@ -588,7 +575,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: var(--alpha-muted);
     font-size: 12px;
     font-style: normal;
-    font-weight: 700;
 }
 
 .theme-alphanovel .alpha-sidebar {
@@ -615,7 +601,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 .theme-alphanovel .alpha-side-card--promo strong {
     color: #fff;
     font-size: 22px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-side-card--promo span {
@@ -647,7 +632,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 
 .theme-alphanovel .alpha-mini-list strong {
     color: var(--alpha-ink);
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-comment-grid {
@@ -669,7 +653,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 
 .theme-alphanovel .alpha-comment-card strong {
     color: var(--alpha-ink);
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-comment-card small {
@@ -685,7 +668,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 
 .theme-alphanovel .alpha-comment-card a {
     color: var(--alpha-primary);
-    font-weight: 900;
     text-decoration: none;
 }
 
@@ -694,7 +676,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     padding: 28px;
     color: var(--alpha-muted);
     text-align: center;
-    font-weight: 700;
 }
 
 .theme-alphanovel .alpha-empty--small {
@@ -727,7 +708,7 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: var(--alpha-ink);
     font-size: 24px;
     line-height: 1.25;
-    font-weight: 800;
+    font-weight: 600;
     margin-bottom: 16px;
 }
 
@@ -748,7 +729,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     margin-top: 9px;
     color: var(--alpha-ink);
     font-size: 15px;
-    font-weight: 800;
     line-height: 1.35;
 }
 
@@ -759,7 +739,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     margin-top: 8px;
     color: var(--alpha-muted);
     font-size: 12px;
-    font-weight: 700;
 }
 
 .theme-alphanovel .popular.block,
@@ -802,7 +781,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 
 .theme-alphanovel .manga-line-item .info .title {
     color: var(--alpha-ink);
-    font-weight: 800;
 }
 
 .theme-alphanovel .index-tags .tag {
@@ -812,7 +790,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 
 .theme-alphanovel .index-tags .tag .title {
     font-size: 17px;
-    font-weight: 800;
 }
 
 .theme-alphanovel .promo-banner {
@@ -836,7 +813,7 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 .theme-alphanovel .header-manga h1 {
     color: #fff;
     text-shadow: 0 4px 18px rgba(0, 0, 0, .35);
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .theme-alphanovel .article-detail-flex .main.block,
@@ -856,7 +833,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 .theme-alphanovel .section-select a {
     border-radius: 999px;
     color: var(--alpha-muted);
-    font-weight: 800;
 }
 
 .theme-alphanovel .section-select a.active {
@@ -869,7 +845,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     border-radius: 999px;
     background: var(--alpha-soft);
     color: var(--alpha-primary);
-    font-weight: 800;
 }
 
 .theme-alphanovel .chapters .chapter {
@@ -936,7 +911,7 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: #fff;
     font-family: var(--alpha-display, "Poppins", sans-serif);
     font-size: clamp(30px, 2.6vw, 38px);
-    font-weight: 900;
+    font-weight: 600;
     line-height: 1.25;
 }
 
@@ -987,7 +962,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: #fff;
     font-size: 17px;
     line-height: 1.45;
-    font-weight: 700;
 }
 
 .theme-alphanovel .alpha-footer-panel {
@@ -1011,7 +985,7 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     margin: 0 0 24px;
     color: #fff;
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-footer-icon-row {
@@ -1052,7 +1026,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 .theme-alphanovel .alpha-footer-panel a {
     color: #fff;
     font-size: 16px;
-    font-weight: 800;
     text-decoration: none;
 }
 
@@ -1215,7 +1188,7 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: #fff;
     font-size: 28px;
     line-height: 1.25;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .alpha-app-hero__content h1 span {
@@ -1249,7 +1222,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     gap: 10px;
     color: #fff;
     text-align: center;
-    font-weight: 900;
 }
 
 .alpha-app-hero__qr span {
@@ -1317,7 +1289,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     background: rgba(255, 255, 255, .14);
     color: #fff;
     font-size: 13px;
-    font-weight: 800;
 }
 
 .alpha-hero h1 {
@@ -1326,7 +1297,7 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: #fff;
     font-size: 44px;
     line-height: 1.05;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .alpha-hero p {
@@ -1351,7 +1322,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     min-height: 42px;
     padding: 10px 20px;
     border-radius: 999px;
-    font-weight: 900;
     text-decoration: none;
 }
 
@@ -1383,7 +1353,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     border-radius: 999px;
     background: #fff;
     color: var(--alpha-text);
-    font-weight: 800;
     text-decoration: none;
 }
 
@@ -1415,14 +1384,13 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: var(--alpha-ink);
     font-size: 24px;
     line-height: 1.2;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .alpha-section__head a {
     flex: 0 0 auto;
     color: var(--alpha-primary);
     font-size: 14px;
-    font-weight: 900;
 }
 
 .alpha-book-rail {
@@ -1468,7 +1436,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: var(--alpha-ink);
     font-size: 15px;
     line-height: 1.35;
-    font-weight: 900;
 }
 
 .alpha-book-card small,
@@ -1510,7 +1477,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 .alpha-reading-card strong {
     display: block;
     color: var(--alpha-ink);
-    font-weight: 900;
 }
 
 .alpha-split {
@@ -1563,7 +1529,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 .alpha-update-row strong {
     display: block;
     color: var(--alpha-ink);
-    font-weight: 900;
 }
 
 .alpha-update-row em {
@@ -1599,7 +1564,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 .alpha-side-card--promo strong {
     color: #fff;
     font-size: 20px;
-    font-weight: 900;
 }
 
 .alpha-side-card--promo span {
@@ -1634,7 +1598,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 .alpha-mini-list strong {
     display: block;
     color: var(--alpha-ink);
-    font-weight: 900;
 }
 
 .alpha-comment-grid {
@@ -1658,7 +1621,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 
 .alpha-comment-card strong {
     color: var(--alpha-ink);
-    font-weight: 900;
 }
 
 .alpha-comment-card p {
@@ -1669,7 +1631,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 
 .alpha-comment-card a {
     color: var(--alpha-primary);
-    font-weight: 900;
 }
 
 .alpha-empty {
@@ -1717,7 +1678,7 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     padding: 20px 24px;
     color: var(--alpha-ink);
     font-size: 22px;
-    font-weight: 900;
+    font-weight: 600;
     border-bottom: 1px solid var(--alpha-line);
 }
 
@@ -1757,7 +1718,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     display: grid;
     gap: 7px;
     color: var(--alpha-ink);
-    font-weight: 800;
 }
 
 .alpha-catalog-filter input,
@@ -1808,7 +1768,7 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: var(--alpha-ink);
     font-size: 28px;
     line-height: 1.25;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .alpha-catalog-intro p {
@@ -1834,7 +1794,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     background: transparent;
     color: var(--alpha-primary);
     font: inherit;
-    font-weight: 800;
     cursor: pointer;
 }
 
@@ -1887,7 +1846,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: #fff;
     font-size: 10px;
     font-style: normal;
-    font-weight: 900;
 }
 
 .alpha-novel-card__body {
@@ -1900,7 +1858,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: var(--alpha-ink);
     font-size: 16px;
     line-height: 1.35;
-    font-weight: 900;
 }
 
 .alpha-novel-card__body small {
@@ -1919,7 +1876,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     margin-top: 10px;
     color: var(--alpha-ink);
     font-size: 14px;
-    font-weight: 900;
 }
 
 .alpha-novel-card__stats b {
@@ -1974,7 +1930,7 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     color: #fff;
     font-size: 28px;
     line-height: 1.25;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .alpha-app-hero h1 span {
@@ -2008,7 +1964,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     gap: 10px;
     color: #fff;
     text-align: center;
-    font-weight: 900;
 }
 
 .alpha-app-hero__qr span {
@@ -2101,7 +2056,7 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     font-family: "Poppins", "Open Sans", Arial, sans-serif;
     font-size: 38px;
     line-height: 1.15;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .alpha-book-detail-meta {
@@ -2114,7 +2069,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 
 .alpha-book-detail-meta b {
     color: var(--alpha-ink);
-    font-weight: 700;
 }
 
 .alpha-book-detail-stats {
@@ -2124,7 +2078,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     margin-top: 22px;
     color: var(--alpha-ink);
     font-size: 26px;
-    font-weight: 900;
 }
 
 .alpha-book-detail-stats span {
@@ -2162,7 +2115,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     background: #f7f7ff;
     color: var(--alpha-ink);
     font-size: 13px;
-    font-weight: 700;
     text-decoration: none;
 }
 
@@ -2182,7 +2134,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
     border-radius: 8px;
     background: var(--alpha-primary);
     color: #fff !important;
-    font-weight: 900;
     text-decoration: none;
     box-shadow: 0 10px 20px rgba(69, 53, 255, .2);
 }
@@ -2243,7 +2194,6 @@ body.theme-alphanovel-chapter *:not(.fa):not(.fab):not(.far):not(.fas) {
 .theme-alphanovel .section-select a {
     padding: 11px 8px;
     color: var(--alpha-muted);
-    font-weight: 800;
 }
 
 .theme-alphanovel .section-select a.active,
@@ -2287,7 +2237,7 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-family: "Poppins", "Play", "Roboto", Arial, sans-serif;
     font-size: 30px;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .theme-alphanovel-chapter #chapter-c {
@@ -2784,7 +2734,6 @@ body.theme-alphanovel-chapter {
     border: 1px solid #d8d6ff;
     background: #fff;
     color: var(--alpha-primary);
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-book-detail-card .btn-add-to-list .btn-list {
@@ -3114,7 +3063,7 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-size: 24px;
     line-height: 1.2;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-see-all {
@@ -3128,7 +3077,6 @@ body.theme-alphanovel-chapter {
     border-radius: 4px;
     color: var(--alpha-primary);
     font-size: 13px;
-    font-weight: 900;
     text-decoration: none;
 }
 
@@ -3172,7 +3120,6 @@ body.theme-alphanovel-chapter {
     font-size: 9px;
     line-height: 1.1;
     font-style: normal;
-    font-weight: 900;
     text-transform: uppercase;
 }
 
@@ -3182,7 +3129,6 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-size: 12px;
     line-height: 1.35;
-    font-weight: 800;
 }
 
 .theme-alphanovel .alpha-trending-grid {
@@ -3230,7 +3176,6 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-size: 13px;
     line-height: 1.35;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-trending-item strong em {
@@ -3260,7 +3205,6 @@ body.theme-alphanovel-chapter {
     list-style: none;
     color: var(--alpha-ink);
     font-size: 11px;
-    font-weight: 800;
 }
 
 .theme-alphanovel .alpha-trending-item__stats b,
@@ -3679,7 +3623,6 @@ body.theme-alphanovel-chapter {
 
 .theme-alphanovel .alpha-logo-text {
     font-size: 24px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .header-nav {
@@ -3707,7 +3650,6 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink) !important;
     font-size: 14px;
     line-height: 1;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-header-nav .header-btn:hover,
@@ -3730,7 +3672,6 @@ body.theme-alphanovel-chapter {
     padding: 11px 24px;
     border-radius: 8px;
     font-size: 14px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .header-user .login-btn {
@@ -3753,7 +3694,6 @@ body.theme-alphanovel-chapter {
     background: #f8f8ff;
     color: var(--alpha-ink) !important;
     font-size: 13px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .header-lang > span {
@@ -3857,7 +3797,6 @@ body.theme-alphanovel-chapter {
         background: #fff;
         color: var(--alpha-primary);
         font-size: 12px;
-        font-weight: 900;
         text-decoration: none;
     }
 
@@ -3978,7 +3917,6 @@ body.theme-alphanovel-chapter {
     gap: 8px;
     color: var(--alpha-muted);
     font-size: 13px;
-    font-weight: 700;
 }
 
 .theme-alphanovel .alpha-book-breadcrumb a {
@@ -4055,7 +3993,7 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-family: "Poppins", "Open Sans", Arial, sans-serif;
     font-size: 18px;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-novel-detail .alpha-book-detail-card p {
@@ -4085,7 +4023,7 @@ body.theme-alphanovel-chapter {
     font-family: "Poppins", "Open Sans", Arial, sans-serif;
     font-size: 26px;
     line-height: 1.25;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-chapter-preview__content {
@@ -4111,7 +4049,6 @@ body.theme-alphanovel-chapter {
     padding: 10px 20px;
     border-radius: 8px;
     font-size: 14px;
-    font-weight: 900;
     text-decoration: none;
 }
 
@@ -4149,13 +4086,12 @@ body.theme-alphanovel-chapter {
     font-family: "Poppins", "Open Sans", Arial, sans-serif;
     font-size: 28px;
     line-height: 1.2;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-inline-reader__head span {
     color: var(--alpha-muted);
     font-size: 13px;
-    font-weight: 800;
 }
 
 .theme-alphanovel .alpha-inline-chapter {
@@ -4182,7 +4118,6 @@ body.theme-alphanovel-chapter {
     margin-bottom: 5px;
     color: var(--alpha-primary);
     font-size: 12px;
-    font-weight: 900;
     text-transform: uppercase;
 }
 
@@ -4192,7 +4127,7 @@ body.theme-alphanovel-chapter {
     font-family: "Poppins", "Open Sans", Arial, sans-serif;
     font-size: 24px;
     line-height: 1.25;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-inline-chapter__legacy {
@@ -4232,7 +4167,6 @@ body.theme-alphanovel-chapter {
     margin-bottom: 12px;
     color: var(--alpha-ink);
     font-size: 15px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-reviews-preview,
@@ -4251,7 +4185,6 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-family: "Poppins", "Open Sans", Arial, sans-serif;
     font-size: 22px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-reviews-preview__header {
@@ -4279,7 +4212,6 @@ body.theme-alphanovel-chapter {
     background: var(--alpha-soft);
     color: var(--alpha-primary);
     font-size: 13px;
-    font-weight: 900;
     text-decoration: none;
     white-space: nowrap;
 }
@@ -4305,7 +4237,6 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-family: var(--alpha-display, "Poppins", sans-serif);
     font-size: 42px;
-    font-weight: 900;
     line-height: .95;
 }
 
@@ -4345,7 +4276,6 @@ body.theme-alphanovel-chapter {
 .theme-alphanovel .alpha-reviews-summary__copy b {
     color: var(--alpha-ink);
     font-size: 16px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-reviews-preview .comment-preview {
@@ -4375,7 +4305,6 @@ body.theme-alphanovel-chapter {
     display: block;
     color: var(--alpha-ink);
     font-size: 14px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-review-card__user span {
@@ -4389,7 +4318,6 @@ body.theme-alphanovel-chapter {
     background: var(--alpha-soft);
     color: var(--alpha-primary);
     font-size: 12px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-review-card__content {
@@ -4409,7 +4337,6 @@ body.theme-alphanovel-chapter {
     display: inline-flex;
     margin-top: 12px;
     color: var(--alpha-primary);
-    font-weight: 900;
     text-decoration: none;
 }
 
@@ -4601,7 +4528,6 @@ body.theme-alphanovel-chapter {
     font-family: var(--alpha-display, "Poppins", sans-serif);
     font-size: 26px;
     line-height: 1.15;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-review-single-card__user small {
@@ -4632,7 +4558,6 @@ body.theme-alphanovel-chapter {
     background: transparent;
     color: var(--alpha-primary);
     font-size: 20px;
-    font-weight: 900;
     cursor: pointer;
 }
 
@@ -4695,7 +4620,7 @@ body.theme-alphanovel-chapter {
     font-family: var(--alpha-display, "Poppins", sans-serif);
     font-size: 30px;
     line-height: 1.25;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-review-board__back {
@@ -4707,7 +4632,6 @@ body.theme-alphanovel-chapter {
     border: 1px solid var(--alpha-primary);
     border-radius: 8px;
     color: var(--alpha-primary);
-    font-weight: 900;
     text-decoration: none;
     white-space: nowrap;
 }
@@ -4765,7 +4689,6 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-size: 24px;
     line-height: 1.16;
-    font-weight: 900;
     text-overflow: ellipsis;
 }
 
@@ -4831,7 +4754,6 @@ body.theme-alphanovel-chapter {
     background: transparent;
     color: var(--alpha-primary);
     font: inherit;
-    font-weight: 900;
     cursor: pointer;
 }
 
@@ -4885,7 +4807,6 @@ body.theme-alphanovel-chapter {
     color: #f03d33;
     font-size: 96px;
     line-height: .9;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-review-modal h2 {
@@ -4894,7 +4815,7 @@ body.theme-alphanovel-chapter {
     font-family: var(--alpha-display, "Poppins", sans-serif);
     font-size: 30px;
     line-height: 1.25;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-review-modal p {
@@ -4934,7 +4855,6 @@ body.theme-alphanovel-chapter {
     min-height: 61px;
     border-radius: 10px;
     font-size: 20px;
-    font-weight: 900;
     cursor: pointer;
 }
 
@@ -4997,7 +4917,6 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-size: 13px;
     line-height: 1.35;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-suggestion-grid:not(.alpha-slider) {
@@ -5040,7 +4959,6 @@ body.theme-alphanovel-chapter {
     font-size: 9px;
     line-height: 1;
     font-style: normal;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-suggestion-card strong {
@@ -5049,7 +4967,6 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-size: 14px;
     line-height: 1.35;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-suggestion-card small {
@@ -5057,7 +4974,6 @@ body.theme-alphanovel-chapter {
     margin-top: 4px;
     color: var(--alpha-muted);
     font-size: 12px;
-    font-weight: 700;
 }
 
 @media (max-width: 920px) {
@@ -5409,7 +5325,7 @@ body.theme-alphanovel-chapter {
     font-family: "Poppins", "Open Sans", Arial, sans-serif;
     font-size: 26px;
     line-height: 1.2;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-search-tags {
@@ -5428,7 +5344,6 @@ body.theme-alphanovel-chapter {
     background: #f8f8ff;
     color: var(--alpha-ink);
     font-size: 13px;
-    font-weight: 700;
     text-decoration: none;
 }
 
@@ -5475,7 +5390,6 @@ body.theme-alphanovel-chapter {
     font-size: 9px;
     line-height: 1;
     font-style: normal;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-search-card__cover em {
@@ -5497,7 +5411,6 @@ body.theme-alphanovel-chapter {
     font-family: "Poppins", "Open Sans", Arial, sans-serif;
     font-size: 26px;
     line-height: 1.2;
-    font-weight: 900;
     text-decoration: none;
 }
 
@@ -5521,7 +5434,6 @@ body.theme-alphanovel-chapter {
     margin-top: 24px;
     color: var(--alpha-ink);
     font-size: 24px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-search-card__stats span {
@@ -5551,7 +5463,6 @@ body.theme-alphanovel-chapter {
     margin-top: 5px;
     color: var(--alpha-primary);
     font-size: 13px;
-    font-weight: 700;
     text-decoration: none;
 }
 
@@ -5573,7 +5484,6 @@ body.theme-alphanovel-chapter {
     background: var(--alpha-primary);
     color: #fff !important;
     font-size: 16px;
-    font-weight: 900;
     text-decoration: none;
 }
 
@@ -5584,7 +5494,6 @@ body.theme-alphanovel-chapter {
     background: #fff;
     color: var(--alpha-muted);
     text-align: center;
-    font-weight: 800;
 }
 
 @media (max-width: 920px) {
@@ -5722,7 +5631,6 @@ body.theme-alphanovel-chapter {
     margin-bottom: 8px;
     color: rgba(255, 255, 255, .72);
     font-size: 12px;
-    font-weight: 800;
     letter-spacing: .08em;
     text-transform: uppercase;
 }
@@ -5762,7 +5670,6 @@ body.theme-alphanovel-chapter {
     background: rgba(255, 255, 255, .13);
     color: #fff;
     font-size: 13px;
-    font-weight: 700;
 }
 
 .theme-alphanovel .alpha-account-stats b {
@@ -5796,7 +5703,6 @@ body.theme-alphanovel-chapter {
     background: #fff;
     color: var(--alpha-primary);
     font-size: 14px;
-    font-weight: 800;
     text-decoration: none;
     cursor: pointer;
 }
@@ -5843,7 +5749,6 @@ body.theme-alphanovel-chapter {
     border-radius: 7px;
     color: var(--alpha-ink);
     font-size: 14px;
-    font-weight: 700;
     text-decoration: none;
 }
 
@@ -5880,7 +5785,6 @@ body.theme-alphanovel-chapter {
     text-shadow: none !important;
     font-family: var(--alpha-display, "Poppins", sans-serif);
     font-size: 24px;
-    font-weight: 800;
 }
 
 .theme-alphanovel .alpha-account-main .user-list-grid {
@@ -5923,7 +5827,6 @@ body.theme-alphanovel-chapter {
     padding: 12px 14px !important;
     border-radius: 8px !important;
     font-size: 14px;
-    font-weight: 700;
 }
 
 .theme-alphanovel .alpha-account-main .alert-success {
@@ -5952,7 +5855,6 @@ body.theme-alphanovel-chapter {
     background: var(--alpha-surface) !important;
     color: var(--alpha-primary) !important;
     font-size: 14px;
-    font-weight: 800;
     line-height: 1.2;
     text-decoration: none !important;
     cursor: pointer;
@@ -6012,7 +5914,6 @@ body.theme-alphanovel-chapter {
 .theme-alphanovel .alpha-account-main .user-team-card__name,
 .theme-alphanovel .alpha-account-main .nickname {
     color: var(--alpha-ink) !important;
-    font-weight: 800;
     text-decoration: none;
 }
 
@@ -6021,7 +5922,6 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-size: 14px;
     line-height: 1.35;
-    font-weight: 800;
 }
 
 .theme-alphanovel .alpha-account-main .user-list-grid .continue,
@@ -6046,7 +5946,6 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-family: var(--alpha-display, "Poppins", sans-serif);
     font-size: 18px;
-    font-weight: 800;
 }
 
 .theme-alphanovel .alpha-account-main #reading-list .rl-card {
@@ -6085,7 +5984,6 @@ body.theme-alphanovel-chapter {
     margin-bottom: 7px;
     color: var(--alpha-muted) !important;
     font-size: 13px;
-    font-weight: 800;
 }
 
 .theme-alphanovel .alpha-account-main .settings-form input,
@@ -6128,7 +6026,6 @@ body.theme-alphanovel-chapter {
 .theme-alphanovel .alpha-account-main .trans-table th {
     color: var(--alpha-muted) !important;
     font-size: 12px !important;
-    font-weight: 900;
     letter-spacing: .04em;
     text-transform: uppercase;
 }
@@ -6254,7 +6151,6 @@ body.theme-alphanovel-chapter {
 .theme-alphanovel .alpha-gifts-hero__actions > span {
     color: #fff;
     font-size: 16px;
-    font-weight: 800;
 }
 
 .theme-alphanovel .alpha-gifts-hero__button,
@@ -6271,7 +6167,6 @@ body.theme-alphanovel-chapter {
     background: rgba(255, 255, 255, .12);
     color: #ffffff !important;
     font-size: 15px;
-    font-weight: 900;
     text-decoration: none;
     -webkit-text-fill-color: #ffffff !important;
 }
@@ -6341,21 +6236,18 @@ body.theme-alphanovel-chapter {
     color: #ffffff !important;
     font-family: var(--alpha-font-title) !important;
     font-size: 48px;
-    font-weight: 900;
     line-height: 1;
 }
 
 .theme-alphanovel .alpha-gifts-summary span {
     color: #ffffff !important;
     font-size: 16px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-gifts-summary small {
     max-width: 180px;
     color: rgba(255, 255, 255, .78) !important;
     font-size: 13px;
-    font-weight: 700;
     line-height: 1.45;
 }
 
@@ -6406,7 +6298,6 @@ body.theme-alphanovel-chapter {
     border-radius: 8px;
     background: #fff8db;
     color: #6a4a00;
-    font-weight: 700;
 }
 
 .theme-alphanovel .alpha-store-featured {
@@ -6462,7 +6353,7 @@ body.theme-alphanovel-chapter {
     margin: 0;
     color: var(--alpha-ink);
     font-family: var(--alpha-display, "Poppins", sans-serif);
-    font-weight: 800;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-store-spotlight p,
@@ -6483,7 +6374,6 @@ body.theme-alphanovel-chapter {
 
 .theme-alphanovel .alpha-section-heading a {
     color: var(--alpha-primary);
-    font-weight: 800;
     text-decoration: none;
 }
 
@@ -6758,7 +6648,6 @@ body.theme-alphanovel-chapter {
 
 .theme-alphanovel .alpha-blog-card__meta span {
     color: var(--alpha-primary);
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-blog-card__meta .alpha-blog-author {
@@ -6780,7 +6669,6 @@ body.theme-alphanovel-chapter {
     font-family: var(--alpha-display, "Poppins", sans-serif);
     font-size: 30px;
     line-height: 1.2;
-    font-weight: 900;
     text-decoration: none;
 }
 
@@ -6810,7 +6698,6 @@ body.theme-alphanovel-chapter {
     background: transparent;
     color: var(--alpha-primary);
     font: inherit;
-    font-weight: 900;
     text-decoration: none;
     cursor: pointer;
 }
@@ -6848,7 +6735,6 @@ body.theme-alphanovel-chapter {
     border-radius: 8px;
     background: var(--alpha-card);
     color: var(--alpha-ink);
-    font-weight: 900;
     text-decoration: none;
 }
 
@@ -6874,7 +6760,6 @@ body.theme-alphanovel-chapter {
     margin-bottom: 9px;
     color: rgba(255, 255, 255, .72);
     font-size: 12px;
-    font-weight: 900;
     letter-spacing: .08em;
     text-transform: uppercase;
 }
@@ -6946,7 +6831,6 @@ body.theme-alphanovel-chapter {
     font-family: var(--alpha-display, "Poppins", sans-serif);
     font-size: 24px;
     line-height: 1.2;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-help-card p {
@@ -6962,7 +6846,6 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-primary);
     font-size: 13px;
     font-style: normal;
-    font-weight: 900;
 }
 
 @media (max-width: 980px) {
@@ -7041,7 +6924,6 @@ body.theme-alphanovel-chapter {
     margin-bottom: 8px;
     color: rgba(255, 255, 255, .72);
     font-size: 12px;
-    font-weight: 800;
     letter-spacing: .08em;
     text-transform: uppercase;
 }
@@ -7086,7 +6968,6 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-family: var(--alpha-display, "Poppins", sans-serif);
     font-size: 22px;
-    font-weight: 800;
 }
 
 .theme-alphanovel .alpha-alert {
@@ -7094,7 +6975,6 @@ body.theme-alphanovel-chapter {
     padding: 12px 14px;
     border-radius: 8px;
     font-size: 14px;
-    font-weight: 700;
 }
 
 .theme-alphanovel .alpha-alert--success {
@@ -7127,7 +7007,6 @@ body.theme-alphanovel-chapter {
     background: #fff;
     color: var(--alpha-primary);
     font-size: 14px;
-    font-weight: 800;
     text-decoration: none;
     cursor: pointer;
 }
@@ -7178,7 +7057,6 @@ body.theme-alphanovel-chapter {
     margin-bottom: 7px;
     color: var(--alpha-ink);
     font-size: 17px;
-    font-weight: 800;
     text-decoration: none;
 }
 
@@ -7225,7 +7103,6 @@ body.theme-alphanovel-chapter {
     color: #fff;
     font-family: var(--alpha-display, "Poppins", sans-serif);
     font-size: 48px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-character-avatar img {
@@ -7239,7 +7116,6 @@ body.theme-alphanovel-chapter {
     margin-bottom: 8px;
     color: var(--alpha-primary);
     font-size: 12px;
-    font-weight: 900;
     letter-spacing: .08em;
     text-transform: uppercase;
 }
@@ -7267,7 +7143,6 @@ body.theme-alphanovel-chapter {
     background: var(--alpha-soft);
     color: var(--alpha-muted);
     font-size: 13px;
-    font-weight: 700;
 }
 
 .theme-alphanovel .alpha-author-stats b {
@@ -7370,7 +7245,6 @@ body.theme-alphanovel-chapter {
     margin-bottom: 7px;
     color: var(--alpha-muted);
     font-size: 13px;
-    font-weight: 800;
 }
 
 .theme-alphanovel .alpha-field input[type="text"],
@@ -7421,7 +7295,6 @@ body.theme-alphanovel-chapter {
     background: var(--alpha-soft);
     color: var(--alpha-ink) !important;
     font-size: 13px !important;
-    font-weight: 700 !important;
 }
 
 .theme-alphanovel .alpha-form-actions {
@@ -7489,7 +7362,6 @@ body.theme-alphanovel-chapter {
 .theme-alphanovel .alpha-order-price {
     color: var(--alpha-primary);
     font-size: 20px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-payment-method {
@@ -7541,7 +7413,7 @@ body.theme-alphanovel-chapter {
     margin: 0 0 7px;
     color: var(--alpha-ink);
     font-size: 18px;
-    font-weight: 800;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-community-card p,
@@ -7594,7 +7466,6 @@ body.theme-alphanovel-chapter {
 
 .theme-alphanovel .alpha-topic-row a {
     color: var(--alpha-ink);
-    font-weight: 800;
     text-decoration: none;
 }
 
@@ -7730,7 +7601,6 @@ body.theme-alphanovel-chapter {
     margin-bottom: 9px;
     color: rgba(255, 255, 255, .72);
     font-size: 12px;
-    font-weight: 800;
     letter-spacing: .08em;
     text-transform: uppercase;
 }
@@ -7814,7 +7684,7 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-ink);
     font-family: var(--alpha-display, "Poppins", sans-serif);
     font-size: 34px;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-auth-card__head p {
@@ -7831,7 +7701,6 @@ body.theme-alphanovel-chapter {
 .theme-alphanovel .alpha-auth-card .alpha-field label {
     color: var(--alpha-ink);
     font-size: 14px;
-    font-weight: 900;
 }
 
 .theme-alphanovel .alpha-auth-card .alpha-field input {
@@ -7890,7 +7759,6 @@ body.theme-alphanovel-chapter {
 .theme-alphanovel .alpha-auth-switch a,
 .theme-alphanovel .alpha-auth-card a {
     color: var(--alpha-primary);
-    font-weight: 800;
     text-decoration: none;
 }
 
@@ -7903,7 +7771,6 @@ body.theme-alphanovel-chapter {
 
 .theme-alphanovel .alpha-auth-terms a {
     color: var(--alpha-primary);
-    font-weight: 800;
 }
 
 .theme-alphanovel.alpha-auth-open {
@@ -7979,7 +7846,6 @@ body.theme-alphanovel-chapter {
 .theme-alphanovel .alpha-auth-drawer__brand span {
     color: var(--alpha-primary);
     font-size: 12px;
-    font-weight: 900;
     letter-spacing: .08em;
     text-transform: uppercase;
 }
@@ -8010,7 +7876,6 @@ body.theme-alphanovel-chapter {
     color: var(--alpha-muted);
     font: inherit;
     font-size: 14px;
-    font-weight: 900;
     cursor: pointer;
 }
 
@@ -8145,7 +8010,7 @@ body.theme-alphanovel-chapter {
     margin: 0;
     color: var(--alpha-ink);
     font-size: 18px;
-    font-weight: 800;
+    font-weight: 600;
 }
 
 .theme-alphanovel .alpha-vip-card strong {
@@ -9987,7 +9852,6 @@ body.theme-alphanovel .alpha-footer-logo span {
     color: #ffffff !important;
     font-family: var(--alpha-font-title) !important;
     font-size: clamp(19px, 1.55vw, 21px);
-    font-weight: 900;
     line-height: 1.12;
     white-space: nowrap;
 }
@@ -10020,7 +9884,6 @@ body.theme-alphanovel .alpha-footer-secondary:visited {
     padding: 0 16px;
     border-radius: 999px;
     font-size: 14px;
-    font-weight: 800;
     text-decoration: none;
 }
 
@@ -10066,7 +9929,7 @@ body.theme-alphanovel .alpha-footer-col h3 {
     color: var(--alpha-text) !important;
     font-family: var(--alpha-font-title) !important;
     font-size: 14px;
-    font-weight: 900;
+    font-weight: 600;
     text-transform: uppercase;
 }
 
@@ -10078,7 +9941,6 @@ body.theme-alphanovel .alpha-footer-col a:visited {
     max-width: 100%;
     color: var(--alpha-muted) !important;
     font-size: 14px;
-    font-weight: 700;
     line-height: 1.35;
     text-decoration: none;
     -webkit-text-fill-color: var(--alpha-muted) !important;
@@ -10104,7 +9966,6 @@ body.theme-alphanovel .alpha-footer-kicker {
     margin-bottom: 8px;
     color: #c8c4ff !important;
     font-size: 12px;
-    font-weight: 900;
     letter-spacing: .06em;
     text-transform: uppercase;
 }
@@ -10114,7 +9975,6 @@ body.theme-alphanovel .alpha-footer-site-card strong {
     color: #ffffff !important;
     font-family: var(--alpha-font-title) !important;
     font-size: 21px;
-    font-weight: 900;
     line-height: 1.22;
 }
 
@@ -10135,7 +9995,6 @@ body.theme-alphanovel .alpha-footer-site-points span {
     background: rgba(255, 255, 255, .08);
     color: #ffffff !important;
     font-size: 13px;
-    font-weight: 900;
 }
 
 body.theme-alphanovel .alpha-footer-site-points i {
@@ -10151,7 +10010,6 @@ body.theme-alphanovel .alpha-footer-bottom {
     padding: 18px 4px 0;
     color: var(--alpha-muted) !important;
     font-size: 13px;
-    font-weight: 700;
 }
 
 body.theme-alphanovel .alpha-footer-bottom nav {
@@ -10369,7 +10227,6 @@ body.theme-alphanovel .my-story small {
 body.theme-alphanovel .ach-stat-chip {
     padding: 12px 16px !important;
     font-size: 13px !important;
-    font-weight: 700 !important;
 }
 
 body.theme-alphanovel .ach-stat-chip strong {
@@ -10385,7 +10242,6 @@ body.theme-alphanovel .my-story__actions .team-action-btn {
     padding: 0 12px !important;
     border-radius: 999px !important;
     font-size: 14px !important;
-    font-weight: 800 !important;
 }
 
 body.theme-alphanovel .team-role-badge {
@@ -10393,7 +10249,6 @@ body.theme-alphanovel .team-role-badge {
     background: #fff2b8 !important;
     color: #5d4100 !important;
     font-size: 11px !important;
-    font-weight: 900 !important;
 }
 
 body.theme-alphanovel.alpha-dark .my-story,
@@ -10704,7 +10559,6 @@ body.theme-alphanovel .nothing a,
 body.theme-alphanovel .nothing a:link,
 body.theme-alphanovel .nothing a:visited {
     color: var(--alpha-primary) !important;
-    font-weight: 800 !important;
 }
 
 body.theme-alphanovel.alpha-dark .nothing a,
@@ -10801,14 +10655,12 @@ body.theme-alphanovel .alpha-daily-gift__copy strong {
     color: var(--alpha-ink, #04002d);
     font-family: var(--alpha-font-title);
     font-size: 14px;
-    font-weight: 700;
     line-height: 20px;
 }
 
 body.theme-alphanovel .alpha-daily-gift__copy small {
     color: var(--alpha-primary);
     font-size: 12px;
-    font-weight: 800;
     line-height: 18px;
 }
 
@@ -10891,7 +10743,6 @@ body.theme-alphanovel .alpha-daily-checkin__head small {
     margin-bottom: 7px;
     color: var(--alpha-primary);
     font-size: 12px;
-    font-weight: 900;
     letter-spacing: .06em;
     text-transform: uppercase;
 }
@@ -10902,7 +10753,7 @@ body.theme-alphanovel .alpha-daily-checkin__head h2 {
     font-family: var(--alpha-font-title);
     font-size: 28px;
     line-height: 1.16;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 body.theme-alphanovel .alpha-daily-checkin__head p {
@@ -10930,14 +10781,12 @@ body.theme-alphanovel .alpha-daily-checkin__summary span {
     gap: 8px;
     color: var(--alpha-muted);
     font-size: 13px;
-    font-weight: 800;
 }
 
 body.theme-alphanovel .alpha-daily-checkin__summary strong {
     color: var(--alpha-ink);
     font-family: var(--alpha-font-title);
     font-size: 18px;
-    font-weight: 900;
 }
 
 body.theme-alphanovel .alpha-daily-checkin__week,
@@ -10954,7 +10803,6 @@ body.theme-alphanovel .alpha-daily-checkin__week {
 body.theme-alphanovel .alpha-daily-checkin__week span {
     color: var(--alpha-muted);
     font-size: 11px;
-    font-weight: 900;
     text-align: center;
     text-transform: uppercase;
 }
@@ -10979,13 +10827,11 @@ body.theme-alphanovel .alpha-daily-day--empty {
 body.theme-alphanovel .alpha-daily-day b {
     color: var(--alpha-ink);
     font-size: 15px;
-    font-weight: 900;
 }
 
 body.theme-alphanovel .alpha-daily-day small {
     color: var(--alpha-muted);
     font-size: 11px;
-    font-weight: 800;
 }
 
 body.theme-alphanovel .alpha-daily-day.is-special {
@@ -11034,7 +10880,6 @@ body.theme-alphanovel .alpha-daily-checkin__actions .alpha-button {
     background: var(--alpha-surface-soft);
     color: var(--alpha-primary);
     font-size: 14px;
-    font-weight: 900;
     cursor: pointer;
 }
 
@@ -11054,7 +10899,6 @@ body.theme-alphanovel .alpha-daily-checkin__message {
     margin-top: 12px;
     color: var(--alpha-primary);
     font-size: 13px;
-    font-weight: 800;
 }
 
 body.theme-alphanovel.alpha-dark .alpha-daily-checkin__panel,
@@ -11132,7 +10976,6 @@ body.theme-alphanovel .alpha-daily-toast__card small {
     margin-bottom: 5px;
     color: var(--alpha-muted);
     font-size: 11px;
-    font-weight: 700;
     line-height: 16px;
 }
 
@@ -11142,7 +10985,7 @@ body.theme-alphanovel .alpha-daily-toast__card h3 {
     color: var(--alpha-ink);
     font-family: var(--alpha-font-title);
     font-size: 19px;
-    font-weight: 800;
+    font-weight: 600;
     line-height: 24px;
 }
 
@@ -11155,7 +10998,6 @@ body.theme-alphanovel .alpha-daily-toast__amount {
     color: var(--alpha-primary);
     font-family: var(--alpha-font-title);
     font-size: 26px;
-    font-weight: 900;
     line-height: 32px;
 }
 
@@ -11181,7 +11023,6 @@ body.theme-alphanovel .alpha-daily-toast__card .alpha-button {
     color: #ffffff;
     font-family: var(--alpha-font-title);
     font-size: 14px;
-    font-weight: 800;
     cursor: pointer;
 }
 
@@ -11225,7 +11066,6 @@ body.theme-alphanovel .alpha-daily-gifts-card__visual span {
     background: rgba(255, 255, 255, .92);
     color: var(--alpha-primary);
     font-size: 12px;
-    font-weight: 800;
 }
 
 body.theme-alphanovel .alpha-daily-gifts-card__copy small {
@@ -11233,7 +11073,6 @@ body.theme-alphanovel .alpha-daily-gifts-card__copy small {
     margin-bottom: 6px;
     color: var(--alpha-primary);
     font-size: 12px;
-    font-weight: 800;
     letter-spacing: .04em;
     line-height: 18px;
     text-transform: uppercase;
@@ -11244,7 +11083,7 @@ body.theme-alphanovel .alpha-daily-gifts-card__copy h2 {
     color: var(--alpha-ink);
     font-family: var(--alpha-font-title);
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 32px;
 }
 
@@ -11281,7 +11120,6 @@ body.theme-alphanovel .alpha-daily-gifts-card__calendar span.is-today {
 body.theme-alphanovel .alpha-daily-gifts-card__calendar b {
     color: var(--alpha-ink);
     font-size: 11px;
-    font-weight: 800;
     line-height: 14px;
 }
 
@@ -11289,7 +11127,6 @@ body.theme-alphanovel .alpha-daily-gifts-card__calendar small {
     margin: 0;
     color: var(--alpha-primary);
     font-size: 11px;
-    font-weight: 800;
     letter-spacing: 0;
     line-height: 14px;
     text-transform: none;
@@ -11995,7 +11832,6 @@ body.theme-alphanovel .alpha-novel-detail .main-section {
 
 body.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card {
     margin-bottom: 0 !important;
-    background: var(--alpha-bg) !important;
 }
 
 body.theme-alphanovel .alpha-novel-detail .main-section {
