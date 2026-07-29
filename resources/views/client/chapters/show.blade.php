@@ -72,6 +72,11 @@
     @endif
 </div>
 
+{{-- Cùng cột với mọi trang khác: reference bọc reader trong `Layout_container`
+     (1440px + padding 32px), nên breadcrumb và nội dung chương ăn theo mép
+     trái/phải của header thay vì bị bó vào cột đọc hẹp. --}}
+<div class="Layout_container__lyw0Z alpha-reader-shell">
+
 {{-- Breadcrumb: Novels / Genre / Novel / Chapter N — hiển thị ở MỌI chương,
      giống alphanovel.io reader (từ chương 2 trở đi trang chỉ còn breadcrumb + nội dung). --}}
 <nav class="alpha-chapter-breadcrumb" aria-label="{{ __('messages.chapter.chapter') }}">
@@ -260,6 +265,8 @@
         @endif
     </div>
 </div>
+
+</div>{{-- /.Layout_container__lyw0Z --}}
 
 <div class="split"></div>
 

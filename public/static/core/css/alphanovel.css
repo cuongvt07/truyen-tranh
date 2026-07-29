@@ -12121,3 +12121,46 @@ body.theme-alphanovel-chapter .chapter-control #settings-open-btn {
     align-items: center;
     justify-content: center;
 }
+
+/* ============================================================
+   Reader body sits in the shared 1440px column, not a floating
+   card. Reference: `Layout_container` > `NovelReader_wrapper` >
+   breadcrumbs + body + footer, all flush to the same edges with
+   no surface of their own.
+   ============================================================ */
+body.theme-alphanovel-chapter .alpha-reader-shell {
+    gap: 0;
+    padding-top: 104px;
+}
+
+/* Breadcrumb aligns with the column edge instead of the reading measure. */
+body.theme-alphanovel-chapter .alpha-reader-shell .alpha-chapter-breadcrumb {
+    width: 100%;
+    margin: 0 0 12px;
+}
+
+body.theme-alphanovel-chapter .alpha-reader-shell .chapter-text__place {
+    padding-top: 0;
+}
+
+/* Drop the card: no surface, no border, no shadow, full column width. */
+body.theme-alphanovel-chapter .alpha-reader-shell #chapter-c {
+    max-width: none;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0 !important;
+}
+
+body.theme-alphanovel-chapter .alpha-reader-shell .chapter-team__info {
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+}
+
+@media (max-width: 920px) {
+    body.theme-alphanovel-chapter .alpha-reader-shell {
+        padding-top: 76px;
+    }
+}
