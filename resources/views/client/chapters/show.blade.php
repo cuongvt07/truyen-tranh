@@ -4,6 +4,10 @@
     $prevUrl = $prevChapter ? route_path('articles.chapters.show', [$article, $prevChapter->number]) : null;
     $nextUrl = $nextChapter ? route_path('articles.chapters.show', [$article, $nextChapter->number]) : null;
     $primaryGenre = $article->genres->first();
+    // Từ chương 2 trở đi, reader chỉ còn breadcrumb + nội dung + 2 nút
+    // Previous/Next Chapter, đúng như `NovelReader_footer` của alphanovel.io.
+    // Chương 1 vẫn giữ đủ khối "Published by" / cảm ơn / bookmark / bình luận.
+    $isMinimalReader = $chapter->number > 1;
 @endphp
 <!doctype html>
 <html lang="vi">
@@ -207,6 +211,7 @@
 </div>
 
 <div class="chapter-team__info">
+    @unless($isMinimalReader)
     <div class="chapter-info-end">
         @php
             $cfText1 = setting('chapter_footer_text1');
@@ -255,6 +260,7 @@
             @endauth
         </div>
     </div>
+    @endunless
     {{-- Footer reader: Previous = AlphaButton--outlined, Next Chapter = AlphaButton--primary. --}}
     <div class="pagination">
         @if($prevUrl)
@@ -268,6 +274,7 @@
 
 </div>{{-- /.Layout_container__lyw0Z --}}
 
+@unless($isMinimalReader)
 <div class="split"></div>
 
 {{-- Comments --}}
@@ -314,6 +321,7 @@
         {{ $comments->links() }}
     </section>
 </div>
+@endunless
 
 {{-- Table of contents panel (cùng cấu trúc overlay với panel cài đặt để nằm bên phải + full màn trên mobile) --}}
 <div id="all-chapters" class="fullscreen hide">
