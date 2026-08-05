@@ -12588,3 +12588,21 @@ body.theme-alphanovel .header-nav .header-btn.is-active .alpha-nav-label,
 body.theme-alphanovel-chapter .alpha-header-nav .header-btn.is-active .alpha-nav-label {
     color: inherit !important;
 }
+
+/* input[type=search] khiến trình duyệt tự vẽ thêm nút xoá bên trong ô,
+   trùng với nút X của mình -> ẩn cái mặc định đi, giữ nút của mình. */
+body.theme-alphanovel .alpha-search-form input[type="search"]::-webkit-search-cancel-button,
+body.theme-alphanovel .alpha-search-form input[type="search"]::-webkit-search-decoration,
+body.theme-alphanovel .alpha-search-form input[type="search"]::-webkit-search-results-button,
+body.theme-alphanovel .alpha-search-form input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+}
+
+/* Edge/IE cũng có nút xoá riêng. */
+body.theme-alphanovel .alpha-search-form input[type="search"]::-ms-clear {
+    display: none;
+    width: 0;
+    height: 0;
+}
