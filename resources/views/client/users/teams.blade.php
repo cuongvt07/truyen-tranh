@@ -11,7 +11,6 @@
     ];
 @endphp
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-    <h2 class="user-tab-title" style="margin:0">{{ __('messages.account.nav_teams') }}</h2>
     @if($isMine ?? false)
         <a href="{{ route_path('teams.create') }}" class="btn"><i class="fa fa-plus"></i> {{ __('messages.account.create_team') }}</a>
     @endif
@@ -24,6 +23,7 @@
 <div class="user-team-list" style="margin-bottom:20px">
     @foreach($ownedTeams as $t)
     <div class="block user-team-card">
+    <h2 class="user-tab-title" style="margin:0">{{ __('messages.account.nav_teams') }}</h2>
         <a href="{{ route_path('teams.show', $t->id) }}" class="user-team-card__photo">
             <img src="{{ $t->photo ?: asset('static/core/images/no_cover.webp') }}" alt="{{ $t->name }}">
         </a>

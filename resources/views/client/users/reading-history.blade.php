@@ -3,10 +3,10 @@
 
 @section('user_content')
 
-<h2 class="user-tab-title"><i class="fa fa-history"></i> {{ __('messages.account.nav_reading_history') }}</h2>
 
 @if($history->isEmpty())
-    <div class="block"><div class="nothing" style="padding:40px 0;text-align:center;color:var(--meta-color)">
+    <div class="block">
+    <h2 class="user-tab-title"><i class="fa fa-history"></i> {{ __('messages.account.nav_reading_history') }}</h2><div class="nothing" style="padding:40px 0;text-align:center;color:var(--meta-color)">
         <i class="fa fa-history" style="font-size:32px;opacity:.4;display:block;margin-bottom:10px"></i>
         {{ __('messages.account.reading_history_empty') }}
     </div></div>

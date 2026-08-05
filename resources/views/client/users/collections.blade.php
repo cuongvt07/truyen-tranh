@@ -3,14 +3,14 @@
 
 @section('user_content')
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-    <h2 class="user-tab-title" style="margin:0">{{ __('messages.account.nav_collections') }}</h2>
     @if($isMine ?? false)
         <a href="{{ route_path('collections.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ __('messages.account.create_collection') }}</a>
     @endif
 </div>
 
 @if($collections->isEmpty())
-    <div class="block"><div class="nothing" style="padding:40px 0;text-align:center;color:var(--meta-color)">
+    <div class="block">
+    <h2 class="user-tab-title" style="margin:0">{{ __('messages.account.nav_collections') }}</h2><div class="nothing" style="padding:40px 0;text-align:center;color:var(--meta-color)">
         <i class="fa fa-layer-group" style="font-size:32px;opacity:.4;display:block;margin-bottom:10px"></i>
         {{ __('messages.account.collections_empty') }}
     </div></div>

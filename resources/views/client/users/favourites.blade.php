@@ -2,8 +2,8 @@
 @section('template_title', __('messages.account.nav_following'))
 
 @section('user_content')
-<h2 class="user-tab-title">{{ __('messages.account.nav_following') }}</h2>
 <div class="block list-names" style="margin-bottom:14px">
+    <h2 class="user-tab-title">{{ __('messages.account.nav_following') }}</h2>
     <button class="btn" type="button">{{ __('messages.account.filter_all') }}</button>
     <button class="btn btn-invincible" type="button">{{ __('messages.account.filter_characters') }}</button>
     <button class="btn btn-invincible" type="button">{{ __('messages.account.filter_users') }}</button>

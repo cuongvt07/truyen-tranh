@@ -2,10 +2,10 @@
 @section('template_title', __('messages.account.posted_heading'))
 
 @section('user_content')
-<h2 class="user-tab-title">{{ __('messages.account.posted_heading') }}</h2>
 
 @if($articles->isEmpty())
-    <div class="block"><div class="nothing" style="padding:40px 0;text-align:center;color:var(--meta-color)">
+    <div class="block">
+    <h2 class="user-tab-title">{{ __('messages.account.posted_heading') }}</h2><div class="nothing" style="padding:40px 0;text-align:center;color:var(--meta-color)">
         <i class="fa fa-book" style="font-size:32px;opacity:.4;display:block;margin-bottom:10px"></i>
         {{ __('messages.account.posted_empty') }}
     </div></div>

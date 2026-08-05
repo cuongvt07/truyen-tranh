@@ -2,12 +2,12 @@
 @section('template_title', __('messages.account.nav_notifications'))
 
 @section('user_content')
-<h2 class="user-tab-title">{{ __('messages.account.nav_notifications') }}</h2>
 
 @php $hasUpcoming = ($upcomingChapters ?? collect())->isNotEmpty(); @endphp
 
 {{-- Tất cả thông báo nằm chung 1 khung; mỗi tin là 1 dòng, có gạch ngăn. --}}
 <div class="block notif-block">
+    <h2 class="user-tab-title">{{ __('messages.account.nav_notifications') }}</h2>
 
     {{-- Thông báo cá nhân TRƯỚC (chưa đọc đã được sắp lên đầu) --}}
     @if($notifications->isNotEmpty())

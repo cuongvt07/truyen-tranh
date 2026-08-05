@@ -6,12 +6,12 @@
     <div class="alert-success" style="background:#1e3a1e;border:1px solid #2e5e2e;padding:10px 14px;border-radius:6px;margin-bottom:14px;color:#9f9">{{ $message }}</div>
 @endif
 
-<h2 class="user-tab-title">{{ __('messages.account.comments_heading') }}</h2>
 
 @if($comments->isEmpty())
     <div class="nothing">{{ __('messages.account.comments_empty') }}</div>
 @else
     <div class="block comment-blocks" style="grid-template-columns:1fr">
+    <h2 class="user-tab-title">{{ __('messages.account.comments_heading') }}</h2>
         @foreach($comments as $comment)
             @php $article = $comment->article; $commentUser = $comment->user; @endphp
             <div class="comment-block">
