@@ -13077,3 +13077,44 @@ body.theme-alphanovel.alpha-dark .alpha-search-bookmark:not(.is-followed) .alpha
     stroke: var(--alpha-primary);
     color: var(--alpha-primary);
 }
+
+/* ============================================================
+   Rà soát toàn bộ nút icon dạng outlined: nền LẤY THEO NỀN SITE
+   (--alpha-bg) nên sáng thì sáng, tối thì tối; viền tím, icon tím.
+   Trước đây vài nút cắm cứng #fff nên ở chế độ tối lòi ra mảng trắng.
+   Đặt cuối file để thắng mọi khai báo #fff trước đó.
+   ============================================================ */
+body.theme-alphanovel .alpha-share-button,
+body.theme-alphanovel .alpha-search-bookmark:not(.is-followed),
+body.theme-alphanovel .alpha-review-card__report,
+body.theme-alphanovel .alpha-slider-prev,
+body.theme-alphanovel .alpha-slider-next,
+body.theme-alphanovel .alpha-search-more,
+body.theme-alphanovel .alpha-catalog-description__toggle,
+body.theme-alphanovel .btn-invincible {
+    background: var(--alpha-bg) !important;
+    border: 1px solid var(--alpha-primary) !important;
+    color: var(--alpha-primary) !important;
+}
+
+/* Icon bên trong đi theo màu chữ, cho cả icon font lẫn SVG. */
+body.theme-alphanovel .alpha-share-button i,
+body.theme-alphanovel .alpha-search-bookmark:not(.is-followed) i,
+body.theme-alphanovel .alpha-review-card__report i,
+body.theme-alphanovel .alpha-slider-prev i,
+body.theme-alphanovel .alpha-slider-next i {
+    color: var(--alpha-primary) !important;
+}
+
+body.theme-alphanovel .alpha-share-button svg,
+body.theme-alphanovel .alpha-search-bookmark:not(.is-followed) svg {
+    stroke: var(--alpha-primary);
+    color: var(--alpha-primary);
+}
+
+body.theme-alphanovel .alpha-share-button:hover,
+body.theme-alphanovel .alpha-search-bookmark:not(.is-followed):hover,
+body.theme-alphanovel .alpha-slider-prev:hover,
+body.theme-alphanovel .alpha-slider-next:hover {
+    background: var(--alpha-soft) !important;
+}
