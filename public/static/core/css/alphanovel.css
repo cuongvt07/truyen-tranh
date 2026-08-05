@@ -13056,3 +13056,24 @@ body.theme-alphanovel .tags a:hover {
     background-color: #8a8a97;
     color: #fff;
 }
+
+/* Chế độ tối, đã yêu thích: nền GIỮ nguyên đen, viền tím, tim tô đặc màu
+   tím — thay vì đảo thành nền tím chữ trắng như ở chế độ sáng. */
+body.theme-alphanovel.alpha-dark .alpha-search-bookmark.is-followed {
+    background: var(--alpha-bg, #121212) !important;
+    border: 1px solid var(--alpha-primary) !important;
+    color: var(--alpha-primary) !important;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-search-bookmark.is-followed .alpha-heart-icon {
+    fill: var(--alpha-primary);
+    stroke: var(--alpha-primary);
+    color: var(--alpha-primary);
+}
+
+/* Chưa yêu thích ở chế độ tối: tim rỗng, viền tím, nền đen. */
+body.theme-alphanovel.alpha-dark .alpha-search-bookmark:not(.is-followed) .alpha-heart-icon {
+    fill: none;
+    stroke: var(--alpha-primary);
+    color: var(--alpha-primary);
+}
