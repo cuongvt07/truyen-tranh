@@ -303,7 +303,9 @@
                         <li><a href="{{ route_path('users.collections', Auth::id()) }}"><i class="fa fa-layer-group"></i> {{ __('messages.ui.menu_collections') }}</a></li>
                         <li><a href="{{ route_path('users.change_info', []) }}"><i class="fa fa-cog"></i> {{ __('messages.ui.menu_settings') }}</a></li>
                     </ul>
-                    @if($authUser->hasPurchased())
+                    {{-- Gọi thẳng Auth::user(): $authUser chỉ tồn tại trong
+                         partials.site-header, không rò sang được view này. --}}
+                    @if(auth()->user()->hasPurchased())
                     <div class="mobile-menu-label"><i class="fa fa-plus"></i> {{ __('messages.add.menu') }}</div>
                     <ul>
                         <li><a href="{{ route_path('my-articles.create', []) }}"><i class="fa fa-book"></i> {{ __('messages.add.book') }}</a></li>
