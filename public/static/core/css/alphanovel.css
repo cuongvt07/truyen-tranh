@@ -13251,3 +13251,27 @@ body.theme-alphanovel .alpha-search-genre.is-active svg {
     stroke: #fff;
     color: #fff;
 }
+
+/* Nút "Next Chapter" nền tím: chữ + mũi tên trắng. Đặt ở cấp cao nhất vì
+   rule .alpha-next-chapter (biến thể viền) đứng sau và cùng độ ưu tiên
+   nên vẫn kéo màu chữ về tím. */
+body.theme-alphanovel a.alpha-next-chapter--primary,
+body.theme-alphanovel a.alpha-next-chapter--primary span,
+body.theme-alphanovel.alpha-dark a.alpha-next-chapter--primary,
+body.theme-alphanovel.alpha-dark a.alpha-next-chapter--primary span {
+    color: #fff !important;
+}
+
+body.theme-alphanovel a.alpha-next-chapter--primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--alpha-primary) !important;
+    border-color: var(--alpha-primary) !important;
+}
+
+body.theme-alphanovel a.alpha-next-chapter--primary .alpha-next-chapter__arrow {
+    stroke: #fff !important;
+    color: #fff !important;
+    flex: 0 0 auto;
+}

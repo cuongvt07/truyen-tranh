@@ -198,7 +198,13 @@
                                     <footer class="alpha-inline-chapter__footer">
                                         <a href="{{ route_path('articles.chapters.show', [$article, $inlineNextChapter->number]) }}"
                                            class="alpha-next-chapter alpha-next-chapter--primary">
-                                            {{ __('messages.chapter.next_chapter') }}
+                                            <span>{{ __('messages.chapter.next_chapter') }}</span>
+                                            {{-- Mũi tên vẽ bằng SVG: bộ FontAwesome rút gọn thiếu nhiều icon. --}}
+                                            <svg class="alpha-next-chapter__arrow" viewBox="0 0 24 24" width="16" height="16"
+                                                 fill="none" stroke="currentColor" stroke-width="2.5"
+                                                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <polyline points="9 6 15 12 9 18"></polyline>
+                                            </svg>
                                         </a>
                                     </footer>
                                 @endif
