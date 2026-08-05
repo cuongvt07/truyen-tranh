@@ -13308,3 +13308,40 @@ body.theme-alphanovel .alpha-suggestions .alpha-suggestion-card {
     background: transparent !important;
     border: 0 !important;
 }
+
+/* ============================================================
+   "You will also like" và "Reviews" dùng CHUNG một khuôn:
+   cùng viền, bo góc, nền, padding, margin, tiêu đề và font.
+   Chỉ nội dung bên trong là khác nhau.
+   ============================================================ */
+body.theme-alphanovel .alpha-suggestions,
+body.theme-alphanovel .alpha-reviews-preview {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 32px !important;
+    padding: 24px 32px !important;
+    border: 1px solid var(--alpha-line) !important;
+    border-radius: 8px;
+    background-color: var(--alpha-surface) !important;
+}
+
+body.theme-alphanovel .alpha-suggestions > .section-title,
+body.theme-alphanovel .alpha-reviews-preview > .section-title {
+    margin: 0 0 24px !important;
+    padding: 0 !important;
+    font-family: var(--alpha-font-title);
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    line-height: 32px !important;
+}
+
+/* Padding ngang đã nằm ở khối cha -> phần thân không thụt thêm lần nữa. */
+body.theme-alphanovel .alpha-suggestions .alpha-suggestion-grid,
+body.theme-alphanovel .alpha-reviews-preview .alpha-reviews-grid {
+    padding: 0 !important;
+}
+
+body.theme-alphanovel .alpha-suggestions .alpha-suggestion-card,
+body.theme-alphanovel .alpha-reviews-preview .alpha-review-card {
+    background: transparent !important;
+}
