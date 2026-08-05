@@ -12197,7 +12197,7 @@ body.theme-alphanovel .alpha-book-detail-card__actions {
     align-items: center;
 }
 
-body.theme-alphanovel .alpha-book-detail-card__actions > .btn-add-to-list,
+body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list,
 body.theme-alphanovel .alpha-book-detail-card__actions > .alpha-share-button {
     width: 48px !important;
     height: 48px !important;
@@ -12341,4 +12341,39 @@ body.theme-alphanovel-chapter .header-sublist .fa {
         width: 32px;
         height: 32px;
     }
+}
+
+/* Nút "thêm vào thư viện" ở trang chi tiết nằm sâu trong
+   .add-to-list-wrap > form > button, và wrapper mang width:100% từ style
+   nội tuyến của partial. Ở khối actions nó phải là nút icon vuông 48x48
+   ngang hàng nút chia sẻ, nên ép lại wrapper và ẩn phần chữ.
+   Chỉ giới hạn trong .alpha-book-detail-card__actions — nút này ở cuối
+   chương vẫn giữ dạng dài kèm chữ. */
+body.theme-alphanovel .alpha-book-detail-card__actions .add-to-list-wrap {
+    width: 48px !important;
+    min-width: 48px;
+    flex: 0 0 48px;
+}
+
+body.theme-alphanovel .alpha-book-detail-card__actions .add-to-list-wrap form {
+    margin: 0;
+}
+
+body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list {
+    justify-content: center !important;
+    gap: 0;
+}
+
+/* Chữ "Add to List" và span rỗng đứng đầu làm lệch tâm icon. */
+body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list .text-add-to-list,
+body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list > span:empty {
+    display: none !important;
+}
+
+/* Ô icon vốn được đẩy sát mép phải bằng margin âm cho nút dài — bỏ đi. */
+body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list .btn-list {
+    width: auto !important;
+    margin: 0 !important;
+    background: transparent !important;
+    align-self: center !important;
 }
