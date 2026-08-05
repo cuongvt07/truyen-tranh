@@ -12644,3 +12644,15 @@ body.theme-alphanovel:not(.alpha-dark) .alpha-inline-chapter__content,
 body.theme-alphanovel:not(.alpha-dark) .alpha-inline-chapter__content p {
     color: #000 !important;
 }
+
+/* Icon chia sẻ dạng SVG nội tuyến (bộ FA của dự án không có glyph này). */
+body.theme-alphanovel .alpha-share-button svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    color: var(--alpha-primary);
+}
+
+body.theme-alphanovel .alpha-share-button::before {
+    content: none !important;
+}

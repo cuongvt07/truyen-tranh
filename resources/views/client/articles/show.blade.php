@@ -108,7 +108,15 @@
                             title="{{ __('messages.article.share') }}"
                             data-share-url="{{ route_path('articles.show', $article) }}"
                             data-share-title="{{ $article->title }}">
-                        <i class="fa fa-share-square"></i>
+                        {{-- SVG nội tuyến: bộ FontAwesome của dự án là bản rút gọn,
+                             không có .fa-share-square nên class đó vẽ ra glyph rác. --}}
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                             stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"></path>
+                            <polyline points="16 6 12 2 8 6"></polyline>
+                            <line x1="12" y1="2" x2="12" y2="15"></line>
+                        </svg>
                     </button>
                 </div>
             </section>
