@@ -12631,3 +12631,16 @@ body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list .btn-lis
     font-size: 18px;
     line-height: 1;
 }
+
+/* Chữ nội dung truyện: đen hẳn cho dễ đọc (trước là xám #73748a).
+   Chế độ tối vẫn giữ chữ sáng, nếu ép đen ở đó thì không đọc được. */
+body.theme-alphanovel-chapter:not(.alpha-dark) #chapter-c,
+body.theme-alphanovel-chapter:not(.alpha-dark) #chapter-c p,
+body.theme-alphanovel-chapter:not(.alpha-dark) #chapter-c span,
+body.theme-alphanovel-chapter:not(.alpha-dark) #chapter-c div,
+body.theme-alphanovel-chapter:not(.alpha-dark) .chapter-text,
+body.theme-alphanovel-chapter:not(.alpha-dark) .chapter-text p,
+body.theme-alphanovel:not(.alpha-dark) .alpha-inline-chapter__content,
+body.theme-alphanovel:not(.alpha-dark) .alpha-inline-chapter__content p {
+    color: #000 !important;
+}
