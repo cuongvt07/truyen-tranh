@@ -99,11 +99,25 @@
                     @endif
                 </div>
                 <div class="alpha-book-detail-card__actions">
-                    @include('client.partials.add-to-list-button', [
-                        'article' => $article,
-                        'currentListStatus' => $currentListStatus,
-                        'hasStartedReading' => $hasStartedReading,
-                    ])
+                    {{-- Dùng lại đúng khối bookmark của trang search: markup phẳng,
+                         không có wrapper width:100% và <style> nội tuyến như
+                         partials.add-to-list-button, nên không phải đè CSS. --}}
+                    @auth
+                        <form method="POST" action="{{ route_path('articles.bookmarks.store', $article->id) }}" class="alpha-search-bookmark-form">
+                            @csrf
+                            <input type="hidden" name="name" value="{{ $article->title }} #{{ $article->id }}">
+                            <input type="hidden" name="status" value="{{ $currentListStatus ? 'remove' : 'reading' }}">
+                            <button type="submit" class="alpha-search-bookmark {{ $currentListStatus ? 'is-followed' : '' }}"
+                                    aria-label="{{ $currentListStatus ? 'Remove from library' : 'Add to library' }}"
+                                    title="{{ $currentListStatus ? 'Remove from library' : 'Add to library' }}">
+                                <i class="fa fa-heart"></i>
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route_path('login') }}" class="alpha-search-bookmark" aria-label="Bookmark" title="Add to library">
+                            <i class="fa fa-heart"></i>
+                        </a>
+                    @endauth
                     <button type="button" class="alpha-share-button" aria-label="{{ __('messages.article.share') }}"
                             title="{{ __('messages.article.share') }}"
                             data-share-url="{{ route_path('articles.show', $article) }}"
