@@ -13118,3 +13118,39 @@ body.theme-alphanovel .alpha-slider-prev:hover,
 body.theme-alphanovel .alpha-slider-next:hover {
     background: var(--alpha-soft) !important;
 }
+
+/* ============================================================
+   Nút icon KHÔNG BAO GIỜ tô nền tím — nền luôn lấy theo site
+   (--alpha-bg), viền tím, và chỉ ICON đổi để báo trạng thái:
+   chưa thích = tim rỗng, đã thích = tim đặc. Áp cho cả hai chế độ.
+   ============================================================ */
+body.theme-alphanovel .alpha-search-bookmark,
+body.theme-alphanovel .alpha-search-bookmark.is-followed,
+body.theme-alphanovel .alpha-share-button,
+body.theme-alphanovel .alpha-review-card__report,
+body.theme-alphanovel .alpha-slider-prev,
+body.theme-alphanovel .alpha-slider-next {
+    background: var(--alpha-bg) !important;
+    background-color: var(--alpha-bg) !important;
+    border: 1px solid var(--alpha-primary) !important;
+    color: var(--alpha-primary) !important;
+}
+
+/* Tim: rỗng khi chưa thích, tô đặc khi đã thích — luôn màu tím. */
+body.theme-alphanovel .alpha-search-bookmark .alpha-heart-icon {
+    stroke: var(--alpha-primary) !important;
+    color: var(--alpha-primary) !important;
+}
+
+body.theme-alphanovel .alpha-search-bookmark:not(.is-followed) .alpha-heart-icon {
+    fill: none !important;
+}
+
+body.theme-alphanovel .alpha-search-bookmark.is-followed .alpha-heart-icon {
+    fill: var(--alpha-primary) !important;
+}
+
+body.theme-alphanovel .alpha-search-bookmark.is-followed i,
+body.theme-alphanovel .alpha-search-bookmark.is-followed i::before {
+    color: var(--alpha-primary) !important;
+}
