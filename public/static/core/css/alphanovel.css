@@ -13023,3 +13023,36 @@ body.theme-alphanovel .alpha-search-bookmark svg,
 body.theme-alphanovel .alpha-share-button svg {
     stroke: currentColor;
 }
+
+/* ============================================================
+   Chip tag theo .AlphaChipsItem của reference: 12px/400/20px,
+   bo 16px, padding 6px 16px, không xuống dòng.
+   Nền xám, chữ trắng; hover thì xám sáng hơn.
+   ============================================================ */
+body.theme-alphanovel .alpha-book-detail-tags a,
+body.theme-alphanovel .alpha-search-tags a,
+body.theme-alphanovel .index-tags .tag,
+body.theme-alphanovel .tags a {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 16px;
+    border: 0;
+    border-radius: 16px;
+    background-color: #6b6b78;
+    color: #fff;
+    font-family: var(--alpha-font-body);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background-color .2s ease-in-out;
+}
+
+body.theme-alphanovel .alpha-book-detail-tags a:hover,
+body.theme-alphanovel .alpha-search-tags a:hover,
+body.theme-alphanovel .index-tags .tag:hover,
+body.theme-alphanovel .tags a:hover {
+    background-color: #8a8a97;
+    color: #fff;
+}
