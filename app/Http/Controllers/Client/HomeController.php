@@ -188,20 +188,39 @@ class HomeController extends Controller
     public function search(Request $request)
     {
         $keyword = trim((string) ($request->input('keyword') ?: $request->input('q')));
-        $topTags = Tag::query()
+        $genreId = (int) $request->input('genre');
+        $activeGenre = $genreId ? Genre::find($genreId) : null;
+
+        // Hàng thể loại để lọc; chỉ lấy thể loại thực sự có truyện.
+        $filterGenres = Genre::query()
             ->withCount('articles')
+            ->having('articles_count', '>', 0)
+            ->orderByDesc('articles_count')
+            ->orderBy('name')
+            ->take(24)
+            ->get();
+
+        // Top Tags bám theo thể loại đang chọn: chỉ đếm tag của truyện thuộc
+        // thể loại đó, thay vì xếp hạng trên toàn site.
+        $topTags = Tag::query()
+            ->withCount(['articles' => function ($q) use ($activeGenre) {
+                if ($activeGenre) {
+                    $q->whereHas('genres', fn ($g) => $g->where('genres.id', $activeGenre->id));
+                }
+            }])
+            ->when($activeGenre, function ($q) use ($activeGenre) {
+                $q->whereHas('articles', fn ($a) => $a->whereHas(
+                    'genres', fn ($g) => $g->where('genres.id', $activeGenre->id)
+                ));
+            })
+            ->having('articles_count', '>', 0)
             ->orderByDesc('articles_count')
             ->orderBy('name')
             ->take(18)
             ->get();
 
         if ($topTags->isEmpty()) {
-            $topTags = Genre::query()
-                ->withCount('articles')
-                ->orderByDesc('articles_count')
-                ->orderBy('name')
-                ->take(18)
-                ->get();
+            $topTags = $filterGenres->take(18);
         }
 
         $articles = Article::query()
@@ -213,6 +232,9 @@ class HomeController extends Controller
                 'bookmarks' => fn ($query) => $query->where('user_id', auth()->id()),
             ])
             ->withCount('chapters')
+            ->when($activeGenre, function ($query) use ($activeGenre) {
+                $query->whereHas('genres', fn ($g) => $g->where('genres.id', $activeGenre->id));
+            })
             ->when($keyword !== '', function ($query) use ($keyword) {
                 $query->where(function ($q) use ($keyword) {
                     $q->where('title', 'like', '%'.$keyword.'%')
@@ -234,17 +256,27 @@ class HomeController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        // Gõ trong ô tìm kiếm chỉ nạp lại phần kết quả, không dựng lại cả trang.
+        $formatCompact = function ($value) {
+            $value = (int) $value;
+            if ($value >= 1000000) return rtrim(rtrim(number_format($value / 1000000, 1), '0'), '.').'M';
+            if ($value >= 1000) return rtrim(rtrim(number_format($value / 1000, 1), '0'), '.').'K';
+            return number_format($value);
+        };
+
+        // Gõ hoặc đổi thể loại chỉ nạp lại đúng hai khối thay đổi (tag + kết quả),
+        // không dựng lại cả trang.
         if ($request->ajax()) {
-            return view('client.home.partials.search-results', [
-                'articles' => $articles,
-                'keyword' => $keyword,
-                'formatCompact' => function ($value) {
-                    $value = (int) $value;
-                    if ($value >= 1000000) return rtrim(rtrim(number_format($value / 1000000, 1), '0'), '.').'M';
-                    if ($value >= 1000) return rtrim(rtrim(number_format($value / 1000, 1), '0'), '.').'K';
-                    return number_format($value);
-                },
+            return response()->json([
+                'tags' => view('client.home.partials.search-tags', [
+                    'topTags' => $topTags,
+                    'activeGenre' => $activeGenre,
+                    'keyword' => $keyword,
+                ])->render(),
+                'results' => view('client.home.partials.search-results', [
+                    'articles' => $articles,
+                    'keyword' => $keyword,
+                    'formatCompact' => $formatCompact,
+                ])->render(),
             ]);
         }
 
@@ -252,6 +284,8 @@ class HomeController extends Controller
             'articles' => $articles,
             'keyword' => $keyword,
             'topTags' => $topTags,
+            'filterGenres' => $filterGenres,
+            'activeGenre' => $activeGenre,
             'title' => $keyword !== '' ? 'Search results for "'.$keyword.'"' : 'Search',
             'description' => 'You can search for any novel name, author name, or novel tag you want to search.',
         ]);

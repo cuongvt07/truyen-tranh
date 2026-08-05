@@ -12780,3 +12780,41 @@ body.theme-alphanovel .alpha-search-bookmark.is-followed .alpha-heart-icon {
     fill: currentColor;
     color: #fff;
 }
+
+/* Hàng chip lọc thể loại trên trang tìm kiếm. */
+body.theme-alphanovel .alpha-search-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0 20px;
+}
+
+body.theme-alphanovel .alpha-search-genre {
+    padding: 6px 14px;
+    border: 1px solid var(--alpha-line);
+    border-radius: 999px;
+    background: var(--alpha-surface, #fff);
+    color: var(--alpha-text);
+    font-size: 13px;
+    line-height: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .2s ease-in-out;
+}
+
+body.theme-alphanovel .alpha-search-genre:hover {
+    border-color: var(--alpha-primary);
+    color: var(--alpha-primary);
+}
+
+body.theme-alphanovel .alpha-search-genre.is-active {
+    border-color: var(--alpha-primary);
+    background: var(--alpha-primary);
+    color: #fff;
+}
+
+body.theme-alphanovel .alpha-search-tags__scope {
+    color: var(--alpha-muted);
+    font-size: 14px;
+    font-weight: 400;
+}

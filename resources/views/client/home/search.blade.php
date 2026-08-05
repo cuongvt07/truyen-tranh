@@ -30,13 +30,18 @@
             </button>
         </form>
 
-        <h1>Top Tags</h1>
-        <div class="alpha-search-tags">
-            @forelse($topTags as $tag)
-                <a href="{{ route_path('home.search', ['keyword' => $tag->name]) }}">{{ $tag->name }}</a>
-            @empty
-                <span>No tags yet.</span>
-            @endforelse
+        {{-- Hàng lọc thể loại: bấm cate nào thì lọc kết quả VÀ đổi Top Tags theo cate đó. --}}
+        <div class="alpha-search-genres" id="alpha-search-genres">
+            <button type="button" class="alpha-search-genre{{ $activeGenre ? '' : ' is-active' }}" data-genre="">All</button>
+            @foreach($filterGenres as $genre)
+                <button type="button"
+                        class="alpha-search-genre{{ $activeGenre && $activeGenre->id === $genre->id ? ' is-active' : '' }}"
+                        data-genre="{{ $genre->id }}">{{ $genre->name }}</button>
+            @endforeach
+        </div>
+
+        <div id="alpha-search-tags">
+            @include('client.home.partials.search-tags')
         </div>
     </section>
 
@@ -57,7 +62,10 @@
     var action  = document.getElementById('alpha-search-action');
     if (!form || !results || !action) return;
 
-    var input = form.querySelector('input[name="keyword"]');
+    var input  = form.querySelector('input[name="keyword"]');
+    var tags   = document.getElementById('alpha-search-tags');
+    var genres = document.getElementById('alpha-search-genres');
+    var genre  = new URLSearchParams(location.search).get('genre') || '';
     var timer = null;
     var controller = null;
     var DEBOUNCE_MS = 350;
@@ -75,7 +83,8 @@
         controller = new AbortController();
 
         var q = input.value.trim();
-        var url = form.action + '?keyword=' + encodeURIComponent(q);
+        var url = form.action + '?keyword=' + encodeURIComponent(q)
+                + (genre ? '&genre=' + encodeURIComponent(genre) : '');
 
         results.classList.add('is-loading');
 
@@ -83,12 +92,13 @@
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
             signal: controller.signal,
         })
-            .then(function (r) { return r.text(); })
-            .then(function (html) {
-                results.innerHTML = html;
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                results.innerHTML = data.results;
+                if (tags && data.tags) tags.innerHTML = data.tags;
                 results.classList.remove('is-loading');
                 // Giữ URL khớp nội dung để F5 hoặc chia sẻ link vẫn đúng.
-                window.history.replaceState({}, '', q ? url : form.action);
+                window.history.replaceState({}, '', (q || genre) ? url : form.action);
             })
             .catch(function (e) {
                 if (e.name !== 'AbortError') results.classList.remove('is-loading');
@@ -115,6 +125,42 @@
         e.preventDefault();
         clearTimeout(timer);
         run();
+    });
+
+    // Chọn thể loại -> lọc luôn, không cần chờ debounce.
+    if (genres) {
+        genres.addEventListener('click', function (e) {
+            var chip = e.target.closest('.alpha-search-genre');
+            if (!chip) return;
+            genre = chip.dataset.genre || '';
+            genres.querySelectorAll('.alpha-search-genre').forEach(function (c) {
+                c.classList.toggle('is-active', c === chip);
+            });
+            clearTimeout(timer);
+            run();
+        });
+    }
+
+    // Phân trang cũng nạp bằng AJAX thay vì tải lại cả trang.
+    results.addEventListener('click', function (e) {
+        var link = e.target.closest('.alpha-pagination a, .pagination a');
+        if (!link || !link.href) return;
+        e.preventDefault();
+        if (controller) controller.abort();
+        controller = new AbortController();
+        results.classList.add('is-loading');
+        fetch(link.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, signal: controller.signal })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                results.innerHTML = data.results;
+                if (tags && data.tags) tags.innerHTML = data.tags;
+                results.classList.remove('is-loading');
+                window.history.replaceState({}, '', link.href);
+                results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            })
+            .catch(function (err) {
+                if (err.name !== 'AbortError') results.classList.remove('is-loading');
+            });
     });
 
     syncButton();
