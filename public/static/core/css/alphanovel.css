@@ -13387,3 +13387,20 @@ body.theme-alphanovel.alpha-dark .alpha-suggestions,
 body.theme-alphanovel.alpha-dark .alpha-reviews-preview {
     padding: 32px !important;
 }
+
+/* Bo góc hai khối nội dung. Khai báo trước không có !important nên bị
+   rule .section cũ đè về 0 -> nhắc lại kèm !important. */
+body.theme-alphanovel .alpha-suggestions,
+body.theme-alphanovel .alpha-reviews-preview,
+body.theme-alphanovel.alpha-dark .alpha-suggestions,
+body.theme-alphanovel.alpha-dark .alpha-reviews-preview {
+    border-radius: 8px !important;
+    overflow: hidden;
+}
+
+/* Ảnh bìa trong khối gợi ý cũng bo cho đồng bộ. */
+body.theme-alphanovel .alpha-suggestion-card__cover,
+body.theme-alphanovel .alpha-suggestion-card__cover img {
+    border-radius: 8px;
+    overflow: hidden;
+}
