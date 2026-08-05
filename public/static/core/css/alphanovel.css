@@ -12977,3 +12977,49 @@ body.theme-alphanovel.alpha-dark .alpha-slider-next {
     background: var(--alpha-bg, #121212) !important;
     color: var(--alpha-primary) !important;
 }
+
+/* ============================================================
+   Rà soát viền tím: mọi nút dạng "outlined" dùng chung một viền
+   primary, ở cả hai theme. Trước đây mỗi nút một kiểu — nút
+   bookmark lấy viền --alpha-line (xám nhạt), See All lấy primary,
+   nên đứng cạnh nhau nhìn không cùng một bộ.
+   ============================================================ */
+body.theme-alphanovel .alpha-search-bookmark,
+body.theme-alphanovel .alpha-share-button,
+body.theme-alphanovel .alpha-see-all,
+body.theme-alphanovel .alpha-reviews-preview__see-all,
+body.theme-alphanovel .alpha-review-board__back,
+body.theme-alphanovel .alpha-review-card__report,
+body.theme-alphanovel .alpha-slider-prev,
+body.theme-alphanovel .alpha-slider-next,
+body.theme-alphanovel-chapter .pagination .btn-outlined {
+    border: 1px solid var(--alpha-primary) !important;
+    color: var(--alpha-primary) !important;
+}
+
+/* Trạng thái đã theo dõi vẫn là nền đặc, không phải viền rỗng. */
+body.theme-alphanovel .alpha-search-bookmark.is-followed {
+    background: var(--alpha-primary) !important;
+    border-color: var(--alpha-primary) !important;
+    color: #fff !important;
+}
+
+/* Nền của nhóm outlined: sáng thì trắng, tối thì nền trang. */
+body.theme-alphanovel:not(.alpha-dark) .alpha-search-bookmark:not(.is-followed),
+body.theme-alphanovel:not(.alpha-dark) .alpha-share-button,
+body.theme-alphanovel:not(.alpha-dark) .alpha-slider-prev,
+body.theme-alphanovel:not(.alpha-dark) .alpha-slider-next {
+    background: #fff !important;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-search-bookmark:not(.is-followed),
+body.theme-alphanovel.alpha-dark .alpha-share-button,
+body.theme-alphanovel.alpha-dark .alpha-review-card__report {
+    background: var(--alpha-bg, #121212) !important;
+}
+
+/* SVG trong nhóm này ăn theo màu chữ (tim rỗng, mũi tên chia sẻ). */
+body.theme-alphanovel .alpha-search-bookmark svg,
+body.theme-alphanovel .alpha-share-button svg {
+    stroke: currentColor;
+}
