@@ -12840,3 +12840,36 @@ body.theme-alphanovel .alpha-review-card__footer a {
     font-size: 16px;
     text-decoration: none;
 }
+
+/* ============================================================
+   Bỏ gạch chân link toàn site (bookmark, lịch sử đọc, footer…).
+   Đặt ở cuối file để thắng các rule cũ, kèm cả trạng thái hover/focus
+   vì nhiều chỗ chỉ gạch chân khi rê chuột.
+   ============================================================ */
+body.theme-alphanovel a,
+body.theme-alphanovel a:link,
+body.theme-alphanovel a:visited,
+body.theme-alphanovel a:hover,
+body.theme-alphanovel a:focus,
+body.theme-alphanovel a:active,
+body.theme-alphanovel button,
+body.theme-alphanovel .btn,
+body.theme-alphanovel-chapter a,
+body.theme-alphanovel-chapter a:link,
+body.theme-alphanovel-chapter a:visited,
+body.theme-alphanovel-chapter a:hover,
+body.theme-alphanovel-chapter a:focus,
+body.theme-alphanovel-chapter .btn {
+    text-decoration: none !important;
+    text-underline-offset: unset;
+}
+
+/* Một số chỗ gạch chân bằng border-bottom chứ không phải text-decoration. */
+body.theme-alphanovel .alpha-site-footer__link,
+body.theme-alphanovel .alpha-site-footer__nav a,
+body.theme-alphanovel .user-nav a,
+body.theme-alphanovel .trans-table a,
+body.theme-alphanovel .bookmarks a,
+body.theme-alphanovel .reading-history a {
+    border-bottom: 0 !important;
+}
