@@ -12656,3 +12656,18 @@ body.theme-alphanovel .alpha-share-button svg {
 body.theme-alphanovel .alpha-share-button::before {
     content: none !important;
 }
+
+/* Căn lề trái phẳng cho nội dung truyện: bỏ mọi thụt đầu dòng.
+   Rule cũ .alpha-inline-chapter__content p có text-indent: 22px, cộng thêm
+   padding-left kế thừa từ style chung -> nhìn như bị lùi vào. */
+body.theme-alphanovel-chapter #chapter-c,
+body.theme-alphanovel-chapter #chapter-c p,
+body.theme-alphanovel-chapter .chapter-text,
+body.theme-alphanovel-chapter .chapter-text p,
+body.theme-alphanovel .alpha-inline-chapter__content,
+body.theme-alphanovel .alpha-inline-chapter__content p {
+    text-indent: 0 !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    text-align: left;
+}
