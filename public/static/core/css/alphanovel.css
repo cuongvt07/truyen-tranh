@@ -9551,7 +9551,6 @@ body.theme-alphanovel.alpha-dark .alpha-novel-card,
 body.theme-alphanovel.alpha-dark .alpha-search-card,
 body.theme-alphanovel.alpha-dark .alpha-blog-card,
 body.theme-alphanovel.alpha-dark .alpha-suggestion-card {
-    background: #191a27 !important;
     border-color: #303143 !important;
     color: #e4e5f2 !important;
 }
@@ -13274,4 +13273,38 @@ body.theme-alphanovel a.alpha-next-chapter--primary .alpha-next-chapter__arrow {
     stroke: #fff !important;
     color: #fff !important;
     flex: 0 0 auto;
+}
+
+/* ============================================================
+   Khối "You will also like" theo .NovelDetailsSuggestions_wrapper:
+   flex dọc, viền 1px, bo 8px, nền surface, padding dọc 24px.
+   Tiêu đề 24px/600/32px, thụt lề ngang 32px, cách nội dung 24px.
+   ============================================================ */
+body.theme-alphanovel .alpha-suggestions {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--alpha-line) !important;
+    border-radius: 8px;
+    background-color: var(--alpha-surface) !important;
+    padding: 24px 0 !important;
+}
+
+body.theme-alphanovel .alpha-suggestions > .section-title {
+    margin: 0 0 24px;
+    padding: 0 32px;
+    font-family: var(--alpha-font-title);
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    line-height: 32px !important;
+}
+
+/* Slider nằm trong khối nên cũng phải thụt cùng mức lề với tiêu đề. */
+body.theme-alphanovel .alpha-suggestions .alpha-suggestion-grid {
+    padding: 0 32px;
+}
+
+/* Thẻ con trong khối để trong suốt, ăn theo nền của khối. */
+body.theme-alphanovel .alpha-suggestions .alpha-suggestion-card {
+    background: transparent !important;
+    border: 0 !important;
 }
