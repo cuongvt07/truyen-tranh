@@ -110,12 +110,12 @@
                             <button type="submit" class="alpha-search-bookmark {{ $currentListStatus ? 'is-followed' : '' }}"
                                     aria-label="{{ $currentListStatus ? 'Remove from library' : 'Add to library' }}"
                                     title="{{ $currentListStatus ? 'Remove from library' : 'Add to library' }}">
-                                <i class="fa fa-heart"></i>
+                                <svg class="alpha-heart-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>
                             </button>
                         </form>
                     @else
                         <a href="{{ route_path('login') }}" class="alpha-search-bookmark" aria-label="Bookmark" title="Add to library">
-                            <i class="fa fa-heart"></i>
+                            <svg class="alpha-heart-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>
                         </a>
                     @endauth
                     <button type="button" class="alpha-share-button" aria-label="{{ __('messages.article.share') }}"

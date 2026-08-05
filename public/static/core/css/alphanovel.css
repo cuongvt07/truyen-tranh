@@ -12762,3 +12762,21 @@ body.theme-alphanovel .alpha-search-bookmark.is-followed {
     background: var(--alpha-primary) !important;
     border-color: var(--alpha-primary) !important;
 }
+
+/* Tim SVG: bộ FontAwesome của dự án chỉ có weight 900 (đặc), không có bản
+   outline, nên không thể ra tim rỗng bằng class FA. Rỗng = fill:none,
+   đã thích = tô đầy. */
+body.theme-alphanovel .alpha-heart-icon {
+    fill: none;
+    display: block;
+}
+
+body.theme-alphanovel .alpha-search-bookmark:not(.is-followed) .alpha-heart-icon {
+    fill: none;
+    color: var(--alpha-primary);
+}
+
+body.theme-alphanovel .alpha-search-bookmark.is-followed .alpha-heart-icon {
+    fill: currentColor;
+    color: #fff;
+}
