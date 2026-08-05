@@ -12739,3 +12739,26 @@ body.theme-alphanovel .alpha-review-card__report {
 body.theme-alphanovel .alpha-review-card__report:hover {
     background: var(--alpha-soft);
 }
+
+/* .alpha-search-bookmark:not(.is-followed) i dùng color:transparent +
+   -webkit-text-stroke để giả tim rỗng. Glyph FontAwesome nằm trong ::before
+   nên thừa hưởng màu trong suốt còn nét viền chỉ áp lên <i> -> icon biến mất
+   ở CẢ trang search lẫn trang chi tiết. Cho icon hiện lại; hai trạng thái
+   phân biệt bằng nền nút. */
+body.theme-alphanovel .alpha-search-bookmark:not(.is-followed) i,
+body.theme-alphanovel .alpha-search-bookmark:not(.is-followed) i::before {
+    color: var(--alpha-primary) !important;
+    -webkit-text-stroke: 0 !important;
+}
+
+body.theme-alphanovel .alpha-search-bookmark.is-followed,
+body.theme-alphanovel .alpha-search-bookmark.is-followed i,
+body.theme-alphanovel .alpha-search-bookmark.is-followed i::before {
+    color: #fff !important;
+    -webkit-text-stroke: 0 !important;
+}
+
+body.theme-alphanovel .alpha-search-bookmark.is-followed {
+    background: var(--alpha-primary) !important;
+    border-color: var(--alpha-primary) !important;
+}
