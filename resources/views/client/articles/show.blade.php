@@ -104,7 +104,10 @@
                         'currentListStatus' => $currentListStatus,
                         'hasStartedReading' => $hasStartedReading,
                     ])
-                    <button type="button" class="alpha-share-button" aria-label="Share">
+                    <button type="button" class="alpha-share-button" aria-label="{{ __('messages.article.share') }}"
+                            title="{{ __('messages.article.share') }}"
+                            data-share-url="{{ route_path('articles.show', $article) }}"
+                            data-share-title="{{ $article->title }}">
                         <i class="fa fa-share-square"></i>
                     </button>
                 </div>
@@ -755,6 +758,48 @@ li.comment:last-child{border-bottom:none}
 @endpush
 
 @push('scripts')
+<script>
+// Nút chia sẻ: dùng hộp thoại chia sẻ của hệ điều hành nếu có (chủ yếu mobile),
+// còn lại thì copy link vào clipboard và báo cho người dùng biết đã copy.
+(function () {
+    var btn = document.querySelector('.alpha-share-button');
+    if (!btn) return;
+
+    function toast(msg) {
+        var el = document.createElement('div');
+        el.className = 'alpha-share-toast';
+        el.textContent = msg;
+        document.body.appendChild(el);
+        // Chờ 1 frame để transition chạy, nếu không nó hiện ngay không có hiệu ứng.
+        requestAnimationFrame(function () { el.classList.add('is-on'); });
+        setTimeout(function () {
+            el.classList.remove('is-on');
+            setTimeout(function () { el.remove(); }, 300);
+        }, 2000);
+    }
+
+    btn.addEventListener('click', function () {
+        var url = new URL(btn.dataset.shareUrl || location.pathname, location.origin).href;
+        var title = btn.dataset.shareTitle || document.title;
+
+        if (navigator.share) {
+            navigator.share({ title: title, url: url }).catch(function () {});
+            return;
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(function () {
+                toast(@json(__('messages.article.link_copied')));
+            }).catch(function () {
+                window.prompt(@json(__('messages.article.copy_link')), url);
+            });
+            return;
+        }
+
+        window.prompt(@json(__('messages.article.copy_link')), url);
+    });
+})();
+</script>
 <script>
 (function () {
     document.addEventListener('click', function (event) {

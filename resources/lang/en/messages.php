@@ -223,6 +223,9 @@ return array (
   'article' => 
   array (
     'tab_info' => 'Information',
+    'share' => 'Share',
+    'link_copied' => 'Link copied to clipboard',
+    'copy_link' => 'Copy this link',
     'tab_chapters' => 'Chapters',
     'tab_comments' => 'Comments',
     'view_all' => 'View all',

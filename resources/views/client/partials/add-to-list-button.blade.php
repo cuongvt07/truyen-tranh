@@ -39,7 +39,7 @@
             @csrf
             <input type="hidden" name="name" value="{{ $article->title }} #{{ $article->id }}">
             <input type="hidden" name="status" value="{{ $toggleStatus }}">
-            <button type="submit" class="btn btn-add-to-list direct-library-toggle {{ $activeStatus ? 'active' : '' }} {{ $wantThis && !$activeStatus ? 'want-this' : '' }}" aria-pressed="{{ $activeStatus ? 'true' : 'false' }}">
+            <button type="submit" class="btn btn-add-to-list direct-library-toggle {{ $activeStatus ? 'active' : '' }} {{ $wantThis && !$activeStatus ? 'want-this' : '' }}" aria-pressed="{{ $activeStatus ? 'true' : 'false' }}" title="{{ $activeStatus ? __('messages.chapter.bookmarked') : __('messages.chapter.bookmark') }}">
                 <span></span>
                 <span class="text-add-to-list">{{ $buttonText }}</span>
                 <span class="btn-list"><i class="fa fa-heart"></i></span>
