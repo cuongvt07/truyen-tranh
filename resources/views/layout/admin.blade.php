@@ -494,6 +494,11 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a href="{{ route('admin.home-blocks.index') }}" class="nav-link {{ set_active('admin.home-blocks.*') }}">
+                                        <i class="nav-icon fa-solid fa-table-cells-large"></i><p>Khối trang chủ</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="{{ route('admin.ads.index') }}" class="nav-link {{ set_active('admin.ads.*') }}">
                                         <i class="nav-icon fa-solid fa-rectangle-ad"></i><p>Quảng cáo</p>
                                     </a>

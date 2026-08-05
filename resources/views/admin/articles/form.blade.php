@@ -95,18 +95,25 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="genres">Tác giả</label>
-            <div class="row">
+            <label for="authors">Tác giả</label>
+            {{-- Gõ để tìm tác giả đã có; gõ tên chưa tồn tại rồi Enter thì tạo mới
+                 (select2 gửi lên chính chuỗi tên, controller sẽ firstOrCreate). --}}
+            <select name="authors[]" id="authors" class="form-control author-select" multiple>
+                @php $chosen = old('authors', $selectedAuthors); @endphp
                 @foreach($authors as $author)
-                    <div class="col-md-2">
-                        <div class="form-check">
-                            <input type="checkbox" name="authors[]" value="{{ $author->id }}"
-                                   {{ in_array($author->id, old('authors', $selectedAuthors)) ? 'checked' : '' }} class="form-check-input">
-                            <label class="form-check-label">{{ $author->name }}</label>
-                        </div>
-                    </div>
+                    <option value="{{ $author->id }}"
+                        @selected(in_array($author->id, $chosen) || in_array((string) $author->id, $chosen))>{{ $author->name }}</option>
                 @endforeach
-            </div>
+                {{-- Giữ lại tên mới vừa nhập khi form validate lỗi và render lại. --}}
+                @foreach($chosen as $value)
+                    @if(!is_numeric($value))
+                        <option value="{{ $value }}" selected>{{ $value }}</option>
+                    @endif
+                @endforeach
+            </select>
+            <small class="text-muted">
+                Gõ để tìm. Nếu tác giả chưa có, gõ tên rồi nhấn Enter — hệ thống tự tạo mới.
+            </small>
         </div>
         <div class="form-group">
             <label for="characters">Nhân vật</label>
@@ -270,6 +277,22 @@
         $(document).ready(function () {
             previewImage();
             bindSlugField();
+
+            // Tác giả: gõ để tìm; tên chưa có thì tags:true cho phép tạo thẻ mới,
+            // controller nhận chuỗi tên đó và firstOrCreate.
+            $('.author-select').select2({
+                theme: 'bootstrap4',
+                width: '100%',
+                tags: true,
+                tokenSeparators: [','],
+                placeholder: 'Gõ tên tác giả để tìm hoặc thêm mới...',
+                language: {
+                    noResults: function () {
+                        return 'Chưa có tác giả này — nhấn Enter để tạo mới';
+                    }
+                }
+            });
+
             $('.detail-block-select').select2({
                 theme: 'bootstrap4',
                 width: '100%',

@@ -131,7 +131,7 @@ if (!function_exists('novel_poster')) {
         $img = $article->cover_image ?? '';
         // Bỏ qua placeholder faker và các đường dẫn cũ không hợp lệ
         if (!$img || str_contains($img, 'via.placeholder') || str_contains($img, 'placeholder.com')) {
-            return asset('static/core/images/no_cover.webp');
+            return asset('static/core/images/alphanovel/default-cover.jpg');
         }
         // Ưu tiên bản thu nhỏ -500.jpg (nhẹ) cho card trang chủ / trang con; fallback ảnh gốc.
         return cover_thumb_url($img, 500) ?? $img;

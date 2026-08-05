@@ -89,7 +89,6 @@
             .header-user { gap: 6px; }
             .header-user .btn { padding: 6px 9px; font-size: 12px; }
             .header-user .header-coins { font-size: 13px; }
-            .header-avatar { width: 32px; height: 32px; }
             /* Auth (login/register) — neo theo viewport thật để không tràn */
             .container-login { width: calc(100vw - 20px) !important; max-width: calc(100vw - 20px) !important; padding-left: 6px !important; padding-right: 6px !important; }
             .container-login .login-form, .container-login .block { max-width: 100% !important; }
@@ -117,15 +116,7 @@
         }
 
         /* Logged-in header controls */
-        .header-user { display: flex; align-items: center; gap: 14px; }
         .header-user .header-btn { cursor: pointer; display: flex; align-items: center; gap: 5px; color: #fff; font-size: 17px; }
-        .header-user .header-coins { font-size: 15px; gap: 4px; }
-        .header-user .header-coins .fa-coins { color: #f0c040; }
-        .header-user .header-lang { font-size: 16px; gap: 3px; }
-        .header-user .header-bell:hover, .header-user .header-add:hover { opacity: .8; }
-        .header-avatar { width: 38px; height: 38px; border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,.3); }
-        .header-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .header-sublist .fa { width: 18px; text-align: center; margin-right: 4px; }
     </style>
     @include('client.partials.ad-head')
 </head>

@@ -118,7 +118,7 @@ class ArticleController extends Controller
         $article = Article::create($validateData);
         Slug::ensureFor($article, 'article', $request->input('slug') ?: $article->title);
         $article->genres()->attach($validateData['genres'] ?? []);
-        $article->authors()->attach($validateData['authors'] ?? []);
+        $article->authors()->attach($this->resolveAuthorIds($validateData['authors'] ?? []));
         $article->characters()->sync($request->input('characters', []));
         $this->syncTags($article, $request->input('tags'));
 
@@ -194,7 +194,7 @@ class ArticleController extends Controller
         $article->update($data);
         Slug::ensureFor($article, 'article', $request->input('slug') ?: $article->title);
         $article->genres()->sync($data['genres'] ?? []);
-        $article->authors()->sync($data['authors'] ?? []);
+        $article->authors()->sync($this->resolveAuthorIds($data['authors'] ?? []));
         $article->characters()->sync($request->input('characters', []));
         $this->syncTags($article, $request->input('tags'));
 
@@ -269,6 +269,42 @@ class ArticleController extends Controller
     }
 
     /** Đồng bộ tags (text phân cách dấu phẩy -> firstOrCreate). */
+    /**
+     * Select2 (tags: true) gửi lên hỗn hợp: ID của tác giả đã có, và CHUỖI TÊN
+     * với tác giả admin vừa gõ thêm. Trả về mảng ID, tạo mới những tên chưa có.
+     *
+     * @param  array<int|string>  $values
+     * @return array<int>
+     */
+    private function resolveAuthorIds(array $values): array
+    {
+        $ids = [];
+        $newNames = [];
+
+        foreach ($values as $value) {
+            if (is_numeric($value)) {
+                $ids[] = (int) $value;
+                continue;
+            }
+
+            $name = trim((string) $value);
+            if ($name !== '') {
+                $newNames[] = $name;
+            }
+        }
+
+        if ($newNames) {
+            // Một truy vấn cho toàn bộ tên mới thay vì mỗi tên một lần.
+            $existing = Author::whereIn('name', $newNames)->pluck('id', 'name');
+
+            foreach (array_unique($newNames) as $name) {
+                $ids[] = (int) ($existing[$name] ?? Author::create(['name' => $name])->id);
+            }
+        }
+
+        return array_values(array_unique($ids));
+    }
+
     private function syncTags(Article $article, ?string $raw): void
     {
         $names = collect(explode(',', (string) $raw))

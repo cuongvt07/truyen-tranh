@@ -12095,11 +12095,11 @@ body.theme-alphanovel-chapter strong {
    `.page` wrapper to carry the offset, so reserve the space here.
    ============================================================ */
 body.theme-alphanovel-chapter .alpha-chapter-breadcrumb {
-    margin-top: 104px;
+    margin-top: 80px;
 }
 
 body.theme-alphanovel-chapter .bookmark-ph-alert {
-    top: 104px;
+    top: 80px;
 }
 
 @media (max-width: 920px) {
@@ -12130,7 +12130,8 @@ body.theme-alphanovel-chapter .chapter-control #settings-open-btn {
    ============================================================ */
 body.theme-alphanovel-chapter .alpha-reader-shell {
     gap: 0;
-    padding-top: 104px;
+    /* Bằng đúng chiều cao header, khớp .page của các trang khác. */
+    padding-top: 80px;
 }
 
 /* Breadcrumb aligns with the column edge instead of the reading measure. */
@@ -12161,6 +12162,183 @@ body.theme-alphanovel-chapter .alpha-reader-shell .chapter-team__info {
 
 @media (max-width: 920px) {
     body.theme-alphanovel-chapter .alpha-reader-shell {
-        padding-top: 76px;
+        padding-top: 60px;
+    }
+}
+
+/* Khối "đọc thử chương 1" ăn theo nền trang, không phải tấm thẻ trắng riêng.
+   Ghi đè cả biến thể .section/.visible vì class .visible do JS gắn thêm. */
+body.theme-alphanovel section.alpha-inline-reader,
+body.theme-alphanovel section.alpha-inline-reader.section,
+body.theme-alphanovel section.alpha-inline-reader.visible,
+body.theme-alphanovel .alpha-inline-reader.section.visible {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* ============================================================
+   Khớp khoảng đệm đầu trang với chiều cao header thật (80 / 60),
+   thay vì các con số 96/104/118 rải rác trước đây.
+   ============================================================ */
+body.theme-alphanovel .page {
+    padding-top: 80px !important;
+}
+
+@media (max-width: 920px) {
+    body.theme-alphanovel .page {
+        padding-top: 60px !important;
+    }
+}
+
+/* Hai nút hành động (thư viện / chia sẻ) luôn cùng kích thước và cùng đường
+   nền, kể cả khi nút thư viện đổi trạng thái hoặc kèm chữ. */
+body.theme-alphanovel .alpha-book-detail-card__actions {
+    align-items: center;
+}
+
+body.theme-alphanovel .alpha-book-detail-card__actions > .btn-add-to-list,
+body.theme-alphanovel .alpha-book-detail-card__actions > .alpha-share-button {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px;
+    min-height: 48px;
+    flex: 0 0 48px;
+    padding: 0 !important;
+    border-radius: 8px !important;
+    line-height: 1 !important;
+}
+
+/* Thẻ <style> lọt vào trong khối flex vẫn tính là flex item -> loại khỏi layout. */
+body.theme-alphanovel .alpha-book-detail-card__actions > style {
+    display: none !important;
+}
+
+/* Nội dung chương: về weight 400. Trước đây không khai báo nên nó kế thừa
+   body 500 — đọc dài bị nặng mắt. */
+body.theme-alphanovel-chapter #chapter-c,
+body.theme-alphanovel-chapter #chapter-c p,
+body.theme-alphanovel-chapter .chapter-text,
+body.theme-alphanovel-chapter .chapter-text p,
+body.theme-alphanovel .alpha-inline-chapter__content,
+body.theme-alphanovel .alpha-inline-chapter__content p {
+    font-weight: 400 !important;
+}
+
+/* Hạ bớt các cỡ chữ lớn nhất cho đỡ thô. */
+body.theme-alphanovel-chapter .chapter-title-block h2 {
+    font-size: 24px !important;
+    line-height: 32px !important;
+}
+
+body.theme-alphanovel .alpha-novel-detail .alpha-book-detail-card h1,
+body.theme-alphanovel .alpha-novel-detail .NovelDetailsCard_title__v5Zec {
+    font-size: 28px !important;
+    line-height: 36px !important;
+}
+
+body.theme-alphanovel .alpha-inline-reader__head h2,
+body.theme-alphanovel .alpha-reviews-preview .section-title {
+    font-size: 20px !important;
+    line-height: 28px !important;
+}
+
+/* Thẻ <p> nội dung truyện theo đúng .NovelReader_content của alphanovel.io:
+   thụt đầu dòng 20px, cách đoạn 16px. Áp cho cả trang đọc chương lẫn khối
+   đọc chương 1 nằm trong trang chi tiết. */
+body.theme-alphanovel-chapter #chapter-c p,
+body.theme-alphanovel-chapter .chapter-text p,
+body.theme-alphanovel .alpha-inline-chapter__content p {
+    margin: 0 0 16px !important;
+    text-indent: 20px;
+}
+
+/* ============================================================
+   Các rule header trước đây nằm trong <style> nội tuyến của
+   layout/novelight.blade.php. Trang đọc chương nhúng
+   partials.site-header nhưng KHÔNG đi qua layout đó, nên avatar
+   mất kích thước và nở ra bằng ảnh gốc (đo được 317px thay vì 38px).
+   Đưa về đây để mọi trang dùng chung một nguồn.
+   ============================================================ */
+body.theme-alphanovel .header-user,
+body.theme-alphanovel-chapter .header-user {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+body.theme-alphanovel .header-user .header-coins,
+body.theme-alphanovel-chapter .header-user .header-coins {
+    font-size: 15px;
+    gap: 4px;
+}
+
+body.theme-alphanovel .header-user .header-coins .fa-coins,
+body.theme-alphanovel-chapter .header-user .header-coins .fa-coins {
+    color: #f0c040;
+}
+
+body.theme-alphanovel .header-user .header-lang,
+body.theme-alphanovel-chapter .header-user .header-lang {
+    font-size: 16px;
+    gap: 3px;
+}
+
+body.theme-alphanovel .header-user .header-bell:hover,
+body.theme-alphanovel .header-user .header-add:hover,
+body.theme-alphanovel-chapter .header-user .header-bell:hover,
+body.theme-alphanovel-chapter .header-user .header-add:hover {
+    opacity: .8;
+}
+
+body.theme-alphanovel .header-avatar,
+body.theme-alphanovel-chapter .header-avatar {
+    width: 38px;
+    height: 38px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .3);
+}
+
+body.theme-alphanovel .header-avatar img,
+body.theme-alphanovel-chapter .header-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+body.theme-alphanovel .header-sublist .fa,
+body.theme-alphanovel-chapter .header-sublist .fa {
+    width: 18px;
+    margin-right: 4px;
+    text-align: center;
+}
+
+@media (max-width: 620px) {
+    body.theme-alphanovel .header__inner,
+    body.theme-alphanovel-chapter .header__inner {
+        gap: 6px;
+    }
+
+    body.theme-alphanovel .header-user,
+    body.theme-alphanovel-chapter .header-user {
+        gap: 6px;
+    }
+
+    body.theme-alphanovel .header-user .btn,
+    body.theme-alphanovel-chapter .header-user .btn {
+        padding: 6px 9px;
+        font-size: 12px;
+    }
+
+    body.theme-alphanovel .header-user .header-coins,
+    body.theme-alphanovel-chapter .header-user .header-coins {
+        font-size: 13px;
+    }
+
+    body.theme-alphanovel .header-avatar,
+    body.theme-alphanovel-chapter .header-avatar {
+        width: 32px;
+        height: 32px;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Genre;
+use App\Models\HomeBlock;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -13,7 +14,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $data = Cache::remember('home:index:alphanovel:v5', 180, function () {
+        $data = Cache::remember(HomeBlock::CACHE_KEY, 180, function () {
             $take = 9;
             $trendingTake = 8;
             $with = ['genres', 'authors', 'slug'];
@@ -72,80 +73,67 @@ class HomeController extends Controller
 
             $exclusiveArticles = $topUpArticles($exclusiveArticles, $newUpdateArticles, $hotArticles);
 
-            $genreBlock = function (array $names) use ($articleList, $topUpArticles, $hotArticles, $newUpdateArticles) {
-                $genre = Genre::query()
-                    ->whereIn('name', $names)
-                    ->orderBy('name')
-                    ->first();
+            // Mỗi khối là một truy vấn riêng -> chỉ dựng đúng các khối đang bật,
+            // theo thứ tự admin đặt. Nạp sẵn genre để không N+1 khi suy ra link.
+            $configuredBlocks = HomeBlock::with('genre')
+                ->where('is_active', true)
+                ->orderBy('order')
+                ->orderBy('id')
+                ->get();
 
-                if (!$genre) {
-                    return [
-                        'articles' => $topUpArticles(collect(), $hotArticles, $newUpdateArticles),
-                        'url' => route_path('catalog.index'),
-                    ];
+            $queryForSource = function (HomeBlock $block) use ($hotArticles, $newUpdateArticles, $topTrendingArticles) {
+                switch ($block->source) {
+                    case 'trending':
+                        return ['collection' => $topTrendingArticles, 'url' => route_path('home.show_new_update_articles')];
+                    case 'hot':
+                        return ['collection' => $hotArticles, 'url' => route_path('home.show_hot_articles')];
+                    case 'new_update':
+                        return ['collection' => $newUpdateArticles, 'url' => route_path('home.show_new_update_articles')];
+                    case 'latest':
+                        return ['query' => Article::query()->latest('created_at'), 'url' => route_path('home.show_new_update_articles')];
+                    case 'exclusive':
+                        return ['query' => Article::where('is_user_submitted', true)->latest('id'), 'url' => route_path('catalog.index')];
+                    case 'genre':
+                    default:
+                        $genre = $block->genre;
+                        if (!$genre) {
+                            return ['collection' => collect(), 'url' => route_path('catalog.index')];
+                        }
+
+                        return [
+                            'query' => Article::query()
+                                ->whereHas('genres', fn ($q) => $q->where('genres.id', $genre->id))
+                                ->orderByDesc('view'),
+                            'url' => route_path('catalog.index', ['genre' => $genre->getRouteKey()]),
+                        ];
                 }
-
-                $articles = $articleList(
-                    Article::query()
-                        ->whereHas('genres', function ($q) use ($genre) {
-                            $q->where('genres.id', $genre->id);
-                        })
-                        ->orderByDesc('view')
-                );
-
-                return [
-                    'articles' => $topUpArticles($articles, $hotArticles, $newUpdateArticles),
-                    'url' => route_path('catalog.index', ['genre' => $genre->getRouteKey()]),
-                ];
             };
 
-            $blocks = [
-                [
-                    'title' => 'Top Trending',
-                    'articles' => $topTrendingArticles,
-                    'url' => route_path('home.show_new_update_articles'),
-                    'variant' => 'trending',
-                    'showSeeAll' => true,
-                ],
-                [
-                    'title' => 'Hottest New',
-                    'articles' => $hottestNewArticles,
-                    'url' => route_path('home.show_new_update_articles'),
-                    'variant' => 'rail',
-                    'showSeeAll' => true,
-                ],
-                [
-                    'title' => "Editors' Choice",
-                    'articles' => $hotArticles,
-                    'url' => route_path('home.show_hot_articles'),
-                    'variant' => 'rail',
-                    'showSeeAll' => true,
-                ],
-                [
-                    'title' => 'Only at '.config('app.name'),
-                    'articles' => $exclusiveArticles,
-                    'url' => route_path('catalog.index'),
-                    'variant' => 'rail',
-                    'showSeeAll' => true,
-                ],
-            ];
+            $blocks = [];
 
-            foreach ([
-                'Top Werewolf' => ['Werewolf'],
-                'Top Billionaire/CEO' => ['Billionaire/CEO', 'Billionaire', 'CEO'],
-                'Top Romance' => ['Romance', 'Tinh cam', 'Tình cảm'],
-                'Top Paranormal' => ['Paranormal', 'Supernatural'],
-                'Top Fantasy' => ['Fantasy', 'Tham hiem', 'Thám hiểm', 'Xuyen khong', 'Xuyên không'],
-                'Top YA/Teen' => ['YA/Teen', 'Young Adult', 'School Life'],
-                'Top LGBTQ+' => ['LGBTQ+', 'LGBTQ'],
-            ] as $title => $names) {
-                $block = $genreBlock($names);
+            foreach ($configuredBlocks as $configured) {
+                $resolved = $queryForSource($configured);
+                $limit = max(1, (int) $configured->limit);
+
+                // 'collection' = dùng lại dữ liệu đã nạp ở trên (không thêm truy vấn);
+                // 'query' = khối này cần truy vấn riêng.
+                $articles = array_key_exists('collection', $resolved)
+                    ? collect($resolved['collection'])
+                    : $articleList($resolved['query'], $limit);
+
+                // Khối thiếu truyện thì bù từ hot/mới cập nhật để không bị trống.
+                $articles = $topUpArticles($articles, $hotArticles, $newUpdateArticles, $limit);
+
+                if ($articles->isEmpty()) {
+                    continue;
+                }
+
                 $blocks[] = [
-                    'title' => $title,
-                    'articles' => $block['articles'],
-                    'url' => $block['url'],
-                    'variant' => 'rail',
-                    'showSeeAll' => true,
+                    'title' => $configured->title,
+                    'articles' => $articles,
+                    'url' => $configured->url ?: $resolved['url'],
+                    'variant' => $configured->variant,
+                    'showSeeAll' => (bool) $configured->show_see_all,
                 ];
             }
 

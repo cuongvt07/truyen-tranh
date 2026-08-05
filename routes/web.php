@@ -153,6 +153,9 @@ Route::middleware(['auth'])->group(function () {
                     // ads (quảng cáo)
                     Route::post('ads/{ad}/toggle', [\App\Http\Controllers\Admin\AdController::class, 'toggle'])->name('ads.toggle');
                     Route::resource('ads', \App\Http\Controllers\Admin\AdController::class)->except('show');
+                    // khối hiển thị ngoài trang chủ (title + nguồn truyện)
+                    Route::post('home-blocks/{homeBlock}/toggle', [\App\Http\Controllers\Admin\HomeBlockController::class, 'toggle'])->name('home-blocks.toggle');
+                    Route::resource('home-blocks', \App\Http\Controllers\Admin\HomeBlockController::class)->except('show');
                     // SEO settings
                     Route::get('/seo', [\App\Http\Controllers\Admin\SeoController::class, 'settings'])->name('seo.settings');
                     Route::post('/seo', [\App\Http\Controllers\Admin\SeoController::class, 'updateSettings'])->name('seo.update');
