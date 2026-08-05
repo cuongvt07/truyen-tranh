@@ -12690,3 +12690,52 @@ body.theme-alphanovel .alpha-book-detail-card__actions .alpha-search-bookmark-fo
     margin: 0;
     display: inline-flex;
 }
+
+/* ============================================================
+   Thẻ review: tên người review 28px, dòng "Review after…" 22px,
+   nội dung 16px.
+   ============================================================ */
+body.theme-alphanovel .alpha-review-card__user strong {
+    font-size: 28px !important;
+    line-height: 36px !important;
+    font-weight: 600 !important;
+}
+
+body.theme-alphanovel .alpha-review-card__user span {
+    font-size: 22px !important;
+    line-height: 30px !important;
+    font-weight: 400 !important;
+}
+
+body.theme-alphanovel .alpha-review-card__content {
+    font-size: 16px !important;
+    line-height: 26px !important;
+    font-weight: 400 !important;
+}
+
+/* Nút báo cáo theo .AlphaButton của alphanovel.io: viền trong suốt,
+   nền rỗng, weight 600, không xuống dòng, canh giữa. */
+body.theme-alphanovel .alpha-review-card__report {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background: 0 0;
+    border: 1px solid var(--alpha-primary);
+    border-radius: 8px;
+    outline: 0;
+    padding: 7px;
+    color: var(--alpha-primary);
+    font-family: var(--alpha-font-body);
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all .3s ease-in-out;
+}
+
+body.theme-alphanovel .alpha-review-card__report:hover {
+    background: var(--alpha-soft);
+}
