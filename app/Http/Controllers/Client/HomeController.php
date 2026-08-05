@@ -234,6 +234,20 @@ class HomeController extends Controller
             ->paginate(10)
             ->withQueryString();
 
+        // Gõ trong ô tìm kiếm chỉ nạp lại phần kết quả, không dựng lại cả trang.
+        if ($request->ajax()) {
+            return view('client.home.partials.search-results', [
+                'articles' => $articles,
+                'keyword' => $keyword,
+                'formatCompact' => function ($value) {
+                    $value = (int) $value;
+                    if ($value >= 1000000) return rtrim(rtrim(number_format($value / 1000000, 1), '0'), '.').'M';
+                    if ($value >= 1000) return rtrim(rtrim(number_format($value / 1000, 1), '0'), '.').'K';
+                    return number_format($value);
+                },
+            ]);
+        }
+
         return view('client.home.search', [
             'articles' => $articles,
             'keyword' => $keyword,
