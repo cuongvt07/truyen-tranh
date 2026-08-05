@@ -12930,3 +12930,50 @@ body.theme-alphanovel.alpha-dark .alpha-suggestions h2 {
 body.theme-alphanovel.alpha-dark .alpha-review-card__user span {
     color: var(--alpha-muted, #a5a7c4) !important;
 }
+
+/* Nhãn trạng thái trên góc ảnh của "You will also like". */
+body.theme-alphanovel .alpha-suggestion-card__cover {
+    position: relative;
+    display: block;
+}
+
+body.theme-alphanovel .alpha-suggestion-card__badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    z-index: 1;
+    padding: 3px 7px;
+    border-radius: 4px;
+    background: var(--alpha-primary);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 14px;
+}
+
+/* Chế độ tối: nút See All chữ tím, viền tím, nền đen — icon ăn theo màu chữ. */
+body.theme-alphanovel.alpha-dark .alpha-see-all,
+body.theme-alphanovel.alpha-dark .alpha-reviews-preview__see-all,
+body.theme-alphanovel.alpha-dark .alpha-review-board__back,
+body.theme-alphanovel.alpha-dark .alpha-section__head a {
+    border: 1px solid var(--alpha-primary) !important;
+    background: var(--alpha-bg, #121212) !important;
+    color: var(--alpha-primary) !important;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-see-all i,
+body.theme-alphanovel.alpha-dark .alpha-see-all svg,
+body.theme-alphanovel.alpha-dark .alpha-reviews-preview__see-all i,
+body.theme-alphanovel.alpha-dark .alpha-review-board__back i,
+body.theme-alphanovel.alpha-dark .alpha-section__head a i {
+    color: var(--alpha-primary) !important;
+    stroke: var(--alpha-primary);
+}
+
+/* Mũi tên trượt của khối gợi ý cũng theo tông tím trên nền đen. */
+body.theme-alphanovel.alpha-dark .alpha-slider-prev,
+body.theme-alphanovel.alpha-dark .alpha-slider-next {
+    border: 1px solid var(--alpha-primary) !important;
+    background: var(--alpha-bg, #121212) !important;
+    color: var(--alpha-primary) !important;
+}

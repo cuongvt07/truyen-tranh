@@ -298,9 +298,10 @@
                                     <span class="alpha-suggestion-card__cover">
                                         <img loading="lazy" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
                                         @if($loop->first)<em>Recommended</em>@endif
+                                        {{-- Nhãn trạng thái nằm trên góc ảnh, thay cho dòng chữ dưới thẻ. --}}
+                                        <b class="alpha-suggestion-card__badge">{{ $s->is_completed ? 'Completed' : 'Updated' }}</b>
                                     </span>
                                     <strong class="clamp clamp-2">{{ $s->title }}</strong>
-                                    <small>{{ optional($s->authors->first())->name ?? 'Updating' }}</small>
                                 </a>
                             </div>
                         @endforeach
