@@ -13154,3 +13154,28 @@ body.theme-alphanovel .alpha-search-bookmark.is-followed i,
 body.theme-alphanovel .alpha-search-bookmark.is-followed i::before {
     color: var(--alpha-primary) !important;
 }
+
+/* Đo trên site: ở chế độ tối viền nhóm nút này bị rule .alpha-dark khác đè
+   thành rgb(48,49,67) và nền thành rgb(34,35,52). Rule chung dùng
+   body.theme-alphanovel nên độ ưu tiên thấp hơn — viết lại đúng cấp
+   .alpha-dark để viền tím giữ nguyên ở CẢ hai chế độ. */
+body.theme-alphanovel.alpha-dark .alpha-search-bookmark,
+body.theme-alphanovel.alpha-dark .alpha-search-bookmark.is-followed,
+body.theme-alphanovel.alpha-dark .alpha-share-button,
+body.theme-alphanovel.alpha-dark .alpha-review-card__report,
+body.theme-alphanovel.alpha-dark .alpha-slider-prev,
+body.theme-alphanovel.alpha-dark .alpha-slider-next,
+body.theme-alphanovel.alpha-dark .alpha-see-all,
+body.theme-alphanovel.alpha-dark .alpha-reviews-preview__see-all {
+    border: 1px solid var(--alpha-primary) !important;
+    border-color: var(--alpha-primary) !important;
+    background: var(--alpha-bg) !important;
+    background-color: var(--alpha-bg) !important;
+    color: var(--alpha-primary) !important;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-search-bookmark .alpha-heart-icon,
+body.theme-alphanovel.alpha-dark .alpha-share-button svg {
+    stroke: var(--alpha-primary) !important;
+    color: var(--alpha-primary) !important;
+}
