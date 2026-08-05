@@ -12896,3 +12896,37 @@ body.theme-alphanovel .alpha-search-genre--tag:hover {
     border-color: var(--alpha-primary);
     color: var(--alpha-primary);
 }
+
+
+/* ============================================================
+   Chế độ tối: khối review và "You will also like" trước đây không có
+   nền riêng nên chìm vào nền trang. Theo .NovelDetailsSuggestions_wrapper
+   của reference: viền 1px, bo 8px, nền surface.
+   ============================================================ */
+body.theme-alphanovel.alpha-dark .alpha-suggestions,
+body.theme-alphanovel.alpha-dark .alpha-reviews-preview,
+body.theme-alphanovel.alpha-dark .alpha-review-card,
+body.theme-alphanovel.alpha-dark .alpha-review-board {
+    border: 1px solid var(--alpha-line, #363636) !important;
+    border-radius: 8px;
+    background-color: var(--alpha-surface, #202020) !important;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-suggestions,
+body.theme-alphanovel.alpha-dark .alpha-reviews-preview {
+    padding: 24px 0;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-review-card {
+    padding: 16px;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-review-card__user strong,
+body.theme-alphanovel.alpha-dark .alpha-review-card__content,
+body.theme-alphanovel.alpha-dark .alpha-suggestions h2 {
+    color: var(--alpha-ink, #f8f8ff) !important;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-review-card__user span {
+    color: var(--alpha-muted, #a5a7c4) !important;
+}
