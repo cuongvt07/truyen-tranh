@@ -4,9 +4,13 @@
     @php
         $seoSep   = seo_setting('title_separator', ' · ');
         $seoSite  = seo_setting('site_name', config('app.name', __('messages.layout.default_site_name')));
-        $seoDesc  = trim($__env->yieldContent('meta_description')) ?: seo_setting('default_description', __('messages.layout.default_meta_description'));
+        // Title/description cấu hình riêng cho trang này trong Admin → SEO.
+        // Có cấu hình thì nó thắng, vì đó chính là mục đích của phần cấu hình.
+        $pageSeo  = \App\Support\PageSeo::current();
+        $seoDesc  = $pageSeo['description']
+            ?: (trim($__env->yieldContent('meta_description')) ?: seo_setting('default_description', __('messages.layout.default_meta_description')));
         $seoOg    = trim($__env->yieldContent('og_image')) ?: asset(ltrim(seo_setting('default_og_image', '/static/core/images/no_cover.webp'), '/'));
-        $seoTitle = trim($__env->yieldContent('template_title'));
+        $seoTitle = $pageSeo['title'] ?: trim($__env->yieldContent('template_title'));
         $seoFullTitle = ($seoTitle ? $seoTitle . $seoSep : '') . $seoSite;
         $seoCanonical = trim($__env->yieldContent('canonical_url')) ?: url()->current();
     @endphp

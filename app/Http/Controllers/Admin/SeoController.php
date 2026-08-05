@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Support\PageSeo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -37,6 +38,19 @@ class SeoController extends Controller
                 ['value' => (string) $request->input($k, ''), 'updated_at' => now()]
             );
         }
+
+        // Title/description riêng cho từng trang tĩnh. Bỏ trống = dùng lại
+        // hành vi mặc định của layout, không ép chuỗi rỗng ra ngoài site.
+        $pageSeo = (array) $request->input('page_seo', []);
+        foreach (PageSeo::PAGES as $route => $label) {
+            foreach (['title', 'description'] as $field) {
+                DB::table('seo_settings')->updateOrInsert(
+                    ['key' => PageSeo::key($route, $field)],
+                    ['value' => trim((string) ($pageSeo[$route][$field] ?? '')), 'updated_at' => now()]
+                );
+            }
+        }
+
         return back()->with('success', __('messages.flash.seo_saved'));
     }
 }

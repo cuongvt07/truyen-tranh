@@ -65,6 +65,36 @@
                     </div>
                 </div>
 
+                {{-- Title/description riêng cho từng trang tĩnh --}}
+                <div class="card card-primary card-outline">
+                    <div class="card-header"><h3 class="card-title">Tiêu đề &amp; mô tả theo từng trang</h3></div>
+                    <div class="card-body">
+                        <p class="text-muted small">
+                            Bỏ trống thì trang đó giữ nguyên cách đặt tiêu đề mặc định.
+                            Có nhập thì giá trị ở đây sẽ thắng. Mô tả nên dưới 160 ký tự.
+                        </p>
+                        @foreach(\App\Support\PageSeo::PAGES as $route => $label)
+                            <div class="form-row mb-2">
+                                <div class="col-md-3">
+                                    <label class="col-form-label">{{ $label }}</label>
+                                    <div class="text-muted small">{{ $route }}</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control"
+                                           name="page_seo[{{ $route }}][title]"
+                                           placeholder="Tiêu đề trang"
+                                           value="{{ $s(\App\Support\PageSeo::key($route, 'title')) }}">
+                                </div>
+                                <div class="col-md-5">
+                                    <textarea class="form-control" rows="1"
+                                              name="page_seo[{{ $route }}][description]"
+                                              placeholder="Mô tả (meta description)">{{ $s(\App\Support\PageSeo::key($route, 'description')) }}</textarea>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
                 <div class="card card-primary card-outline">
                     <div class="card-body"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu cài đặt SEO</button>
                     <a href="{{ url('/robots.txt') }}" target="_blank" class="btn btn-outline-secondary ml-2"><i class="fas fa-robot"></i> Xem robots.txt</a>
