@@ -13377,3 +13377,13 @@ body.theme-alphanovel .alpha-reviews-preview > *:not(.alpha-reviews-preview__hea
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
+
+/* Padding đều 32px cho cả hai khối. Áp cho CẢ hai chế độ chứ không chỉ
+   .alpha-dark — để lề chênh nhau giữa sáng và tối thì chuyển theme là
+   thấy khối nhảy, mà yêu cầu trước đó là hai khối phải giống hệt nhau. */
+body.theme-alphanovel .alpha-suggestions,
+body.theme-alphanovel .alpha-reviews-preview,
+body.theme-alphanovel.alpha-dark .alpha-suggestions,
+body.theme-alphanovel.alpha-dark .alpha-reviews-preview {
+    padding: 32px !important;
+}
