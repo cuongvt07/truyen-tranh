@@ -12606,3 +12606,28 @@ body.theme-alphanovel .alpha-search-form input[type="search"]::-ms-clear {
     width: 0;
     height: 0;
 }
+
+/* Tim rỗng trước đây làm bằng color:transparent + -webkit-text-stroke.
+   Glyph FontAwesome nằm trong ::before nên thừa hưởng màu trong suốt, còn
+   nét viền chỉ áp lên thẻ <i> -> icon mất hẳn. Bỏ mẹo đó: phân biệt hai
+   trạng thái bằng NỀN NÚT (yêu cầu ban đầu), icon luôn hiện rõ. */
+body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list:not(.active) .btn-list,
+body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list:not(.active) .btn-list i,
+body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list:not(.active) .btn-list i::before {
+    color: var(--alpha-primary) !important;
+    -webkit-text-stroke: 0 !important;
+    opacity: 1 !important;
+}
+
+body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list.active .btn-list,
+body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list.active .btn-list i,
+body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list.active .btn-list i::before {
+    color: #fff !important;
+    -webkit-text-stroke: 0 !important;
+    opacity: 1 !important;
+}
+
+body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list .btn-list i {
+    font-size: 18px;
+    line-height: 1;
+}
