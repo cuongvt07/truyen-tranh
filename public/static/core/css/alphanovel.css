@@ -13345,3 +13345,35 @@ body.theme-alphanovel .alpha-suggestions .alpha-suggestion-card,
 body.theme-alphanovel .alpha-reviews-preview .alpha-review-card {
     background: transparent !important;
 }
+
+/* Tiêu đề Reviews nằm lồng trong .alpha-reviews-preview__header nên
+   selector con-trực-tiếp không bắt được -> chữ nhỏ hơn và lề lệch so với
+   "You will also like". Bắt ở mọi độ sâu, và gỡ lề riêng của header. */
+body.theme-alphanovel .alpha-suggestions .section-title,
+body.theme-alphanovel .alpha-reviews-preview .section-title {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: var(--alpha-font-title) !important;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    line-height: 32px !important;
+}
+
+body.theme-alphanovel .alpha-reviews-preview__header {
+    margin: 0 0 24px !important;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+body.theme-alphanovel .alpha-suggestions > .section-title {
+    margin: 0 0 24px !important;
+}
+
+/* Thân review cũng không thụt thêm — lề ngang đã ở khối cha. */
+body.theme-alphanovel .alpha-reviews-preview > *:not(.alpha-reviews-preview__header) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
