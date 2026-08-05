@@ -12696,13 +12696,13 @@ body.theme-alphanovel .alpha-book-detail-card__actions .alpha-search-bookmark-fo
    nội dung 16px.
    ============================================================ */
 body.theme-alphanovel .alpha-review-card__user strong {
-    font-size: 28px !important;
+    font-size: 18px !important;
     line-height: 36px !important;
     font-weight: 600 !important;
 }
 
 body.theme-alphanovel .alpha-review-card__user span {
-    font-size: 22px !important;
+    font-size: 14px !important;
     line-height: 30px !important;
     font-weight: 400 !important;
 }
@@ -12817,4 +12817,26 @@ body.theme-alphanovel .alpha-search-tags__scope {
     color: var(--alpha-muted);
     font-size: 14px;
     font-weight: 400;
+}
+
+/* Nút "more" luôn nằm cuối thẻ review, kể cả khi nội dung các thẻ dài ngắn
+   khác nhau -> chân thẻ thẳng hàng nhau. */
+body.theme-alphanovel .alpha-review-card {
+    display: flex;
+    flex-direction: column;
+}
+
+body.theme-alphanovel .alpha-review-card__content {
+    flex: 1 1 auto;
+}
+
+body.theme-alphanovel .alpha-review-card__footer {
+    margin-top: auto;
+    padding-top: 8px;
+}
+
+body.theme-alphanovel .alpha-review-card__footer a {
+    color: var(--alpha-primary);
+    font-size: 16px;
+    text-decoration: none;
 }

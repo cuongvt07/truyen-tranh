@@ -364,3 +364,27 @@ if (!function_exists('ads_for')) {
         }
     }
 }
+
+if (!function_exists('valid_avatar_url')) {
+    /**
+     * Dữ liệu seed để lại avatar là câu chữ lorem chứ không phải đường dẫn,
+     * nên `?:` không bắt được. Chỉ nhận giá trị trông như URL/đường dẫn ảnh,
+     * còn lại trả ảnh mặc định.
+     */
+    function valid_avatar_url(?string $avatar): string
+    {
+        $fallback = asset('static/core/images/alphanovel/review-avatar_1.png');
+        $avatar = trim((string) $avatar);
+
+        if ($avatar === '' || preg_match('/\s/', $avatar)) {
+            return $fallback;
+        }
+
+        $looksLikePath = str_starts_with($avatar, '/')
+            || str_starts_with($avatar, 'http://')
+            || str_starts_with($avatar, 'https://')
+            || str_starts_with($avatar, 'storage/');
+
+        return $looksLikePath ? $avatar : $fallback;
+    }
+}

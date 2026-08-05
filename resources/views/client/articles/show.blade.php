@@ -373,7 +373,7 @@
                                 <header class="alpha-review-card__header">
                                     <div class="alpha-review-card__user">
                                         <div class="comment-header__ava image image-cover lazy-load-bg">
-                                            <img class="lazy-image" loading="eager" src="{{ optional($comment->user)->avatar ?: '/static/core/images/alphanovel/review-avatar_1.png' }}" alt="{{ optional($comment->user)->name ?? optional($comment->user)->username }}">
+                                            <img class="lazy-image" loading="eager" src="{{ valid_avatar_url(optional($comment->user)->avatar) }}" alt="{{ optional($comment->user)->name ?? optional($comment->user)->username }}">
                                         </div>
                                         <div>
                                             <strong>{{ optional($comment->user)->name ?? optional($comment->user)->username ?? __('messages.comments.anonymous') }}</strong>
