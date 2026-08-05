@@ -13208,3 +13208,46 @@ body.theme-alphanovel.alpha-dark .alpha-inline-chapter__content,
 body.theme-alphanovel.alpha-dark .alpha-inline-chapter__content p {
     color: #fff !important;
 }
+
+/* ============================================================
+   Quy tắc tương phản: nền TÍM thì chữ và icon phải TRẮNG.
+   Áp cho mọi thành phần đang tô nền primary, ở cả hai chế độ.
+   ============================================================ */
+body.theme-alphanovel .btn-primary,
+body.theme-alphanovel button.btn-primary,
+body.theme-alphanovel .register-btn,
+body.theme-alphanovel .alpha-btn--primary,
+body.theme-alphanovel .alpha-button--primary,
+body.theme-alphanovel .alpha-account-action--primary,
+body.theme-alphanovel .alpha-gift-button--primary,
+body.theme-alphanovel .alpha-next-chapter--primary,
+body.theme-alphanovel .alpha-search-genre.is-active,
+body.theme-alphanovel .alpha-suggestion-card__badge,
+body.theme-alphanovel .alpha-search-card__cover strong,
+body.theme-alphanovel .alpha-site-footer__install,
+body.theme-alphanovel .read-btn,
+body.theme-alphanovel-chapter .pagination .btn-primary,
+body.theme-alphanovel-chapter .chapter-control .btn-primary {
+    color: #fff !important;
+}
+
+body.theme-alphanovel .btn-primary i,
+body.theme-alphanovel button.btn-primary i,
+body.theme-alphanovel .register-btn i,
+body.theme-alphanovel .alpha-btn--primary i,
+body.theme-alphanovel .alpha-button--primary i,
+body.theme-alphanovel .alpha-next-chapter--primary i,
+body.theme-alphanovel .alpha-search-genre.is-active i,
+body.theme-alphanovel .read-btn i,
+body.theme-alphanovel-chapter .pagination .btn-primary i {
+    color: #fff !important;
+}
+
+body.theme-alphanovel .btn-primary svg,
+body.theme-alphanovel .alpha-btn--primary svg,
+body.theme-alphanovel .alpha-button--primary svg,
+body.theme-alphanovel .alpha-search-genre.is-active svg {
+    fill: #fff;
+    stroke: #fff;
+    color: #fff;
+}
