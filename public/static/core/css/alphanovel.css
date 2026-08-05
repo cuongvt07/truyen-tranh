@@ -12480,3 +12480,38 @@ body.theme-alphanovel-chapter.alpha-dark #all-chapters a {
 body.theme-alphanovel-chapter.alpha-dark #all-chapters a:hover {
     color: var(--alpha-primary, #4535ff) !important;
 }
+
+/* ============================================================
+   Badge trên ảnh bìa (Recommended / Updated) xếp DỌC.
+   Trước đây mỗi badge tự định vị tuyệt đối bằng top/right cứng
+   (em top:6, strong top:28 rồi bị ghim sang phải), nên chỉ cần
+   thiếu một badge hoặc chữ xuống dòng là lệch chỗ.
+   Cho khung làm flex column, ảnh nằm dưới dạng absolute phủ kín,
+   badge trở thành flex item nên tự xếp và tự giãn theo nội dung.
+   ============================================================ */
+body.theme-alphanovel .alpha-search-card__cover {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 6px;
+}
+
+body.theme-alphanovel .alpha-search-card__cover img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-alphanovel .alpha-search-card__cover em,
+body.theme-alphanovel .alpha-search-card__cover strong,
+body.theme-alphanovel .alpha-search-card__cover:has(em) strong {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    left: auto !important;
+    max-width: 100%;
+    white-space: nowrap;
+}
