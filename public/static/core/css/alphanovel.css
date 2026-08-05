@@ -13179,3 +13179,32 @@ body.theme-alphanovel.alpha-dark .alpha-share-button svg {
     stroke: var(--alpha-primary) !important;
     color: var(--alpha-primary) !important;
 }
+
+/* Khung ảnh bìa trang chi tiết: cố định 226x350, bo 8px. */
+body.theme-alphanovel .alpha-book-detail-cover {
+    width: 226px;
+    height: 350px;
+    aspect-ratio: auto;
+    border-radius: 8px;
+    overflow: hidden;
+    flex: 0 0 226px;
+}
+
+body.theme-alphanovel .alpha-book-detail-cover img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+/* Chế độ tối: chữ nội dung truyện màu trắng (trước là xám tím a9abc0). */
+body.theme-alphanovel-chapter.alpha-dark #chapter-c,
+body.theme-alphanovel-chapter.alpha-dark #chapter-c p,
+body.theme-alphanovel-chapter.alpha-dark #chapter-c span,
+body.theme-alphanovel-chapter.alpha-dark #chapter-c div,
+body.theme-alphanovel-chapter.alpha-dark .chapter-text,
+body.theme-alphanovel-chapter.alpha-dark .chapter-text p,
+body.theme-alphanovel.alpha-dark .alpha-inline-chapter__content,
+body.theme-alphanovel.alpha-dark .alpha-inline-chapter__content p {
+    color: #fff !important;
+}
