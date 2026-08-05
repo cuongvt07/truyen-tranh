@@ -12571,3 +12571,20 @@ body.theme-alphanovel .alpha-search-results.is-loading {
     transition: opacity .15s ease;
     pointer-events: none;
 }
+
+/* Mục menu đang đứng: đổi sang màu primary, giống
+   .LayoutHeader_nav__link--active của alphanovel.io. */
+body.theme-alphanovel .alpha-header-nav .header-btn.is-active,
+body.theme-alphanovel .alpha-header-nav a.is-active,
+body.theme-alphanovel .header-nav .header-btn.is-active,
+body.theme-alphanovel .header-nav a.is-active,
+body.theme-alphanovel-chapter .alpha-header-nav .header-btn.is-active,
+body.theme-alphanovel-chapter .alpha-header-nav a.is-active {
+    color: var(--alpha-primary) !important;
+}
+
+body.theme-alphanovel .alpha-header-nav .header-btn.is-active .alpha-nav-label,
+body.theme-alphanovel .header-nav .header-btn.is-active .alpha-nav-label,
+body.theme-alphanovel-chapter .alpha-header-nav .header-btn.is-active .alpha-nav-label {
+    color: inherit !important;
+}

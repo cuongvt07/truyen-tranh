@@ -31,15 +31,21 @@
                     @endforelse
                 </ul>
             </nav>
+            @php
+                // Mục đang đứng -> tô màu primary. Mỗi mục khai báo các route
+                // thuộc về nó, kể cả route con (vd Library gồm cả bookmarks,
+                // collections...) để không bị mất highlight khi vào trang con.
+                $navActive = fn (...$routes) => request()->routeIs(...$routes) ? ' is-active' : '';
+            @endphp
             <nav class="alpha-header-nav">
                 <ul>
-                    <li><a href="{{ route_path('home.index', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Discover</span></a></li>
-                    <li class="header-nav__list"><div class="header-btn header-browse tippy-browse"><span class="alpha-nav-label">Novels</span> <i class="fa fa-caret-down"></i></div></li>
-                    <li><a href="{{ auth()->check() ? route_path('users.reading_history', Auth::id()) : route_path('login', []) }}" class="header-btn no-link" @guest data-auth-open="login" @endguest><span class="alpha-nav-label">Library</span></a></li>
-                    <li><a href="{{ route_path('pages.gifts', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Gifts</span></a></li>
-                    <li><a href="{{ route_path('my-articles.create', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Writer</span></a></li>
-                    <li><a href="{{ route_path('pages.blog', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Blog</span></a></li>
-                    <li><a href="{{ route_path('home.search', []) }}" class="header-btn no-link"><span class="alpha-nav-label">Search</span></a></li>
+                    <li><a href="{{ route_path('home.index', []) }}" class="header-btn no-link{{ $navActive('home.index') }}"><span class="alpha-nav-label">Discover</span></a></li>
+                    <li class="header-nav__list"><div class="header-btn header-browse tippy-browse{{ $navActive('catalog.*', 'genres.*') }}"><span class="alpha-nav-label">Novels</span> <i class="fa fa-caret-down"></i></div></li>
+                    <li><a href="{{ auth()->check() ? route_path('users.reading_history', Auth::id()) : route_path('login', []) }}" class="header-btn no-link{{ $navActive('users.reading_history', 'users.show_bookmarks', 'users.collections', 'users.favourites') }}" @guest data-auth-open="login" @endguest><span class="alpha-nav-label">Library</span></a></li>
+                    <li><a href="{{ route_path('pages.gifts', []) }}" class="header-btn no-link{{ $navActive('pages.gifts') }}"><span class="alpha-nav-label">Gifts</span></a></li>
+                    <li><a href="{{ route_path('my-articles.create', []) }}" class="header-btn no-link{{ $navActive('my-articles.*') }}"><span class="alpha-nav-label">Writer</span></a></li>
+                    <li><a href="{{ route_path('pages.blog', []) }}" class="header-btn no-link{{ $navActive('pages.blog') }}"><span class="alpha-nav-label">Blog</span></a></li>
+                    <li><a href="{{ route_path('home.search', []) }}" class="header-btn no-link{{ $navActive('home.search') }}"><span class="alpha-nav-label">Search</span></a></li>
                 </ul>
             </nav>
             <div class="header-user">
