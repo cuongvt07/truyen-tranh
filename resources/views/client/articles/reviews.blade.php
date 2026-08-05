@@ -31,7 +31,7 @@
             @forelse($comments as $comment)
                 @php
                     $user = $comment->user;
-                    $avatar = optional($user)->avatar ?: '/static/core/images/alphanovel/review-avatar_1.png';
+                    $avatar = asset('static/core/images/alphanovel/default-avatar.jpg');
                     $name = optional($user)->name ?? optional($user)->username ?? __('messages.comments.anonymous');
                     $statusLabel = $article->is_completed ? 'Review after the novel completion' : 'Review after half of the novel';
                 @endphp
