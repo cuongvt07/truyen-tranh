@@ -219,9 +219,14 @@ class HomeController extends Controller
             ->take(18)
             ->get();
 
-        if ($topTags->isEmpty()) {
-            $topTags = $filterGenres->take(18);
-        }
+        // Tag trùng tên với danh mục thì bỏ, vì cả hai hiện chung một hàng chip.
+        $genreNames = $filterGenres->pluck('name')
+            ->map(fn ($n) => mb_strtolower(trim($n)))
+            ->all();
+
+        $topTags = $topTags
+            ->reject(fn ($tag) => in_array(mb_strtolower(trim($tag->name)), $genreNames, true))
+            ->values();
 
         $articles = Article::query()
             ->with([
