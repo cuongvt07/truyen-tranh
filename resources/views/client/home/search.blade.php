@@ -38,10 +38,11 @@
                         class="alpha-search-genre{{ $activeGenre && $activeGenre->id === $genre->id ? ' is-active' : '' }}"
                         data-genre="{{ $genre->id }}">{{ $genre->name }}</button>
             @endforeach
-        </div>
 
-        <div id="alpha-search-tags">
-            @include('client.home.partials.search-tags')
+            {{-- Top Tags nằm chung hàng, không còn khối .alpha-search-tags riêng. --}}
+            <span id="alpha-search-tags" class="alpha-search-tags-inline">
+                @include('client.home.partials.search-tags')
+            </span>
         </div>
     </section>
 

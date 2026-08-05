@@ -1,8 +1,5 @@
-<h1>Top Tags @if($activeGenre)<small class="alpha-search-tags__scope">· {{ $activeGenre->name }}</small>@endif</h1>
-<div class="alpha-search-tags">
-    @forelse($topTags as $tag)
-        <a href="{{ route_path('home.search', array_filter(['keyword' => $tag->name, 'genre' => $activeGenre?->id])) }}">{{ $tag->name }}</a>
-    @empty
-        <span>No tags yet.</span>
-    @endforelse
-</div>
+{{-- Tag chạy chung hàng với chip thể loại; đổi cate thì khối này được thay lại. --}}
+@foreach($topTags as $tag)
+    <a class="alpha-search-genre alpha-search-genre--tag"
+       href="{{ route_path('home.search', array_filter(['keyword' => $tag->name, 'genre' => $activeGenre?->id])) }}">{{ $tag->name }}</a>
+@endforeach

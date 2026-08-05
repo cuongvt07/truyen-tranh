@@ -12873,3 +12873,25 @@ body.theme-alphanovel .bookmarks a,
 body.theme-alphanovel .reading-history a {
     border-bottom: 0 !important;
 }
+
+/* Top Tags gộp vào hàng chip thể loại: bỏ khối .alpha-search-tags riêng,
+   wrapper chỉ là điểm neo cho AJAX nên cho nó "tan" vào flex của hàng. */
+body.theme-alphanovel .alpha-search-tags-inline {
+    display: contents;
+}
+
+body.theme-alphanovel .alpha-search-tags {
+    display: none !important;
+}
+
+/* Chip tag phân biệt nhẹ với chip thể loại (nền mềm, không viền đậm). */
+body.theme-alphanovel .alpha-search-genre--tag {
+    border-color: transparent;
+    background: var(--alpha-soft, #f1f1ff);
+    color: var(--alpha-primary);
+    text-decoration: none;
+}
+
+body.theme-alphanovel .alpha-search-genre--tag:hover {
+    border-color: var(--alpha-primary);
+}
