@@ -12400,3 +12400,83 @@ body.theme-alphanovel .alpha-book-detail-card__actions .btn-add-to-list .btn-lis
     opacity: 1;
     transform: translate(-50%, 0);
 }
+
+/* ============================================================
+   Cột đọc theo .NovelReader_content của alphanovel.io:
+   rộng tối đa 1200px, 16px / 28px, weight 400.
+   ============================================================ */
+body.theme-alphanovel-chapter .alpha-reader-shell #chapter-c,
+body.theme-alphanovel-chapter .alpha-reader-shell .chapter-text {
+    max-width: 1200px;
+    margin-inline: auto;
+}
+
+body.theme-alphanovel-chapter #chapter-c,
+body.theme-alphanovel-chapter #chapter-c p,
+body.theme-alphanovel-chapter .chapter-text,
+body.theme-alphanovel-chapter .chapter-text p {
+    font-size: 16px !important;
+    line-height: 28px !important;
+    font-weight: 400 !important;
+}
+
+/* ============================================================
+   Chế độ tối: thanh chức năng và bảng cài đặt của trang đọc
+   trước đây không được chỉnh nên chữ chìm vào nền.
+   Dùng token tối của theme để ăn màu với phần còn lại của site.
+   ============================================================ */
+body.theme-alphanovel-chapter.alpha-dark .chapter-control {
+    background: var(--alpha-surface, #202020) !important;
+    border: 1px solid var(--alpha-line, #363636) !important;
+    box-shadow: 0 4px 22px rgba(0, 0, 0, .55) !important;
+}
+
+body.theme-alphanovel-chapter.alpha-dark .chapter-control .btn,
+body.theme-alphanovel-chapter.alpha-dark .chapter-control .header-btn {
+    background: var(--alpha-surface-soft, #2b2b2c) !important;
+    border-color: var(--alpha-line, #363636) !important;
+    color: var(--alpha-ink, #f8f8ff) !important;
+}
+
+body.theme-alphanovel-chapter.alpha-dark .chapter-control .btn i,
+body.theme-alphanovel-chapter.alpha-dark .chapter-control .header-btn i {
+    color: inherit !important;
+}
+
+body.theme-alphanovel-chapter.alpha-dark .chapter-control .btn.disabled,
+body.theme-alphanovel-chapter.alpha-dark .chapter-control .header-btn.disabled {
+    color: var(--alpha-muted, #a5a7c4) !important;
+    opacity: .55;
+}
+
+/* Bảng cài đặt đọc + danh sách chương */
+body.theme-alphanovel-chapter.alpha-dark #chapter-settings .fullscreen-window,
+body.theme-alphanovel-chapter.alpha-dark #all-chapters .fullscreen-window,
+body.theme-alphanovel-chapter.alpha-dark .fullscreen-window {
+    background: var(--alpha-surface, #202020) !important;
+    border-color: var(--alpha-line, #363636) !important;
+    color: var(--alpha-ink, #f8f8ff) !important;
+}
+
+/* Nhãn "Settings / Themes / Font Size…" bị chìm vì thừa hưởng màu chữ sáng. */
+body.theme-alphanovel-chapter.alpha-dark #chapter-settings,
+body.theme-alphanovel-chapter.alpha-dark #chapter-settings *:not(i):not(.fa),
+body.theme-alphanovel-chapter.alpha-dark #all-chapters,
+body.theme-alphanovel-chapter.alpha-dark #all-chapters *:not(i):not(.fa) {
+    color: var(--alpha-ink, #f8f8ff);
+}
+
+body.theme-alphanovel-chapter.alpha-dark #chapter-settings .btn,
+body.theme-alphanovel-chapter.alpha-dark #all-chapters .btn {
+    background: var(--alpha-surface-soft, #2b2b2c) !important;
+    border-color: var(--alpha-line, #363636) !important;
+    color: var(--alpha-ink, #f8f8ff) !important;
+}
+
+body.theme-alphanovel-chapter.alpha-dark #all-chapters a {
+    color: var(--alpha-text, #d7d8ec) !important;
+}
+
+body.theme-alphanovel-chapter.alpha-dark #all-chapters a:hover {
+    color: var(--alpha-primary, #4535ff) !important;
+}
