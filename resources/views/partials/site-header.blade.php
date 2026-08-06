@@ -39,13 +39,19 @@
             @endphp
             <nav class="alpha-header-nav">
                 <ul>
-                    <li><a href="{{ route_path('home.index', []) }}" class="header-btn no-link{{ $navActive('home.index') }}"><span class="alpha-nav-label">Discover</span></a></li>
-                    <li class="header-nav__list"><div class="header-btn header-browse tippy-browse{{ $navActive('catalog.*', 'genres.*') }}"><span class="alpha-nav-label">Novels</span> <i class="fa fa-caret-down"></i></div></li>
-                    <li><a href="{{ auth()->check() ? route_path('users.reading_history', Auth::id()) : route_path('login', []) }}" class="header-btn no-link{{ $navActive('users.reading_history', 'users.show_bookmarks', 'users.collections', 'users.favourites') }}" @guest data-auth-open="login" @endguest><span class="alpha-nav-label">Library</span></a></li>
-                    <li><a href="{{ route_path('pages.gifts', []) }}" class="header-btn no-link{{ $navActive('pages.gifts') }}"><span class="alpha-nav-label">Gifts</span></a></li>
-                    <li><a href="{{ route_path('my-articles.create', []) }}" class="header-btn no-link{{ $navActive('my-articles.*') }}"><span class="alpha-nav-label">Writer</span></a></li>
-                    <li><a href="{{ route_path('pages.blog', []) }}" class="header-btn no-link{{ $navActive('pages.blog') }}"><span class="alpha-nav-label">Blog</span></a></li>
-                    <li><a href="{{ route_path('home.search', []) }}" class="header-btn no-link{{ $navActive('home.search') }}"><span class="alpha-nav-label">Search</span></a></li>
+                    {{-- Lấy từ Admin → Menu điều hướng. Chưa cấu hình menu nào thì
+                         rơi về bộ mặc định bên dưới để header không bị trống. --}}
+                    @forelse(menu_items('header') as $mi)
+                        @include('partials.menu-alpha-item', ['mi' => $mi])
+                    @empty
+                        <li><a href="{{ route_path('home.index', []) }}" class="header-btn no-link{{ $navActive('home.index') }}"><span class="alpha-nav-label">Discover</span></a></li>
+                        <li class="header-nav__list"><div class="header-btn header-browse tippy-browse{{ $navActive('catalog.*', 'genres.*') }}"><span class="alpha-nav-label">Novels</span> <i class="fa fa-caret-down"></i></div></li>
+                        <li><a href="{{ auth()->check() ? route_path('users.reading_history', Auth::id()) : route_path('login', []) }}" class="header-btn no-link{{ $navActive('users.reading_history', 'users.show_bookmarks', 'users.collections', 'users.favourites') }}" @guest data-auth-open="login" @endguest><span class="alpha-nav-label">Library</span></a></li>
+                        <li><a href="{{ route_path('pages.gifts', []) }}" class="header-btn no-link{{ $navActive('pages.gifts') }}"><span class="alpha-nav-label">Gifts</span></a></li>
+                        <li><a href="{{ route_path('my-articles.create', []) }}" class="header-btn no-link{{ $navActive('my-articles.*') }}"><span class="alpha-nav-label">Writer</span></a></li>
+                        <li><a href="{{ route_path('pages.blog', []) }}" class="header-btn no-link{{ $navActive('pages.blog') }}"><span class="alpha-nav-label">Blog</span></a></li>
+                        <li><a href="{{ route_path('home.search', []) }}" class="header-btn no-link{{ $navActive('home.search') }}"><span class="alpha-nav-label">Search</span></a></li>
+                    @endforelse
                 </ul>
             </nav>
             <div class="header-user">
