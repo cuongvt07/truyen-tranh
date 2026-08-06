@@ -43,6 +43,13 @@ return [
             'currency'  => 'EUR',
             'locale'    => 'fr_FR',
         ],
+        'de' => [
+            'name'      => 'Deutsch',
+            'flag'      => '🇩🇪',
+            'flag_code' => 'de',
+            'currency'  => 'EUR',
+            'locale'    => 'de_DE',
+        ],
         // 'th' => ['name' => 'ไทย', 'flag' => '🇹🇭', 'currency' => 'THB', 'locale' => 'th_TH'],
         // 'id' => ['name' => 'Indonesia', 'flag' => '🇮🇩', 'currency' => 'IDR', 'locale' => 'id_ID'],
     ],
