@@ -669,4 +669,18 @@ return [
         'back_home' => 'Startseite',
         'paypal_load_error' => 'Die PayPal-Zahlungsschaltflächen konnten nicht geladen werden. Bitte laden Sie die Seite neu oder prüfen Sie die PayPal-Konfiguration.',
     ],
+
+    'access' => [
+        'access_required' => 'Zugang erforderlich',
+        'forbidden' => 'Kein Zugriff',
+        'need_purchase' => 'Sie müssen ein Paket kaufen, bevor Sie diese Funktion nutzen können.',
+        'continue_reading' => 'Weiterlesen',
+        'access_conditions' => 'Diese Funktion steht zur Verfügung, sobald Ihr Konto die erforderlichen Zugangsbedingungen erfüllt.',
+        'view_coin_packs' => 'Münzpakete ansehen',
+        'browse_novels' => 'Romane durchstöbern',
+    ],
+
+    'community' => [
+        'purchase_required' => 'Sie müssen ein Paket kaufen, bevor Sie diese Funktion nutzen können.',
+    ],
 ];

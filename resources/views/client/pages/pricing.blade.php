@@ -32,8 +32,8 @@
                 <h1>Unlock more stories on {{ config('app.name', 'Romane auf Deutsch') }}</h1>
                 <p>Use coins for locked chapters, reader actions, and premium access while keeping every novel in your online library.</p>
                 <div class="alpha-gifts-hero__actions">
-                    <a href="#coin-packs" class="alpha-button alpha-gifts-hero__button alpha-gifts-hero__button--light"><i class="fa fa-coins"></i> View coin packs</a>
-                    <a href="{{ route_path('catalog.index', []) }}" class="alpha-button alpha-gifts-hero__button"><i class="fa fa-book-open"></i> Browse novels</a>
+                    <a href="#coin-packs" class="alpha-button alpha-gifts-hero__button alpha-gifts-hero__button--light"><i class="fa fa-coins"></i> {{ __('messages.access.view_coin_packs') }}</a>
+                    <a href="{{ route_path('catalog.index', []) }}" class="alpha-button alpha-gifts-hero__button"><i class="fa fa-book-open"></i> {{ __('messages.access.browse_novels') }}</a>
                 </div>
             </div>
 
@@ -99,7 +99,7 @@
             @else
                 <a href="{{ route_path('login', []) }}" class="alpha-gift-button alpha-gift-button--primary">{{ __('messages.auth.login') }}</a>
             @endauth
-            <a href="{{ route_path('catalog.index', []) }}" class="alpha-gift-button">Browse novels</a>
+            <a href="{{ route_path('catalog.index', []) }}" class="alpha-gift-button">{{ __('messages.access.browse_novels') }}</a>
         </div>
 
         <section class="alpha-store-featured">

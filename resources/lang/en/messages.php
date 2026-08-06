@@ -918,4 +918,14 @@ return array (
         'follow_us' => 'Follow us',
         'blog' => 'Blog',
     ],
+
+    'access' => [
+        'access_required' => 'Access required',
+        'forbidden' => 'Forbidden',
+        'need_purchase' => 'You need to purchase a package before using this feature.',
+        'continue_reading' => 'Continue reading',
+        'access_conditions' => 'This feature is available after your account meets the required access conditions.',
+        'view_coin_packs' => 'View coin packs',
+        'browse_novels' => 'Browse novels',
+    ],
 );
