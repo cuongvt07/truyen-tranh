@@ -9,8 +9,10 @@
     $icon  = $mi->icon;
     $kids  = $mi->activeChildren ?? collect();
 
-    // "Library" cần link động theo user; khách thì mở drawer đăng nhập.
-    $isLibrary = strtolower(trim((string) $label)) === 'library';
+    // Thư viện: nhận diện bằng TOKEN '#library' (giống #browse / #search),
+    // không dựa vào nhãn — nhãn đổi theo ngôn ngữ nên so chuỗi 'Library'
+    // sẽ trượt ngay khi admin đặt tên tiếng Đức.
+    $isLibrary = $href === '#library' || strtolower(trim((string) $label)) === 'library';
     if ($isLibrary) {
         $href = auth()->check()
             ? route_path('users.reading_history', Auth::id())
