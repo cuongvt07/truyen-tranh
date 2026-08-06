@@ -463,4 +463,109 @@ return [
         'err_delete' => 'Der Kommentar konnte nicht gelöscht werden.',
         'err_report' => 'Die Meldung konnte nicht gesendet werden.',
     ],
+
+    'flash' => [
+        'profile_updated' => 'Kontodaten erfolgreich aktualisiert!',
+        'password_changed' => 'Passwort erfolgreich geändert!',
+        'settings_saved' => 'Erfolgreich gespeichert!',
+        'seo_saved' => 'SEO-Einstellungen gespeichert.',
+        'payment_saved' => 'Zahlungseinstellungen gespeichert.',
+        'collection' => [
+            'created' => 'Sammlung erfolgreich erstellt!',
+            'updated' => 'Sammlung aktualisiert.',
+            'deleted' => 'Sammlung gelöscht.',
+        ],
+        'team' => [
+            'created' => 'Team erfolgreich erstellt!',
+            'updated' => 'Team aktualisiert.',
+            'deleted' => 'Team gelöscht.',
+        ],
+        'character' => [
+            'created' => 'Figur erfolgreich hinzugefügt!',
+            'updated' => 'Figur aktualisiert.',
+            'deleted' => 'Figur gelöscht.',
+        ],
+        'story' => [
+            'submitted' => 'Geschichte eingereicht! Sie wird vor der Veröffentlichung von einem Administrator geprüft.',
+            'updated' => 'Geschichte erfolgreich aktualisiert!',
+            'deleted' => 'Geschichte gelöscht.',
+            'chapter_added' => 'Kapitel erfolgreich hinzugefügt!',
+        ],
+        'author' => [
+            'created' => 'Autor erfolgreich erstellt!',
+            'updated' => 'Autor erfolgreich aktualisiert!',
+            'deleted' => 'Autor erfolgreich gelöscht!',
+        ],
+        'article' => [
+            'created' => 'Geschichte erfolgreich erstellt!',
+            'updated' => 'Geschichte erfolgreich aktualisiert!',
+            'deleted' => 'Geschichte erfolgreich gelöscht!',
+        ],
+        'chapter' => [
+            'created' => 'Kapitel erfolgreich hinzugefügt!',
+            'updated' => 'Kapitel erfolgreich aktualisiert!',
+            'deleted' => 'Kapitel erfolgreich gelöscht!',
+        ],
+        'ad' => [
+            'created' => 'Anzeige hinzugefügt.',
+            'updated' => 'Anzeige aktualisiert.',
+            'deleted' => 'Anzeige gelöscht.',
+            'status_changed' => 'Anzeigenstatus geändert.',
+        ],
+        'genre' => [
+            'created' => 'Genre erfolgreich erstellt!',
+            'updated' => 'Genre erfolgreich aktualisiert!',
+            'deleted' => 'Genre erfolgreich gelöscht!',
+        ],
+        'credit_package' => [
+            'created' => 'Paket erfolgreich hinzugefügt!',
+            'updated' => 'Paket erfolgreich aktualisiert!',
+            'deleted' => 'Paket gelöscht!',
+        ],
+        'static_page' => [
+            'created' => 'Seite erstellt.',
+            'updated' => 'Seite aktualisiert.',
+            'deleted' => 'Seite gelöscht.',
+        ],
+        'tag' => [
+            'created' => 'Schlagwort hinzugefügt.',
+            'updated' => 'Schlagwort aktualisiert.',
+            'deleted' => 'Schlagwort gelöscht.',
+            'merged' => ':count Schlagwort(e) in «:name» zusammengeführt.',
+        ],
+        'comment' => [
+            'deleted' => 'Kommentar gelöscht.',
+            'bulk_deleted' => ':count Kommentar(e) gelöscht.',
+            'updated' => 'Kommentar aktualisiert.',
+            'replied' => 'Antwort veröffentlicht.',
+            'hidden' => 'Kommentar ausgeblendet.',
+            'shown' => 'Kommentar ist wieder sichtbar.',
+            'report_resolved' => 'Kommentarmeldung als erledigt markiert.',
+        ],
+        'chapter_report' => [
+            'resolved' => 'Meldung als erledigt markiert.',
+            'deleted' => 'Meldung gelöscht.',
+        ],
+        'forum' => [
+            'post_approved' => 'Beitrag freigegeben.',
+            'post_rejected' => 'Beitrag abgelehnt.',
+            'post_deleted' => 'Beitrag gelöscht.',
+        ],
+        'vip' => [
+            'granted' => 'VIP erfolgreich vergeben!',
+            'revoked' => 'VIP entzogen!',
+            'updated' => 'VIP erfolgreich aktualisiert!',
+        ],
+        'user' => [
+            'created' => 'Benutzer erfolgreich erstellt!',
+            'updated' => 'Benutzer erfolgreich aktualisiert!',
+            'role_updated' => 'Rolle erfolgreich aktualisiert!',
+            'banned' => 'Benutzer erfolgreich gesperrt!',
+            'ban_updated' => 'Sperre erfolgreich aktualisiert!',
+            'unbanned' => 'Sperre erfolgreich aufgehoben!',
+        ],
+        'transaction' => [
+            'status_updated' => 'Status erfolgreich aktualisiert!',
+        ],
+    ],
 ];
