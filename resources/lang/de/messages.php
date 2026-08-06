@@ -1,0 +1,137 @@
+<?php
+
+/*
+ * Bản dịch tiếng Đức. Khoá nào CHƯA có ở đây sẽ tự động rơi về
+ * fallback_locale (en), nên file có thể bổ sung dần mà không vỡ giao diện.
+ */
+
+return [
+
+    'nav' => [
+        'home'              => 'Startseite',
+        'browse'            => 'Entdecken',
+        'search'            => 'Suche',
+        'new'               => 'Neueste',
+        'completed'         => 'Abgeschlossen',
+        'all'               => 'Alle',
+        'forum'             => 'Forum',
+        'faq'               => 'FAQ',
+        'category'          => 'Kategorie',
+        'account'           => 'Konto',
+        'topup'             => 'Aufladen',
+        'admin_panel'       => 'Administration',
+        'add_article'       => 'Geschichte hinzufügen',
+        'add_author'        => 'Autor hinzufügen',
+        'add_genre'         => 'Genre hinzufügen',
+        'add_link'          => 'Link hinzufügen',
+        'account_info'      => 'Kontodaten',
+        'posted_articles'   => 'Veröffentlichte Geschichten',
+        'coin_balance'      => 'Guthaben:',
+        'vip_package'       => 'VIP-Paket:',
+        'expired'           => 'Abgelaufen',
+        'verify_email_cta'  => 'Hier klicken, um Ihre E-Mail zu bestätigen',
+        'keyword_search'    => 'Stichwortsuche',
+        'search_placeholder'=> 'Nach Titel suchen',
+    ],
+
+    'auth' => [
+        'google_not_configured' => 'Die Google-Anmeldung ist nicht eingerichtet. Bitte wenden Sie sich an den Administrator.',
+        'google_failed'    => 'Die Google-Anmeldung ist fehlgeschlagen. Bitte versuchen Sie es erneut.',
+        'login'            => 'Anmelden',
+        'register'         => 'Registrieren',
+        'logout'           => 'Abmelden',
+        'email_or_username'=> 'E-Mail oder Benutzername',
+        'password'         => 'Passwort',
+        'confirm_password' => 'Passwort bestätigen',
+        'forgot'           => 'Passwort vergessen?',
+        'remember'         => 'Angemeldet bleiben',
+        'no_account'       => 'Noch kein Konto?',
+        'have_account'     => 'Bereits ein Konto?',
+        'display_name'     => 'Anzeigename',
+        'username'         => 'Benutzername',
+        'email'            => 'E-Mail',
+        'agree_terms'      => 'Mit der Registrierung stimmen Sie den :terms und :rules zu.',
+    ],
+
+    'user' => [
+        'profile'       => 'Profil',
+        'my_stories'    => 'Meine Geschichten',
+        'notifications' => 'Benachrichtigungen',
+        'comments'      => 'Kommentare',
+        'favourites'    => 'Favoriten',
+        'bookmarks'     => 'Lesezeichen',
+        'collections'   => 'Sammlungen',
+        'teams'         => 'Teams',
+        'achievements'  => 'Erfolge',
+        'suggestions'   => 'Empfehlungen',
+        'banlist'       => 'Sperrliste',
+        'settings'      => 'Einstellungen',
+        'transactions'  => 'Guthaben & Transaktionen',
+        'topup'         => 'Aufladen / VIP',
+        'balance'       => 'Guthaben',
+    ],
+
+    'add' => [
+        'menu'       => 'Hinzufügen',
+        'book'       => 'Buch hinzufügen',
+        'character'  => 'Figur hinzufügen',
+        'team'       => 'Team hinzufügen',
+        'collection' => 'Sammlung hinzufügen',
+    ],
+
+    'common' => [
+        'save'      => 'Speichern',
+        'cancel'    => 'Abbrechen',
+        'edit'      => 'Bearbeiten',
+        'delete'    => 'Löschen',
+        'create'    => 'Erstellen',
+        'submit'    => 'Absenden',
+        'filter'    => 'Filtern',
+        'reset'     => 'Zurücksetzen',
+        'sort'      => 'Sortieren',
+        'status'    => 'Status',
+        'type'      => 'Typ',
+        'country'   => 'Land',
+        'genres'    => 'Genres',
+        'tags'      => 'Schlagwörter',
+        'author'    => 'Autor',
+        'chapters'  => 'Kapitel',
+        'read'      => 'Lesen',
+        'ongoing'   => 'Laufend',
+        'completed' => 'Abgeschlossen',
+        'views'     => 'Aufrufe',
+        'nothing'   => 'Hier gibt es noch nichts.',
+    ],
+
+    'home' => [
+        'popular'      => 'Beliebt',
+        'new_updated'  => 'Neu aktualisiert',
+        'new_releases' => 'Neuerscheinungen',
+        'recently'     => 'Kürzlich aktualisiert',
+        'reading'      => 'Aktuell gelesen',
+        'completed'    => 'Abgeschlossen',
+        'last_comments'=> 'Neueste Kommentare',
+        'translate_req'=> 'Übersetzungswünsche',
+        'forum'        => 'Forum',
+    ],
+
+    'footer' => [
+        'feedback'     => 'Feedback',
+        'terms'        => 'Nutzungsbedingungen',
+        'dmca'         => 'DMCA',
+        'rules'        => 'Regeln',
+        'faq'          => 'FAQ',
+        'description'  => 'Die Website :name bietet kostenlose Online-Romane mit vollständigen Geschichten, laufenden Updates und vielen Genres wie Liebesroman, Fantasy, Abenteuer, Mystery und mehr.',
+        'reading_site' => 'Website zum Lesen von Romanen',
+        'back_to_top'  => 'Nach oben',
+    ],
+
+    'layout' => [
+        'language'                 => 'Sprache',
+        'default_site_name'        => 'Romane online lesen',
+        'promo_tagline'            => 'Romane online lesen – die schnellsten Updates!',
+        'default_meta_description' => 'Romane online lesen.',
+        'default_keywords'         => 'Light Novel, Web-Roman, Romane lesen',
+    ],
+
+];
