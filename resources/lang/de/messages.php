@@ -134,4 +134,23 @@ return [
         'default_keywords'         => 'Light Novel, Web-Roman, Romane lesen',
     ],
 
+
+    'i18n' => [
+        'novels' => 'Romane',
+        'see_all' => 'Alle ansehen',
+        'reviews' => 'Rezensionen',
+        'also_like' => 'Das könnte Ihnen auch gefallen',
+        'top_tags' => 'Top-Schlagwörter',
+        'no_tags' => 'Noch keine Schlagwörter.',
+        'all' => 'Alle',
+        'recommended' => 'Empfohlen',
+        'updated' => 'Aktualisiert',
+        'completed' => 'Abgeschlossen',
+        'add_to_library' => 'Zur Bibliothek hinzufügen',
+        'remove_from_library' => 'Aus der Bibliothek entfernen',
+        'bookmark' => 'Merken',
+        'more' => 'mehr …',
+        'review_after_half' => 'Rezension nach der Hälfte des Romans',
+        'review_after_done' => 'Rezension nach Abschluss des Romans',
+    ],
 ];

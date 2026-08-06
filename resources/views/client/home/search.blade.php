@@ -32,7 +32,7 @@
 
         {{-- Hàng lọc thể loại: bấm cate nào thì lọc kết quả VÀ đổi Top Tags theo cate đó. --}}
         <div class="alpha-search-genres" id="alpha-search-genres">
-            <button type="button" class="alpha-search-genre{{ $activeGenre ? '' : ' is-active' }}" data-genre="">All</button>
+            <button type="button" class="alpha-search-genre{{ $activeGenre ? '' : ' is-active' }}" data-genre="">{{ __('messages.i18n.all') }}</button>
             @foreach($filterGenres as $genre)
                 <button type="button"
                         class="alpha-search-genre{{ $activeGenre && $activeGenre->id === $genre->id ? ' is-active' : '' }}"

@@ -15,7 +15,7 @@
 
 <main class="alpha-review-page alpha-review-single-page">
     <nav class="alpha-book-breadcrumb">
-        <a href="{{ route_path('catalog.index', []) }}">Novels</a>
+        <a href="{{ route_path('catalog.index', []) }}">{{ __('messages.i18n.novels') }}</a>
         @if($primaryGenre)
             <span>/</span>
             <a href="{{ route_path('genres.show', $primaryGenre) }}">{{ $primaryGenre->name }}</a>

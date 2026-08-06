@@ -58,7 +58,7 @@
 @section('content')
 <div class="container">
     <nav class="alpha-book-breadcrumb">
-        <a href="{{ route_path('catalog.index') }}">Novels</a>
+        <a href="{{ route_path('catalog.index') }}">{{ __('messages.i18n.novels') }}</a>
         @if($primaryGenre)
             <span>/</span>
             <a href="{{ route_path('genres.show', $primaryGenre) }}">{{ $primaryGenre->name }}</a>
@@ -88,7 +88,7 @@
                         <span><i class="fa fa-comment"></i> {{ number_format($comments->total()) }}</span>
                     </div>
                     <p class="alpha-book-description" data-summary>
-                        <span data-summary-preview>{{ $summaryPreview }}</span><span data-summary-full hidden>{{ $descriptionPlain }}</span>@if($summaryNeedsMore) <button type="button" class="alpha-book-summary-more" data-summary-more>more...</button>@endif
+                        <span data-summary-preview>{{ $summaryPreview }}</span><span data-summary-full hidden>{{ $descriptionPlain }}</span>@if($summaryNeedsMore) <button type="button" class="alpha-book-summary-more" data-summary-more>{{ __('messages.i18n.more') }}</button>@endif
                     </p>
                     @if($article->genres->count())
                         <div class="alpha-book-detail-tags">
@@ -108,13 +108,13 @@
                             <input type="hidden" name="name" value="{{ $article->title }} #{{ $article->id }}">
                             <input type="hidden" name="status" value="{{ $currentListStatus ? 'remove' : 'reading' }}">
                             <button type="submit" class="alpha-search-bookmark {{ $currentListStatus ? 'is-followed' : '' }}"
-                                    aria-label="{{ $currentListStatus ? 'Remove from library' : 'Add to library' }}"
-                                    title="{{ $currentListStatus ? 'Remove from library' : 'Add to library' }}">
+                                    aria-label="{{ $currentListStatus ? __('messages.i18n.remove_from_library') : __('messages.i18n.add_to_library') }}"
+                                    title="{{ $currentListStatus ? __('messages.i18n.remove_from_library') : __('messages.i18n.add_to_library') }}">
                                 <svg class="alpha-heart-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>
                             </button>
                         </form>
                     @else
-                        <a href="{{ route_path('login') }}" class="alpha-search-bookmark" aria-label="Bookmark" title="Add to library">
+                        <a href="{{ route_path('login') }}" class="alpha-search-bookmark" aria-label="{{ __('messages.i18n.bookmark') }}" title="{{ __('messages.i18n.add_to_library') }}">
                             <svg class="alpha-heart-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>
                         </a>
                     @endauth
@@ -290,7 +290,7 @@
                 @if(($suggestedArticles ?? collect())->count())
                 <section class="section alpha-suggestions">
                     <h2 class="section-title">
-                        <span>You will also like</span>
+                        <span>{{ __('messages.i18n.also_like') }}</span>
                         <div class="alpha-slider-actions">
                             <button type="button" class="alpha-slider-prev" aria-label="Previous"><i class="fa fa-chevron-left"></i></button>
                             <button type="button" class="alpha-slider-next" aria-label="Next"><i class="fa fa-chevron-right"></i></button>
@@ -303,9 +303,9 @@
                                 <a href="{{ route_path('articles.show', $s) }}" class="alpha-suggestion-card">
                                     <span class="alpha-suggestion-card__cover">
                                         <img loading="lazy" src="{{ novel_poster($s) }}" alt="{{ $s->title }}">
-                                        @if($loop->first)<em>Recommended</em>@endif
+                                        @if($loop->first)<em>{{ __('messages.i18n.recommended') }}</em>@endif
                                         {{-- Nhãn trạng thái nằm trên góc ảnh, thay cho dòng chữ dưới thẻ. --}}
-                                        <b class="alpha-suggestion-card__badge">{{ $s->is_completed ? 'Completed' : 'Updated' }}</b>
+                                        <b class="alpha-suggestion-card__badge">{{ $s->is_completed ? __('messages.i18n.completed') : __('messages.i18n.updated') }}</b>
                                     </span>
                                     <strong class="clamp clamp-2">{{ $s->title }}</strong>
                                 </a>
@@ -367,11 +367,11 @@
                 <section class="section comments-section alpha-reviews-preview">
                     @php
                         $reviewItems = collect($comments->items())->take(3);
-                        $reviewStatusLabel = $article->is_completed ? 'Review after the novel completion' : 'Review after half of the novel';
+                        $reviewStatusLabel = $article->is_completed ? __('messages.i18n.review_after_done') : __('messages.i18n.review_after_half');
                     @endphp
                     <div class="alpha-reviews-preview__header">
-                        <h2 class="section-title">Reviews</h2>
-                        <a href="{{ route_path('articles.reviews', $article) }}" id="show-all-comments" class="alpha-reviews-preview__see-all">See All</a>
+                        <h2 class="section-title">{{ __('messages.i18n.reviews') }}</h2>
+                        <a href="{{ route_path('articles.reviews', $article) }}" id="show-all-comments" class="alpha-reviews-preview__see-all">{{ __('messages.i18n.see_all') }}</a>
                     </div>
 
                     <div class="alpha-reviews-preview__grid">

@@ -16,7 +16,7 @@
                 <h2>{{ $block['title'] }}</h2>
                 <div class="alpha-slider-actions">
                     @if($block['showSeeAll'] ?? true)
-                        <a href="{{ $block['url'] }}" class="alpha-see-all">See All</a>
+                        <a href="{{ $block['url'] }}" class="alpha-see-all">{{ __('messages.i18n.see_all') }}</a>
                     @endif
                     <button type="button" class="alpha-slider-prev" aria-label="Previous"><i class="fa fa-chevron-left"></i></button>
                     <button type="button" class="alpha-slider-next" aria-label="Next"><i class="fa fa-chevron-right"></i></button>
@@ -79,7 +79,7 @@
             <section class="new-realeses alpha-new-realeses">
                 <div class="alpha-discover-card__head">
                     <h2>{{ __('messages.home.new_releases') }}</h2>
-                    <a href="{{ route_path('home.show_new_update_articles') }}" class="alpha-see-all">See All</a>
+                    <a href="{{ route_path('home.show_new_update_articles') }}" class="alpha-see-all">{{ __('messages.i18n.see_all') }}</a>
                 </div>
                 <div class="swiper-container">
                     <div class="swiper-wrapper">

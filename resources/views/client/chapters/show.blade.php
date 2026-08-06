@@ -86,7 +86,7 @@
 <nav class="alpha-chapter-breadcrumb" aria-label="{{ __('messages.chapter.chapter') }}">
     <div class="alpha-chapter-breadcrumb__item">
         {{-- "Novels" giữ nguyên như breadcrumb trang chi tiết truyện (articles/show.blade.php). --}}
-        <a href="{{ route_path('catalog.index') }}">Novels</a>
+        <a href="{{ route_path('catalog.index') }}">{{ __('messages.i18n.novels') }}</a>
         <span class="alpha-chapter-breadcrumb__divider">/</span>
     </div>
     @if($primaryGenre)

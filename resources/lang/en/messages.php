@@ -889,4 +889,23 @@ return array (
     ),
     'repeat_hint' => 'Click anywhere: choose "Wait N seconds then run again" to repeat the event every N seconds (set N in the "Cooldown (seconds)" field).',
   ),
+
+    'i18n' => [
+        'novels' => 'Novels',
+        'see_all' => 'See All',
+        'reviews' => 'Reviews',
+        'also_like' => 'You will also like',
+        'top_tags' => 'Top Tags',
+        'no_tags' => 'No tags yet.',
+        'all' => 'All',
+        'recommended' => 'Recommended',
+        'updated' => 'Updated',
+        'completed' => 'Completed',
+        'add_to_library' => 'Add to library',
+        'remove_from_library' => 'Remove from library',
+        'bookmark' => 'Bookmark',
+        'more' => 'more...',
+        'review_after_half' => 'Review after half of the novel',
+        'review_after_done' => 'Review after the novel completion',
+    ],
 );

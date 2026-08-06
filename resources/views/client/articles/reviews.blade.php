@@ -10,7 +10,7 @@
 
 <main class="alpha-review-page">
     <nav class="alpha-book-breadcrumb">
-        <a href="{{ route_path('catalog.index', []) }}">Novels</a>
+        <a href="{{ route_path('catalog.index', []) }}">{{ __('messages.i18n.novels') }}</a>
         @if($primaryGenre)
             <span>/</span>
             <a href="{{ route_path('genres.show', $primaryGenre) }}">{{ $primaryGenre->name }}</a>
@@ -24,7 +24,7 @@
     <section class="alpha-review-board">
         <header class="alpha-review-board__header">
             <h1>Reviews</h1>
-            <a href="{{ route_path('articles.reviews', $article) }}" class="alpha-review-board__back">See All</a>
+            <a href="{{ route_path('articles.reviews', $article) }}" class="alpha-review-board__back">{{ __('messages.i18n.see_all') }}</a>
         </header>
 
         <div class="alpha-review-grid">

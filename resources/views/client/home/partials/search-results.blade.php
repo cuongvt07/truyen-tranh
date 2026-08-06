@@ -8,7 +8,7 @@
             <article class="alpha-search-card">
                 <a href="{{ route_path('articles.show', $article) }}" class="alpha-search-card__cover">
                     <img src="{{ novel_poster($article) }}" alt="{{ $article->title }}" loading="lazy">
-                    @if(($loop->index % 3) === 0)<em>Recommended</em>@endif
+                    @if(($loop->index % 3) === 0)<em>{{ __('messages.i18n.recommended') }}</em>@endif
                     <strong>{{ $article->is_completed ? 'Completed' : 'Updated' }}</strong>
                 </a>
 
