@@ -908,4 +908,14 @@ return array (
         'review_after_half' => 'Review after half of the novel',
         'review_after_done' => 'Review after the novel completion',
     ],
+
+    'foot' => [
+        'contact_us' => 'Contact us',
+        'help' => 'Help',
+        'privacy_policy' => 'Privacy Policy',
+        'download_app' => 'Download app',
+        'install_app' => 'Install App',
+        'follow_us' => 'Follow us',
+        'blog' => 'Blog',
+    ],
 );

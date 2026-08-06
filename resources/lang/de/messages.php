@@ -153,4 +153,14 @@ return [
         'review_after_half' => 'Rezension nach der Hälfte des Romans',
         'review_after_done' => 'Rezension nach Abschluss des Romans',
     ],
+
+    'foot' => [
+        'contact_us' => 'Kontakt',
+        'help' => 'Hilfe',
+        'privacy_policy' => 'Datenschutz',
+        'download_app' => 'App herunterladen',
+        'install_app' => 'App installieren',
+        'follow_us' => 'Folgen Sie uns',
+        'blog' => 'Blog',
+    ],
 ];
