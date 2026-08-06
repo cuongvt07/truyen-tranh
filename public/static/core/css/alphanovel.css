@@ -13404,3 +13404,36 @@ body.theme-alphanovel .alpha-suggestion-card__cover img {
     border-radius: 8px;
     overflow: hidden;
 }
+
+/* ============================================================
+   Menu header: mặc định đen, CHỈ mục đang đứng hoặc đang rê chuột
+   mới chuyển tím. Chế độ tối giữ chữ sáng thay cho đen.
+   ============================================================ */
+body.theme-alphanovel:not(.alpha-dark) .alpha-header-nav a,
+body.theme-alphanovel:not(.alpha-dark) .alpha-header-nav .header-btn,
+body.theme-alphanovel:not(.alpha-dark) .alpha-header-nav a .alpha-nav-label,
+body.theme-alphanovel:not(.alpha-dark) .alpha-header-nav .header-btn .alpha-nav-label,
+body.theme-alphanovel-chapter:not(.alpha-dark) .alpha-header-nav a,
+body.theme-alphanovel-chapter:not(.alpha-dark) .alpha-header-nav .header-btn {
+    color: #000 !important;
+}
+
+body.theme-alphanovel.alpha-dark .alpha-header-nav a,
+body.theme-alphanovel.alpha-dark .alpha-header-nav .header-btn,
+body.theme-alphanovel.alpha-dark .alpha-header-nav .alpha-nav-label {
+    color: var(--alpha-ink) !important;
+}
+
+/* Đang đứng hoặc rê chuột -> tím. Đặt sau để thắng rule màu mặc định. */
+body.theme-alphanovel .alpha-header-nav a:hover,
+body.theme-alphanovel .alpha-header-nav .header-btn:hover,
+body.theme-alphanovel .alpha-header-nav a:hover .alpha-nav-label,
+body.theme-alphanovel .alpha-header-nav .header-btn:hover .alpha-nav-label,
+body.theme-alphanovel .alpha-header-nav a.is-active,
+body.theme-alphanovel .alpha-header-nav .header-btn.is-active,
+body.theme-alphanovel .alpha-header-nav a.is-active .alpha-nav-label,
+body.theme-alphanovel .alpha-header-nav .header-btn.is-active .alpha-nav-label,
+body.theme-alphanovel-chapter .alpha-header-nav a:hover,
+body.theme-alphanovel-chapter .alpha-header-nav a.is-active {
+    color: var(--alpha-primary) !important;
+}
