@@ -24,8 +24,11 @@
         $isLibrary                          => request()->routeIs(
             'users.reading_history', 'users.show_bookmarks', 'users.collections', 'users.favourites'
         ),
-        default                             => $href !== '#' && $href !== ''
-            && rtrim(parse_url($href, PHP_URL_PATH) ?? '', '/') === rtrim(request()->getPathInfo(), '/'),
+        // parse_url trả null khi href không có path ('#', chuỗi rỗng, chỉ fragment).
+        // Trước đây null bị ép thành '' rồi so với trang chủ (cũng ra '' sau rtrim),
+        // nên mọi mục kiểu đó đều sáng khi đứng ở trang chủ.
+        default => is_string($p = parse_url($href, PHP_URL_PATH)) && $p !== ''
+            && rtrim($p, '/') === rtrim(request()->getPathInfo(), '/'),
     };
     $activeClass = $active ? ' is-active' : '';
 @endphp
