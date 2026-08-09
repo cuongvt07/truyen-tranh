@@ -21,6 +21,7 @@ class SettingController extends Controller
             'guest_chapters_per_day' => ['sometimes', 'required', 'integer', 'min:1', 'max:10000'],
             'unpaid_user_chapters' => ['sometimes', 'required', 'integer', 'min:1', 'max:1000000'],
             'daily_checkin_enabled' => ['sometimes', 'required', 'in:0,1'],
+            'auto_approve_articles' => ['sometimes', 'required', 'in:0,1'],
             'daily_checkin_default_reward' => ['sometimes', 'required', 'integer', 'min:0', 'max:1000000'],
         ]);
 
