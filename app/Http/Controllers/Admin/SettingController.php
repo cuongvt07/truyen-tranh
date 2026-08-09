@@ -20,6 +20,7 @@ class SettingController extends Controller
             'guest_articles_per_day' => ['sometimes', 'required', 'integer', 'min:1', 'max:10000'],
             'guest_chapters_per_day' => ['sometimes', 'required', 'integer', 'min:1', 'max:10000'],
             'unpaid_user_chapters' => ['sometimes', 'required', 'integer', 'min:1', 'max:1000000'],
+            'auto_approve_articles' => ['sometimes', 'required', 'in:0,1'],
         ]);
 
         $data = $request->except([

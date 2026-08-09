@@ -80,7 +80,10 @@ class MyArticleController extends Controller
         $article->fill($data);
         $article->user_id = Auth::id();
         $article->is_user_submitted = true;                // truyện do user tự gửi (để lọc home + admin)
-        $article->status  = ArticleStatus::PENDING->value; // chờ admin duyệt trước khi public
+        // Admin bật "Auto duyệt" trong Cài đặt -> truyện public ngay, khỏi chờ xét.
+        $article->status  = setting('auto_approve_articles') === '1'
+            ? ArticleStatus::APPROVED->value
+            : ArticleStatus::PENDING->value;
         $article->cover_image = $this->resolveCover($request);
         $article->save();
 

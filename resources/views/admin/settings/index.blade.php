@@ -64,6 +64,19 @@
                 <i class="fas fa-shield-alt"></i> GIỚI HẠN ĐỌC MIỄN PHÍ
             </div>
             <div class="card-body">
+                <div class="row mb-3">
+                    <div class="form-group col-md-8">
+                        <div class="form-check">
+                            <input type="hidden" name="auto_approve_articles" value="0">
+                            <input type="checkbox" name="auto_approve_articles" value="1"
+                                   class="form-check-input" id="auto-approve-articles"
+                                   {{ ($settings['auto_approve_articles'] ?? '0') === '1' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="auto-approve-articles">
+                                <strong>Auto duyệt</strong> — truyện tạo mới được duyệt ngay, không cần admin xét
+                            </label>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="form-group col-md-4 mb-2">
                         <label>Số truyện tối đa/ngày khi chưa đăng nhập</label>
