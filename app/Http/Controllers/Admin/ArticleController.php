@@ -115,6 +115,12 @@ class ArticleController extends Controller
         $validateData = $this->normalizeCreditFields($validateData);
 
         $validateData = $this->uploadCoverImage($request, $validateData);
+        // Admin bat "Auto duyet" trong Cai dat -> truyen public ngay.
+        // Khong co dong nay thi status roi ve mac dinh cua DB (0 = cho duyet).
+        if (setting('auto_approve_articles') === '1' && !isset($validateData['status'])) {
+            $validateData['status'] = \App\Enums\ArticleStatus::APPROVED->value;
+        }
+
         $article = Article::create($validateData);
         Slug::ensureFor($article, 'article', $request->input('slug') ?: $article->title);
         $article->genres()->attach($validateData['genres'] ?? []);
