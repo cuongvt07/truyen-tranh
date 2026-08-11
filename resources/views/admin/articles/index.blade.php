@@ -111,7 +111,9 @@
                     <td class="text-muted small" title="{{ $article->updated_at }}">{{ optional($article->updated_at)->format('d/m/Y') }}</td>
                     <td class="text-center">
                         <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-secondary" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+                            {{-- data-boundary="viewport": .table-responsive dat overflow-x:auto nen tao vung cat,
+                                 it dong thi menu xo xuong bi cut. Neo theo viewport de thoat vung do. --}}
+                            <button class="btn btn-sm btn-outline-secondary" data-toggle="dropdown" data-boundary="viewport"><i class="fas fa-ellipsis-v"></i></button>
                             <div class="dropdown-menu dropdown-menu-right">
                                 <a class="dropdown-item" href="{{ route('articles.show', $article) }}" target="_blank"><i class="fas fa-eye mr-2 text-muted"></i> Xem</a>
                                 <a class="dropdown-item" href="{{ route('admin.articles.edit', $article->id) }}"><i class="fas fa-edit mr-2 text-primary"></i> Sửa</a>
