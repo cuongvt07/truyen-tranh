@@ -12,7 +12,11 @@ class TrustProxies extends Middleware
      *
      * @var array<int, string>|string|null
      */
-    protected $proxies = '172.16.0.0/12';
+    // Chi Cloudflare va nginx cua chinh box moi cham toi app, khong co
+    // duong nao khac vao -> tin tat ca proxy. Truoc day chi tin 172.16/12
+    // nen X-Forwarded-Proto tu Cloudflare bi bo qua, request bi coi la
+    // http va redirect sau login tra ve http://.
+    protected $proxies = '*';
 
     /**
      * The headers that should be used to detect proxies.
