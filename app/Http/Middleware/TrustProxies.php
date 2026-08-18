@@ -23,10 +23,11 @@ class TrustProxies extends Middleware
      *
      * @var int
      */
+    // KHONG tin X_FORWARDED_HOST: khi tin tat ca proxy, header nay cho phep
+    // ghi de host va sinh ra URL hong kieu https://admin/articles/... .
+    // Host lay tu Host header that; chi PROTO la can de biet request la https.
     protected $headers =
         Request::HEADER_X_FORWARDED_FOR |
-        Request::HEADER_X_FORWARDED_HOST |
         Request::HEADER_X_FORWARDED_PORT |
-        Request::HEADER_X_FORWARDED_PROTO |
-        Request::HEADER_X_FORWARDED_AWS_ELB;
+        Request::HEADER_X_FORWARDED_PROTO;
 }
