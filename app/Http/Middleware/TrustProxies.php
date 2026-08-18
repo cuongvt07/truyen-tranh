@@ -23,5 +23,11 @@ class TrustProxies extends Middleware
      *
      * @var int
      */
-    protected $headers = Request::HEADER_X_FORWARDED_FOR;
+    // Tin PROTO de biet request goc la https (neu khong, redirect sau login
+    // roi ve http). KHONG tin X_FORWARDED_HOST: header do cho phep ghi de
+    // host va sinh URL hong kieu https://admin/articles/... .
+    protected $headers =
+        Request::HEADER_X_FORWARDED_FOR |
+        Request::HEADER_X_FORWARDED_PORT |
+        Request::HEADER_X_FORWARDED_PROTO;
 }
